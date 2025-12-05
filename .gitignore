@@ -2,16 +2,24 @@
 .history/
 .DS_Store
 .vscode/
-*.code-workspace
 *.log
+
+# --- Konfiguracja lokalna (BARDZO WAŻNE) ---
+*.code-workspace
+/certs/
+*.pem
 
 # --- Backend (CodeIgniter) ---
 /backend/vendor/
 /backend/writable/
 /backend/.env
+/backend/.phpunit.cache
 /backend/public/uploads/
 
 # --- Frontend (Vue/Webpack) ---
 /frontend/node_modules/
 /frontend/dist/
 /frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
