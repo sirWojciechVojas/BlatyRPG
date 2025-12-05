@@ -1,0 +1,71 @@
+services:
+  # 1. Brama NGINX
+  nginx:
+    image: nginx:alpine
+    container_name: blatyrpg_nginx
+    ports:
+      - "443:443"
+      - "80:80"
+    volumes:
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+      - ./certs:/etc/nginx/certs:ro
+      - ./backend:/var/www/html
+    depends_on:
+      - php
+      - frontend
+      - websocket
+
+  # 2. Backend PHP
+  php:
+    build:
+      context: ./docker/php
+    container_name: blatyrpg_php
+    volumes:
+      - ./backend:/var/www/html
+    environment:
+      CI_ENVIRONMENT: development
+
+  # 3. Baza Danych MySQL
+  mysql:
+    image: mysql:8.0
+    container_name: blatyrpg_mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: blatyrpg
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "3307:3306"
+
+  # 4. Frontend Vue.js (NAPRAWIONY)
+  frontend:
+    image: node:lts-alpine
+    container_name: blatyrpg_frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    # 👇 ZMIANA: Najpierw instalujemy paczki, potem startujemy serwer
+    command: sh -c "npm install && npm run serve -- --port 8080"
+    environment:
+      - NODE_ENV=development
+      - WDS_SOCKET_PORT=443
+
+  # 5. WebSocket Server (NAPRAWIONY - tryb czuwania)
+  websocket:
+    image: node:lts-alpine
+    container_name: blatyrpg_websocket
+    working_dir: /app
+    volumes:
+      - ./websocket:/app
+    # 👇 ZMIANA: Utrzymujemy kontener przy życiu, nawet jak nie ma kodu
+    # Jak już napiszesz kod websocketów, zmienisz to na "npm install && npm start"
+    command: tail -f /dev/null
+
+volumes:
+  mysql_data:
+
+networks:
+  default:
+    name: blatyrpg_network
