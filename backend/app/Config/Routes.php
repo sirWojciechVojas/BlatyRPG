@@ -11,7 +11,7 @@ $routes->get('/', 'Home::index');
 
 // 🔧 Konfiguracja API
 // Wyłączamy automatyczny routing, żeby mieć pełną kontrolę
-$routes->setAutoRoute(false);
+$routes->setAutoRoute(true);
 
 // Grupa API z jawnym wskazaniem namespace'a
 $routes->group('', ['namespace' => 'App\Controllers\Api'], function ($routes) {
@@ -21,7 +21,7 @@ $routes->group('', ['namespace' => 'App\Controllers\Api'], function ($routes) {
     $routes->post('login', 'AuthController::login');       // Każdy może spróbować się zalogować
 
     // 2. PRYWATNE (Z filtrem 'auth')
-    $routes->group('', ['filter' => 'auth'], function($routes) {
+    $routes->group('', ['filter' => 'auth', 'namespace' => 'App\Controllers\Api'], function($routes) {
 
         // endpoint testowy usera
         $routes->get('me', function() {
