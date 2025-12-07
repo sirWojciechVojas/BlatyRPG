@@ -17,5 +17,7 @@ $routes->setAutoRoute(true);
 $routes->group('', ['namespace' => 'App\Controllers\Api'], function ($routes) {
   
      $routes->resource('heroes');
+     $routes->resource('gameDataControler');
+     $routes->resource('rpgCatalogController');
 
 });

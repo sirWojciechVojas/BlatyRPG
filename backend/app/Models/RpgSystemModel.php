@@ -4,15 +4,15 @@ namespace App\Models;
 
 use CodeIgniter\Model;
 
-class GameDefinitionModel extends Model
+class RpgSystemModel extends Model
 {
-    protected $table            = 'game_definitions';
+    protected $table            = 'rpg_systems';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
-    protected $allowedFields    = ['system_id', 'category', 'name', 'description', 'metadata'];
+    protected $allowedFields    = ['code', 'name', 'description'];
 
     protected bool $allowEmptyInserts = false;
 
@@ -39,9 +39,4 @@ class GameDefinitionModel extends Model
     protected $afterFind      = [];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
-
-    // Automatyczna konwersja JSON z bazy na tablicę w PHP
-    protected $casts = [
-        'metadata' => 'json',
-    ];
 }
