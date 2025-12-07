@@ -8,7 +8,6 @@ use CodeIgniter\RESTful\ResourceController;
 class Heroes extends ResourceController
 {
     protected $modelName = 'App\Models\HeroModel';
-
     protected $format = 'json';
 
     /**
