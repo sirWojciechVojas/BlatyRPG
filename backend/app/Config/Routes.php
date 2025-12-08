@@ -30,8 +30,32 @@ $routes->group('', ['namespace' => 'App\Controllers\Api'], function ($routes) {
 
         // Do tych tras wejdzie tylko ktoś z ważnym tokenem JWT
         $routes->resource('characters'); // CRUD Postaci
-        $routes->resource('gameDataControler');
-        $routes->resource('rpgCatalogController');
+  
+        // --- SEKCJA GIER (NOWOŚĆ) ---
+        // Lista wszystkich skonfigurowanych par System+Setting
+        $routes->get('games', 'RpgCatalogController::listGames');
+
+        // --- SEKCJA UNIWERSÓW ---
+        // Pozwala pobrać konkretne uniwersum po ID: GET /api/universes/7
+        $routes->get('universes/(:num)', 'RpgCatalogController::showUniverse/$1');
+
+        // --- SEKCJA SYSTEMÓW ---
+        // UNIWERSA (Niestandardowa akcja w kontrolerze systemów)
+        $routes->get('systems/(:num)/universes', 'RpgCatalogController::systemUniverses/$1');      
+        // Kategorie dla systemu
+        $routes->get('systems/(:num)/categories', 'GameDataController::getCategories/$1');
+        
+        // Lista definicji dla systemu
+        $routes->get('systems/(:num)/data', 'GameDataController::getDefinitions/$1');
+        
+        // KATALOG SYSTEMÓW (Resource)
+        $routes->resource('systems', [
+            'controller' => 'RpgCatalogController',
+            'only'       => ['index', 'show'] // Ograniczamy tylko do odczytu
+        ]);
+        
+        // Pojedyncze traity (NOWE)
+        $routes->get('traits/(:num)', 'GameDataController::show/$1');
     });
      
 });

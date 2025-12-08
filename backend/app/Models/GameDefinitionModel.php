@@ -36,12 +36,39 @@ class GameDefinitionModel extends Model
     protected $beforeUpdate   = [];
     protected $afterUpdate    = [];
     protected $beforeFind     = [];
-    protected $afterFind      = [];
+    protected $afterFind      = ['decodeMetadata'];
     protected $beforeDelete   = [];
     protected $afterDelete    = [];
 
-    // Automatyczna konwersja JSON z bazy na tablicę w PHP
-    protected $casts = [
-        'metadata' => 'json',
-    ];
+    protected function decodeMetadata(array $data)
+    {
+        // Sprawdzamy, czy mamy dane do przetworzenia
+        if (!isset($data['data'])) {
+            return $data;
+        }
+
+        // Przypadek 1: Pobranie wielu rekordów (findAll) -> tablica tablic
+        if ($data['singleton'] === false) {
+            foreach ($data['data'] as &$row) {
+                if (isset($row['metadata']) && is_string($row['metadata'])) {
+                    $decoded = json_decode($row['metadata'], true);
+                    // Jeśli dekodowanie się udało, podmieniamy string na tablicę
+                    if (json_last_error() === JSON_ERROR_NONE) {
+                        $row['metadata'] = $decoded;
+                    }
+                }
+            }
+        }
+        // Przypadek 2: Pobranie jednego rekordu (find) -> pojedyncza tablica
+        else {
+            if (isset($data['data']['metadata']) && is_string($data['data']['metadata'])) {
+                $decoded = json_decode($data['data']['metadata'], true);
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $data['data']['metadata'] = $decoded;
+                }
+            }
+        }
+
+        return $data;
+    }
 }

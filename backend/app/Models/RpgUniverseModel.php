@@ -6,7 +6,7 @@ use CodeIgniter\Model;
 
 class RpgUniverseModel extends Model
 {
-    protected $table            = 'rpguniverses';
+    protected $table            = 'rpg_universes';
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
