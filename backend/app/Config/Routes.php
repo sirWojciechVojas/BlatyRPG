@@ -29,7 +29,7 @@ $routes->group('', ['namespace' => 'App\Controllers\Api'], function ($routes) {
         });
 
         // Do tych tras wejdzie tylko ktoś z ważnym tokenem JWT
-        $routes->resource('characters'); // CRUD Postaci
+        $routes->resource('characters',['controller' => 'CharacterController']); // CRUD Postaci
   
         // --- SEKCJA GIER (NOWOŚĆ) ---
         // Lista wszystkich skonfigurowanych par System+Setting

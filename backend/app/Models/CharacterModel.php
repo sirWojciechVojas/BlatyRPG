@@ -10,46 +10,87 @@ class CharacterModel extends Model
     protected $primaryKey       = 'id';
     protected $useAutoIncrement = true;
     protected $returnType       = 'array';
-    protected $useSoftDeletes   = false;
-    protected $protectFields    = true;
+    
     protected $allowedFields    = [
-        'user_id', 'campaign_id', 
-        'name', 'race', 'profession', 'age',
-        'height', 'weight', 'hair', 'eyes', 'special_signs',
-        'personality', 'history', 'notes',
-        'stats_json', 'skills_json', 'talents_json', 'spells_json',
-        'money_gc', 'money_ss', 'money_bp',
-        'current_wounds', 'max_wounds', 
-        'experience_current', 'experience_total',
-        'is_npc', 'avatar_path'
+        'user_id', 
+        'campaign_id', 
+        'system_id', 
+        'universe_id', 
+        'name', 
+        'data', 
+        'avatar_url'
     ];
 
-    protected bool $allowEmptyInserts = false;
-
-    // Dates
     protected $useTimestamps = true;
-    protected $dateFormat    = 'datetime';
     protected $createdField  = 'created_at';
     protected $updatedField  = 'updated_at';
-    protected $deletedField  = 'deleted_at';
 
-    // Validation
-    protected $validationRules      = [
-        'name' => 'required|min_length[2]',
-        'race' => 'required',
+    // Walidacja
+    protected $validationRules = [
+        'name'        => 'required|min_length[2]|max_length[150]',
+        'system_id'   => 'required|integer',
+        'universe_id' => 'required|integer',
     ];
-    protected $validationMessages   = [];
-    protected $skipValidation       = false;
-    protected $cleanValidationRules = true;
 
-    // Callbacks
-    protected $allowCallbacks = true;
-    protected $beforeInsert   = [];
-    protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
-    protected $afterUpdate    = [];
-    protected $beforeFind     = [];
-    protected $afterFind      = [];
-    protected $beforeDelete   = [];
-    protected $afterDelete    = [];
+    // --- CALLBACKI (Magia JSON) ---
+    
+    // 1. ODCZYT: Po pobraniu z bazy, zamień string JSON na tablicę PHP
+    protected $afterFind = ['decodeJsonData'];
+
+    // 2. ZAPIS: Przed zapisem do bazy, upewnij się, że dane są spakowane do stringa (jeśli nie robi tego kontroler)
+    protected $beforeInsert = ['encodeJsonData'];
+    protected $beforeUpdate = ['encodeJsonData'];
+
+    /**
+     * Odczyt: Rozpakuj JSON (String -> Array)
+     * Dzięki temu API zwróci ładny obiekt, a nie napis z ukośnikami.
+     */
+    protected function decodeJsonData(array $data)
+    {
+        // Jeśli nie ma danych lub wynik jest pusty, nic nie rób
+        if (!isset($data['data'])) return $data;
+
+        // Funkcja pomocnicza do dekodowania pojedynczego wiersza
+        $decodeRow = function(&$row) {
+            // Sprawdzamy czy pole 'data' istnieje i czy jest napisem
+            if (isset($row['data']) && is_string($row['data'])) {
+                $decoded = json_decode($row['data'], true); // true = tablica asocjacyjna
+                
+                // Jeśli dekodowanie się uda, podmieniamy string na tablicę
+                if (json_last_error() === JSON_ERROR_NONE) {
+                    $row['data'] = $decoded;
+                }
+            }
+        };
+
+        // Obsługa findAll() - wielowymiarowa tablica wyników
+        if ($data['singleton'] === false) {
+            foreach ($data['data'] as &$row) {
+                $decodeRow($row);
+            }
+        } 
+        // Obsługa find() - pojedynczy wynik
+        else {
+            $decodeRow($data['data']);
+        }
+
+        return $data;
+    }
+
+    /**
+     * Zapis: Spakuj tablicę do JSON (Array -> String)
+     */
+    protected function encodeJsonData(array $data)
+    {
+        // Sprawdzamy czy w danych do zapisu (w insert/update) jest klucz 'data'
+        if (isset($data['data']['data'])) {
+            $incomingData = $data['data']['data'];
+            
+            // Jeśli to tablica lub obiekt, zamieniamy na string JSON
+            if (is_array($incomingData) || is_object($incomingData)) {
+                $data['data']['data'] = json_encode($incomingData, JSON_UNESCAPED_UNICODE);
+            }
+        }
+        return $data;
+    }
 }
