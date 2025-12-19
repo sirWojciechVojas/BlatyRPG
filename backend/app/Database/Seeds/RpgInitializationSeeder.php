@@ -9,7 +9,7 @@ class RpgInitializationSeeder extends Seeder
     public function run()
     {
         $db = \Config\Database::connect();
-        
+                
         // 1. CZYSZCZENIE TABEL (OBOWIĄZKOWE PRZY ZMIANACH STRUKTURY DANYCH)
         // Wyłączamy sprawdzanie kluczy obcych, czyścimy tabele i włączamy z powrotem.
         $db->query("SET FOREIGN_KEY_CHECKS = 0");
