@@ -8,6 +8,7 @@
 *.code-workspace
 /certs/
 *.pem
+/docker-entrypoint-initdb.db/*.sql
 
 # --- Backend (CodeIgniter) ---
 /backend/vendor/

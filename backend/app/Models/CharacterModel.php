@@ -93,4 +93,25 @@ class CharacterModel extends Model
         }
         return $data;
     }
+    /**
+     * Zakres filtrowania (Scope)
+     * Pozwala łatwo filtrować wyniki w Kontrolerze.
+     * Użycie: $model->filterBy(['user_id' => 1])->findAll();
+     */
+    public function filterBy(array $params)
+    {
+        $builder = $this->builder(); // Pobieramy buildera, żeby nie resetować stanu modelu
+
+        if (!empty($params['user_id'])) {
+            $this->where('user_id', $params['user_id']);
+        }
+
+        if (!empty($params['system_id'])) {
+            $this->where('system_id', $params['system_id']);
+        }
+        
+        // Można tu łatwo dodać więcej filtrów w przyszłości, np. universe_id
+
+        return $this; // Zwracamy instancję modelu dla łańcuchowania metod (method chaining)
+    }
 }

@@ -11,11 +11,34 @@ class CharacterLegacySeeder extends Seeder
         $db = \Config\Database::connect();
         
         // 1. Sprawdzenie systemu i uniwersum (WFRP 2ed / Old World)
-        $wfrpSystem = $db->table('rpg_systems')->where('code', 'wfrp2ed')->get()->getRow();
-        $oldWorld   = $db->table('rpg_universes')->where('code', 'old_world')->get()->getRow();
+        $systemTable = $db->table('rpg_systems');
+        $universeTable = $db->table('rpg_universes');
 
-        $sysId = $wfrpSystem ? $wfrpSystem->id : 1;
-        $uniId = $oldWorld ? $oldWorld->id : 1;
+        $wfrpSystem = $systemTable->where('code', 'wfrp2ed')->get()->getRow();
+        if (!$wfrpSystem) {
+            $systemTable->insert([
+                'code' => 'wfrp2ed',
+                'name' => 'WFRP 2ed',
+                'description' => 'Warhammer Fantasy Roleplay 2nd Edition',
+                'created_at' => date('Y-m-d H:i:s'),
+            ]);
+            $wfrpSystem = (object) ['id' => $db->insertID()];
+        }
+
+        $oldWorld = $universeTable->where('code', 'old_world')->get()->getRow();
+        if (!$oldWorld) {
+            $universeTable->insert([
+                'code' => 'old_world',
+                'name' => 'Old World',
+                'description' => 'Warhammer Fantasy setting',
+                'default_system_id' => $wfrpSystem->id,
+                'created_at' => date('Y-m-d H:i:s'),
+            ]);
+            $oldWorld = (object) ['id' => $db->insertID()];
+        }
+
+        $sysId = $wfrpSystem->id;
+        $uniId = $oldWorld->id;
 
         echo "🧙‍♂️ Pełna migracja postaci (Statystyki 16 cech + Umiejętności + Zdolności)... \n";
 

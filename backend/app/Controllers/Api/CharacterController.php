@@ -5,6 +5,8 @@ namespace App\Controllers\Api;
 use CodeIgniter\RESTful\ResourceController;
 use CodeIgniter\API\ResponseTrait;
 use App\Models\CharacterModel;
+use App\Services\CharacterService;
+use Exception;
 
 class CharacterController extends ResourceController
 {
@@ -12,7 +14,14 @@ class CharacterController extends ResourceController
 
     protected $modelName = CharacterModel::class;
     protected $format    = 'json';
+    protected $characterService;
 
+    public function __construct()
+    {
+        // Stworzenie instancji serwisu postaci
+        $this->characterService = new CharacterService();
+    }
+    
     /**
      * GET /api/characters
      * Zwraca listę postaci.
@@ -21,21 +30,16 @@ class CharacterController extends ResourceController
     public function index()
     {
         // Pobierz parametry filtrowania z URL
-        $userId   = $this->request->getGet('user_id');
-        $systemId = $this->request->getGet('system_id');
+        $filters = [
+            'user_id'   => $this->request->getGet('user_id'),
+            'system_id' => $this->request->getGet('system_id'),
+        ];
 
-        $query = $this->model;
-
-        if ($userId) {
-            $query = $query->where('user_id', $userId);
-        }
-        
-        if ($systemId) {
-            $query = $query->where('system_id', $systemId);
-        }
-
-        // Sortowanie: najnowsze na górze
-        $data = $query->orderBy('created_at', 'DESC')->findAll();
+        // Użycie Scope z Modelu (Clean Code)
+        $data = $this->model
+            ->filterBy($filters)
+            ->orderBy('created_at', 'DESC')
+            ->findAll();
 
         return $this->respond([
             'count' => count($data),
@@ -122,5 +126,34 @@ class CharacterController extends ResourceController
         }
 
         return $this->failServerError('Nie udało się usunąć postaci.');
+    }
+
+    /**
+     * POST /api/characters/{id}/purchase
+     * Specjalna metoda do kupowania umiejętności i zdolności z walidacją zasad.
+     * Body: { "definition_id": 55 }
+     */
+    public function purchase($id = null)
+    {
+        $input = $this->request->getJSON(true);
+        $defId = $input['definition_id'] ?? null;
+
+        if(!$defId) {
+            return $this->fail('Wymagane pole definition_id.', 400);
+        }
+
+        try {
+            // Przekazanie sterowania do Serwisu (Logika Biznesowa)
+            $result = $this->characterService->purchaseDefinition($id, $defId);
+
+            return $this->respond($result);
+        } catch (Exception $e) {
+            // Obsługa błędów biznesowych (brak XP, zła walidacja itp.)
+            $code = $e->getCode();
+            // Upewnienie czy kod HTTP jest poprawny (400-599), inaczej 400
+            $httpCode = ($code >= 400 && $code < 600) ? $code : 400;
+
+            return $this->fail($e->getMessage(), $httpCode);
+        }
     }
 }
