@@ -27,26 +27,8 @@ class RpgCatalogController extends ResourceController
      */
     public function listGames()
     {
-        $db = \Config\Database::connect();
-        $builder = $db->table('rpg_system_universes');
-
-        // Wybieramy kolumny i łączymy z tabelami słownikowymi, żeby widzieć nazwy
-        $builder->select('
-            rpg_system_universes.system_id,
-            rpg_systems.name as system_name,
-            rpg_systems.code as system_code,
-            rpg_system_universes.universe_id,
-            rpg_universes.name as universe_name,
-            rpg_universes.code as universe_code,
-            rpg_system_universes.is_active
-        ');
-        $builder->join('rpg_systems', 'rpg_systems.id = rpg_system_universes.system_id');
-        $builder->join('rpg_universes', 'rpg_universes.id = rpg_system_universes.universe_id');
-        
-        // Opcjonalnie: sortowanie po nazwie systemu
-        $builder->orderBy('rpg_systems.name', 'ASC');
-
-        $data = $builder->get()->getResultArray();
+        // Logika pobierania danych przeniesiona do Modelu (Clean Code)
+        $data = $this->systemModel->getGamesWithDetails();
         
         return $this->respond([
             'count' => count($data),
