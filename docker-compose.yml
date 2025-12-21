@@ -12,8 +12,8 @@ services:
       - ./backend:/var/www/html
     depends_on:
       - php
-      # - frontend
-      # - websocket
+      - frontend
+      - websocket
 
   # 2. Backend PHP
   php:
@@ -39,29 +39,35 @@ services:
       - "3307:3306"
 
   # # 4. Frontend Vue.js (NAPRAWIONY)
-  # frontend:
-  #   image: node:lts-alpine
-  #   container_name: blatyrpg_frontend
-  #   working_dir: /app
-  #   volumes:
-  #     - ./frontend:/app
-  #     - /app/node_modules
-  #   # 👇 ZMIANA: Najpierw instalujemy paczki, potem startujemy serwer
-  #   command: sh -c "npm install && npm run serve -- --port 8080"
-  #   environment:
-  #     - NODE_ENV=development
-  #     - WDS_SOCKET_PORT=443
+  frontend:
+    image: node:lts-alpine
+    container_name: blatyrpg_frontend
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    # Najpierw instalujemy paczki, potem startujemy serwer
+    command: sh -c "npm install && npm run serve -- --host 0.0.0.0 --port 8080"
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - WDS_SOCKET_HOST=localhost
+      - WDS_SOCKET_PORT=443
+      - WDS_SOCKET_PROTOCOL=wss
+      - WDS_SOCKET_PATH=/sockjs-node
+    expose:
+      - "8080"
 
   # # 5. WebSocket Server (NAPRAWIONY - tryb czuwania)
-  # websocket:
-  #   image: node:lts-alpine
-  #   container_name: blatyrpg_websocket
-  #   working_dir: /app
-  #   volumes:
-  #     - ./websocket:/app
-  #   # 👇 ZMIANA: Utrzymujemy kontener przy życiu, nawet jak nie ma kodu
-  #   # Jak już napiszesz kod websocketów, zmienisz to na "npm install && npm start"
-  #   command: tail -f /dev/null
+  websocket:
+    image: node:lts-alpine
+    container_name: blatyrpg_websocket
+    working_dir: /app
+    volumes:
+      - ./websocket:/app
+    # 👇 ZMIANA: Utrzymujemy kontener przy życiu, nawet jak nie ma kodu
+    # Jak już napiszesz kod websocketów, zmienisz to na "npm install && npm start"
+    command: tail -f /dev/null
 
 volumes:
   mysql_data:
