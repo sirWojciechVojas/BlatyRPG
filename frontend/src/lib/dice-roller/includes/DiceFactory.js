@@ -9,7 +9,15 @@ export class DiceFactory {
     this.geometries = {};
     this.assetBaseUrl = options.assetBaseUrl || "/dice_roller";
 
-    this.baseScale = 50;
+    const diceScale =
+      typeof options.diceScaleThrow === "number" &&
+      Number.isFinite(options.diceScaleThrow)
+        ? options.diceScaleThrow
+        : typeof options.diceScale === "number" &&
+            Number.isFinite(options.diceScale)
+          ? options.diceScale
+          : 1;
+    this.baseScale = 70 * Math.max(0.01, diceScale);
 
     this.materials = [];
     this.materials_cache = {};
@@ -112,8 +120,8 @@ export class DiceFactory {
       resolveAssetPath(this.assetBaseUrl, "textures/silvercoin/heads_bump.png"),
     ]);
     diceobj.setValues(0, 1);
-    diceobj.inertia = 5;
-    diceobj.mass = 2000;
+    diceobj.inertia = 2;
+    diceobj.mass = 6000;
     diceobj.scale = 1;
     diceobj.colorset = "coin_silver";
     this.register(diceobj);
@@ -648,7 +656,7 @@ export class DiceFactory {
 
     let dicemesh = new THREE.Mesh(
       geom,
-      this.createMaterials(diceobj, this.baseScale / 2, 1.0)
+      this.createMaterials(diceobj, this.baseScale / 2, 1.0),
     );
     dicemesh.result = [];
     dicemesh.shape = diceobj.shape;
@@ -676,6 +684,9 @@ export class DiceFactory {
           closest_angle = angle;
           closest_face = face;
         }
+      }
+      if (!closest_face || typeof closest_face.materialIndex !== "number") {
+        return { value: 0, label: "", reason: reason };
       }
       let matindex = closest_face.materialIndex - 1;
 
@@ -706,7 +717,9 @@ export class DiceFactory {
 
     dicemesh.getLastValue = function () {
       if (!this.result || this.result.length < 1)
-        return { value: undefined, label: "", reason: "" };
+        return this.getFaceValue
+          ? this.getFaceValue()
+          : { value: undefined, label: "", reason: "" };
 
       return this.result[this.result.length - 1];
     };
@@ -769,7 +782,7 @@ export class DiceFactory {
     size,
     margin,
     allowcache = true,
-    d4specialindex = 0
+    d4specialindex = 0,
   ) {
     let materials = [];
     let labels = diceobj.labels;
@@ -783,7 +796,7 @@ export class DiceFactory {
       var mat;
       if (this.dice_material != "none") {
         mat = new THREE.MeshStandardMaterial(
-          this.material_types[this.dice_material]
+          this.material_types[this.dice_material],
         );
         if (this.cubeMap) {
           mat.envMap = this.cubeMap;
@@ -812,7 +825,7 @@ export class DiceFactory {
           this.label_color_rand,
           this.label_outline_rand,
           this.edge_color_rand,
-          allowcache
+          allowcache,
         );
         mat.map = canvasTextures.composite;
       } else {
@@ -826,7 +839,7 @@ export class DiceFactory {
           this.label_color_rand,
           this.label_outline_rand,
           this.dice_color_rand,
-          allowcache
+          allowcache,
         );
         mat.map = canvasTextures.composite;
 
@@ -868,7 +881,7 @@ export class DiceFactory {
     forecolor,
     outlinecolor,
     backcolor,
-    allowcache
+    allowcache,
   ) {
     if (labels[index] === undefined) return null;
 
@@ -1002,7 +1015,7 @@ export class DiceFactory {
           0,
           0,
           canvas.width,
-          canvas.height
+          canvas.height,
         );
 
         // text-only face
@@ -1085,7 +1098,7 @@ export class DiceFactory {
             100 / scaleTexture,
             25 / scaleTexture,
             60 / scaleTexture,
-            60 / scaleTexture
+            60 / scaleTexture,
           );
         } else {
           // attempt to outline the text with a meaningful color
@@ -1235,7 +1248,7 @@ export class DiceFactory {
     if (this.edge_color_rand == "") {
       if (Array.isArray(this.edge_color)) {
         const edgeColorIndex = Math.floor(
-          Math.random() * this.edge_color.length
+          Math.random() * this.edge_color.length,
         );
 
         this.edge_color_rand = this.edge_color[edgeColorIndex];
@@ -1331,21 +1344,38 @@ export class DiceFactory {
   }
 
   create_d2_geometry(radius) {
+    const height = 0.08 * radius;
+    const bevelRadius = Math.min(height * 0.35, radius * 0.03);
     var geom = new THREE.CylinderGeometry(
       1 * radius,
       1 * radius,
-      0.1 * radius,
-      32
+      height,
+      32,
     );
     geom.rotateX(Math.PI / 2);
-    const cannonShape = new CANNON.Cylinder(
-      1 * radius,
-      1 * radius,
-      0.1 * radius,
-      8
-    );
+    const cannonShape = new CANNON.Cylinder(1 * radius, 1 * radius, height, 16);
+    const cylinderQuat = new CANNON.Quaternion();
+    cylinderQuat.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
+    const bevelShape = new CANNON.Sphere(bevelRadius);
     const bufferGeom = this.buildBufferGeometryFromGeometry(geom);
     bufferGeom.cannon_shape = cannonShape;
+    bufferGeom.cannon_shapes = [
+      {
+        shape: cannonShape,
+        offset: new CANNON.Vec3(0, 0, 0),
+        orientation: cylinderQuat,
+      },
+      {
+        shape: bevelShape,
+        offset: new CANNON.Vec3(0, 0, height / 2),
+      },
+      {
+        shape: bevelShape,
+        offset: new CANNON.Vec3(0, 0, -height / 2),
+      },
+    ];
+    bufferGeom.coin_radius = radius;
+    bufferGeom.coin_height = height;
     return bufferGeom;
   }
 
@@ -1368,7 +1398,7 @@ export class DiceFactory {
       radius,
       -0.1,
       (Math.PI * 7) / 6,
-      0.96
+      0.96,
     );
   }
 
@@ -1419,7 +1449,7 @@ export class DiceFactory {
       radius,
       0,
       -Math.PI / 4 / 2,
-      0.965
+      0.965,
     );
   }
 
@@ -1493,7 +1523,7 @@ export class DiceFactory {
       radius,
       0.2,
       -Math.PI / 4 / 2,
-      0.968
+      0.968,
     );
   }
 
@@ -1541,7 +1571,7 @@ export class DiceFactory {
       radius,
       -0.2,
       -Math.PI / 4 / 2,
-      0.955
+      0.955,
     );
   }
 
@@ -1604,7 +1634,7 @@ export class DiceFactory {
   fixmaterials(mesh, unique_sides) {
     if (!mesh || !mesh.geometry) {
       console.error(
-        "Invalid mesh or geometry structure. Please check your input data."
+        "Invalid mesh or geometry structure. Please check your input data.",
       );
       return mesh;
     }
@@ -1615,7 +1645,7 @@ export class DiceFactory {
         : geometry.faces || [];
     if (!faces.length) {
       console.error(
-        "Invalid geometry faces data. Please check your input data."
+        "Invalid geometry faces data. Please check your input data.",
       );
       return mesh;
     }
@@ -1652,7 +1682,7 @@ export class DiceFactory {
     for (let i = 0; i < faces.length; ++i) {
       cf[i] = faces[i].slice(0, faces[i].length - 1);
     }
-    return new CANNON.ConvexPolyhedron(cv, cf);
+    return new CANNON.ConvexPolyhedron({ vertices: cv, faces: cf });
   }
 
   buildBufferGeometryFromGeometry(sourceGeometry) {
@@ -1724,7 +1754,7 @@ export class DiceFactory {
           uvAttr.getX(ib),
           uvAttr.getY(ib),
           uvAttr.getX(ic),
-          uvAttr.getY(ic)
+          uvAttr.getY(ic),
         );
       } else {
         uvs.push(0, 0, 0, 0, 0, 0);
@@ -1748,11 +1778,11 @@ export class DiceFactory {
     const geom = new THREE.BufferGeometry();
     geom.setAttribute(
       "position",
-      new THREE.Float32BufferAttribute(data.positions, 3)
+      new THREE.Float32BufferAttribute(data.positions, 3),
     );
     geom.setAttribute(
       "normal",
-      new THREE.Float32BufferAttribute(data.normals, 3)
+      new THREE.Float32BufferAttribute(data.normals, 3),
     );
     geom.setAttribute("uv", new THREE.Float32BufferAttribute(data.uvs, 2));
     geom.clearGroups();

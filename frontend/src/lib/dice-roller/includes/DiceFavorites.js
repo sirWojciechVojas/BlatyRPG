@@ -148,7 +148,7 @@ export class DiceFavorites {
     draggable.find(".fav_edit").click(function () {
       let newname = prompt(
         "Enter a Title",
-        $(this).parent().find(".fav_name").text()
+        $(this).parent().find(".fav_name").text(),
       );
       $(this).parent().find(".fav_name").empty().text(newname);
       window.DiceFavorites.store();
@@ -255,7 +255,7 @@ export class DiceFavorites {
         entry.colorset,
         entry.texture,
         entry.x,
-        entry.y
+        entry.y,
       );
     }
     this.ensureOnScreen();

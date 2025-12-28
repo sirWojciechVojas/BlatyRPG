@@ -13,11 +13,16 @@ export class DiceRoom {
       return;
     }
     this.assetBaseUrl = options.assetBaseUrl || "/dice_roller";
+    this.chatEnabled =
+      typeof options.chatEnabled === "boolean" ? options.chatEnabled : true;
 
     this.TealChat = new TealChat(Teal.id("log"));
     this.TealChat.own_user = username;
     this.TealChat.clientid = userid;
     this.cid = userid;
+    if (!this.chatEnabled && this.TealChat.place) {
+      this.TealChat.place.style.display = "none";
+    }
 
     this.DiceBox = null;
 
@@ -29,6 +34,37 @@ export class DiceRoom {
     this.selector_div = Teal.id("selector_div");
     this.params = Teal.get_url_params();
     this.users = true;
+    const fallbackScale =
+      typeof options.diceScale === "number" && Number.isFinite(options.diceScale)
+        ? options.diceScale
+        : 1;
+    this.diceThrowScale =
+      typeof options.diceScaleThrow === "number" &&
+      Number.isFinite(options.diceScaleThrow)
+        ? options.diceScaleThrow
+        : fallbackScale;
+    this.diceSelectorScale =
+      typeof options.diceScaleSelector === "number" &&
+      Number.isFinite(options.diceScaleSelector)
+        ? options.diceScaleSelector
+        : fallbackScale;
+    this.diceDisplayEnabled =
+      typeof options.diceDisplayEnabled === "boolean"
+        ? options.diceDisplayEnabled
+        : true;
+    this.rngSeed =
+      options.rngSeed !== undefined && options.rngSeed !== null
+        ? options.rngSeed
+        : null;
+    this.dragThrowEnabled =
+      typeof options.dragThrowEnabled === "boolean"
+        ? options.dragThrowEnabled
+        : true;
+    this.diceDisplayList =
+      Array.isArray(options.diceDisplayList) && options.diceDisplayList.length
+        ? options.diceDisplayList
+        : null;
+    this.diceSelectorDimensions = options.diceSelectorDimensions || null;
 
     // actions performed when the server sends a command
     this.actions = {
@@ -58,12 +94,12 @@ export class DiceRoom {
     Teal.bind(
       Teal.id("clear"),
       ["mouseup", "touchend"],
-      this.on_button_clear_notation
+      this.on_button_clear_notation,
     );
     Teal.bind(
       Teal.id("save"),
       ["mouseup", "touchend"],
-      this.on_button_create_favorite
+      this.on_button_create_favorite,
     );
 
     Teal.bind(this.set, ["mouseup", "keyup", "touchend"], this.on_set_change);
@@ -80,12 +116,47 @@ export class DiceRoom {
     Teal.bind(
       Teal.id("rage"),
       ["mouseup", "touchend"],
-      this.button_increment_rage
+      this.button_increment_rage,
     );
+    this.toggle_dice_display = document.getElementById("toggle_dice_display");
+    if (this.toggle_dice_display) {
+      Teal.bind(
+        this.toggle_dice_display,
+        ["mouseup", "touchend"],
+        this.on_toggle_dice_display.bind(this),
+      );
+      Teal.bind(
+        this.toggle_dice_display,
+        ["mousedown", "touchstart"],
+        (ev) => ev.stopPropagation(),
+      );
+      this.updateDiceDisplayToggle();
+    }
+    this.toggle_drag_throw = document.getElementById("toggle_drag_throw");
+    if (this.toggle_drag_throw) {
+      Teal.bind(
+        this.toggle_drag_throw,
+        ["mouseup", "touchend"],
+        this.on_toggle_drag_throw.bind(this),
+      );
+      Teal.bind(
+        this.toggle_drag_throw,
+        ["mousedown", "touchstart"],
+        (ev) => ev.stopPropagation(),
+      );
+      this.updateDragThrowToggle();
+    }
 
-    this.DiceBox = new DiceBox(this.canvas, { w: 825, h: 300 }, null, null, {
-      assetBaseUrl: this.assetBaseUrl,
-    });
+    this.DiceBox = new DiceBox(
+      this.canvas,
+      options.diceBoxDimensions,
+      null,
+      null,
+      {
+        assetBaseUrl: this.assetBaseUrl,
+        rngSeed: this.rngSeed,
+      },
+    );
     this.DiceBox.selector.dice = [
       "df",
       "d4",
@@ -99,7 +170,7 @@ export class DiceRoom {
     this.DiceBox.initialize();
 
     this.DiceBox.volume = parseInt(
-      window.DiceRoller.DiceFavorites.settings.volume.value
+      window.DiceRoller.DiceFavorites.settings.volume.value,
     );
     this.DiceBox.sounds =
       window.DiceRoller.DiceFavorites.settings.sounds.value == "1";
@@ -109,7 +180,10 @@ export class DiceRoom {
     Teal.bind(
       this.desk,
       ["mousedown", "touchstart"],
-      this.DiceBox.startDragThrow.bind(this.DiceBox)
+      function (ev) {
+        if (!this.canDragThrow()) return;
+        this.DiceBox.startDragThrow(ev);
+      }.bind(this),
     );
 
     if (this.params.notation) {
@@ -123,10 +197,13 @@ export class DiceRoom {
       this.desk,
       ["mouseup", "touchend"],
       function (ev) {
-        let notationVectors = this.DiceBox.endDragThrow(
-          ev,
-          Teal.id("set").value
-        );
+        let notationVectors = null;
+        if (this.canDragThrow()) {
+          notationVectors = this.DiceBox.endDragThrow(
+            ev,
+            Teal.id("set").value,
+          );
+        }
 
         if (!notationVectors || notationVectors.error) {
           // if total display is up and dice aren't rolling, reset the selector
@@ -157,7 +234,7 @@ export class DiceRoom {
         } else {
           this.sendNetworkedRoll(notationVectors);
         }
-      }.bind(this)
+      }.bind(this),
     );
 
     Teal.bind(
@@ -167,12 +244,12 @@ export class DiceRoom {
         ev.preventDefault();
         ev.stopPropagation();
         let notationVectors = this.DiceBox.startClickThrow(
-          Teal.id("set").value
+          Teal.id("set").value,
         );
         if (!notationVectors || notationVectors.error) return;
 
         this.sendNetworkedRoll(notationVectors);
-      }.bind(this)
+      }.bind(this),
     );
 
     this.TealChat.bind_send(
@@ -197,7 +274,7 @@ export class DiceRoom {
             this.TealChat.own_user,
             text,
             time,
-            uuid
+            uuid,
           );
           window.DiceRoller.Teal.rpc({
             method: "chat",
@@ -207,10 +284,13 @@ export class DiceRoom {
             uuid: uuid,
           });
         }
-      }.bind(this)
+      }.bind(this),
     );
 
-    this.show_selector();
+    if (!this.diceDisplayEnabled && this.canvas) {
+      this.canvas.style.display = "none";
+    }
+    this.show_selector({ diceList: this.diceDisplayList });
   }
   button_increment_rage(ev) {
     ev.stopPropagation();
@@ -306,7 +386,7 @@ export class DiceRoom {
 
     let name = prompt(
       "Set Name for Favorite",
-      names[Math.floor(Math.random() * names.length)]
+      names[Math.floor(Math.random() * names.length)],
     );
     let icons = [
       "❤️",
@@ -330,12 +410,86 @@ export class DiceRoom {
       DiceRoller.color_select.value,
       DiceRoller.texture_select.value,
       ev.pageX,
-      ev.pageY
+      ev.pageY,
     );
     DiceRoller.DiceFavorites.store();
   }
 
-  show_selector() {
+  updateDiceDisplayToggle() {
+    if (!this.toggle_dice_display) return;
+    const enabled = this.diceDisplayEnabled;
+    this.toggle_dice_display.setAttribute(
+      "aria-pressed",
+      enabled ? "true" : "false",
+    );
+    this.toggle_dice_display.classList.toggle("is-active", enabled);
+    const label = enabled ? "Hide Dice" : "Show Dice";
+    this.toggle_dice_display.setAttribute("aria-label", label);
+    this.toggle_dice_display.setAttribute("title", label);
+    const labelSpan = this.toggle_dice_display.querySelector(".toggle-label");
+    if (labelSpan) {
+      labelSpan.textContent = label;
+    }
+  }
+
+  canDragThrow() {
+    return this.dragThrowEnabled && this.diceDisplayEnabled;
+  }
+
+  updateDragThrowToggle() {
+    if (!this.toggle_drag_throw) return;
+    const enabled = this.dragThrowEnabled;
+    this.toggle_drag_throw.setAttribute(
+      "aria-pressed",
+      enabled ? "true" : "false",
+    );
+    this.toggle_drag_throw.classList.toggle("is-active", enabled);
+    const label = enabled ? "Disable Drag Roll" : "Enable Drag Roll";
+    this.toggle_drag_throw.setAttribute("aria-label", label);
+    this.toggle_drag_throw.setAttribute("title", label);
+    const labelSpan = this.toggle_drag_throw.querySelector(".toggle-label");
+    if (labelSpan) {
+      labelSpan.textContent = label;
+    }
+  }
+
+  setDragThrowEnabled(enabled) {
+    if (this.dragThrowEnabled === enabled) return;
+    this.dragThrowEnabled = enabled;
+    this.updateDragThrowToggle();
+  }
+
+  setDiceDisplayEnabled(enabled) {
+    if (this.diceDisplayEnabled === enabled) return;
+    this.diceDisplayEnabled = enabled;
+    this.updateDiceDisplayToggle();
+    if (this.canvas) {
+      this.canvas.style.display = enabled ? "block" : "none";
+    }
+    if (!enabled) {
+      if (this.DiceBox && !this.DiceBox.rolling) this.DiceBox.clearDice();
+      return;
+    }
+    this.show_selector({ diceList: this.diceDisplayList });
+  }
+
+  on_toggle_drag_throw(ev) {
+    if (ev) {
+      ev.stopPropagation();
+      ev.preventDefault();
+    }
+    this.setDragThrowEnabled(!this.dragThrowEnabled);
+  }
+
+  on_toggle_dice_display(ev) {
+    if (ev) {
+      ev.stopPropagation();
+      ev.preventDefault();
+    }
+    this.setDiceDisplayEnabled(!this.diceDisplayEnabled);
+  }
+
+  show_selector(options = {}) {
     let systemid = window.DiceFavorites.settings.system.value;
     let alldice = systemid == "all";
 
@@ -355,13 +509,42 @@ export class DiceRoom {
     window.DiceColors.applyColorSet(
       window.DiceRoller.color_select.value,
       window.DiceRoller.texture_select.value,
-      window.DiceRoller.material_select.value
+      window.DiceRoller.material_select.value,
     );
+
+    const diceList =
+      Array.isArray(options.diceList) && options.diceList.length
+        ? options.diceList
+        : this.diceDisplayEnabled &&
+            Array.isArray(this.diceDisplayList) &&
+            this.diceDisplayList.length
+          ? this.diceDisplayList
+          : null;
+    const selectorDimensions =
+      options.selectorDimensions || this.diceSelectorDimensions;
+    const selectorScale =
+      typeof options.selectorScale === "number" &&
+      Number.isFinite(options.selectorScale)
+        ? options.selectorScale
+        : this.diceSelectorScale;
+    const throwScale = this.diceThrowScale || 1;
+    const selectorScaleFactor =
+      typeof selectorScale === "number" && Number.isFinite(selectorScale)
+        ? selectorScale / throwScale
+        : 1;
+
+    if (!this.diceDisplayEnabled) {
+      if (this.DiceBox && !this.DiceBox.rolling) this.DiceBox.clearDice();
+      return;
+    }
 
     window.setTimeout(() => {
       window.DiceRoller.on_window_resize();
       this.DiceBox.showSelector(
-        this.params.alldice && this.params.alldice == "1"
+        !diceList && this.params.alldice && this.params.alldice == "1",
+        diceList,
+        selectorDimensions,
+        selectorScaleFactor,
       );
     }, 100);
   }
@@ -370,6 +553,7 @@ export class DiceRoom {
     this.label.innerHTML = this.TealChat.own_user + " is Rolling...";
     this.info_div.style.display = this.DiceBox.tally ? "block" : "none";
     Teal.id("sethelp").style.display = "none";
+    if (this.selector_div) this.selector_div.style.display = "none";
     this.deskrolling = true;
     window.DiceRoller.set_connection_message("");
     window.DiceRoller.show_waitform(true);
@@ -379,7 +563,7 @@ export class DiceRoom {
       this.TealChat.own_user,
       this.make_notation_for_log(notationVectors.notation),
       time,
-      (this.TealChat.roll_uuid = Teal.uuid())
+      (this.TealChat.roll_uuid = Teal.uuid()),
     );
 
     if (window.DiceRoller.Teal.offline) {
@@ -410,7 +594,7 @@ export class DiceRoom {
         window.DiceRoller.set_connection_message(
           "Failed to send roll!",
           "red",
-          true
+          true,
         );
         console.log(e);
       }
@@ -426,7 +610,7 @@ export class DiceRoom {
   }
 
   action_login(res) {
-    var loginform = Teal.id("loginform");
+    var loginform = document.getElementById("loginform");
     if (loginform) {
       Teal.remove(loginform);
       loginform.style.display = "none";
@@ -434,7 +618,9 @@ export class DiceRoom {
         window.DiceFavorites.settings.users.value == "1"
           ? "inline-block"
           : "none";
-      this.TealChat.place.style.display = "inline-block";
+      const chatEnabled =
+        window.DiceRoller && window.DiceRoller.chatEnabled !== false;
+      this.TealChat.place.style.display = chatEnabled ? "inline-block" : "none";
       this.TealChat.own_user = res.user;
 
       window.DiceRoller.Teal.rpc({
@@ -456,7 +642,10 @@ export class DiceRoom {
   action_userlist(res) {
     Teal.id("label_players").innerHTML = res.room + ": " + res.list.join(", ");
     this.TealChat.add_info(
-      res.user + " has " + { add: "joined", del: "left" }[res.act] + " the room"
+      res.user +
+        " has " +
+        { add: "joined", del: "left" }[res.act] +
+        " the room",
     );
   }
   action_roll(res) {
@@ -469,7 +658,7 @@ export class DiceRoom {
         this.make_notation_for_log(res.notation),
         res.time,
         (this.TealChat.roll_uuid = Teal.uuid()),
-        true
+        true,
       );
 
     this.label.innerHTML = res.user + " is Rolling...";
@@ -485,7 +674,7 @@ export class DiceRoom {
         res.colorset,
         res.texture,
         res.material,
-        false
+        false,
       );
     }
 
@@ -515,16 +704,21 @@ export class DiceRoom {
 
       this.info_div.style.display = this.DiceBox.tally ? "block" : "none";
       Teal.id("labelhelp").style.display = "block";
+      if (this.selector_div) this.selector_div.style.display = "block";
       this.deskrolling = false;
       this.DiceBox.rolling = false;
+      if (!this.diceDisplayEnabled) {
+        this.DiceBox.skipAfterThrow = true;
+        this.DiceBox.clearDice();
+      }
 
       if (this.TealChat.roll_uuid) {
         this.TealChat.confirm_message(
           this.TealChat.roll_uuid,
           this.make_notation_for_log(
             res.notation,
-            results.rolls + " = " + results.labels + " " + results.values
-          )
+            results.rolls + " = " + results.labels + " " + results.values,
+          ),
         );
         delete this.TealChat.roll_uuid;
       }
@@ -569,7 +763,7 @@ export class DiceRoom {
             let dicemesh = window.DiceRoller.DiceRoom.DiceBox.diceList[i];
             if (!dicemesh || !dicemesh.notation) continue;
             let diceobj = window.DiceRoller.DiceFactory.get(
-              dicemesh.notation.type
+              dicemesh.notation.type,
             );
 
             if (dicemesh.uuid == diceid) {

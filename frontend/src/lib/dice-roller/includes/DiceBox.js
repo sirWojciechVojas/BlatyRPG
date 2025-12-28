@@ -10,7 +10,7 @@ export class DiceBox {
     vector2_dimensions,
     dice_factory,
     dice_favorites,
-    options = {}
+    options = {},
   ) {
     //private variables
     this.container = element_container;
@@ -60,6 +60,7 @@ export class DiceBox {
     this.rayvisual = null;
     this.showdebugtracer = false;
     this.dice_body_material = new CANNON.Material();
+    this.coin_body_material = new CANNON.Material();
     this.desk_body_material = new CANNON.Material();
     this.barrier_body_material = new CANNON.Material();
     this.sounds_table = {};
@@ -68,23 +69,88 @@ export class DiceBox {
     this.lastSoundType = "";
     this.lastSoundStep = 0;
     this.lastSound = 0;
+    this.audioUnlocked = false;
     this.iteration;
     this.renderer;
     this.barrier;
+    this.barriers = [];
+    this.barrierFactor = 1;
+    this.barrierFactorX = 1.07;
+    this.barrierFactorYTop = 1.07;
+    this.barrierFactorYBottom = 1;
+    this.spawnFactor = 0.7;
+    this.throwStrength = 0.7;
+    this.maxThrowBoost = null;
+    this.groundBody = null;
+    this.groundThickness = 40;
+    this.groundExtentFactor = 3;
+    this.floorOffset = -500;
     this.camera;
     this.light;
     this.light_amb;
     this.desk;
     this.pane;
+    this.rngSeed =
+      options.rngSeed !== undefined && options.rngSeed !== null
+        ? options.rngSeed
+        : null;
+    this.rngState = null;
+    this.rng = this.createSeededRng(this.rngSeed);
+    this.coinConfig = {
+      lateralBoost: 0.035,
+      lateralMax: 120,
+      liftBase: 850,
+      liftBoost: 0.7,
+      spinBase: 45,
+      spinBoost: 0.12,
+      dragSpinMultiplier: 1.5,
+      dragLiftMultiplier: 1.05,
+      spinMin: 45,
+      spinMax: 110,
+      liftMin: 700,
+      liftMax: 1500,
+      dragLiftMax: 1200,
+      barrierNudgeFactor: 0.96,
+      barrierNudgeImpulse: 140,
+      barrierNudgeLift: 60,
+      barrierNudgeSpin: 6,
+      barrierNudgeVelocityThreshold: 8,
+      barrierNudgeAngularThreshold: 8,
+      barrierNudgeInterval: 4,
+      tiltMin: 0.15,
+      tiltMax: 0.35,
+      edgeThreshold: 0.2,
+      settleBiasThreshold: 0.2,
+      maxEdgeTries: 3,
+      edgeNudgeInterval: 8,
+      stableSteps: 8,
+      velocityThreshold: 6,
+      angularThreshold: 6,
+      linearDamping: 0.03,
+      angularDamping: 0.035,
+      sleepSpeedLimit: 10,
+      sleepTimeLimit: 0.4,
+      nudgeImpulse: 160,
+      nudgeLift: 70,
+      nudgeSpin: 8,
+    };
 
     //public variables
     this.diceList = []; //'private' variable
     this.framerate = 1 / 60;
+    this.fixedTimeStep = 1 / 120;
+    this.maxSubSteps = 4;
+    this.physicsSubsteps = Math.max(
+      1,
+      Math.round(this.framerate / this.fixedTimeStep),
+    );
+    this.substepDt = this.fixedTimeStep;
     this.sounds = true;
     this.volume = 100;
     this.soundDelay = 10; // time between sound effects in ms
     this.animstate = "";
     this.tally = true;
+    this.skipAfterThrow = false;
 
     this.selector = {
       animate: true,
@@ -102,6 +168,7 @@ export class DiceBox {
 
     this.rethrowFunctions = {};
     this.afterThrowFunctions = {};
+    this.boundEventCollide = this.eventCollide.bind(this);
   }
 
   enableShadows() {
@@ -133,6 +200,109 @@ export class DiceBox {
     };
   }
 
+  isRaycastableMesh(mesh) {
+    if (!mesh || !mesh.isMesh || !mesh.geometry || !mesh.material) return false;
+    if (Array.isArray(mesh.material)) {
+      if (mesh.material.length === 0) return false;
+      const groups = mesh.geometry.groups || [];
+      if (groups.length) {
+        for (let i = 0; i < groups.length; i++) {
+          const idx = groups[i].materialIndex;
+          if (!mesh.material[idx]) return false;
+        }
+      } else if (!mesh.material[0]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  getRaycastPickables() {
+    if (!this.diceList.length) return [];
+    return this.diceList.filter((item) => this.isRaycastableMesh(item));
+  }
+
+  unlockAudio() {
+    if (this.audioUnlocked) return;
+    this.audioUnlocked = true;
+    const allSounds = [
+      ...this.sounds_dice,
+      ...this.sounds_coins,
+      ...Object.values(this.sounds_table).flat(),
+    ];
+    allSounds.forEach((sound) => {
+      if (!sound) return;
+      const prevVolume = sound.volume;
+      sound.volume = 0;
+      const playPromise = sound.play();
+      if (playPromise && typeof playPromise.then === "function") {
+        playPromise
+          .then(() => {
+            sound.pause();
+            sound.currentTime = 0;
+            sound.volume = prevVolume;
+          })
+          .catch(() => {
+            sound.volume = prevVolume;
+          });
+      } else {
+        sound.pause();
+        sound.currentTime = 0;
+        sound.volume = prevVolume;
+      }
+    });
+  }
+
+  playSound(sound, volume) {
+    if (!sound) return;
+    try {
+      sound.currentTime = 0;
+    } catch (error) {
+      void error;
+    }
+    sound.volume = volume;
+    const playPromise = sound.play();
+    if (playPromise && typeof playPromise.catch === "function") {
+      playPromise.catch(() => {});
+    }
+  }
+
+  addCannonShapes(body, geometry) {
+    if (!body || !geometry) return;
+    if (Array.isArray(geometry.cannon_shapes) && geometry.cannon_shapes.length) {
+      geometry.cannon_shapes.forEach((entry) => {
+        if (!entry || !entry.shape) return;
+        body.addShape(
+          entry.shape,
+          entry.offset || new CANNON.Vec3(0, 0, 0),
+          entry.orientation || new CANNON.Quaternion(),
+        );
+      });
+      return;
+    }
+    if (geometry.cannon_shape) {
+      body.addShape(geometry.cannon_shape);
+    }
+  }
+
+  buildGroundBody() {
+    const shape = new CANNON.Box(
+      new CANNON.Vec3(
+        this.display.containerWidth * this.groundExtentFactor,
+        this.display.containerHeight * this.groundExtentFactor,
+        this.groundThickness,
+      ),
+    );
+    const body = new CANNON.Body({
+      allowSleep: false,
+      mass: 0,
+      shape,
+      material: this.desk_body_material,
+    });
+    body.position.set(0, 0, this.floorOffset - this.groundThickness);
+    return body;
+  }
+
   initialize() {
     let surfaces = [
       ["felt", 7],
@@ -146,26 +316,32 @@ export class DiceBox {
       for (let s = 1; s <= numsounds; ++s) {
         const soundPath = resolveAssetPath(
           this.assetBaseUrl,
-          `sounds/${surface}/surface_${surface}${s}.wav`
+          `sounds/${surface}/surface_${surface}${s}.wav`,
         );
-        this.sounds_table[surface].push(new Audio(soundPath));
+        const audio = new Audio(soundPath);
+        audio.preload = "auto";
+        this.sounds_table[surface].push(audio);
       }
     }
 
     for (let i = 1; i <= 15; ++i) {
       const soundPath = resolveAssetPath(
         this.assetBaseUrl,
-        `sounds/dicehit${i}.wav`
+        `sounds/dicehit${i}.wav`,
       );
-      this.sounds_dice.push(new Audio(soundPath));
+      const audio = new Audio(soundPath);
+      audio.preload = "auto";
+      this.sounds_dice.push(audio);
     }
 
     for (let i = 1; i <= 6; ++i) {
       const soundPath = resolveAssetPath(
         this.assetBaseUrl,
-        `sounds/coinhit${i}.wav`
+        `sounds/coinhit${i}.wav`,
       );
-      this.sounds_coins.push(new Audio(soundPath));
+      const audio = new Audio(soundPath);
+      audio.preload = "auto";
+      this.sounds_coins.push(audio);
     }
 
     Teal.bind(
@@ -173,12 +349,12 @@ export class DiceBox {
       "mousemove",
       function (ev) {
         this.onMouseMove(ev);
-      }.bind(this)
+      }.bind(this),
     );
 
     this.sounds = window.DiceRoller.DiceFavorites.settings.sounds.value == "1";
     this.volume = parseInt(
-      window.DiceRoller.DiceFavorites.settings.volume.value
+      window.DiceRoller.DiceFavorites.settings.volume.value,
     );
     this.shadows =
       window.DiceRoller.DiceFavorites.settings.shadows.value == "1";
@@ -187,14 +363,15 @@ export class DiceBox {
     this.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     this.container.appendChild(this.renderer.domElement);
     this.renderer.shadowMap.enabled = this.shadows;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap; // zorientować się !
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
     this.renderer.setClearColor(0x000000, 0);
 
     this.setDimensions(this.dimensions);
 
     this.world.gravity.set(0, 0, -9.8 * 800);
     this.world.broadphase = new CANNON.NaiveBroadphase();
-    this.world.solver.iterations = 14;
+    this.world.solver.iterations = 20;
+    this.world.solver.tolerance = 0.001;
     this.world.allowSleep = true;
 
     this.scene.add(new THREE.HemisphereLight(0xffffbb, 0x676771, 1));
@@ -203,32 +380,86 @@ export class DiceBox {
       new CANNON.ContactMaterial(
         this.desk_body_material,
         this.dice_body_material,
-        { friction: 0.01, restitution: 0.5 }
-      )
+        { friction: 0.01, restitution: 0.5 },
+      ),
     );
     this.world.addContactMaterial(
       new CANNON.ContactMaterial(
         this.barrier_body_material,
         this.dice_body_material,
-        { friction: 0, restitution: 1.0 }
-      )
+        { friction: 0, restitution: 1.0 },
+      ),
     );
     this.world.addContactMaterial(
       new CANNON.ContactMaterial(
         this.dice_body_material,
         this.dice_body_material,
-        { friction: 0, restitution: 0.5 }
-      )
+        { friction: 0, restitution: 0.5 },
+      ),
     );
-    this.world.add(
-      new CANNON.Body({
-        allowSleep: false,
-        mass: 0,
-        shape: new CANNON.Plane(),
-        material: this.desk_body_material,
-      })
+    const coinContact = {
+      contactEquationStiffness: 1e7,
+      contactEquationRelaxation: 4,
+      frictionEquationStiffness: 1e7,
+      frictionEquationRelaxation: 4,
+    };
+    this.world.addContactMaterial(
+      new CANNON.ContactMaterial(
+        this.desk_body_material,
+        this.coin_body_material,
+        {
+          friction: 0.32,
+          restitution: 0.04,
+          ...coinContact,
+        },
+      ),
     );
+    this.world.addContactMaterial(
+      new CANNON.ContactMaterial(
+        this.barrier_body_material,
+        this.coin_body_material,
+        {
+          friction: 0.2,
+          restitution: 0.04,
+          ...coinContact,
+        },
+      ),
+    );
+    this.world.addContactMaterial(
+      new CANNON.ContactMaterial(
+        this.coin_body_material,
+        this.coin_body_material,
+        {
+          friction: 0.25,
+          restitution: 0.05,
+          ...coinContact,
+        },
+      ),
+    );
+    this.world.addContactMaterial(
+      new CANNON.ContactMaterial(
+        this.dice_body_material,
+        this.coin_body_material,
+        {
+          friction: 0.28,
+          restitution: 0.06,
+          ...coinContact,
+        },
+      ),
+    );
+    const deskBody = new CANNON.Body({
+      allowSleep: false,
+      mass: 0,
+      shape: new CANNON.Plane(),
+      material: this.desk_body_material,
+    });
+    deskBody.position.set(0, 0, this.floorOffset);
+    this.world.addBody(deskBody);
 
+    this.groundBody = this.buildGroundBody();
+    this.world.addBody(this.groundBody);
+
+    this.barriers = [];
     let barrier = new CANNON.Body({
       allowSleep: false,
       mass: 0,
@@ -236,8 +467,13 @@ export class DiceBox {
       material: this.barrier_body_material,
     });
     barrier.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), Math.PI / 2);
-    barrier.position.set(0, this.display.containerHeight * 0.93, 0);
-    this.world.add(barrier);
+    barrier.position.set(
+      0,
+      this.display.containerHeight * this.barrierFactorYTop,
+      0,
+    );
+    this.world.addBody(barrier);
+    this.barriers.push({ body: barrier, axis: "y", dir: 1 });
 
     barrier = new CANNON.Body({
       allowSleep: false,
@@ -246,8 +482,13 @@ export class DiceBox {
       material: this.barrier_body_material,
     });
     barrier.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), -Math.PI / 2);
-    barrier.position.set(0, -this.display.containerHeight * 0.93, 0);
-    this.world.add(barrier);
+    barrier.position.set(
+      0,
+      -this.display.containerHeight * this.barrierFactorYBottom,
+      0,
+    );
+    this.world.addBody(barrier);
+    this.barriers.push({ body: barrier, axis: "y", dir: -1 });
 
     barrier = new CANNON.Body({
       allowSleep: false,
@@ -256,8 +497,13 @@ export class DiceBox {
       material: this.barrier_body_material,
     });
     barrier.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), -Math.PI / 2);
-    barrier.position.set(this.display.containerWidth * 0.93, 0, 0);
-    this.world.add(barrier);
+    barrier.position.set(
+      this.display.containerWidth * this.barrierFactorX,
+      0,
+      0,
+    );
+    this.world.addBody(barrier);
+    this.barriers.push({ body: barrier, axis: "x", dir: 1 });
 
     barrier = new CANNON.Body({
       allowSleep: false,
@@ -266,8 +512,13 @@ export class DiceBox {
       material: this.barrier_body_material,
     });
     barrier.quaternion.setFromAxisAngle(new CANNON.Vec3(0, 1, 0), Math.PI / 2);
-    barrier.position.set(-this.display.containerWidth * 0.93, 0, 0);
-    this.world.add(barrier);
+    barrier.position.set(
+      -this.display.containerWidth * this.barrierFactorX,
+      0,
+      0,
+    );
+    this.world.addBody(barrier);
+    this.barriers.push({ body: barrier, axis: "x", dir: -1 });
 
     if (this.showdebugtracer) {
       //raycaster.setFromCamera( this.mouse.pos, this.camera );
@@ -275,7 +526,7 @@ export class DiceBox {
         this.raycaster.ray.direction,
         this.camera.position,
         1000,
-        0xff0000
+        0xff0000,
       );
       this.rayvisual.headWidth = this.rayvisual.headLength * 0.005;
       this.scene.add(this.rayvisual);
@@ -329,18 +580,53 @@ export class DiceBox {
     }
     this.display.aspect = Math.min(
       this.display.currentWidth / this.display.containerWidth,
-      this.display.currentHeight / this.display.containerHeight
+      this.display.currentHeight / this.display.containerHeight,
     );
+    this.barrierFactorX = this.barrierFactorX || this.barrierFactor;
+    this.barrierFactorYTop = this.barrierFactorYTop || this.barrierFactor;
+    this.barrierFactorYBottom = this.barrierFactorYBottom || this.barrierFactor;
     this.display.scale =
       Math.sqrt(
         this.display.containerWidth * this.display.containerWidth +
-          this.display.containerHeight * this.display.containerHeight
+          this.display.containerHeight * this.display.containerHeight,
       ) / 13;
+    this.maxThrowBoost =
+      Math.max(this.display.containerWidth, this.display.containerHeight) * 1.5;
+    this.substepDt = this.fixedTimeStep;
 
+    this.renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     this.renderer.setSize(
       this.display.currentWidth * 2,
-      this.display.currentHeight * 2
+      this.display.currentHeight * 2,
     );
+
+    if (this.groundBody) {
+      this.world.removeBody(this.groundBody);
+      this.groundBody = this.buildGroundBody();
+      this.world.addBody(this.groundBody);
+    }
+
+    if (this.barriers && this.barriers.length) {
+      for (const barrier of this.barriers) {
+        if (barrier.axis === "x") {
+          barrier.body.position.set(
+            this.display.containerWidth * this.barrierFactorX * barrier.dir,
+            0,
+            0,
+          );
+        } else {
+          barrier.body.position.set(
+            0,
+            this.display.containerHeight *
+              (barrier.dir > 0
+                ? this.barrierFactorYTop
+                : this.barrierFactorYBottom) *
+              barrier.dir,
+            0,
+          );
+        }
+      }
+    }
 
     this.cameraHeight.max =
       this.display.currentHeight /
@@ -356,7 +642,7 @@ export class DiceBox {
       20,
       this.display.currentWidth / this.display.currentHeight,
       1,
-      this.cameraHeight.max * 1.3
+      this.cameraHeight.max * 1.3,
     );
 
     switch (this.animstate) {
@@ -365,8 +651,8 @@ export class DiceBox {
           this.selector.dice.length > 9
             ? this.cameraHeight.far
             : this.selector.dice.length < 6
-            ? this.cameraHeight.close
-            : this.cameraHeight.medium;
+              ? this.cameraHeight.close
+              : this.cameraHeight.medium;
         break;
       case "throw":
       case "afterthrow":
@@ -378,7 +664,7 @@ export class DiceBox {
 
     const maxwidth = Math.max(
       this.display.containerWidth,
-      this.display.containerHeight
+      this.display.containerHeight,
     );
 
     if (this.light) this.scene.remove(this.light);
@@ -392,9 +678,11 @@ export class DiceBox {
     this.light.shadow.camera.near = maxwidth / 10;
     this.light.shadow.camera.far = maxwidth * 5;
     this.light.shadow.camera.fov = 50;
-    this.light.shadow.bias = 0.001;
-    this.light.shadow.mapSize.width = 1024;
-    this.light.shadow.mapSize.height = 1024;
+    this.light.shadow.bias = 0.0001;
+    this.light.shadow.normalBias = 0.01;
+    this.light.shadow.radius = 4;
+    this.light.shadow.mapSize.width = 4096;
+    this.light.shadow.mapSize.height = 4096;
     this.scene.add(this.light);
 
     this.light_amb = new THREE.HemisphereLight(0xffffbb, 0x676771, 1);
@@ -403,16 +691,19 @@ export class DiceBox {
     if (this.desk) this.scene.remove(this.desk);
     let shadowplane = new THREE.ShadowMaterial();
     shadowplane.opacity = 0.5;
+    shadowplane.transparent = true;
+    shadowplane.depthWrite = false;
     this.desk = new THREE.Mesh(
       new THREE.PlaneGeometry(
         this.display.containerWidth * 6,
         this.display.containerHeight * 6,
         1,
-        1
+        1,
       ),
-      shadowplane
+      shadowplane,
     );
     this.desk.receiveShadow = this.shadows;
+    this.desk.position.set(0, 0, this.floorOffset);
     this.scene.add(this.desk);
 
     if (this.rayvisual && this.showdebugtracer) {
@@ -420,7 +711,7 @@ export class DiceBox {
         this.raycaster.ray.direction,
         this.raycaster.ray.origin,
         1000,
-        0xff0000
+        0xff0000,
       );
       this.scene.add(this.rayvisual);
     }
@@ -428,8 +719,47 @@ export class DiceBox {
     this.renderer.render(this.scene, this.camera);
   }
 
-  vectorRand({ x, y }) {
-    let angle = (Math.random() * Math.PI) / 5 - Math.PI / 5 / 2;
+  normalizeSeed(seed) {
+    if (typeof seed === "number" && Number.isFinite(seed)) {
+      return seed | 0;
+    }
+    if (typeof seed === "string") {
+      let hash = 2166136261;
+      for (let i = 0; i < seed.length; i++) {
+        hash ^= seed.charCodeAt(i);
+        hash = Math.imul(hash, 16777619);
+      }
+      return hash | 0;
+    }
+    return null;
+  }
+
+  createSeededRng(seed) {
+    const normalized = this.normalizeSeed(seed);
+    if (normalized === null) return null;
+    this.rngState = normalized >>> 0;
+    return () => {
+      let t = (this.rngState += 0x6d2b79f5);
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  rand() {
+    return this.rng ? this.rng() : Math.random();
+  }
+
+  randRange(min, max) {
+    return min + (max - min) * this.rand();
+  }
+
+  randSign() {
+    return this.rand() < 0.5 ? -1 : 1;
+  }
+
+  vectorRand({ x, y }, randFn = Math.random) {
+    let angle = (randFn() * Math.PI) / 5 - Math.PI / 5 / 2;
     let vec = {
       x: x * Math.cos(angle) - y * Math.sin(angle),
       y: x * Math.sin(angle) + y * Math.cos(angle),
@@ -439,13 +769,160 @@ export class DiceBox {
     return vec;
   }
 
+  clampBoost(boost) {
+    if (!this.maxThrowBoost) return boost;
+    return Math.min(boost, this.maxThrowBoost);
+  }
+
+  stepWorld(timeDiff) {
+    const dt = this.fixedTimeStep || this.substepDt;
+    if (typeof timeDiff === "number" && Number.isFinite(timeDiff)) {
+      this.world.step(dt, timeDiff, this.maxSubSteps);
+      return;
+    }
+    this.world.step(dt);
+  }
+
+  isCoinNearlyVertical(dicemesh) {
+    if (!dicemesh || !dicemesh.body) return false;
+    const axis = new CANNON.Vec3(0, 0, 1);
+    const worldAxis = new CANNON.Vec3();
+    dicemesh.body.quaternion.vmult(axis, worldAxis);
+    return Math.abs(worldAxis.z) < this.coinConfig.edgeThreshold;
+  }
+
+  pickCoinFace(dicemesh) {
+    const axis = new CANNON.Vec3(0, 0, 1);
+    const worldAxis = new CANNON.Vec3();
+    dicemesh.body.quaternion.vmult(axis, worldAxis);
+    if (Math.abs(worldAxis.z) > this.coinConfig.settleBiasThreshold) {
+      return worldAxis.z > 0;
+    }
+    return this.rand() < 0.5;
+  }
+
+  settleCoin(dicemesh) {
+    const faceUp = this.pickCoinFace(dicemesh);
+    const yaw = this.randRange(0, Math.PI * 2);
+    const yawQuat = new CANNON.Quaternion();
+    yawQuat.setFromAxisAngle(new CANNON.Vec3(0, 0, 1), yaw);
+    const faceQuat = new CANNON.Quaternion();
+    faceQuat.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), faceUp ? 0 : Math.PI);
+    const finalQuat = new CANNON.Quaternion();
+    yawQuat.mult(faceQuat, finalQuat);
+    dicemesh.body.quaternion.copy(finalQuat);
+    dicemesh.body.angularVelocity.set(0, 0, 0);
+    dicemesh.body.velocity.set(0, 0, 0);
+    dicemesh.body.sleepState = CANNON.Body.SLEEPING;
+    dicemesh.body.type = CANNON.Body.KINEMATIC;
+    dicemesh.stopped = 10;
+    dicemesh.position.copy(dicemesh.body.position);
+    dicemesh.quaternion.copy(dicemesh.body.quaternion);
+  }
+
+  nudgeCoin(dicemesh) {
+    const body = dicemesh?.body;
+    if (!body) return;
+    const radius = (dicemesh.geometry && dicemesh.geometry.coin_radius) || 1;
+    const up = new CANNON.Vec3(0, 0, 1);
+    const normal = new CANNON.Vec3();
+    const axis = new CANNON.Vec3();
+    body.quaternion.vmult(up, normal);
+    normal.cross(up, axis);
+    if (axis.lengthSquared() < 1e-6) {
+      axis.set(1, 0, 0);
+    } else {
+      axis.normalize();
+    }
+    const offset = new CANNON.Vec3();
+    axis.scale(radius * 0.9, offset);
+    const impulse = new CANNON.Vec3(
+      axis.x * this.coinConfig.nudgeImpulse,
+      axis.y * this.coinConfig.nudgeImpulse,
+      this.coinConfig.nudgeLift,
+    );
+    body.type = CANNON.Body.DYNAMIC;
+    body.applyImpulse(impulse, offset);
+    body.angularVelocity.x += axis.x * this.coinConfig.nudgeSpin;
+    body.angularVelocity.y += axis.y * this.coinConfig.nudgeSpin;
+    body.sleepState = CANNON.Body.AWAKE;
+    body.wakeUp();
+  }
+
+  nudgeCoinFromBarrier(dicemesh, barrierDir) {
+    const body = dicemesh?.body;
+    if (!body || !barrierDir) return;
+    const radius = (dicemesh.geometry && dicemesh.geometry.coin_radius) || 1;
+    const dirX = barrierDir.x || 0;
+    const dirY = barrierDir.y || 0;
+    const offset = new CANNON.Vec3(
+      dirX * radius * 0.8,
+      dirY * radius * 0.8,
+      0,
+    );
+    const impulse = new CANNON.Vec3(
+      dirX * this.coinConfig.barrierNudgeImpulse,
+      dirY * this.coinConfig.barrierNudgeImpulse,
+      this.coinConfig.barrierNudgeLift,
+    );
+    body.type = CANNON.Body.DYNAMIC;
+    body.applyImpulse(impulse, offset);
+    body.angularVelocity.x += dirY * this.coinConfig.barrierNudgeSpin;
+    body.angularVelocity.y += -dirX * this.coinConfig.barrierNudgeSpin;
+    body.sleepState = CANNON.Body.AWAKE;
+    body.wakeUp();
+  }
+
+  getCoinBarrierNudgeDirection(dicemesh) {
+    const body = dicemesh?.body;
+    if (!body) return null;
+    const limitX =
+      this.display.containerWidth *
+      this.barrierFactorX *
+      this.coinConfig.barrierNudgeFactor;
+    const limitYTop =
+      this.display.containerHeight *
+      this.barrierFactorYTop *
+      this.coinConfig.barrierNudgeFactor;
+    const limitYBottom =
+      this.display.containerHeight *
+      this.barrierFactorYBottom *
+      this.coinConfig.barrierNudgeFactor;
+    const hitX = Math.abs(body.position.x) >= limitX;
+    const hitY =
+      body.position.y >= 0
+        ? body.position.y >= limitYTop
+        : body.position.y <= -limitYBottom;
+    if (!hitX && !hitY) return null;
+    return {
+      x: hitX ? (body.position.x > 0 ? -1 : 1) : 0,
+      y: hitY ? (body.position.y > 0 ? -1 : 1) : 0,
+    };
+  }
+
+  getRageMultiplier(notationVectors) {
+    if (!notationVectors || typeof notationVectors.boost !== "number") return 1;
+    const rage = Math.max(0, Math.min(3, Math.floor(notationVectors.boost / 4)));
+    if (!rage) return 1;
+    return 1 + rage * 0.5;
+  }
+
+  applyRageBoost(boost, notationVectors) {
+    const multiplier = this.getRageMultiplier(notationVectors);
+    if (multiplier === 1) return boost;
+    const boosted = boost * multiplier;
+    if (!this.maxThrowBoost) return boosted;
+    return Math.min(boosted, this.maxThrowBoost * multiplier);
+  }
+
   //returns an array of vectordata objects
-  getNotationVectors(notation, vector, boost, dist) {
+  getNotationVectors(notation, vector, boost, dist, isDragThrow = false) {
     let notationVectors = new DiceNotation(notation);
+    boost = this.applyRageBoost(boost, notationVectors);
 
     for (let i in notationVectors.set) {
       const diceobj = window.DiceRoller.DiceFactory.get(
-        notationVectors.set[i].type
+        notationVectors.set[i].type,
       );
       let numdice = notationVectors.set[i].num;
       let operator = notationVectors.set[i].op;
@@ -456,22 +933,29 @@ export class DiceBox {
       let args = notationVectors.set[i].args;
 
       for (let k = 0; k < numdice; k++) {
-        let vec = this.vectorRand(vector);
+        const randFn = diceobj.shape == "d2" ? this.rand.bind(this) : Math.random;
+        let vec = this.vectorRand(vector, randFn);
 
         vec.x /= dist;
         vec.y /= dist;
 
         let pos = {
-          x: this.display.containerWidth * (vec.x > 0 ? -1 : 1) * 0.9,
-          y: this.display.containerHeight * (vec.y > 0 ? -1 : 1) * 0.9,
-          z: Math.random() * 200 + 200,
+          x:
+            this.display.containerWidth *
+            (vec.x > 0 ? -1 : 1) *
+            this.spawnFactor,
+          y:
+            this.display.containerHeight *
+            (vec.y > 0 ? -1 : 1) *
+            this.spawnFactor,
+          z: randFn() * 200 + 200,
         };
 
         let projector = Math.abs(vec.x / vec.y);
         if (projector > 1.0) pos.y /= projector;
         else pos.x *= projector;
 
-        let velvec = this.vectorRand(vector);
+        let velvec = this.vectorRand(vector, randFn);
 
         velvec.x /= dist;
         velvec.y /= dist;
@@ -498,23 +982,65 @@ export class DiceBox {
           };
         } else {
           //coin flip
-          velocity = {
-            x: (velvec.x * boost) / 10,
-            y: (velvec.y * boost) / 10,
-            z: 3000,
+          const lateralBoost = boost * this.coinConfig.lateralBoost;
+          const liftMultiplier = isDragThrow
+            ? this.coinConfig.dragLiftMultiplier
+            : 1;
+          const rawLift =
+            (this.coinConfig.liftBase + boost * this.coinConfig.liftBoost) *
+            liftMultiplier;
+          const maxLift = isDragThrow
+            ? this.coinConfig.dragLiftMax
+            : this.coinConfig.liftMax;
+          const lift = Math.min(
+            Math.max(rawLift, this.coinConfig.liftMin),
+            maxLift,
+          );
+          const baseSpin = this.randRange(
+            this.coinConfig.spinBase * 0.85,
+            this.coinConfig.spinBase * 1.15,
+          );
+          const spinMultiplier = isDragThrow
+            ? this.coinConfig.dragSpinMultiplier
+            : 1;
+          const rawSpin =
+            (baseSpin + boost * this.coinConfig.spinBoost) * spinMultiplier;
+          const spin = Math.min(
+            Math.max(rawSpin, this.coinConfig.spinMin),
+            this.coinConfig.spinMax,
+          );
+          const spinAngle = randFn() * Math.PI * 2;
+          const spinAxis = {
+            x: Math.cos(spinAngle),
+            y: Math.sin(spinAngle),
           };
+          const tilt = this.randRange(
+            this.coinConfig.tiltMin,
+            this.coinConfig.tiltMax,
+          );
+          velocity = {
+            x: velvec.x * lateralBoost,
+            y: velvec.y * lateralBoost,
+            z: lift,
+          };
+          const lateralSpeed = Math.hypot(velocity.x, velocity.y);
+          if (lateralSpeed > this.coinConfig.lateralMax) {
+            const scale = this.coinConfig.lateralMax / lateralSpeed;
+            velocity.x *= scale;
+            velocity.y *= scale;
+          }
 
           angle = {
-            x: 12 * diceobj.inertia, //-(Math.random() * velvec.y * 50 + diceobj.inertia * velvec.y ) ,
-            y: 1 * diceobj.inertia, //Math.random() * velvec.x * 50 + diceobj.inertia * velvec.x ,
-            z: 0,
+            x: spinAxis.x * spin,
+            y: spinAxis.y * spin,
+            z: (randFn() - 0.5) * spin * 0.15,
           };
 
           axis = {
-            x: 1, //Math.random(),
-            y: 1, //Math.random(),
-            z: Math.random(),
-            a: Math.random(),
+            x: spinAxis.x,
+            y: spinAxis.y,
+            z: 0,
+            a: tilt / (Math.PI * 2),
           };
         }
 
@@ -648,7 +1174,7 @@ export class DiceBox {
         0,
         0,
         false,
-        num
+        num,
       );
     }
 
@@ -659,6 +1185,7 @@ export class DiceBox {
   spawnDice(vectordata) {
     const diceobj = window.DiceRoller.DiceFactory.get(vectordata.type);
     if (!diceobj) return;
+    const isCoin = diceobj.shape == "d2";
 
     let dicemesh = window.DiceRoller.DiceFactory.create(diceobj.type);
     if (!dicemesh) return;
@@ -669,41 +1196,51 @@ export class DiceBox {
     dicemesh.castShadow = this.shadows;
     dicemesh.body = new CANNON.Body({
       allowSleep: true,
-      sleepSpeedLimit: 75,
-      sleepTimeLimit: 0.9,
+      sleepSpeedLimit: isCoin
+        ? this.coinConfig.sleepSpeedLimit
+        : 75,
+      sleepTimeLimit: isCoin
+        ? this.coinConfig.sleepTimeLimit
+        : 0.9,
       mass: diceobj.mass,
-      shape: dicemesh.geometry.cannon_shape,
-      material: this.dice_body_material,
+      material: isCoin ? this.coin_body_material : this.dice_body_material,
     });
+    this.addCannonShapes(dicemesh.body, dicemesh.geometry);
     dicemesh.body.type = CANNON.Body.DYNAMIC;
     dicemesh.body.position.set(
       vectordata.pos.x,
       vectordata.pos.y,
-      vectordata.pos.z
+      vectordata.pos.z,
     );
     dicemesh.body.quaternion.setFromAxisAngle(
       new CANNON.Vec3(vectordata.axis.x, vectordata.axis.y, vectordata.axis.z),
-      vectordata.axis.a * Math.PI * 2
+      vectordata.axis.a * Math.PI * 2,
     );
     dicemesh.body.angularVelocity.set(
       vectordata.angle.x,
       vectordata.angle.y,
-      vectordata.angle.z
+      vectordata.angle.z,
     );
     dicemesh.body.velocity.set(
       vectordata.velocity.x,
       vectordata.velocity.y,
-      vectordata.velocity.z
+      vectordata.velocity.z,
     );
-    dicemesh.body.linearDamping = 0.1;
-    dicemesh.body.angularDamping = 0.1;
+    dicemesh.body.linearDamping = isCoin
+      ? this.coinConfig.linearDamping
+      : 0.1;
+    dicemesh.body.angularDamping = isCoin
+      ? this.coinConfig.angularDamping
+      : 0.1;
     dicemesh.body.diceShape = diceobj.shape;
+    dicemesh.edgeTries = 0;
+    dicemesh.barrierTries = 0;
 
-    dicemesh.body.addEventListener("collide", this.eventCollide.bind(this));
+    dicemesh.body.addEventListener("collide", this.boundEventCollide);
 
     this.scene.add(dicemesh);
     this.diceList.push(dicemesh);
-    this.world.add(dicemesh.body);
+    this.world.addBody(dicemesh.body);
   }
 
   eventCollide({ body, target }) {
@@ -765,8 +1302,7 @@ export class DiceBox {
             Math.floor(Math.random() * DiceBox.sounds_coins.length)
           ];
 
-      sound.volume = strength * (volume / 100);
-      sound.play();
+      this.playSound(sound, strength * (volume / 100));
       DiceBox.lastSoundType = "dice";
     } else {
       // dice to table collision
@@ -782,8 +1318,7 @@ export class DiceBox {
 
       let soundlist = DiceBox.sounds_table[surface];
       let sound = soundlist[Math.floor(Math.random() * soundlist.length)];
-      sound.volume = strength * (volume / 100);
-      sound.play();
+      this.playSound(sound, strength * (volume / 100));
       DiceBox.lastSoundType = "table";
     }
 
@@ -794,28 +1329,40 @@ export class DiceBox {
   //resets vectors on dice back to startign notation values for a roll after simulation.
   resetDice(dicemesh, { pos, axis, angle, velocity }) {
     dicemesh.stopped = 0;
-    this.world.remove(dicemesh.body);
+    this.world.removeBody(dicemesh.body);
+    const isCoin = dicemesh.shape == "d2";
     dicemesh.body = new CANNON.Body({
       allowSleep: true,
-      sleepSpeedLimit: 75,
-      sleepTimeLimit: 0.9,
+      sleepSpeedLimit: isCoin
+        ? this.coinConfig.sleepSpeedLimit
+        : 75,
+      sleepTimeLimit: isCoin
+        ? this.coinConfig.sleepTimeLimit
+        : 0.9,
       mass: dicemesh.body.mass,
-      shape: dicemesh.geometry.cannon_shape,
-      material: this.dice_body_material,
+      material: isCoin ? this.coin_body_material : this.dice_body_material,
     });
+    this.addCannonShapes(dicemesh.body, dicemesh.geometry);
     dicemesh.body.type = CANNON.Body.DYNAMIC;
     dicemesh.body.position.set(pos.x, pos.y, pos.z);
     dicemesh.body.quaternion.setFromAxisAngle(
       new CANNON.Vec3(axis.x, axis.y, axis.z),
-      axis.a * Math.PI * 2
+      axis.a * Math.PI * 2,
     );
     dicemesh.body.angularVelocity.set(angle.x, angle.y, angle.z);
     dicemesh.body.velocity.set(velocity.x, velocity.y, velocity.z);
-    dicemesh.body.linearDamping = 0.1;
-    dicemesh.body.angularDamping = 0.1;
+    dicemesh.body.linearDamping = isCoin
+      ? this.coinConfig.linearDamping
+      : 0.1;
+    dicemesh.body.angularDamping = isCoin
+      ? this.coinConfig.angularDamping
+      : 0.1;
     dicemesh.body.diceShape = dicemesh.shape;
-    dicemesh.body.addEventListener("collide", this.eventCollide);
-    this.world.add(dicemesh.body);
+    dicemesh.edgeTries = 0;
+    dicemesh.edgeTries = 0;
+    dicemesh.barrierTries = 0;
+    dicemesh.body.addEventListener("collide", this.boundEventCollide);
+    this.world.addBody(dicemesh.body);
     dicemesh.body.sleepState = 0;
   }
 
@@ -853,44 +1400,134 @@ export class DiceBox {
     return reroll;
   }
 
+  forceDiceResults(reason = "timeout") {
+    for (let i = 0, len = this.diceList.length; i < len; ++i) {
+      let dicemesh = this.diceList[i];
+      if (!dicemesh) continue;
+      if (dicemesh.result.length == 0) {
+        dicemesh.storeRolledValue(reason);
+      }
+      dicemesh.rerolling = false;
+      if (dicemesh.body) {
+        dicemesh.body.type = CANNON.Body.KINEMATIC;
+      }
+    }
+  }
+
   throwFinished() {
-    if (this.iteration > 1000) return true;
-    if (this.iteration < 10 / this.framerate) {
+    const maxIterations = 10 / this.framerate;
+    if (this.iteration > 1000) {
+      this.forceDiceResults();
+      return true;
+    }
+    if (this.iteration >= maxIterations) {
+      this.forceDiceResults();
+      return true;
+    }
+    {
       for (let i = 0, len = this.diceList.length; i < len; ++i) {
         let dicemesh = this.diceList[i];
-
         let rethrow = false;
 
-        if (dicemesh.body.sleepState < CANNON.Body.SLEEPING) {
+        const body = dicemesh.body;
+        if (!body) return false;
+        const isCoin = dicemesh.shape == "d2";
+
+        const isSleeping = body.sleepState === CANNON.Body.SLEEPING;
+        const isStopped = isSleeping || this.solverBodyStopped(body);
+
+        if (isCoin) {
+          const speed = body.velocity.length();
+          const spin = body.angularVelocity.length();
+          const isStable =
+            isSleeping ||
+            (speed < this.coinConfig.velocityThreshold &&
+              spin < this.coinConfig.angularThreshold);
+
+          if (!isStable) {
+            dicemesh.stopped = 0;
+            return false;
+          }
+
+          dicemesh.stopped = (dicemesh.stopped || 0) + 1;
+          if (dicemesh.stopped < this.coinConfig.stableSteps) {
+            return false;
+          }
+
+          const barrierDir = this.getCoinBarrierNudgeDirection(dicemesh);
+          if (
+            barrierDir &&
+            speed < this.coinConfig.barrierNudgeVelocityThreshold &&
+            spin < this.coinConfig.barrierNudgeAngularThreshold
+          ) {
+            dicemesh.barrierTries = (dicemesh.barrierTries || 0) + 1;
+            if (
+              dicemesh.barrierTries % this.coinConfig.barrierNudgeInterval ===
+              0
+            ) {
+              dicemesh.stopped = 0;
+              this.nudgeCoinFromBarrier(dicemesh, barrierDir);
+            }
+            return false;
+          }
+
+          if (!isSleeping) {
+            body.sleepState = CANNON.Body.SLEEPING;
+          }
+        } else {
+          if (!isStopped) {
+            dicemesh.stopped = 0;
+            return false;
+          }
+
+          if (!isSleeping) {
+            dicemesh.stopped = (dicemesh.stopped || 0) + 1;
+            if (dicemesh.stopped < 10) {
+              return false;
+            }
+            body.sleepState = CANNON.Body.SLEEPING;
+          }
+        }
+
+        if (dicemesh.shape == "d2" && this.isCoinNearlyVertical(dicemesh)) {
+          dicemesh.edgeTries = (dicemesh.edgeTries || 0) + 1;
+          const barrierDir = this.getCoinBarrierNudgeDirection(dicemesh);
+          if (
+            dicemesh.edgeTries % this.coinConfig.edgeNudgeInterval ===
+            0
+          ) {
+            dicemesh.stopped = 0;
+            if (barrierDir) {
+              this.nudgeCoinFromBarrier(dicemesh, barrierDir);
+            } else {
+              this.nudgeCoin(dicemesh);
+            }
+          }
           return false;
         }
 
-        if (dicemesh.body.sleepState == CANNON.Body.SLEEPING) {
-          //check for forced roll
+        //check for forced roll
+        if (dicemesh.result.length == 0) {
+          dicemesh.storeRolledValue("natural");
+          rethrow = this.checkForRethrow(dicemesh);
+        } else if (dicemesh.result.length > 0 && dicemesh.rerolling) {
+          dicemesh.rerolling = false;
+          dicemesh.storeRolledValue("reroll");
+          rethrow = this.checkForRethrow(dicemesh);
+        }
 
-          if (dicemesh.result.length == 0) {
-            dicemesh.storeRolledValue("natural");
-
-            rethrow = this.checkForRethrow(dicemesh);
-          } else if (dicemesh.result.length > 0 && dicemesh.rerolling) {
-            dicemesh.rerolling = false;
-            dicemesh.storeRolledValue("reroll");
-
-            rethrow = this.checkForRethrow(dicemesh);
-          }
-
-          if (rethrow) {
-            dicemesh.rerolls += 1;
-            dicemesh.rerolling = true;
-            dicemesh.body.wakeUp();
-            dicemesh.body.type = CANNON.Body.DYNAMIC;
-            dicemesh.body.angularVelocity = new CANNON.Vec3(25, 25, 25);
-            dicemesh.body.velocity = new CANNON.Vec3(0, 0, 3000);
-            return false;
-          } else {
-            dicemesh.rerolling = false;
-            dicemesh.body.type = CANNON.Body.KINEMATIC;
-          }
+        if (rethrow) {
+          dicemesh.rerolls += 1;
+          dicemesh.rerolling = true;
+          dicemesh.stopped = 0;
+          dicemesh.body.wakeUp();
+          dicemesh.body.type = CANNON.Body.DYNAMIC;
+          dicemesh.body.angularVelocity = new CANNON.Vec3(25, 25, 25);
+          dicemesh.body.velocity = new CANNON.Vec3(0, 0, 3000);
+          return false;
+        } else {
+          dicemesh.rerolling = false;
+          dicemesh.body.type = CANNON.Body.KINEMATIC;
         }
       }
     }
@@ -903,26 +1540,29 @@ export class DiceBox {
     this.rolling = true;
     while (!this.throwFinished()) {
       ++this.iteration;
-      this.world.step(this.framerate);
+      this.stepWorld();
     }
   }
 
   animateThrow(threadid, callback, notationVectors) {
     this.animstate = "throw";
     let time = new Date().getTime();
-    this.last_time = this.last_time || time - this.framerate * 1000;
+    this.last_time =
+      this.last_time || time - this.fixedTimeStep * 1000;
     let time_diff = (time - this.last_time) / 1000;
     ++this.iteration;
-    let neededSteps = Math.floor(time_diff / this.framerate);
 
     this.container.style.opacity = "1";
 
-    let throwFinished = this.throwFinished();
-    for (let i = 0; i < neededSteps; i++) {
-      this.world.step(this.framerate);
-      ++this.steps;
-      throwFinished = this.throwFinished();
+    this.stepWorld(time_diff);
+    if (typeof this.steps === "number") {
+      const estimatedSteps = Math.max(
+        1,
+        Math.round(time_diff / this.fixedTimeStep),
+      );
+      this.steps += Math.min(this.maxSubSteps, estimatedSteps);
     }
+    let throwFinished = this.throwFinished();
 
     // update physics interactions visually
     for (let i in this.scene.children) {
@@ -934,13 +1574,17 @@ export class DiceBox {
     }
 
     this.renderer.render(this.scene, this.camera);
-    this.last_time = this.last_time + neededSteps * this.framerate * 1000;
+    this.last_time = time;
 
     // roll finished
     if (this.running == threadid && throwFinished) {
       this.running = false;
       this.rolling = false;
       if (callback) callback.call(this, notationVectors);
+      if (this.skipAfterThrow) {
+        this.skipAfterThrow = false;
+        return;
+      }
 
       this.running = new Date().getTime();
       this.animateAfterThrow(this.running);
@@ -951,11 +1595,14 @@ export class DiceBox {
     if (this.running == threadid) {
       ((animateCallback, tid, at, aftercall, vecs) => {
         if (!at && time_diff < this.framerate) {
-          setTimeout(() => {
-            requestAnimationFrame(() => {
-              animateCallback.call(this, tid, aftercall, vecs);
-            });
-          }, (this.framerate - time_diff) * 1000);
+          setTimeout(
+            () => {
+              requestAnimationFrame(() => {
+                animateCallback.call(this, tid, aftercall, vecs);
+              });
+            },
+            (this.framerate - time_diff) * 1000,
+          );
         } else {
           requestAnimationFrame(() => {
             animateCallback.call(this, tid, aftercall, vecs);
@@ -966,7 +1613,7 @@ export class DiceBox {
         threadid,
         this.adaptive_timestep,
         callback,
-        notationVectors
+        notationVectors,
       );
     }
   }
@@ -980,7 +1627,8 @@ export class DiceBox {
     this.raycaster.setFromCamera(this.mouse.pos, this.camera);
     if (this.rayvisual)
       this.rayvisual.setDirection(this.raycaster.ray.direction);
-    let intersects = this.raycaster.intersectObjects(this.diceList);
+    const pickables = this.getRaycastPickables();
+    let intersects = this.raycaster.intersectObjects(pickables);
     if (intersects.length > 0) {
       this.setSelected(intersects[0].object);
     } else {
@@ -992,11 +1640,14 @@ export class DiceBox {
     if (this.running == threadid) {
       ((animateCallback, tid, at) => {
         if (!at && time_diff < this.framerate) {
-          setTimeout(() => {
-            requestAnimationFrame(() => {
-              animateCallback.call(this, tid);
-            });
-          }, (this.framerate - time_diff) * 1000);
+          setTimeout(
+            () => {
+              requestAnimationFrame(() => {
+                animateCallback.call(this, tid);
+              });
+            },
+            (this.framerate - time_diff) * 1000,
+          );
         } else {
           requestAnimationFrame(() => {
             animateCallback.call(this, tid);
@@ -1015,7 +1666,7 @@ export class DiceBox {
     if (this.container.style.opacity != "1")
       this.container.style.opacity = Math.min(
         1,
-        parseFloat(this.container.style.opacity) + 0.05
+        parseFloat(this.container.style.opacity) + 0.05,
       );
 
     if (this.selector.rotate) {
@@ -1030,7 +1681,8 @@ export class DiceBox {
     this.raycaster.setFromCamera(this.mouse.pos, this.camera);
     if (this.rayvisual)
       this.rayvisual.setDirection(this.raycaster.ray.direction);
-    let intersects = this.raycaster.intersectObjects(this.diceList);
+    const pickables = this.getRaycastPickables();
+    let intersects = this.raycaster.intersectObjects(pickables);
     if (intersects.length > 0) {
       this.setSelected(intersects[0].object);
     } else {
@@ -1042,11 +1694,14 @@ export class DiceBox {
     if (this.running == threadid) {
       (function (animateCallback, tid, at) {
         if (!at && time_diff < this.framerate) {
-          setTimeout(() => {
-            requestAnimationFrame(() => {
-              animateCallback.call(this, tid);
-            });
-          }, (this.framerate - time_diff) * 1000);
+          setTimeout(
+            () => {
+              requestAnimationFrame(() => {
+                animateCallback.call(this, tid);
+              });
+            },
+            (this.framerate - time_diff) * 1000,
+          );
         } else {
           requestAnimationFrame(() => {
             animateCallback.call(this, tid);
@@ -1064,7 +1719,8 @@ export class DiceBox {
     this.raycaster.setFromCamera(this.mouse.pos, this.camera);
     if (this.rayvisual)
       this.rayvisual.setDirection(this.raycaster.ray.direction);
-    let intersects = this.raycaster.intersectObjects(this.diceList);
+    const pickables = this.getRaycastPickables();
+    let intersects = this.raycaster.intersectObjects(pickables);
 
     //this.scene.add(new THREE.ArrowHelper(this.raycaster.ray.direction, this.raycaster.ray.origin, 1000, 0x00ff00) );
 
@@ -1073,22 +1729,35 @@ export class DiceBox {
 
   setSelected(dicemesh = null) {
     if (dicemesh != null) {
-      if (this.selector.intersected) {
+      const materials = Array.isArray(dicemesh.material)
+        ? dicemesh.material
+        : null;
+      const hasEmissive =
+        materials && materials[1] && materials[1].emissive;
+      if (
+        this.selector.intersected &&
+        Array.isArray(this.selector.intersected.material) &&
+        typeof this.selector.intersected.currentHex === "number"
+      ) {
         for (
           let i = 0, l = this.selector.intersected.material.length;
           i < l;
           i++
         ) {
           if (i == 0) continue;
-          this.selector.intersected.material[i].emissive.setHex(
-            this.selector.intersected.currentHex
-          );
-          this.selector.intersected.material[i].emissiveIntensity =
-            this.selector.intersected.currentintensity;
+          const mat = this.selector.intersected.material[i];
+          if (!mat || !mat.emissive) continue;
+          mat.emissive.setHex(this.selector.intersected.currentHex);
+          mat.emissiveIntensity = this.selector.intersected.currentintensity;
         }
       }
 
       this.selector.intersected = dicemesh;
+      if (!hasEmissive) {
+        this.selector.intersected.currentHex = null;
+        this.selector.intersected.currentintensity = null;
+        return;
+      }
       this.selector.intersected.currentHex =
         this.selector.intersected.material[1].emissive.getHex();
       this.selector.intersected.currentintensity =
@@ -1104,28 +1773,61 @@ export class DiceBox {
         this.selector.intersected.material[i].emissiveIntensity = 0.5;
       }
     } else {
-      if (this.selector.intersected) {
+      if (
+        this.selector.intersected &&
+        Array.isArray(this.selector.intersected.material) &&
+        typeof this.selector.intersected.currentHex === "number"
+      ) {
         for (
           let i = 0, l = this.selector.intersected.material.length;
           i < l;
           i++
         ) {
           if (i == 0) continue;
-          this.selector.intersected.material[i].emissive.setHex(
-            this.selector.intersected.currentHex
-          );
-          this.selector.intersected.material[i].emissiveIntensity =
-            this.selector.intersected.currentintensity;
+          const mat = this.selector.intersected.material[i];
+          if (!mat || !mat.emissive) continue;
+          mat.emissive.setHex(this.selector.intersected.currentHex);
+          mat.emissiveIntensity = this.selector.intersected.currentintensity;
         }
       }
       this.selector.intersected = null;
     }
   }
 
-  showSelector(alldice = false) {
+  showSelector(
+    alldice = false,
+    diceList = null,
+    selectorDimensions = null,
+    selectorScale = 1,
+  ) {
     if (this.rolling) return;
     this.clearDice();
-    let step = this.display.containerWidth / 5;
+    if (this.desk) this.desk.visible = false;
+    const scaleFactor =
+      typeof selectorScale === "number" && Number.isFinite(selectorScale)
+        ? selectorScale
+        : 1;
+    const selectorWidth = Number(
+      selectorDimensions?.w !== undefined
+        ? selectorDimensions.w
+        : selectorDimensions?.width,
+    );
+    const selectorHeight = Number(
+      selectorDimensions?.h !== undefined
+        ? selectorDimensions.h
+        : selectorDimensions?.height,
+    );
+    const useSelectorDimensions =
+      Number.isFinite(selectorWidth) && Number.isFinite(selectorHeight);
+    const maxSelectorWidth = this.display.currentWidth || selectorWidth;
+    const maxSelectorHeight = this.display.currentHeight || selectorHeight;
+    const layoutWidth = useSelectorDimensions
+      ? Math.min(selectorWidth, maxSelectorWidth)
+      : this.display.containerWidth;
+    const layoutHeight = useSelectorDimensions
+      ? Math.min(selectorHeight, maxSelectorHeight)
+      : this.display.containerHeight;
+    let step = layoutWidth / 5;
 
     this.renderer.shadowMap.enabled = this.shadows;
 
@@ -1133,15 +1835,17 @@ export class DiceBox {
     if (this.shadows) {
       let shadowplane = new THREE.ShadowMaterial();
       shadowplane.opacity = 0.6;
+      shadowplane.transparent = true;
+      shadowplane.depthWrite = false;
 
       this.pane = new THREE.Mesh(
         new THREE.PlaneGeometry(
-          this.display.containerWidth * 6,
-          this.display.containerHeight * 6,
+          layoutWidth * 6,
+          layoutHeight * 6,
           1,
-          1
+          1,
         ),
-        shadowplane
+        shadowplane,
       );
       this.pane.receiveShadow = this.shadows;
       this.pane.position.set(0, 0, 1);
@@ -1159,9 +1863,12 @@ export class DiceBox {
       return;
     }
 
-    let selectordice = alldice
-      ? Object.keys(window.DiceRoller.DiceFactory.dice)
-      : this.selector.dice;
+    let selectordice =
+      Array.isArray(diceList) && diceList.length
+        ? diceList
+        : alldice
+          ? Object.keys(window.DiceRoller.DiceFactory.dice)
+          : this.selector.dice;
 
     // Sprawdzenie, czy selectordice jest prawidłową tablicą
     if (!Array.isArray(selectordice) || selectordice.length === 0) {
@@ -1169,12 +1876,26 @@ export class DiceBox {
       return;
     }
 
+    const selectorAspect = Math.min(
+      this.display.currentWidth / layoutWidth,
+      this.display.currentHeight / layoutHeight,
+    );
+    const selectorCameraMax =
+      this.display.currentHeight /
+      selectorAspect /
+      Math.tan((10 * Math.PI) / 180);
+    const selectorCameraMedium = selectorCameraMax / 1.5;
+    const selectorCameraClose = selectorCameraMax / 2;
     this.camera.position.z =
       selectordice.length > 9
-        ? this.cameraHeight.far
+        ? selectorCameraMax
         : selectordice.length < 3
-        ? this.cameraHeight.close
-        : this.cameraHeight.medium;
+          ? selectorCameraClose
+          : selectorCameraMedium;
+    if (this.camera.far < selectorCameraMax * 1.3) {
+      this.camera.far = selectorCameraMax * 1.3;
+      this.camera.updateProjectionMatrix();
+    }
     let posxstart =
       selectordice.length > 9 ? -4 : selectordice.length < 3 ? -0.5 : -1;
     let posystart =
@@ -1205,6 +1926,9 @@ export class DiceBox {
         continue; // Przechodzimy do następnej iteracji
       }
 
+      if (scaleFactor !== 1) {
+        dicemesh.scale.setScalar(scaleFactor);
+      }
       dicemesh.position.set(posx * step, posy * step, step * 0.5);
       dicemesh.castShadow = this.shadows;
       dicemesh.userData = selectordice[i];
@@ -1225,19 +1949,22 @@ export class DiceBox {
 
   startClickThrow(notation) {
     if (this.rolling) return;
+    this.unlockAudio();
 
     let vector = {
-      x: (Math.random() * 2 - 0.5) * this.display.currentWidth,
-      y: -(Math.random() * 2 - 0.5) * this.display.currentHeight,
+      x: (this.rand() * 2 - 0.5) * this.display.currentWidth,
+      y: -(this.rand() * 2 - 0.5) * this.display.currentHeight,
     };
     let dist = Math.sqrt(vector.x * vector.x + vector.y * vector.y);
-    let boost = (Math.random() + 3) * dist;
+    let boost = (this.rand() + 3) * dist * this.throwStrength;
+    boost = this.clampBoost(boost);
 
-    return this.getNotationVectors(notation, vector, boost, dist);
+    return this.getNotationVectors(notation, vector, boost, dist, false);
   }
 
   startDragThrow(event) {
     event.preventDefault();
+    this.unlockAudio();
     this.mouse.startDragTime = new Date().getTime();
     this.mouse.startDrag = Teal.get_mouse_coords(event);
   }
@@ -1268,9 +1995,11 @@ export class DiceBox {
       return;
     let time_int = new Date().getTime() - this.mouse.startDragTime;
     if (time_int > 2000) time_int = 2000;
-    let boost = Math.sqrt((2500 - time_int) / 2500) * dist * 2;
+    let boost =
+      Math.sqrt((2500 - time_int) / 2500) * dist * 2 * this.throwStrength;
+    boost = this.clampBoost(boost);
 
-    return this.getNotationVectors(notation, vector, boost, dist);
+    return this.getNotationVectors(notation, vector, boost, dist, true);
   }
 
   clearDice() {
@@ -1278,7 +2007,7 @@ export class DiceBox {
     let dice;
     while ((dice = this.diceList.pop())) {
       this.scene.remove(dice);
-      if (dice.body) this.world.remove(dice.body);
+      if (dice.body) this.world.removeBody(dice.body);
     }
     if (this.pane) this.scene.remove(this.pane);
     this.renderer.render(this.scene, this.camera);
@@ -1295,6 +2024,7 @@ export class DiceBox {
     }
 
     this.camera.position.z = this.cameraHeight.far;
+    if (this.desk) this.desk.visible = true;
     this.clearDice();
 
     for (let i = 0, len = notationVectors.vectors.length; i < len; ++i) {
@@ -1449,7 +2179,7 @@ export class DiceBox {
             resultsForGroup.values = this.operate(
               resultsForGroup.values,
               groupResult.op,
-              groupResult.values
+              groupResult.values,
             );
           }
         }
@@ -1475,7 +2205,7 @@ export class DiceBox {
         resultsForLevel.values = this.operate(
           resultsForLevel.values,
           resultsForGroup.op,
-          resultsForGroup.values
+          resultsForGroup.values,
         );
         //}
       }
@@ -1497,7 +2227,7 @@ export class DiceBox {
       results.values = this.operate(
         results.values,
         resultsForLevel.op,
-        resultsForLevel.values
+        resultsForLevel.values,
       );
       //}
     }
@@ -1780,7 +2510,7 @@ export class DiceBox {
             labeldice[i].uuid +
             '">' +
             lastValue.label +
-            "</span>"
+            "</span>",
         );
 
         if (lastValue.ignore) continue;
@@ -1808,7 +2538,7 @@ export class DiceBox {
             numberdice[i].uuid +
             '">' +
             lastValue.value +
-            "</span>"
+            "</span>",
         );
 
         if (lastValue.ignore) continue;
@@ -1816,7 +2546,7 @@ export class DiceBox {
         values = this.operate(
           values,
           numberdice[i].notation.op,
-          lastValue.value
+          lastValue.value,
         );
       }
 
