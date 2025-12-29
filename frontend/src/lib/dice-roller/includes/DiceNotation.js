@@ -46,7 +46,7 @@ export class DiceNotation {
     //let rollregex = new RegExp(/(\+|\-|\*|\/|\%|\^|){0,1}(\(*|)(\d*)([a-z]{1,5}\d+|[a-z]{1,5}|)(?:\{([a-z]+)(.*?|)\}|)(\)*|)/, 'i');
     let rollregex = new RegExp(
       /(\+|-|\*|\/|%|\^|){0,1}()(\d*)([a-z]+\d+|[a-z]+|)(?:\{([a-z]+)(.*?|)\}|)()/,
-      "i"
+      "i",
     );
     let resultsregex = new RegExp(/(\b)*(-\d+|\d+)(\b)*/, "gi"); // forced results: '1, 2, 3' or '1 2 3'
     let res;
@@ -118,7 +118,7 @@ export class DiceNotation {
           groupLevel,
           funcname,
           funcargs,
-          operator
+          operator,
         );
 
       if (groupend) {
@@ -172,7 +172,7 @@ export class DiceNotation {
     groupLevel = 0,
     funcname = "",
     funcargs = "",
-    operator = "+"
+    operator = "+",
   ) {
     let diceobj = window.DiceFactory.get(type);
     if (diceobj == null) {

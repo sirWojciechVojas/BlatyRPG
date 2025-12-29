@@ -1,5 +1,5 @@
 <template>
-  <div class="dice-roller-root">
+  <div class="dice-roller-root" :class="{ 'chat-disabled': !chatEnabled }">
     <input type="hidden" id="parent_notation" value="" />
     <input type="hidden" id="parent_roll" value="0" />
     <button id="turnOnRoom" title="Roll for Myself" style="display: none">
@@ -32,12 +32,79 @@
     <div id="desk" class="noselect">
       <div id="selector_div" style="display: none">
         <div class="center_field">
-          <div>
-            <button id="clear" title="Reset Dice">Reset</button>
-            <button id="save" title="Save Favorite">Save</button>
+          <div class="selector-row selector-actions">
+            <button id="clear" class="selector-button" title="Reset Dice" aria-label="Reset Dice">
+              <svg class="selector-icon bi bi-arrow-clockwise" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 1 1 .908-.417A6 6 0 1 1 8 2v1z" />
+                <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966a.25.25 0 0 1 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z" />
+              </svg>
+              <span class="button-label">Reset</span>
+            </button>
+            <button id="save" class="selector-button" title="Save Favorite" aria-label="Save Favorite">
+              <svg class="selector-icon bi bi-bookmark-fill" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M2 2v12.5a.5.5 0 0 0 .757.429L8 11.5l5.243 3.429A.5.5 0 0 0 14 14.5V2a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2z" />
+              </svg>
+              <span class="button-label">Save</span>
+            </button>
+            <button id="rage" class="selector-button" title="Add Rage" aria-label="Add Rage">
+              <svg class="selector-icon bi bi-lightning-fill" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M11.251.068a.5.5 0 0 1 .227.58L9.677 6.5H13a.5.5 0 0 1 .364.844l-8 8.5a.5.5 0 0 1-.843-.451L6.323 9.5H3a.5.5 0 0 1-.364-.844l8-8.5a.5.5 0 0 1 .615-.088z" />
+              </svg>
+              <span class="button-label">Rage</span>
+            </button>
+            <button id="throw" class="selector-button" title="Throw Dice" aria-label="Throw Dice">
+              <svg class="selector-icon bi bi-dice-5-fill" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M13 1a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h10zM6 5a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm4 6a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm1-5a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-5 7a1 1 0 1 0 0-2 1 1 0 0 0 0 2z" />
+              </svg>
+              <span class="button-label">Throw</span>
+            </button>
+            <button
+              id="cp_showsettings"
+              class="selector-button"
+              title="Dice settings"
+              aria-label="Dice settings"
+            >
+              <svg class="selector-icon bi bi-gear-fill" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M9.405 1.05a1 1 0 0 0-1.81 0l-.34.68a5.5 5.5 0 0 0-1.357.785l-.733-.305a1 1 0 0 0-1.279.578l-.357.857a1 1 0 0 0 .305 1.145l.64.52a5.5 5.5 0 0 0 0 1.57l-.64.52a1 1 0 0 0-.305 1.145l.357.857a1 1 0 0 0 1.279.578l.733-.305a5.5 5.5 0 0 0 1.357.785l.34.68a1 1 0 0 0 1.81 0l.34-.68a5.5 5.5 0 0 0 1.357-.785l.733.305a1 1 0 0 0 1.279-.578l.357-.857a1 1 0 0 0-.305-1.145l-.64-.52a5.5 5.5 0 0 0 0-1.57l.64-.52a1 1 0 0 0 .305-1.145l-.357-.857a1 1 0 0 0-1.279-.578l-.733.305a5.5 5.5 0 0 0-1.357-.785l-.34-.68z" />
+                <path d="M8 5.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5z" />
+              </svg>
+              <span class="button-label">Settings</span>
+            </button>
+          </div>
+          <div class="selector-row selector-notation">
             <input type="text" id="set" name="set" value="1d100+1d10" />
-            <button id="rage" title="Add Rage">Rage</button>
-            <button id="throw" title="Throw Dice">Throw</button>
+            <button
+              v-if="showDiceDisplayToggle"
+              id="toggle_dice_display"
+              class="selector-button dice-toggle-button"
+              title="Toggle Dice Display"
+              aria-pressed="false"
+              aria-label="Show Dice"
+            >
+              <svg class="dice-toggle-icon bi bi-eye-fill" viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8z" />
+                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z" />
+              </svg>
+              <span class="toggle-label">Show Dice</span>
+            </button>
+            <button
+              v-if="showDragThrowToggle"
+              id="toggle_drag_throw"
+              class="selector-button dice-toggle-button"
+              title="Toggle Drag Roll"
+              aria-pressed="true"
+              aria-label="Disable Drag Roll"
+            >
+              <svg
+                class="dice-toggle-icon bi bi-mouse"
+                viewBox="0 0 16 16"
+                aria-hidden="true"
+              >
+                <path d="M8 0a5 5 0 0 0-5 5v3a5 5 0 0 0 10 0V5a5 5 0 0 0-5-5zm4 8a4 4 0 0 1-8 0V5a4 4 0 0 1 8 0v3z" />
+                <path d="M8 1.5a.5.5 0 0 1 .5.5V4h-1V2a.5.5 0 0 1 .5-.5z" />
+              </svg>
+              <span class="toggle-label">Disable Drag Roll</span>
+            </button>
           </div>
           <div id="sethelp">Set notation, e.g. 2d6+1</div>
           <div id="labelhelp">Click dice or drag to throw</div>
@@ -72,10 +139,6 @@
         <input type="hidden" class="fav_texture" value="" />
       </fieldset>
     </div>
-
-    <fieldset id="control_panel_buttons" class="noselect" style="display: none">
-      <button id="cp_showsettings" title="Show Settings Panel">Settings</button>
-    </fieldset>
 
     <fieldset id="control_panel" class="noselect" style="display: none">
       <legend>Settings</legend>
@@ -317,18 +380,153 @@ export default {
       type: Boolean,
       default: true,
     },
+    showDiceDisplayToggle: {
+      type: Boolean,
+      default: true,
+    },
+    showDragThrowToggle: {
+      type: Boolean,
+      default: true,
+    },
+    diceDisplayEnabled: {
+      type: Boolean,
+      default: false,
+    },
+    dragThrowEnabled: {
+      type: Boolean,
+      default: true,
+    },
+    chatEnabled: {
+      type: Boolean,
+      default: true,
+    },
+    rngSeed: {
+      type: [Number, String],
+      default: null,
+    },
+    canvasHeightOffset: {
+      type: Number,
+      default: 0,
+    },
+    diceScale: {
+      type: Number,
+      default: 1,
+    },
+    diceScaleThrow: {
+      type: Number,
+    },
+    diceScaleSelector: {
+      type: Number,
+    },
+    diceBoxDimensions: {
+      type: Object,
+      default: null,
+    },
+    diceSelectorDimensions: {
+      type: Object,
+      default: null,
+    },
+    diceDisplayList: {
+      type: Array,
+      default: () => [
+        "df",
+        "d4",
+        "d6",
+        "d8",
+        "d10",
+        "d100",
+        "d12",
+        "d20",
+        "dc",
+      ],
+    },
   },
   emits: ["ready", "error"],
   setup(props, { emit }) {
     let diceRoller = null;
+    const originalBodyStyles = {
+      backgroundColor: document.body.style.backgroundColor,
+      color: document.body.style.color,
+      backgroundImage: document.body.style.backgroundImage,
+      backgroundSize: document.body.style.backgroundSize,
+      backgroundRepeat: document.body.style.backgroundRepeat,
+      overflow: document.body.style.overflow,
+      margin: document.body.style.margin,
+      width: document.body.style.width,
+      height: document.body.style.height,
+    };
+    const originalHtmlStyles = {
+      overflow: document.documentElement.style.overflow,
+      margin: document.documentElement.style.margin,
+      width: document.documentElement.style.width,
+      height: document.documentElement.style.height,
+    };
+
+    const removeDiceRollerStyles = () => {
+      const styleIds = [
+        "dice-roller-core-style",
+        "dice-roller-main-style",
+        "dice-roller-default-style",
+        "dice-roller-theme-style",
+      ];
+      styleIds.forEach((id) => {
+        const el = document.getElementById(id);
+        if (el) el.remove();
+      });
+      document.body.style.backgroundColor = originalBodyStyles.backgroundColor;
+      document.body.style.color = originalBodyStyles.color;
+      document.body.style.backgroundImage = originalBodyStyles.backgroundImage;
+      document.body.style.backgroundSize = originalBodyStyles.backgroundSize;
+      document.body.style.backgroundRepeat = originalBodyStyles.backgroundRepeat;
+      document.body.style.overflow = originalBodyStyles.overflow;
+      document.body.style.margin = originalBodyStyles.margin;
+      document.body.style.width = originalBodyStyles.width;
+      document.body.style.height = originalBodyStyles.height;
+      document.documentElement.style.overflow = originalHtmlStyles.overflow;
+      document.documentElement.style.margin = originalHtmlStyles.margin;
+      document.documentElement.style.width = originalHtmlStyles.width;
+      document.documentElement.style.height = originalHtmlStyles.height;
+    };
 
     const startDiceRoller = async () => {
       try {
         await nextTick();
+        document.body.style.overflow = "hidden";
+        document.body.style.margin = "0";
+        document.body.style.width = "100%";
+        document.body.style.height = "100%";
+        document.documentElement.style.overflow = "hidden";
+        document.documentElement.style.margin = "0";
+        document.documentElement.style.width = "100%";
+        document.documentElement.style.height = "100%";
+        const fallbackScale =
+          typeof props.diceScale === "number" && Number.isFinite(props.diceScale)
+            ? props.diceScale
+            : 1;
+        const diceScaleThrow =
+          typeof props.diceScaleThrow === "number" &&
+          Number.isFinite(props.diceScaleThrow)
+            ? props.diceScaleThrow
+            : fallbackScale;
+        const diceScaleSelector =
+          typeof props.diceScaleSelector === "number" &&
+          Number.isFinite(props.diceScaleSelector)
+            ? props.diceScaleSelector
+            : fallbackScale;
         diceRoller = await createDiceRoller({
           assetBaseUrl: props.assetBaseUrl,
           themeId: props.themeId,
           autoStart: props.autoStart,
+          chatEnabled: props.chatEnabled,
+          rngSeed: props.rngSeed,
+          canvasHeightOffset: props.canvasHeightOffset,
+          diceScaleThrow,
+          diceScaleSelector,
+          diceDisplayEnabled: props.diceDisplayEnabled,
+          dragThrowEnabled: props.dragThrowEnabled,
+          diceBoxDimensions: props.diceBoxDimensions,
+          diceSelectorDimensions: props.diceSelectorDimensions,
+          diceDisplayList: props.diceDisplayList,
           onError: (error) => emit("error", error),
         });
         emit("ready", diceRoller);
@@ -340,12 +538,15 @@ export default {
     onMounted(startDiceRoller);
 
     onBeforeUnmount(() => {
-      if (diceRoller?.close_socket) {
+      if (diceRoller?.destroy) {
+        diceRoller.destroy();
+      } else if (diceRoller?.close_socket) {
         diceRoller.close_socket();
       }
       if (diceRoller?.DiceRoom?.DiceBox) {
         diceRoller.DiceRoom.DiceBox.running = false;
       }
+      removeDiceRollerStyles();
     });
 
     return {};
@@ -364,10 +565,127 @@ export default {
   margin-left: 0;
   width: 100%;
   height: 100%;
+  overflow: hidden;
 }
 
 #canvas {
   width: 100%;
   height: 100%;
+}
+
+#label,
+#label h2 {
+  color: #fff;
+}
+
+#info_div {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.5rem 1rem 2.5rem;
+  box-sizing: border-box;
+  z-index: 12;
+  pointer-events: none;
+}
+
+#info_div .center_field {
+  display: flex;
+  justify-content: center;
+}
+
+#label {
+  margin: 0;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+#label h2 {
+  margin: 0.2em 0 0;
+  line-height: 1.1;
+}
+
+.chat-disabled #selector_div {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 10;
+}
+
+.chat-disabled #log {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+}
+
+.chat-disabled #desk,
+.chat-disabled #canvas {
+  height: 100vh;
+}
+.dice-settings-icon {
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+  vertical-align: middle;
+}
+
+#selector_div .selector-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+#selector_div .selector-actions {
+  margin-bottom: 0.35rem;
+}
+
+.selector-button {
+  width: 2.6em;
+  height: 2.6em;
+  padding: 0;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#selector_div #set {
+  height: 2.6em;
+  font-size: 1.1rem;
+  line-height: 1.1;
+  padding: 0 0.75rem;
+}
+
+.selector-button .selector-icon,
+.dice-toggle-button .dice-toggle-icon {
+  width: 1.4em;
+  height: 1.4em;
+  stroke: #ffffff;
+  stroke-width: 1.6;
+  fill: rgba(255, 255, 255, 0.08);
+}
+
+.dice-toggle-button.is-active .dice-toggle-icon {
+  fill: rgba(255, 255, 255, 0.35);
+  stroke: #ffd166;
+}
+
+.dice-toggle-button .toggle-label,
+.selector-button .button-label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 </style>

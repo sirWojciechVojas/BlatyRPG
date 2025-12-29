@@ -8,12 +8,12 @@ export class DiceFunctions {
     dicebox.registerAfterThrowFunction(
       "a",
       this.advantage,
-      this.advantageHelp()
+      this.advantageHelp(),
     );
     dicebox.registerAfterThrowFunction(
       "d",
       this.disadvantage,
-      this.disadvantageHelp()
+      this.disadvantageHelp(),
     );
     //dicebox.registerAfterThrowFunction('f', this.filter, this.filterHelp());
 
@@ -21,7 +21,7 @@ export class DiceFunctions {
     dicebox.registerRethrowFunction(
       "r",
       this.rethrowBasic,
-      this.rethrowBasicHelp()
+      this.rethrowBasicHelp(),
     );
     //dicebox.registerRethrowFunction('ra', this.rethrowAdvanced, this.rethrowAdvancedHelp());
   }

@@ -1,0 +1,157 @@
+#svg *, .svg * {
+	-moz-user-select: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
+#waitform {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 10000;
+	cursor: wait;
+}
+
+a {
+	color: gray;
+}
+
+em {
+	border: 1px rgba(0, 0, 0, 0.2) solid;
+	font-style: normal;
+	padding: 0px 3px;
+	background-color: rgba(0, 0, 0, 0.08);
+	border-radius: 3px;
+}
+
+body {
+	font-family: Georgia;
+}
+
+h6 {
+	font-size: 100%;
+	font-weight: normal;
+	margin: 0px;
+}
+
+p {
+	font-size: 80%;
+	margin-top: 5px;
+	margin-bottom: 0px;
+}
+
+.control_panel {
+	position: absolute;
+	margin: 10px;
+	z-index: 10;
+}
+
+#control_panel_hidden {
+	padding: 5px;
+}
+
+#control_panel_hidden:hover {
+	padding: 5px;
+	outline: 2px solid rgba(21, 26, 26, 0.7);
+}
+
+#control_panel_shown {
+	padding: 30px 15px 15px 15px;
+	outline: 2px solid rgba(21, 26, 26, 0.7);
+}
+
+#control_panel_shown div {
+	font-size: 12pt;
+	margin-top: 0.3em;
+	color: rgba(21, 26, 26, 0.7);
+	font-family: Trebuchet MS;
+}
+
+#control_panel_hide {
+	position: absolute;
+	top: 0px;
+	left: 5px;
+	cursor: pointer;
+}
+
+#control_panel_show {
+	cursor: pointer;
+}
+
+#control_panel_hide:hover {
+	outline: 1px solid grey;
+}
+
+.hidden {
+	display: none;
+	visibility: none;
+	width: 0px;
+	height: 0px;
+}
+
+.dice-roller-root {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+
+#desk {
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+#canvas {
+	width: 100%;
+	height: 100%;
+}
+
+#selector_div {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	background-color: rgba(0, 0, 0, 0.25);
+	border-bottom: 2px dashed rgba(255, 255, 255, 0.6);
+	z-index: 5;
+}
+
+#log {
+	background-color: rgba(0, 0, 0, 0.25);
+}
+
+.teal-chat {
+	position: absolute;
+	bottom: 0px;
+	left: 0;
+	right: 0;
+	padding: 5px 15px;
+	overflow-y: auto;
+}
+
+.teal-chat-input {
+	height: 2em;
+	resize: none;
+	margin-top: 10px;
+	width: 100%;
+	vertical-align: bottom;
+}
+
+#info_div {
+	width: 100%;
+	position: relative;
+	bottom: 5em;
+	opacity: 0.75;
+	z-index: 10;
+	word-wrap: anywhere;
+}
+
+.info-field {
+	position: absolute;
+	width: 100%;
+	bottom: 2em;
+	text-align: center;
+}

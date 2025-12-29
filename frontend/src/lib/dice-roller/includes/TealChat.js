@@ -11,12 +11,12 @@ export class TealChat {
         style: "display: inline-block; vertical-align: bottom; width: 100%",
         class: "teal-chat-log",
       },
-      place
+      place,
     );
     this.area = Teal.element(
       "textarea",
       { class: "teal-chat-input" },
-      this.text
+      this.text,
     );
     this.last_user = undefined;
     this.own_user = undefined;
@@ -43,7 +43,7 @@ export class TealChat {
     Teal.clas(
       m,
       undefined,
-      "teal-chat-has-uuid" + (just_uuid ? "" : " teal-chat-unconfirmed")
+      "teal-chat-has-uuid" + (just_uuid ? "" : " teal-chat-unconfirmed"),
     );
     Teal.set(m, { uuid: uuid });
     this.insert_text(m);
@@ -76,7 +76,7 @@ export class TealChat {
       if (!keep_uuid) list[i].removeAttribute("uuid");
       Teal.clas(
         list[i],
-        "teal-chat-unconfirmed" + (keep_uuid ? "" : " teal-chat-has-uuid")
+        "teal-chat-unconfirmed" + (keep_uuid ? "" : " teal-chat-has-uuid"),
       );
       return;
     }

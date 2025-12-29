@@ -49,7 +49,7 @@ export class Teal {
 
   static inner(obj, sel) {
     sel.appendChild(
-      obj.nodeName != undefined ? obj : document.createTextNode(obj)
+      obj.nodeName != undefined ? obj : document.createTextNode(obj),
     );
 
     console.log("object:", obj);
@@ -148,7 +148,7 @@ export class Teal {
     evt.initEvent(
       eventname,
       bubble == undefined ? true : bubble,
-      cancelable == undefined ? true : cancelable
+      cancelable == undefined ? true : cancelable,
     );
     sel.dispatchEvent(evt);
   }
@@ -170,7 +170,7 @@ export class Teal {
         var r = (Math.random() * 16) | 0,
           v = c == "x" ? r : (r & 0x3) | 0x8;
         return v.toString(16);
-      }
+      },
     );
   }
 
@@ -334,7 +334,7 @@ export class Teal {
         this.socket.addEventListener("message", function (message) {
           callback.call(
             this.socket,
-            noparse ? message.data : JSON.parse(message.data)
+            noparse ? message.data : JSON.parse(message.data),
           );
         });
       }

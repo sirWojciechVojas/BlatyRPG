@@ -12,16 +12,130 @@ import {
   COLORCATEGORIES,
 } from "./DiceColors.js";
 
+const normalizeDiceBoxDimensions = (dimensions) => {
+  if (!dimensions) return null;
+  const width = Number(
+    dimensions.w !== undefined ? dimensions.w : dimensions.width,
+  );
+  const height = Number(
+    dimensions.h !== undefined ? dimensions.h : dimensions.height,
+  );
+  if (!Number.isFinite(width) || !Number.isFinite(height)) return null;
+  return { w: width, h: height };
+};
+
 export class DiceRoller {
   constructor(options = {}) {
     this.assetBaseUrl = options.assetBaseUrl || "/dice_roller";
     this.themeId = options.themeId || "default";
+    const fallbackScale =
+      typeof options.diceScale === "number" && Number.isFinite(options.diceScale)
+        ? options.diceScale
+        : 1;
+    this.diceScaleThrow =
+      typeof options.diceScaleThrow === "number" &&
+      Number.isFinite(options.diceScaleThrow)
+        ? options.diceScaleThrow
+        : fallbackScale;
+    this.diceScaleSelector =
+      typeof options.diceScaleSelector === "number" &&
+      Number.isFinite(options.diceScaleSelector)
+        ? options.diceScaleSelector
+        : fallbackScale;
+    this.chatEnabled =
+      typeof options.chatEnabled === "boolean" ? options.chatEnabled : true;
+    this.rngSeed =
+      options.rngSeed !== undefined && options.rngSeed !== null
+        ? options.rngSeed
+        : null;
+    this.dragThrowEnabled =
+      typeof options.dragThrowEnabled === "boolean"
+        ? options.dragThrowEnabled
+        : true;
+    this.canvasHeightOffset =
+      typeof options.canvasHeightOffset === "number" &&
+      Number.isFinite(options.canvasHeightOffset)
+        ? options.canvasHeightOffset
+        : 0;
+    this.diceScale = this.diceScaleThrow;
+    this.diceDisplayEnabled =
+      typeof options.diceDisplayEnabled === "boolean"
+        ? options.diceDisplayEnabled
+        : true;
+    this.diceBoxDimensions = normalizeDiceBoxDimensions(
+      options.diceBoxDimensions,
+    );
+    this.diceSelectorDimensions = normalizeDiceBoxDimensions(
+      options.diceSelectorDimensions,
+    );
+    this.diceDisplayList =
+      Array.isArray(options.diceDisplayList) && options.diceDisplayList.length
+        ? options.diceDisplayList
+        : null;
+    this._diceRoomStarted = false;
+    this._boundOnResize = this.on_window_resize.bind(this);
+    this._boundBeforeUnload = this.close_socket.bind(this);
   }
 
   initialize(imagesList, options = {}) {
     this.assetBaseUrl =
       options.assetBaseUrl || this.assetBaseUrl || "/dice_roller";
     this.themeId = options.themeId || this.themeId || "default";
+    if (typeof options.chatEnabled === "boolean") {
+      this.chatEnabled = options.chatEnabled;
+    }
+    if (options.rngSeed !== undefined && options.rngSeed !== null) {
+      this.rngSeed = options.rngSeed;
+    }
+    if (typeof options.dragThrowEnabled === "boolean") {
+      this.dragThrowEnabled = options.dragThrowEnabled;
+    }
+    if (
+      typeof options.canvasHeightOffset === "number" &&
+      Number.isFinite(options.canvasHeightOffset)
+    ) {
+      this.canvasHeightOffset = options.canvasHeightOffset;
+    }
+    const hasScaleThrow =
+      typeof options.diceScaleThrow === "number" &&
+      Number.isFinite(options.diceScaleThrow);
+    const hasScaleSelector =
+      typeof options.diceScaleSelector === "number" &&
+      Number.isFinite(options.diceScaleSelector);
+    if (hasScaleThrow) {
+      this.diceScaleThrow = options.diceScaleThrow;
+    }
+    if (hasScaleSelector) {
+      this.diceScaleSelector = options.diceScaleSelector;
+    }
+    if (
+      (!hasScaleThrow || !hasScaleSelector) &&
+      typeof options.diceScale === "number" &&
+      Number.isFinite(options.diceScale)
+    ) {
+      if (!hasScaleThrow) this.diceScaleThrow = options.diceScale;
+      if (!hasScaleSelector) this.diceScaleSelector = options.diceScale;
+    }
+    this.diceScale = this.diceScaleThrow;
+    if (typeof options.diceDisplayEnabled === "boolean") {
+      this.diceDisplayEnabled = options.diceDisplayEnabled;
+    }
+    if (options.diceBoxDimensions) {
+      this.diceBoxDimensions = normalizeDiceBoxDimensions(
+        options.diceBoxDimensions,
+      );
+    }
+    if (options.diceSelectorDimensions) {
+      this.diceSelectorDimensions = normalizeDiceBoxDimensions(
+        options.diceSelectorDimensions,
+      );
+    }
+    if (
+      Array.isArray(options.diceDisplayList) &&
+      options.diceDisplayList.length
+    ) {
+      this.diceDisplayList = options.diceDisplayList;
+    }
     this.Teal = new Teal();
 
     // Inicjalizacja obiektu DiceRoller na window
@@ -41,9 +155,13 @@ export class DiceRoller {
       this.DiceFavorites.storeSettings();
     }
 
-    this.DiceFactory = new DiceFactory({ assetBaseUrl: this.assetBaseUrl });
+    this.DiceFactory = new DiceFactory({
+      assetBaseUrl: this.assetBaseUrl,
+      diceScaleThrow: this.diceScaleThrow,
+      diceScale: this.diceScaleThrow,
+    });
     this.DiceFactory.setBumpMapping(
-      this.DiceFavorites.settings.bumpmaps.value == "1"
+      this.DiceFavorites.settings.bumpmaps.value == "1",
     );
     window.DiceFactory = this.DiceFactory;
 
@@ -68,7 +186,7 @@ export class DiceRoller {
     this.on_theme_select_change(
       null,
       this.DiceFavorites.settings.fgcolor.value,
-      this.DiceFavorites.settings.bgcolor.value
+      this.DiceFavorites.settings.bgcolor.value,
     );
   }
 
@@ -107,26 +225,26 @@ export class DiceRoller {
   }
   initializeEvents() {
     // Obsługa zmiany rozmiaru okna i zamykania strony
-    window.addEventListener("resize", this.on_window_resize.bind(this));
-    window.addEventListener("beforeunload", this.close_socket.bind(this));
+    window.addEventListener("resize", this._boundOnResize);
+    window.addEventListener("beforeunload", this._boundBeforeUnload);
 
     // Sprawdzamy, czy poszczególne elementy są zainicjalizowane
     if (this.socket_button) {
       Teal.bind(
         this.socket_button,
         "click",
-        this.socket_button_press.bind(this)
+        this.socket_button_press.bind(this),
       );
       Teal.bind(
         this.socket_button,
         ["mousedown", "mouseup", "touchstart", "touchend"],
-        (ev) => ev.stopPropagation()
+        (ev) => ev.stopPropagation(),
       );
       Teal.bind(this.socket_button, "focus", () =>
-        Teal.set(this.desk, { class: "" })
+        Teal.set(this.desk, { class: "" }),
       );
       Teal.bind(this.socket_button, "blur", () =>
-        Teal.set(this.desk, { class: "noselect" })
+        Teal.set(this.desk, { class: "noselect" }),
       );
     } else {
       console.error("socket_button is not initialized!");
@@ -136,18 +254,18 @@ export class DiceRoller {
       Teal.bind(
         this.theme_select,
         "change",
-        this.on_theme_select_change.bind(this)
+        this.on_theme_select_change.bind(this),
       );
       Teal.bind(
         this.theme_select,
         ["mousedown", "mouseup", "touchstart", "touchend"],
-        (ev) => ev.stopPropagation()
+        (ev) => ev.stopPropagation(),
       );
       Teal.bind(this.theme_select, "focus", () =>
-        Teal.set(this.desk, { class: "" })
+        Teal.set(this.desk, { class: "" }),
       );
       Teal.bind(this.theme_select, "blur", () =>
-        Teal.set(this.desk, { class: "noselect" })
+        Teal.set(this.desk, { class: "noselect" }),
       );
     } else {
       console.error("theme_select is not initialized!");
@@ -157,18 +275,18 @@ export class DiceRoller {
       Teal.bind(
         this.surface_select,
         "change",
-        this.on_surface_select_change.bind(this)
+        this.on_surface_select_change.bind(this),
       );
       Teal.bind(
         this.surface_select,
         ["mousedown", "mouseup", "touchstart", "touchend"],
-        (ev) => ev.stopPropagation()
+        (ev) => ev.stopPropagation(),
       );
       Teal.bind(this.surface_select, "focus", () =>
-        Teal.set(this.desk, { class: "" })
+        Teal.set(this.desk, { class: "" }),
       );
       Teal.bind(this.surface_select, "blur", () =>
-        Teal.set(this.desk, { class: "noselect" })
+        Teal.set(this.desk, { class: "noselect" }),
       );
     } else {
       console.error("surface_select is not initialized!");
@@ -178,18 +296,18 @@ export class DiceRoller {
       Teal.bind(
         this.system_select,
         "change",
-        this.on_system_select_change.bind(this)
+        this.on_system_select_change.bind(this),
       );
       Teal.bind(
         this.system_select,
         ["mousedown", "mouseup", "touchstart", "touchend"],
-        (ev) => ev.stopPropagation()
+        (ev) => ev.stopPropagation(),
       );
       Teal.bind(this.system_select, "focus", () =>
-        Teal.set(this.desk, { class: "" })
+        Teal.set(this.desk, { class: "" }),
       );
       Teal.bind(this.system_select, "blur", () =>
-        Teal.set(this.desk, { class: "noselect" })
+        Teal.set(this.desk, { class: "noselect" }),
       );
     } else {
       console.error("system_select is not initialized!");
@@ -199,18 +317,18 @@ export class DiceRoller {
       Teal.bind(
         this.color_select,
         "change",
-        this.on_color_select_change.bind(this)
+        this.on_color_select_change.bind(this),
       );
       Teal.bind(
         this.color_select,
         ["mousedown", "mouseup", "touchstart", "touchend"],
-        (ev) => ev.stopPropagation()
+        (ev) => ev.stopPropagation(),
       );
       Teal.bind(this.color_select, "focus", () =>
-        Teal.set(this.desk, { class: "" })
+        Teal.set(this.desk, { class: "" }),
       );
       Teal.bind(this.color_select, "blur", () =>
-        Teal.set(this.desk, { class: "noselect" })
+        Teal.set(this.desk, { class: "noselect" }),
       );
     } else {
       console.error("color_select is not initialized!");
@@ -220,18 +338,18 @@ export class DiceRoller {
       Teal.bind(
         this.texture_select,
         "change",
-        this.on_texture_select_change.bind(this)
+        this.on_texture_select_change.bind(this),
       );
       Teal.bind(
         this.texture_select,
         ["mousedown", "mouseup", "touchstart", "touchend"],
-        (ev) => ev.stopPropagation()
+        (ev) => ev.stopPropagation(),
       );
       Teal.bind(this.texture_select, "focus", () =>
-        Teal.set(this.desk, { class: "" })
+        Teal.set(this.desk, { class: "" }),
       );
       Teal.bind(this.texture_select, "blur", () =>
-        Teal.set(this.desk, { class: "noselect" })
+        Teal.set(this.desk, { class: "noselect" }),
       );
     } else {
       console.error("texture_select is not initialized!");
@@ -241,13 +359,13 @@ export class DiceRoller {
       Teal.bind(
         this.material_select,
         "change",
-        this.on_material_select_change.bind(this)
+        this.on_material_select_change.bind(this),
       );
       Teal.bind(this.material_select, "focus", () =>
-        Teal.set(this.desk, { class: "" })
+        Teal.set(this.desk, { class: "" }),
       );
       Teal.bind(this.material_select, "blur", () =>
-        Teal.set(this.desk, { class: "noselect" })
+        Teal.set(this.desk, { class: "noselect" }),
       );
     } else {
       console.error("material_select is not initialized!");
@@ -257,26 +375,26 @@ export class DiceRoller {
       Teal.bind(
         this.control_panel_show,
         "click",
-        this.on_control_panel_show.bind(this)
+        this.on_control_panel_show.bind(this),
       );
       Teal.bind(
         this.control_panel_hide,
         "click",
-        this.on_control_panel_show.bind(this)
+        this.on_control_panel_show.bind(this),
       );
       Teal.bind(
         this.control_panel_show,
         ["mousedown", "mouseup", "touchstart", "touchend"],
-        (ev) => ev.stopPropagation()
+        (ev) => ev.stopPropagation(),
       );
       Teal.bind(
         this.control_panel_hide,
         ["mousedown", "mouseup", "touchstart", "touchend"],
-        (ev) => ev.stopPropagation()
+        (ev) => ev.stopPropagation(),
       );
     } else {
       console.error(
-        "control_panel_show or control_panel_hide is not initialized!"
+        "control_panel_show or control_panel_hide is not initialized!",
       );
     }
 
@@ -284,18 +402,18 @@ export class DiceRoller {
       Teal.bind(
         this.toggle_selector,
         "click",
-        this.on_toggle_selector.bind(this)
+        this.on_toggle_selector.bind(this),
       );
       Teal.bind(
         this.toggle_selector,
         ["mousedown", "mouseup", "touchstart", "touchend"],
-        (ev) => ev.stopPropagation()
+        (ev) => ev.stopPropagation(),
       );
       Teal.bind(this.toggle_selector, "focus", () =>
-        Teal.set(this.desk, { class: "" })
+        Teal.set(this.desk, { class: "" }),
       );
       Teal.bind(this.toggle_selector, "blur", () =>
-        Teal.set(this.desk, { class: "noselect" })
+        Teal.set(this.desk, { class: "noselect" }),
       );
     } else {
       console.error("toggle_selector is not initialized!");
@@ -305,7 +423,7 @@ export class DiceRoller {
       Teal.bind(
         this.parent_roll,
         "change",
-        this.on_parent_roll_change.bind(this)
+        this.on_parent_roll_change.bind(this),
       );
     } else {
       console.error("parent_roll is not initialized!");
@@ -331,7 +449,7 @@ export class DiceRoller {
       Teal.bind(Teal.id("button_single"), "click", () => {
         if (!this.DiceFavorites) {
           console.error(
-            "DiceFavorites is not initialized, delaying DiceRoom initialization."
+            "DiceFavorites is not initialized, delaying DiceRoom initialization.",
           );
           // Spróbujemy ponownie po 500ms, kiedy DiceFavorites się zainicjalizuje.
           setTimeout(() => {
@@ -355,12 +473,26 @@ export class DiceRoller {
       Teal.bind(
         Teal.id("turnOnRoom"),
         "click",
-        this.button_single_press.bind(this)
+        this.button_single_press.bind(this),
       );
     }
   }
 
+  destroy() {
+    window.removeEventListener("resize", this._boundOnResize);
+    window.removeEventListener("beforeunload", this._boundBeforeUnload);
+    if (this.Teal?.socket && this.Teal.socket.readyState <= WebSocket.OPEN) {
+      this.Teal.socket.close();
+    }
+    if (window.DiceRoller === this) {
+      window.DiceRoller = null;
+    }
+  }
+
   populateThemeOptions() {
+    if (this.theme_select) {
+      Teal.empty(this.theme_select);
+    }
     const themeprops = Object.entries(THEMES);
     themeprops.forEach(([key, value]) => {
       let attributes = { value: key };
@@ -371,6 +503,9 @@ export class DiceRoller {
   }
 
   populateSystemOptions() {
+    if (this.system_select) {
+      Teal.empty(this.system_select);
+    }
     const systemprops = Object.entries(this.DiceFactory.systems);
     systemprops.forEach(([key, value]) => {
       let attributes = { value: key };
@@ -392,7 +527,7 @@ export class DiceRoller {
       this.DiceColors.applyColorSet(
         this.params.colorset || "random",
         this.params.texture || "",
-        this.params.material || ""
+        this.params.material || "",
       );
     } else {
       this.DiceColors.applyColorSet("random");
@@ -415,11 +550,11 @@ export class DiceRoller {
     // Inicjalizacja elementów formularza i obsługa zdarzeń z jQuery
     $("#checkbox_allowdiceoverride").prop(
       "checked",
-      this.DiceFavorites.settings.allowDiceOverride.value == "1"
+      this.DiceFavorites.settings.allowDiceOverride.value == "1",
     );
     $("#checkbox_allowdiceoverride").change(() => {
       this.DiceFavorites.settings.allowDiceOverride.value = $(
-        "#checkbox_allowdiceoverride"
+        "#checkbox_allowdiceoverride",
       ).prop("checked")
         ? "1"
         : "0";
@@ -429,11 +564,11 @@ export class DiceRoller {
 
     $("#checkbox_bumpmap").prop(
       "checked",
-      this.DiceFavorites.settings.bumpmaps.value == "1"
+      this.DiceFavorites.settings.bumpmaps.value == "1",
     );
     $("#checkbox_bumpmap").change(() => {
       this.DiceFavorites.settings.bumpmaps.value = $("#checkbox_bumpmap").prop(
-        "checked"
+        "checked",
       )
         ? "1"
         : "0";
@@ -446,11 +581,11 @@ export class DiceRoller {
 
     $("#checkbox_shadows").prop(
       "checked",
-      this.DiceFavorites.settings.shadows.value == "1"
+      this.DiceFavorites.settings.shadows.value == "1",
     );
     $("#checkbox_shadows").change(() => {
       this.DiceFavorites.settings.shadows.value = $("#checkbox_shadows").prop(
-        "checked"
+        "checked",
       )
         ? "1"
         : "0";
@@ -467,11 +602,11 @@ export class DiceRoller {
 
     $("#checkbox_sounds").prop(
       "checked",
-      this.DiceFavorites.settings.sounds.value == "1"
+      this.DiceFavorites.settings.sounds.value == "1",
     );
     $("#checkbox_sounds").change(() => {
       this.DiceFavorites.settings.sounds.value = $("#checkbox_sounds").prop(
-        "checked"
+        "checked",
       )
         ? "1"
         : "0";
@@ -483,11 +618,11 @@ export class DiceRoller {
 
     $("#checkbox_tally").prop(
       "checked",
-      this.DiceFavorites.settings.tally.value == "1"
+      this.DiceFavorites.settings.tally.value == "1",
     );
     $("#checkbox_tally").change(() => {
       this.DiceFavorites.settings.tally.value = $("#checkbox_tally").prop(
-        "checked"
+        "checked",
       )
         ? "1"
         : "0";
@@ -499,11 +634,11 @@ export class DiceRoller {
 
     $("#checkbox_users").prop(
       "checked",
-      this.DiceFavorites.settings.users.value == "1"
+      this.DiceFavorites.settings.users.value == "1",
     );
     $("#checkbox_users").change(() => {
       this.DiceFavorites.settings.users.value = $("#checkbox_users").prop(
-        "checked"
+        "checked",
       )
         ? "1"
         : "0";
@@ -588,11 +723,11 @@ export class DiceRoller {
         $(".sp-replacer").show();
         $(document.body).css(
           "background-color",
-          this.DiceFavorites.settings.bgcolor.value
+          this.DiceFavorites.settings.bgcolor.value,
         );
         $(document.body).css(
           "color",
-          this.DiceFavorites.settings.fgcolor.value
+          this.DiceFavorites.settings.fgcolor.value,
         );
       } else {
         $(".sp-replacer").hide();
@@ -637,9 +772,39 @@ export class DiceRoller {
       return;
     }
 
-    let w = window.innerWidth + "px";
-    let hh = Math.floor(window.innerHeight * 0.24);
-    let h = window.innerHeight - hh + "px";
+    const deskRoot =
+      DiceRoller.desk?.closest(".dice-roller-root") ||
+      DiceRoller.desk?.parentElement;
+    const rootRect = deskRoot?.getBoundingClientRect();
+    const chatEnabled = DiceRoller.chatEnabled !== false;
+    const availableWidth = chatEnabled
+      ? rootRect?.width || window.innerWidth
+      : window.innerWidth;
+    const availableHeight = chatEnabled
+      ? Math.max(0, window.innerHeight - (rootRect?.top || 0))
+      : window.innerHeight;
+    let w = availableWidth + "px";
+    const chatVisible =
+      chatEnabled &&
+      DiceRoller.DiceRoom &&
+      DiceRoller.DiceRoom.TealChat &&
+      DiceRoller.DiceRoom.TealChat.place &&
+      DiceRoller.DiceRoom.TealChat.place.style.display !== "none";
+    let hh = chatVisible ? Math.floor(availableHeight * 0.24) : 0;
+    let hValue = Math.max(0, availableHeight - hh);
+    let h = hValue + "px";
+    const offset =
+      typeof DiceRoller.canvasHeightOffset === "number" &&
+      Number.isFinite(DiceRoller.canvasHeightOffset)
+        ? DiceRoller.canvasHeightOffset
+        : 0;
+    const canvasHeight = Math.max(0, hValue - offset) + "px";
+
+    if (deskRoot) {
+      deskRoot.style.position = "relative";
+      deskRoot.style.height = availableHeight + "px";
+      deskRoot.style.width = w;
+    }
 
     // Sprawdzenie, czy DiceRoller.desk jest zdefiniowane
     if (DiceRoller.desk) {
@@ -653,14 +818,34 @@ export class DiceRoller {
     if (DiceRoller.DiceRoom) {
       // Sprawdzenie, czy DiceRoller.DiceRoom.DiceBox jest zdefiniowane
       if (DiceRoller.DiceRoom.DiceBox) {
-        DiceRoller.DiceRoom.DiceBox.setDimensions({ w: 500, h: 300 });
+        DiceRoller.DiceRoom.DiceBox.setDimensions(
+          DiceRoller.diceBoxDimensions,
+        );
       } else {
         console.warn("DiceRoller.DiceRoom.DiceBox is undefined.");
       }
 
       // Sprawdzenie, czy DiceRoller.DiceRoom.TealChat jest zdefiniowane
       if (DiceRoller.DiceRoom.TealChat) {
-        DiceRoller.DiceRoom.TealChat.resize(window.innerWidth - 30, hh - 10);
+        const logEl = DiceRoller.DiceRoom.TealChat.place;
+        if (logEl) {
+          logEl.style.position = chatEnabled ? "absolute" : "fixed";
+          logEl.style.left = "0";
+          logEl.style.bottom = "0";
+          if (!chatEnabled) {
+            logEl.style.right = "0";
+          } else {
+            logEl.style.right = "";
+          }
+        }
+        if (chatVisible) {
+          DiceRoller.DiceRoom.TealChat.resize(
+            Math.max(0, availableWidth - 30),
+            Math.max(0, hh - 10),
+          );
+        } else {
+          DiceRoller.DiceRoom.TealChat.resize(0, 0);
+        }
       } else {
         console.warn("DiceRoller.DiceRoom.TealChat is undefined.");
       }
@@ -668,7 +853,7 @@ export class DiceRoller {
       // Sprawdzenie, czy DiceRoller.DiceRoom.canvas jest zdefiniowane
       if (DiceRoller.DiceRoom.canvas) {
         DiceRoller.DiceRoom.canvas.style.width = w;
-        DiceRoller.DiceRoom.canvas.style.height = h;
+        DiceRoller.DiceRoom.canvas.style.height = canvasHeight;
       } else {
         console.warn("DiceRoller.DiceRoom.canvas is undefined.");
       }
@@ -704,24 +889,28 @@ export class DiceRoller {
     DiceRoller.DiceFavorites.settings.surface.value =
       DiceRoller.surface_select.value;
 
-    // load theme
-    if ($("head > link")[1]) $("head > link")[1].remove();
+    const themeStyleId = "dice-roller-theme-style";
+    const existingThemeLink = document.getElementById(themeStyleId);
+    if (existingThemeLink) {
+      existingThemeLink.remove();
+    }
 
     let themeid = DiceRoller.DiceFavorites.settings.theme.value;
     if (themeid !== "default") {
       let headelement = document.getElementsByTagName("head")[0];
       const themeBase = (DiceRoller.assetBaseUrl || "/dice_roller").replace(
         /\/+$/,
-        ""
+        "",
       );
       Teal.element(
         "link",
         {
+          id: themeStyleId,
           rel: "stylesheet",
           type: "text/css",
           href: `${themeBase}/themes/${themeid}/style.css`,
         },
-        headelement
+        headelement,
       );
     }
 
@@ -739,15 +928,15 @@ export class DiceRoller {
         $(document.body).css("color", fgcolor || pageThemeInfo.colors.fg);
         $(document.body).css(
           "background-color",
-          bgcolor || pageThemeInfo.colors.bg
+          bgcolor || pageThemeInfo.colors.bg,
         );
         $(".control_fgcolor").spectrum(
           "set",
-          fgcolor || pageThemeInfo.colors.fg
+          fgcolor || pageThemeInfo.colors.fg,
         );
         $(".control_bgcolor").spectrum(
           "set",
-          bgcolor || pageThemeInfo.colors.bg
+          bgcolor || pageThemeInfo.colors.bg,
         );
       } else {
         $(".sp-replacer, #fgbglabel").hide();
@@ -757,11 +946,11 @@ export class DiceRoller {
     if (pageThemeInfo.cubeMap) {
       const themeBase = (DiceRoller.assetBaseUrl || "/dice_roller").replace(
         /\/+$/,
-        ""
+        "",
       );
       window.DiceFactory.setCubeMap(
         `${themeBase}/themes/${themeid}/`,
-        pageThemeInfo.cubeMap
+        pageThemeInfo.cubeMap,
       );
     } else {
       window.DiceFactory.setCubeMap(false);
@@ -823,7 +1012,7 @@ export class DiceRoller {
     let DiceRoller = window.DiceRoller;
     DiceRoller.DiceColors.applyColorSet(
       DiceRoller.color_select.value,
-      DiceRoller.texture_select.value
+      DiceRoller.texture_select.value,
     );
     DiceRoller.Teal.rpc({
       method: "texture",
@@ -843,7 +1032,7 @@ export class DiceRoller {
     DiceRoller.DiceColors.applyColorSet(
       DiceRoller.color_select.value,
       DiceRoller.texture_select.value,
-      DiceRoller.material_select.value
+      DiceRoller.material_select.value,
     );
     DiceRoller.Teal.rpc({
       method: "material",
@@ -874,7 +1063,7 @@ export class DiceRoller {
     if (DiceRoller.selector_div)
       Teal.hidden(
         DiceRoller.selector_div,
-        DiceRoller.selector_div.style.display != "none"
+        DiceRoller.selector_div.style.display != "none",
       );
     if (ev) ev.preventDefault();
   }
@@ -916,6 +1105,10 @@ export class DiceRoller {
 
   async button_single_press(ev) {
     void ev;
+    if (this._diceRoomStarted) {
+      return;
+    }
+    this._diceRoomStarted = true;
     // Dodajemy oczekiwanie na pełną inicjalizację
     if (!this.DiceFavorites) {
       console.error("DiceFavorites is not initialized, waiting for it...");
@@ -940,6 +1133,15 @@ export class DiceRoller {
       // Upewniamy się, że DiceFavorites jest w pełni gotowe
       this.DiceRoom = new DiceRoom("Yourself", -1, this.DiceFavorites, {
         assetBaseUrl: this.assetBaseUrl,
+        chatEnabled: this.chatEnabled,
+        rngSeed: this.rngSeed,
+        dragThrowEnabled: this.dragThrowEnabled,
+        diceScaleThrow: this.diceScaleThrow,
+        diceScaleSelector: this.diceScaleSelector,
+        diceDisplayEnabled: this.diceDisplayEnabled,
+        diceBoxDimensions: this.diceBoxDimensions,
+        diceSelectorDimensions: this.diceSelectorDimensions,
+        diceDisplayList: this.diceDisplayList,
       });
 
       this.show_waitform(false);
@@ -947,6 +1149,7 @@ export class DiceRoller {
       this.DiceRoom.actions["login"].call(this.DiceRoom, { user: "Yourself" });
     } catch (error) {
       console.error("Error during DiceRoom initialization:", error);
+      this._diceRoomStarted = false;
     }
   }
 
@@ -1037,11 +1240,22 @@ export class DiceRoller {
         }
 
         if (data.method == "join" && data.action == "login") {
-          DiceRoller.DiceRoom = new DiceRoom(
-            data.user,
-            DiceRoller.cid,
-            DiceRoller.DiceFavorites,
-            { assetBaseUrl: DiceRoller.assetBaseUrl }
+            DiceRoller.DiceRoom = new DiceRoom(
+              data.user,
+              DiceRoller.cid,
+              DiceRoller.DiceFavorites,
+              {
+                assetBaseUrl: DiceRoller.assetBaseUrl,
+                chatEnabled: DiceRoller.chatEnabled,
+                rngSeed: DiceRoller.rngSeed,
+                dragThrowEnabled: DiceRoller.dragThrowEnabled,
+                diceScaleThrow: DiceRoller.diceScaleThrow,
+                diceScaleSelector: DiceRoller.diceScaleSelector,
+                diceDisplayEnabled: DiceRoller.diceDisplayEnabled,
+                diceBoxDimensions: DiceRoller.diceBoxDimensions,
+                diceSelectorDimensions: DiceRoller.diceSelectorDimensions,
+                diceDisplayList: DiceRoller.diceDisplayList,
+              },
           );
 
           DiceRoller.show_waitform(false);
@@ -1054,12 +1268,12 @@ export class DiceRoller {
           DiceRoller.DiceRoom &&
           Object.prototype.hasOwnProperty.call(
             DiceRoller.DiceRoom.actions,
-            data.action
+            data.action,
           )
         ) {
           DiceRoller.DiceRoom.actions[data.action].call(
             DiceRoller.DiceRoom,
-            data
+            data,
           );
         }
         DiceRoller.show_waitform(false);

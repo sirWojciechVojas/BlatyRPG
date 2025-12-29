@@ -51,6 +51,8 @@ services:
     environment:
       - NODE_ENV=development
       - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_INTERVAL=300
       - WDS_SOCKET_HOST=localhost
       - WDS_SOCKET_PORT=443
       - WDS_SOCKET_PROTOCOL=wss

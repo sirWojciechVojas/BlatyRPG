@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 
 const routes = [
@@ -19,13 +19,15 @@ const routes = [
   {
     path: "/dice",
     name: "dice",
+    meta: {title: "Dice Roller 3D"},
     component: () =>
       import(/* webpackChunkName: "dice" */ "../views/DiceRollerView.vue"),
   },
+
 ];
 
 const router = createRouter({
-  history: createWebHistory(process.env.BASE_URL),
+  history: createWebHashHistory(),
   routes,
 });
 
