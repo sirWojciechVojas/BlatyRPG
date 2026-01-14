@@ -1,5 +1,5 @@
 <template>
-  <nav :class="{ 'nav-dice': isDiceRoute }">
+  <nav v-if="!isHomeRoute" :class="{ 'nav-dice': isDiceRoute }">
     <router-link to="/">Home</router-link> |
     <router-link to="/about">About</router-link> |
     <router-link to="/dice">Dice Roller</router-link>
@@ -33,6 +33,9 @@
   computed: {
     isDiceRoute() {
       return this.$route?.path === "/dice";
+    },
+    isHomeRoute() {
+      return this.$route?.path === "/";
     },
   },
 };

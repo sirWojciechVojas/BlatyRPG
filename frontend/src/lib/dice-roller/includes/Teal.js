@@ -144,6 +144,10 @@ export class Teal {
   }
 
   static raise_event(sel, eventname, bubble, cancelable) {
+    if (!sel) {
+      console.warn("Teal.raise_event: missing target for event", eventname);
+      return;
+    }
     var evt = document.createEvent("UIEvents");
     evt.initEvent(
       eventname,
@@ -154,6 +158,10 @@ export class Teal {
   }
 
   static raise(sel, eventname, params, bubble, cancelable) {
+    if (!sel) {
+      console.warn("Teal.raise: missing target for event", eventname);
+      return;
+    }
     var ev = document.createEvent("CustomEvent");
     ev.initCustomEvent(eventname, bubble, cancelable, params);
     sel.dispatchEvent(ev);

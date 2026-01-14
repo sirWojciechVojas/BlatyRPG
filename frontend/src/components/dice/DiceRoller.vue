@@ -646,13 +646,14 @@ export default {
 }
 
 .selector-button {
-  width: 2.6em;
-  height: 2.6em;
-  padding: 0;
+  min-height: 2.6em;
+  width: auto;
+  padding: 0 0.8em;
   border-radius: 8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: 0.45em;
 }
 
 #selector_div #set {
@@ -678,14 +679,17 @@ export default {
 
 .dice-toggle-button .toggle-label,
 .selector-button .button-label {
-  position: absolute;
-  width: 1px;
-  height: 1px;
   padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
+  margin: 0;
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
   white-space: nowrap;
   border: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  color: #f6efe2;
 }
 </style>
