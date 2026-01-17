@@ -1,19 +1,32 @@
 <template>
   <nav v-if="!isHomeRoute" :class="{ 'nav-dice': isDiceRoute }">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link> |
-    <router-link to="/dice">Dice Roller</router-link>
+    <router-link to="/">{{ $t("home") }}</router-link>
+    <span class="nav-sep">|</span>
+    <router-link to="/about">{{ $t("about") }}</router-link>
+    <span class="nav-sep">|</span>
+    <router-link to="/dice">{{ $t("diceRoller") }}</router-link>
+    <span class="nav-sep">|</span>
+    <label class="locale-switch">
+      <span>{{ $t("language") }}</span>
+      <select v-model="currentLocale" aria-label="Language">
+        <option v-for="locale in locales" :key="locale.code" :value="locale.code">
+          {{ locale.label }}
+        </option>
+      </select>
+    </label>
   </nav>
   <router-view />
 </template>
 
 <script>
+  import { availableLocales, setLocale } from "@/i18n";
   export default {
     name: 'Home',
     
     data() {
       return {
         localization: {},
+        locales: availableLocales,
         // Nazwa aplikacji (fallback do tytułu zakładki)
         appTitle: (typeof process !== 'undefined' && process.env && process.env.VUE_APP_TITLE)
         ? process.env.VUE_APP_TITLE
@@ -31,6 +44,16 @@
     },
   },
   computed: {
+    currentLocale: {
+      get() {
+        return typeof this.$i18n.locale === "string"
+          ? this.$i18n.locale
+          : this.$i18n.locale.value;
+      },
+      set(locale) {
+        setLocale(locale);
+      },
+    },
     isDiceRoute() {
       return this.$route?.path === "/dice";
     },
@@ -63,6 +86,27 @@ nav a.router-link-exact-active {
   color: #42b983;
 }
 
+nav .nav-sep {
+  margin: 0 8px;
+  color: inherit;
+}
+
+nav .locale-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: inherit;
+}
+
+nav .locale-switch select {
+  border-radius: 6px;
+  border: 1px solid rgba(44, 62, 80, 0.3);
+  padding: 4px 8px;
+  background: #ffffff;
+  color: #2c3e50;
+}
+
 nav.nav-dice {
   position: fixed;
   top: 12px;
@@ -81,5 +125,11 @@ nav.nav-dice a {
 
 nav.nav-dice a.router-link-exact-active {
   color: #ffd166;
+}
+
+nav.nav-dice .locale-switch select {
+  border-color: rgba(255, 255, 255, 0.35);
+  background: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
 }
 </style>
