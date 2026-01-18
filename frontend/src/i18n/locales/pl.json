@@ -422,5 +422,13 @@
     "secondaryCta": "Wróć do poprzedniej",
     "hint": "Możesz też sprawdzić sekcję",
     "diceAlt": "Kość k20"
+  },
+  "forbiddenPage": {
+    "eyebrow": "Zamknięte wrota",
+    "lead": "Nie masz dostępu do tej sceny. Jeśli to pomyłka, wróć na główną ścieżkę albo sprawdź ustawienia konta.",
+    "primaryCta": "Wróć na stronę główną",
+    "secondaryCta": "Wróć do poprzedniej",
+    "hint": "Możesz też zajrzeć do sekcji",
+    "diceAlt": "Kość k20"
   }
 }
