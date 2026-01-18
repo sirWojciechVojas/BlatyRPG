@@ -385,5 +385,13 @@
     "secondaryCta": "Go back",
     "hint": "You can also check the",
     "diceAlt": "d20 die"
+  },
+  "forbiddenPage": {
+    "eyebrow": "Sealed gates",
+    "lead": "You do not have access to this scene. If this is a mistake, return to the main trail or review your account settings.",
+    "primaryCta": "Back to the home page",
+    "secondaryCta": "Go back",
+    "hint": "You can also check the",
+    "diceAlt": "d20 die"
   }
 }
