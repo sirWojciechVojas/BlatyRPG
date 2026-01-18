@@ -1,148 +1,426 @@
 {
-  "applicationName": "Blaty-RPG",
-  "home": "Strona główna",
-  "tabletops": "Blaty",
-  "myTabletops": "Moje Blaty",
-  "createTabletop": "Utwórz nowy blat",
-  "tutorial": "Samouczek",
-  "marketplace": "Targowiska",
-  "tools": "Narzędzia",
-  "community": "Społeczność",
-  "account": "Konto",
-  "welcome": "Witamy",
-  "welcome4U": "Jesteśmy tu dla Ciebie",
-  "welcome4UDesc": "Potrzebujesz pomocy, masz sugestię lub po prostu chcesz podzielić się swoją miłością do BlatyRPG? Nasz zespół odpowie na każdą okazję! Wszelkie zapytania prosimy kierować na adres {'admin@elite-legend.com'}",
-  "login": "Zaloguj",
-  "loggingIn": "Logowanie",
-  "signIn": "Zaloguj się",
-  "register": "Zarejestruj",
-  "registration": "Rejestracja",
-  "logout": "Wyloguj",
-  "fullname": "Imię i Nazwisko",
-  "characterDesc": "Opis Postaci",
-  "username": "Nazwa użytkownika",
-  "password": "Hasło",
-  "repeatPassword": "Powtórz Hasło",
-  "dashboard": "Panel użytkownika",
-  "campaigns": "Kampanie",
-  "characters": "Postacie",
-  "maps": "Mapy",
-  "chat": "Czat",
-  "settings": "Ustawienia",
-  "profile": "Profil",
-  "view": "Zobacz",
-  "edit": "Edytuj",
-  "delete": "Usuń",
-  "personalize": "Spersonalizuj",
-  "clone": "Sklonuj",
-  "create": "Utwórz",
-  "save": "Zapisz",
-  "cancel": "Anuluj",
-  "yes": "Tak",
-  "no": "Nie",
-  "confirm": "Potwierdź",
-  "error": "Błąd",
-  "success": "Sukces",
-  "loading": "Ładowanie",
-  "search": "Szukaj",
-  "results": "Wyniki",
-  "not_found": "Nie znaleziono",
-  "access_denied": "Odmowa dostępu",
-  "contact": "Kontakt",
-  "help": "Pomoc",
-  "terms": "Warunki użytkowania",
-  "privacy": "Polityka prywatności",
-  "startGame": "Uruchom grę",
-  "createCampaign": "Utwórz Kampanię",
-  "campaignsStatus": "Status Kampanii",
-  "campaignsDesc": "Opis Kampanii",
-  "GM": "Game Master",
-  "enterMessage": "Wpisz wiadomość",
-  "send": "Wyślij",
-  "pouch": "Stan Twojej sakiewki:",
-  "getCoin": "Pozyskaj",
-  "spendCoin": "Wydaj",
-  "heroTraits": "Cechy Bohatera",
-  "skills&abilities": "Umiejętności i Zdolności",
-  "newCharacter": "Nowa postać",
-  "newGroup": "Nowa grupa",
-  "NPCs": "Bohaterowie Niezależni",
-  "PCs": "Bohaterowie Graczy",
-  "badRequest": "Złe żądanie",
-  "unauthorized": "Nieautoryzowany",
-  "forbidden": "Zabronione",
-  "notFound": "Nie znaleziono",
-  "internalServerError": "Błąd serwera",
-  "generic": "Wystąpił błąd",
-  "invalidData": "Nieprawidłowe dane",
-  "diarySaved": "Twoje notatki poprawnie zapisano.",
-  "heroData": "Dane Bohatera",
-  "basicData": "Podstawowe dane",
-  "gamerName": "Imię Gracza",
-  "gameMaster": "Mistrz Gry",
-  "campaignName": "Nazwa Kampanii",
-  "campaignYear": "Rok Kampanii",
-  "usedName": "Używana Nazwa",
-  "name": "Nazwa",
-  "appearanceAndHistory": "Wygląd i Historia",
-  "avatar": "Avatar",
-  "breed": "Rasa",
-  "stats": "Statystyki",
-  "combat": "Walka",
-  "weaponSkill": "Walka Wręcz",
-  "ballisticSkill": "Umiejętności Strzeleckie",
-  "attack": "Atakuj",
-  "movement": "Szybkość",
-  "wounds": "Punkty Żywotności",
-  "attributes": "Atrybuty",
-  "strength": "Krzepa",
-  "toughness": "Wytrzymałość",
-  "agility": "Zręczność",
-  "intelligence": "Inteligencja",
-  "willpower": "Siła Woli",
-  "fellowship": "Ogłada",
-  "additional": "Dodatkowe",
-  "magic": "Magia",
-  "strengthBonus": "Siła",
-  "toughnessBonus": "Wytrzymałość",
-  "fatePoints": "Punkty Przeznaczenia",
-  "insanityPoints": "Punkty Obłędu",
-  "infoAboutCharacter": "Informacje o postaci",
-  "falseIdentity": "Twoja fałszywa tożsamość",
-  "incarnation": "Twoje wcielenie",
-  "currentProfession": "Aktualna profesja",
-  "previousProfession": "Poprzednia profesja",
-  "race": "Rasa",
-  "sex": "Płeć",
-  "worshipedDeity": "Czczone Bóstwo",
-  "eyes": "Oczy",
-  "hair": "Włosy",
-  "birthplace": "Miejsce urodzenia",
-  "age": "Wiek",
-  "height": "Wzrost",
-  "weight": "Waga",
-  "siblings": "Rodzina (rodzeństwo)",
-  "starSign": "Znak gwiezdny",
-  "disorders": "Zaburzenia psychiczne",
-  "specialSigns": "Znaki szczególne",
-  "woundsAndScars": "Rany i blizny",
-  "charHistory": "Historia",
-  "charHistoryAddition": "Uzupełnienie",
-  "charSecret": "Twój Sekret",
-  "playersActivity": "Aktywność graczy",
-  "refresh": "Odśwież",
-  "subscribe": "Subskrybuj",
-  "rSuccess": "Udało się! Teraz musisz tylko poczekać na aktywację!",
-  "requestAllowed": "Dozwolone jest tylko żądanie typu POST!",
-  "hasAccountAlready": "Masz już konto?",
-  "notAccountYet": "Nie posiadasz jeszcze konta?",
-  "campaignIdFail": "Żadna kampania nie została znaleziona!",
-  "noAccess": "Brak dostępu",
-  "noAccessToCampaign": "Nie masz uprawnień do oglądania tej kampanii!",
-  "noMessages": "Brak wiadomości do wyświetlenia.",
-  "sethelp": "Kliknij, aby dodać. Przeciągnij, aby rzucić!",
-  "labelhelp": "Kliknij, aby kontynuować. Przeciągnij, aby rzucić ponownie!",
-  "about": "O nas",
-  "diceRoller": "Rzuty kośćmi",
-  "language": "Język"
+  "app": {
+    "applicationName": "Blaty-RPG"
+  },
+  "nav": {
+    "home": "Strona główna",
+    "about": "O nas",
+    "diceRoller": "Rzuty kośćmi",
+    "language": "Język",
+    "tabletops": "Blaty",
+    "myTabletops": "Moje Blaty",
+    "createTabletop": "Utwórz nowy blat",
+    "tutorial": "Samouczek",
+    "marketplace": "Targowiska",
+    "tools": "Narzędzia",
+    "community": "Społeczność",
+    "account": "Konto",
+    "contact": "Kontakt",
+    "help": "Pomoc",
+    "terms": "Warunki użytkowania",
+    "privacy": "Polityka prywatności",
+    "startGame": "Uruchom grę"
+  },
+  "sections": {
+    "dashboard": "Panel użytkownika",
+    "campaigns": "Kampanie",
+    "characters": "Postacie",
+    "maps": "Mapy",
+    "chat": "Czat",
+    "settings": "Ustawienia",
+    "profile": "Profil"
+  },
+  "auth": {
+    "login": "Zaloguj",
+    "loggingIn": "Logowanie",
+    "signIn": "Zaloguj się",
+    "register": "Zarejestruj",
+    "registration": "Rejestracja",
+    "logout": "Wyloguj",
+    "fullname": "Imię i Nazwisko",
+    "username": "Nazwa użytkownika",
+    "password": "Hasło",
+    "repeatPassword": "Powtórz Hasło",
+    "hasAccountAlready": "Masz już konto?",
+    "notAccountYet": "Nie posiadasz jeszcze konta?"
+  },
+  "actions": {
+    "view": "Zobacz",
+    "edit": "Edytuj",
+    "delete": "Usuń",
+    "personalize": "Spersonalizuj",
+    "clone": "Sklonuj",
+    "create": "Utwórz",
+    "save": "Zapisz",
+    "cancel": "Anuluj",
+    "yes": "Tak",
+    "no": "Nie",
+    "confirm": "Potwierdź",
+    "refresh": "Odśwież"
+  },
+  "ui": {
+    "loading": "Ładowanie",
+    "search": "Szukaj",
+    "results": "Wyniki"
+  },
+  "status": {
+    "notFound": "Nie znaleziono",
+    "accessDenied": "Odmowa dostępu",
+    "error": "Błąd",
+    "success": "Sukces"
+  },
+  "errors": {
+    "badRequest": "Złe żądanie",
+    "unauthorized": "Nieautoryzowany",
+    "forbidden": "Zabronione",
+    "notFound": "Nie znaleziono",
+    "internalServerError": "Błąd serwera",
+    "generic": "Wystąpił błąd",
+    "invalidData": "Nieprawidłowe dane"
+  },
+  "campaign": {
+    "createCampaign": "Utwórz Kampanię",
+    "campaignsStatus": "Status Kampanii",
+    "campaignsDesc": "Opis Kampanii",
+    "campaignName": "Nazwa Kampanii",
+    "campaignYear": "Rok Kampanii",
+    "campaignIdFail": "Żadna kampania nie została znaleziona!",
+    "noAccess": "Brak dostępu",
+    "noAccessToCampaign": "Nie masz uprawnień do oglądania tej kampanii!",
+    "gm": "Game Master"
+  },
+  "messages": {
+    "welcome": "Witamy",
+    "welcome4U": "Jesteśmy tu dla Ciebie",
+    "welcome4UDesc": "Potrzebujesz pomocy, masz sugestię lub po prostu chcesz podzielić się swoją miłością do BlatyRPG? Nasz zespół odpowie na każdą okazję! Wszelkie zapytania prosimy kierować na adres {'admin@elite-legend.com'}",
+    "enterMessage": "Wpisz wiadomość",
+    "send": "Wyślij",
+    "diarySaved": "Twoje notatki poprawnie zapisano.",
+    "noMessages": "Brak wiadomości do wyświetlenia.",
+    "rSuccess": "Udało się! Teraz musisz tylko poczekać na aktywację!",
+    "requestAllowed": "Dozwolone jest tylko żądanie typu POST!",
+    "playersActivity": "Aktywność graczy",
+    "subscribe": "Subskrybuj"
+  },
+  "wallet": {
+    "pouch": "Stan Twojej sakiewki:",
+    "getCoin": "Pozyskaj",
+    "spendCoin": "Wydaj"
+  },
+  "character": {
+    "characterDesc": "Opis Postaci",
+    "heroTraits": "Cechy Bohatera",
+    "skills&abilities": "Umiejętności i Zdolności",
+    "newCharacter": "Nowa postać",
+    "newGroup": "Nowa grupa",
+    "NPCs": "Bohaterowie Niezależni",
+    "PCs": "Bohaterowie Graczy",
+    "heroData": "Dane Bohatera",
+    "basicData": "Podstawowe dane",
+    "gamerName": "Imię Gracza",
+    "gameMaster": "Mistrz Gry",
+    "usedName": "Używana Nazwa",
+    "name": "Nazwa",
+    "appearanceAndHistory": "Wygląd i Historia",
+    "avatar": "Avatar",
+    "breed": "Rasa",
+    "stats": "Statystyki",
+    "combat": "Walka",
+    "weaponSkill": "Walka Wręcz",
+    "ballisticSkill": "Umiejętności Strzeleckie",
+    "attack": "Atakuj",
+    "movement": "Szybkość",
+    "wounds": "Punkty Żywotności"
+  },
+  "attributes": {
+    "attributes": "Atrybuty",
+    "strength": "Krzepa",
+    "toughness": "Wytrzymałość",
+    "agility": "Zręczność",
+    "intelligence": "Inteligencja",
+    "willpower": "Siła Woli",
+    "fellowship": "Ogłada",
+    "additional": "Dodatkowe",
+    "magic": "Magia",
+    "strengthBonus": "Siła",
+    "toughnessBonus": "Wytrzymałość",
+    "fatePoints": "Punkty Przeznaczenia",
+    "insanityPoints": "Punkty Obłędu"
+  },
+  "profile": {
+    "infoAboutCharacter": "Informacje o postaci",
+    "falseIdentity": "Twoja fałszywa tożsamość",
+    "incarnation": "Twoje wcielenie",
+    "currentProfession": "Aktualna profesja",
+    "previousProfession": "Poprzednia profesja",
+    "race": "Rasa",
+    "sex": "Płeć",
+    "worshipedDeity": "Czczone Bóstwo",
+    "eyes": "Oczy",
+    "hair": "Włosy",
+    "birthplace": "Miejsce urodzenia",
+    "age": "Wiek",
+    "height": "Wzrost",
+    "weight": "Waga",
+    "siblings": "Rodzina (rodzeństwo)",
+    "starSign": "Znak gwiezdny",
+    "disorders": "Zaburzenia psychiczne",
+    "specialSigns": "Znaki szczególne",
+    "woundsAndScars": "Rany i blizny",
+    "charHistory": "Historia",
+    "charHistoryAddition": "Uzupełnienie",
+    "charSecret": "Twój Sekret"
+  },
+  "helpers": {
+    "sethelp": "Kliknij, aby dodać. Przeciągnij, aby rzucić!",
+    "labelhelp": "Kliknij, aby kontynuować. Przeciągnij, aby rzucić ponownie!"
+  },
+  "favorites": {
+    "fav_name": "Atak",
+    "fav_delete": "Usuń ulubione",
+    "fav_edit": "Edytuj nazwę ulubionego",
+    "fav_throw": "Rzuć kośćmi",
+    "fav_colorset": "Zestaw kolorów",
+    "fav_texture": "Tekstura"
+  },
+  "landing": {
+    "brand": {
+      "title": "Blaty RPG VTT",
+      "subtitle": "Samodzielnie hostowana i nowoczesna platforma RPG"
+    },
+    "nav": {
+      "features": "Funkcje",
+      "gallery": "Galeria",
+      "modules": "Moduły",
+      "stats": "Statystyki",
+      "start": "Start",
+      "dice": "Rzuty 3D",
+      "startSession": "Rozpocznij sesję"
+    },
+    "hero": {
+      "eyebrow": "Premium VTT w klimacie fantasy",
+      "logoAlt": "BlatyRPG logo",
+      "title": "BlatyRPG to wirtualny stół, który wygląda jak z klasycznej gry cRPG.",
+      "lead": "Prowadź sesje w stylu Pillars of Eternity. Mapy, fog of war, audio ambient, karty postaci i narzędzia MG spięte w jedno centrum dowodzenia.",
+      "primaryCta": "Stwórz stół",
+      "secondaryCta": "Zobacz interfejs",
+      "chips": {
+        "maps": "Mapy 4K",
+        "fog": "Fog of War",
+        "narration": "Automaty narracji",
+        "live": "Sesje na żywo"
+      },
+      "metrics": {
+        "scenes": "Scen i map",
+        "latency": "Średnie opóźnienie",
+        "hosting": "Hosting sesji"
+      },
+      "screen": {
+        "title": "Sesja: Grobowiec Królewski",
+        "badge": "LIVE",
+        "party": "Drużyna",
+        "journal": "Dziennik"
+      },
+      "cards": {
+        "gmTitle": "Tryb MG",
+        "gmText": "Sceny, puenty i tajemnice zawsze pod ręką.",
+        "fogTitle": "Fog Control",
+        "fogText": "Dynamiczne maski i światło w czasie rzeczywistym."
+      }
+    },
+    "usp": {
+      "scenes": {
+        "title": "Sceny i mapy",
+        "desc": "Pliki warstwowe, adnotacje i hot spoty."
+      },
+      "narration": {
+        "title": "Narracja live",
+        "desc": "Zdarzenia, dźwięki i automaty MG."
+      },
+      "characters": {
+        "title": "Postacie",
+        "desc": "Karty, inwentarz, statusy i notatki."
+      },
+      "library": {
+        "title": "Biblioteka",
+        "desc": "Potwory, lokacje i gotowe moduły."
+      }
+    },
+    "features": {
+      "eyebrow": "Funkcje VTT",
+      "title": "Całościowy ekosystem sesji, od sceny po kronikę.",
+      "lead": "Stwórz sesję w kilka minut i prowadź ją w tempie opowieści. BlatyRPG łączy modułowość z klimatem premium.",
+      "items": {
+        "maps": {
+          "title": "Mapy i sceny",
+          "desc": "Warstwy, siatki, maski i dynamiczne znaczniki terenu.",
+          "meta1": "Warstwy",
+          "meta2": "Przełączniki",
+          "meta3": "Hot spoty"
+        },
+        "time": {
+          "title": "Silnik czasu",
+          "desc": "Inicjatywa, tury i automatyzacje dostosowane do systemu.",
+          "meta1": "Tury",
+          "meta2": "Ticki",
+          "meta3": "Makra"
+        },
+        "characters": {
+          "title": "Karty postaci",
+          "desc": "Rzuty, stany, ekwipunek i przejrzyste portrety bohaterów.",
+          "meta1": "Postacie",
+          "meta2": "Inwentarz",
+          "meta3": "Tagi"
+        },
+        "narration": {
+          "title": "Warstwy narracji",
+          "desc": "Notatki, sekrety, pułapki i informacje tylko dla MG.",
+          "meta1": "Notatki",
+          "meta2": "Sekrety",
+          "meta3": "Kontrola"
+        },
+        "audio": {
+          "title": "Audio i klimat",
+          "desc": "Playlisty, triggerowane dźwięki i ambient per scena.",
+          "meta1": "Playlisty",
+          "meta2": "Trigger",
+          "meta3": "Ambient"
+        },
+        "modules": {
+          "title": "Moduły i rozszerzenia",
+          "desc": "Dodawaj mechaniki, dodatki i biblioteki światów.",
+          "meta1": "Pluginy",
+          "meta2": "API",
+          "meta3": "Import"
+        }
+      },
+      "callout": {
+        "gm": {
+          "title": "Panel MG",
+          "desc": "Kontrola scen, inicjatywy i aktorów z jednego miejsca.",
+          "item1": "Monitorowanie drużyny",
+          "item2": "Trigger zdarzeń",
+          "item3": "Panele szybkich akcji"
+        },
+        "player": {
+          "title": "Panel gracza",
+          "desc": "Skupienie na fabule, szybki dostęp do kart i dziennika.",
+          "item1": "Widgety walki",
+          "item2": "Diariusz sesji",
+          "item3": "Interakcje scen"
+        }
+      }
+    },
+    "gallery": {
+      "eyebrow": "Galeria",
+      "title": "Mocki interfejsu i ilustracje scen.",
+      "lead": "Zaprojektowane jak premium VTT z silnym klimatem dark fantasy.",
+      "shots": {
+        "table": {
+          "title": "Stół sesyjny",
+          "desc": "Widok mapy z warstwami i tokenami.",
+          "alt": "Mapa sesji"
+        },
+        "hero": {
+          "title": "Karta bohatera",
+          "desc": "Statystyki, sprzęt, statusy.",
+          "alt": "Panel bohatera"
+        },
+        "lore": {
+          "title": "Kronika i lore",
+          "desc": "Notatki, plotki, frakcje.",
+          "alt": "Kronika kampanii"
+        }
+      },
+      "strip": {
+        "fantasy": {
+          "title": "Ilustracje fantasy",
+          "desc": "Tła i ramy inspirowane malarstwem i ikonografią gier cRPG."
+        },
+        "infographics": {
+          "title": "Infografiki sesji",
+          "desc": "Przepływ danych między modułami i statystyki spotkań."
+        }
+      }
+    },
+    "modules": {
+      "eyebrow": "Ekosystem",
+      "title": "Moduły spinają wszystko w jeden rytm sesji.",
+      "lead": "Każdy element ma swoje miejsce, ale działa jak jedna machina.",
+      "nodes": {
+        "engine": "Silnik sesji",
+        "maps": "Mapy",
+        "characters": "Postacie",
+        "journal": "Dziennik",
+        "rules": "Reguły",
+        "audio": "Audio",
+        "stats": "Statystyki"
+      },
+      "cards": {
+        "integrations": {
+          "title": "Integracje",
+          "desc": "Importuj światy, potwory i scenariusze z zewnątrz.",
+          "tag1": "JSON",
+          "tag2": "PDF",
+          "tag3": "API"
+        },
+        "stability": {
+          "title": "Stabilność",
+          "desc": "Synchro stanu, backupy i logi sesji w czasie rzeczywistym.",
+          "tag1": "Backup",
+          "tag2": "Audit",
+          "tag3": "Sync"
+        },
+        "growth": {
+          "title": "Rozwój",
+          "desc": "Modularna architektura pod scenariusze i kampanie.",
+          "tag1": "Pluginy",
+          "tag2": "Skrypty",
+          "tag3": "Pakiety"
+        }
+      }
+    },
+    "stats": {
+      "eyebrow": "Wyniki",
+      "title": "Wydajność i wrażenia na poziomie premium.",
+      "lead": "Minimalne opóźnienia, natychmiastowa reakcja, stabilny hosting.",
+      "cards": {
+        "uptime": "Uptime sesji",
+        "fasterTurns": "Szybsze tury",
+        "textures": "Tekstury map",
+        "starterModules": "Moduły startowe"
+      },
+      "quotes": {
+        "first": {
+          "text": "BlatyRPG daje MG pełną kontrolę nad rytmem sesji. Czujemy się jak przy stole z prawdziwymi rekwizytami.",
+          "author": "Anna, MG kampanii Winterfall"
+        },
+        "second": {
+          "text": "Interfejs ma klimat prawdziwej gry RPG. Zero plastiku, samo złoto i drewno.",
+          "author": "Krzysiek, gracz"
+        }
+      }
+    },
+    "cta": {
+      "eyebrow": "Gotowy na sesję",
+      "title": "Wejdź do świata BlatyRPG i zbuduj stół, który pamięta każdą przygodę.",
+      "lead": "Zaproś drużynę, wybierz sceny i uruchom sesję w kilka minut. Zero instalacji dodatkowych narzędzi.",
+      "primaryCta": "Stwórz darmowy stół",
+      "secondaryCta": "Testuj rzuty 3D",
+      "foot": "Działa na desktopie i mobile.",
+      "diceAlt": "Kości k20"
+    },
+    "footer": {
+      "text": "BlatyRPG - premium VTT dla Starych Blatów.",
+      "meta": "Wersja preview - frontend Vue 3."
+    }
+  },
+  "notFoundPage": {
+    "eyebrow": "Zagubiony szlak",
+    "lead": "Wygląda na to, że ten blat zniknął z mapy. Wróć na główną ścieżkę albo spróbuj ponownie.",
+    "primaryCta": "Wróć na stronę główną",
+    "secondaryCta": "Wróć do poprzedniej",
+    "hint": "Możesz też sprawdzić sekcję",
+    "diceAlt": "Kość k20"
+  }
 }
