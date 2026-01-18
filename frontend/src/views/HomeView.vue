@@ -4,54 +4,69 @@
       <button type="button" class="brand" @click="scrollTo('hero')">
         <span class="brand-mark">BR</span>
         <span class="brand-copy">
-          <span class="brand-title">Blaty RPG VTT</span>
-          <span class="brand-sub">A Self-Hosted & Modern Roleplaying Platform</span>
+          <span class="brand-title">{{ $t("landing.brand.title") }}</span>
+          <span class="brand-sub">{{ $t("landing.brand.subtitle") }}</span>
         </span>
       </button>
       <nav class="nav-links">
-        <button type="button" class="nav-link" @click="scrollTo('features')">Funkcje</button>
-        <button type="button" class="nav-link" @click="scrollTo('gallery')">Galeria</button>
-        <button type="button" class="nav-link" @click="scrollTo('modules')">Moduly</button>
-        <button type="button" class="nav-link" @click="scrollTo('stats')">Statystyki</button>
-        <button type="button" class="nav-link" @click="scrollTo('cta')">Start</button>
+        <button type="button" class="nav-link" @click="scrollTo('features')">
+          {{ $t("landing.nav.features") }}
+        </button>
+        <button type="button" class="nav-link" @click="scrollTo('gallery')">
+          {{ $t("landing.nav.gallery") }}
+        </button>
+        <button type="button" class="nav-link" @click="scrollTo('modules')">
+          {{ $t("landing.nav.modules") }}
+        </button>
+        <button type="button" class="nav-link" @click="scrollTo('stats')">
+          {{ $t("landing.nav.stats") }}
+        </button>
+        <button type="button" class="nav-link" @click="scrollTo('cta')">
+          {{ $t("landing.nav.start") }}
+        </button>
       </nav>
       <div class="topbar-actions">
-        <router-link class="ghost-link" to="/dice">Rzuty 3D</router-link>
-        <button type="button" class="cta-btn small" @click="scrollTo('cta')">Rozpocznij sesje</button>
+        <router-link class="ghost-link" to="/dice">
+          {{ $t("landing.nav.dice") }}
+        </router-link>
+        <button type="button" class="cta-btn small" @click="scrollTo('cta')">
+          {{ $t("landing.nav.startSession") }}
+        </button>
       </div>
     </header>
 
     <section class="hero" id="hero">
       <div class="hero-content">
-        <p class="eyebrow">Premium VTT w klimacie fantasy</p>
-        <img class="hero-logo" :src="assets.logo" alt="BlatyRPG logo" />
-        <h1>BlatyRPG to wirtualny stol, ktory wyglada jak z klasycznej gry cRPG.</h1>
-        <p class="lead">
-          Prowadz sesje w stylu Pillars of Eternity. Mapy, fog of war, audio ambient,
-          karty postaci i narzedzia MG spiete w jedno centrum dowodzenia.
-        </p>
+        <p class="eyebrow">{{ $t("landing.hero.eyebrow") }}</p>
+        <img class="hero-logo" :src="assets.logo" :alt="$t('landing.hero.logoAlt')" />
+        <h1>{{ $t("landing.hero.title") }}</h1>
+        <p class="lead">{{ $t("landing.hero.lead") }}</p>
         <div class="hero-actions">
-          <button type="button" class="cta-btn" @click="scrollTo('cta')">Stworz stol</button>
-          <button type="button" class="ghost-btn" @click="scrollTo('gallery')">Zobacz interfejs</button>
+          <button type="button" class="cta-btn" @click="scrollTo('cta')">
+            {{ $t("landing.hero.primaryCta") }}
+          </button>
+          <button type="button" class="ghost-btn" @click="scrollTo('gallery')">
+            {{ $t("landing.hero.secondaryCta") }}
+          </button>
         </div>
         <div class="hero-chips">
-          <span>Mapy 4K</span>
-          <span>Fog of War</span>
-          <span>Automaty narracji</span>
-          <span>Sesje na zywo</span>
+          <span>{{ $t("landing.hero.chips.maps") }}</span>
+          <span>{{ $t("landing.hero.chips.fog") }}</span>
+          <span>{{ $t("landing.hero.chips.narration") }}</span>
+          <span>{{ $t("landing.hero.chips.live") }}</span>
         </div>
         <div class="hero-metrics">
           <div class="metric">
             <span class="metric-value">120+</span>
-            <span class="metric-label">Scen i map</span>
+            <span class="metric-label">{{ $t("landing.hero.metrics.scenes") }}</span>
           </div>
           <div class="metric">
             <span class="metric-value">48 ms</span>
-            <span class="metric-label">Srednie opoznienie</span>
+            <span class="metric-label">{{ $t("landing.hero.metrics.latency") }}</span>
           </div>
           <div class="metric">
             <span class="metric-value">24/7</span>
-            <span class="metric-label">Hosting sesji</span>
+            <span class="metric-label">{{ $t("landing.hero.metrics.hosting") }}</span>
           </div>
         </div>
       </div>
@@ -63,8 +78,8 @@
               <span></span>
               <span></span>
             </div>
-            <div class="screen-title">Sesja: Grobowiec Krolewski</div>
-            <div class="screen-badge">LIVE</div>
+            <div class="screen-title">{{ $t("landing.hero.screen.title") }}</div>
+            <div class="screen-badge">{{ $t("landing.hero.screen.badge") }}</div>
           </div>
           <div class="screen-body">
             <div class="map-preview">
@@ -75,7 +90,7 @@
             </div>
             <div class="side-panels">
               <div class="side-card">
-                <div class="side-title">Druzyna</div>
+                <div class="side-title">{{ $t("landing.hero.screen.party") }}</div>
                 <div class="avatar-row">
                   <span class="avatar"></span>
                   <span class="avatar"></span>
@@ -87,7 +102,7 @@
                 </div>
               </div>
               <div class="side-card log-card">
-                <div class="side-title">Dziennik</div>
+                <div class="side-title">{{ $t("landing.hero.screen.journal") }}</div>
                 <div class="log-line"></div>
                 <div class="log-line"></div>
                 <div class="log-line wide"></div>
@@ -97,44 +112,41 @@
           </div>
         </div>
         <div class="floating-card card-one">
-          <div class="floating-title">Tryb MG</div>
-          <p>Sceny, puenty i tajemnice zawsze pod reka.</p>
+          <div class="floating-title">{{ $t("landing.hero.cards.gmTitle") }}</div>
+          <p>{{ $t("landing.hero.cards.gmText") }}</p>
         </div>
         <div class="floating-card card-two">
-          <div class="floating-title">Fog Control</div>
-          <p>Dynamiczne maski i swiatlo w czasie rzeczywistym.</p>
+          <div class="floating-title">{{ $t("landing.hero.cards.fogTitle") }}</div>
+          <p>{{ $t("landing.hero.cards.fogText") }}</p>
         </div>
       </div>
     </section>
 
     <section class="usp-strip" id="usp">
       <div class="usp-card">
-        <span class="usp-title">Sceny i mapy</span>
-        <span class="usp-desc">Pliki warstwowe, adnotacje i hot spoty.</span>
+        <span class="usp-title">{{ $t("landing.usp.scenes.title") }}</span>
+        <span class="usp-desc">{{ $t("landing.usp.scenes.desc") }}</span>
       </div>
       <div class="usp-card">
-        <span class="usp-title">Narracja live</span>
-        <span class="usp-desc">Zdarzenia, dzwieki i automaty MG.</span>
+        <span class="usp-title">{{ $t("landing.usp.narration.title") }}</span>
+        <span class="usp-desc">{{ $t("landing.usp.narration.desc") }}</span>
       </div>
       <div class="usp-card">
-        <span class="usp-title">Postacie</span>
-        <span class="usp-desc">Karty, inwentarz, statusy i notatki.</span>
+        <span class="usp-title">{{ $t("landing.usp.characters.title") }}</span>
+        <span class="usp-desc">{{ $t("landing.usp.characters.desc") }}</span>
       </div>
       <div class="usp-card">
-        <span class="usp-title">Biblioteka</span>
-        <span class="usp-desc">Potwory, lokacje i gotowe moduly.</span>
+        <span class="usp-title">{{ $t("landing.usp.library.title") }}</span>
+        <span class="usp-desc">{{ $t("landing.usp.library.desc") }}</span>
       </div>
     </section>
 
     <section class="section features-section parallax" id="features">
       <div class="section-inner">
         <div class="section-head">
-          <p class="eyebrow">Funkcje VTT</p>
-          <h2>Calosciowy ekosystem sesji, od sceny po kronike.</h2>
-          <p class="section-lead">
-            Stworz sesje w kilka minut i prowadz ja w tempie opowiesci. BlatyRPG laczy
-            modulowosc z klimatem premium.
-          </p>
+          <p class="eyebrow">{{ $t("landing.features.eyebrow") }}</p>
+          <h2>{{ $t("landing.features.title") }}</h2>
+          <p class="section-lead">{{ $t("landing.features.lead") }}</p>
         </div>
         <div class="feature-grid">
           <article class="feature-card">
@@ -144,12 +156,12 @@
                 <path d="M4 17h6v2H4zM14 17h6v2h-6z" />
               </svg>
             </div>
-            <h3>Mapy i sceny</h3>
-            <p>Warstwy, siatki, maski i dynamiczne znaczniki terenu.</p>
+            <h3>{{ $t("landing.features.items.maps.title") }}</h3>
+            <p>{{ $t("landing.features.items.maps.desc") }}</p>
             <div class="feature-meta">
-              <span>Warstwy</span>
-              <span>Switche</span>
-              <span>Hot spoty</span>
+              <span>{{ $t("landing.features.items.maps.meta1") }}</span>
+              <span>{{ $t("landing.features.items.maps.meta2") }}</span>
+              <span>{{ $t("landing.features.items.maps.meta3") }}</span>
             </div>
           </article>
           <article class="feature-card">
@@ -159,12 +171,12 @@
                 <path d="M12 8v4l3 3" />
               </svg>
             </div>
-            <h3>Silnik czasu</h3>
-            <p>Inicjatywa, tury i automatyzacje dostosowane do systemu.</p>
+            <h3>{{ $t("landing.features.items.time.title") }}</h3>
+            <p>{{ $t("landing.features.items.time.desc") }}</p>
             <div class="feature-meta">
-              <span>Tury</span>
-              <span>Ticki</span>
-              <span>Makra</span>
+              <span>{{ $t("landing.features.items.time.meta1") }}</span>
+              <span>{{ $t("landing.features.items.time.meta2") }}</span>
+              <span>{{ $t("landing.features.items.time.meta3") }}</span>
             </div>
           </article>
           <article class="feature-card">
@@ -174,12 +186,12 @@
                 <path d="M9 9h6v6H9z" />
               </svg>
             </div>
-            <h3>Karty postaci</h3>
-            <p>Rzuty, stany, ekwipunek i przejrzyste portrety bohaterow.</p>
+            <h3>{{ $t("landing.features.items.characters.title") }}</h3>
+            <p>{{ $t("landing.features.items.characters.desc") }}</p>
             <div class="feature-meta">
-              <span>Postacie</span>
-              <span>Inwentarz</span>
-              <span>Tagi</span>
+              <span>{{ $t("landing.features.items.characters.meta1") }}</span>
+              <span>{{ $t("landing.features.items.characters.meta2") }}</span>
+              <span>{{ $t("landing.features.items.characters.meta3") }}</span>
             </div>
           </article>
           <article class="feature-card">
@@ -189,12 +201,12 @@
                 <path d="M5 12h14v8H5z" />
               </svg>
             </div>
-            <h3>Warstwy narracji</h3>
-            <p>Notatki, sekrety, pulapki i informacje tylko dla MG.</p>
+            <h3>{{ $t("landing.features.items.narration.title") }}</h3>
+            <p>{{ $t("landing.features.items.narration.desc") }}</p>
             <div class="feature-meta">
-              <span>Notatki</span>
-              <span>Sekrety</span>
-              <span>Kontrola</span>
+              <span>{{ $t("landing.features.items.narration.meta1") }}</span>
+              <span>{{ $t("landing.features.items.narration.meta2") }}</span>
+              <span>{{ $t("landing.features.items.narration.meta3") }}</span>
             </div>
           </article>
           <article class="feature-card">
@@ -205,12 +217,12 @@
                 <path d="M16 8l4 4-4 4" />
               </svg>
             </div>
-            <h3>Audio i klimat</h3>
-            <p>Playlisty, triggerowane dzwieki i ambient per scena.</p>
+            <h3>{{ $t("landing.features.items.audio.title") }}</h3>
+            <p>{{ $t("landing.features.items.audio.desc") }}</p>
             <div class="feature-meta">
-              <span>Playlisty</span>
-              <span>Trigger</span>
-              <span>Ambient</span>
+              <span>{{ $t("landing.features.items.audio.meta1") }}</span>
+              <span>{{ $t("landing.features.items.audio.meta2") }}</span>
+              <span>{{ $t("landing.features.items.audio.meta3") }}</span>
             </div>
           </article>
           <article class="feature-card">
@@ -221,32 +233,32 @@
                 <path d="M16 5v14" />
               </svg>
             </div>
-            <h3>Moduly i rozszerzenia</h3>
-            <p>Dodawaj mechaniki, dodatki i biblioteki swiatow.</p>
+            <h3>{{ $t("landing.features.items.modules.title") }}</h3>
+            <p>{{ $t("landing.features.items.modules.desc") }}</p>
             <div class="feature-meta">
-              <span>Pluginy</span>
-              <span>API</span>
-              <span>Import</span>
+              <span>{{ $t("landing.features.items.modules.meta1") }}</span>
+              <span>{{ $t("landing.features.items.modules.meta2") }}</span>
+              <span>{{ $t("landing.features.items.modules.meta3") }}</span>
             </div>
           </article>
         </div>
         <div class="feature-callout">
           <div class="callout-card">
-            <h3>Panel MG</h3>
-            <p>Kontrola scen, inicjatywy i aktorow z jednego miejsca.</p>
+            <h3>{{ $t("landing.features.callout.gm.title") }}</h3>
+            <p>{{ $t("landing.features.callout.gm.desc") }}</p>
             <div class="callout-list">
-              <span>Monitorowanie druzyny</span>
-              <span>Trigger zdarzen</span>
-              <span>Panele szybkich akcji</span>
+              <span>{{ $t("landing.features.callout.gm.item1") }}</span>
+              <span>{{ $t("landing.features.callout.gm.item2") }}</span>
+              <span>{{ $t("landing.features.callout.gm.item3") }}</span>
             </div>
           </div>
           <div class="callout-card">
-            <h3>Panel gracza</h3>
-            <p>Skupienie na fabule, szybki dostep do kart i dziennika.</p>
+            <h3>{{ $t("landing.features.callout.player.title") }}</h3>
+            <p>{{ $t("landing.features.callout.player.desc") }}</p>
             <div class="callout-list">
-              <span>Widgety walki</span>
-              <span>Diariusz sesji</span>
-              <span>Interakcje scen</span>
+              <span>{{ $t("landing.features.callout.player.item1") }}</span>
+              <span>{{ $t("landing.features.callout.player.item2") }}</span>
+              <span>{{ $t("landing.features.callout.player.item3") }}</span>
             </div>
           </div>
         </div>
@@ -256,15 +268,15 @@
     <section class="section gallery-section" id="gallery">
       <div class="section-inner">
         <div class="section-head">
-          <p class="eyebrow">Galeria</p>
-          <h2>Mocki interfejsu i ilustracje scen.</h2>
-          <p class="section-lead">Zaprojektowane jak premium VTT z silnym klimatem dark fantasy.</p>
+          <p class="eyebrow">{{ $t("landing.gallery.eyebrow") }}</p>
+          <h2>{{ $t("landing.gallery.title") }}</h2>
+          <p class="section-lead">{{ $t("landing.gallery.lead") }}</p>
         </div>
         <div class="gallery-grid">
           <div class="shot-card shot-one">
-            <img class="shot-image" :src="assets.bg1" alt="Mapa sesji" />
-            <div class="shot-title">Stol sesyjny</div>
-            <div class="shot-sub">Widok mapy z warstwami i tokenami.</div>
+            <img class="shot-image" :src="assets.bg1" :alt="$t('landing.gallery.shots.table.alt')" />
+            <div class="shot-title">{{ $t("landing.gallery.shots.table.title") }}</div>
+            <div class="shot-sub">{{ $t("landing.gallery.shots.table.desc") }}</div>
             <div class="shot-ui">
               <div class="shot-bar"></div>
               <div class="shot-block"></div>
@@ -272,9 +284,9 @@
             </div>
           </div>
           <div class="shot-card shot-two">
-            <img class="shot-image" :src="assets.bg2" alt="Panel bohatera" />
-            <div class="shot-title">Karta bohatera</div>
-            <div class="shot-sub">Statystyki, sprzet, statusy.</div>
+            <img class="shot-image" :src="assets.bg2" :alt="$t('landing.gallery.shots.hero.alt')" />
+            <div class="shot-title">{{ $t("landing.gallery.shots.hero.title") }}</div>
+            <div class="shot-sub">{{ $t("landing.gallery.shots.hero.desc") }}</div>
             <div class="shot-ui">
               <div class="shot-line"></div>
               <div class="shot-line"></div>
@@ -282,9 +294,13 @@
             </div>
           </div>
           <div class="shot-card shot-three">
-            <img class="shot-image" :src="assets.background" alt="Kronika kampanii" />
-            <div class="shot-title">Kronika i lore</div>
-            <div class="shot-sub">Notatki, plotki, frakcje.</div>
+            <img
+              class="shot-image"
+              :src="assets.background"
+              :alt="$t('landing.gallery.shots.lore.alt')"
+            />
+            <div class="shot-title">{{ $t("landing.gallery.shots.lore.title") }}</div>
+            <div class="shot-sub">{{ $t("landing.gallery.shots.lore.desc") }}</div>
             <div class="shot-ui">
               <div class="shot-chip"></div>
               <div class="shot-chip"></div>
@@ -294,12 +310,12 @@
         </div>
         <div class="gallery-strip">
           <div class="strip-card">
-            <div class="strip-title">Ilustracje fantasy</div>
-            <p>Tle i ramy inspirowane malarstwem i ikonografia gier cRPG.</p>
+            <div class="strip-title">{{ $t("landing.gallery.strip.fantasy.title") }}</div>
+            <p>{{ $t("landing.gallery.strip.fantasy.desc") }}</p>
           </div>
           <div class="strip-card">
-            <div class="strip-title">Infografiki sesji</div>
-            <p>Przeplyw danych miedzy modulami i statystyki spotkan.</p>
+            <div class="strip-title">{{ $t("landing.gallery.strip.infographics.title") }}</div>
+            <p>{{ $t("landing.gallery.strip.infographics.desc") }}</p>
           </div>
         </div>
       </div>
@@ -308,9 +324,9 @@
     <section class="section modules-section parallax" id="modules">
       <div class="section-inner">
         <div class="section-head">
-          <p class="eyebrow">Ekosystem</p>
-          <h2>Moduly spinaja wszystko w jeden rytm sesji.</h2>
-          <p class="section-lead">Kazdy element ma swoje miejsce, ale dziala jak jedna machina.</p>
+          <p class="eyebrow">{{ $t("landing.modules.eyebrow") }}</p>
+          <h2>{{ $t("landing.modules.title") }}</h2>
+          <p class="section-lead">{{ $t("landing.modules.lead") }}</p>
         </div>
         <div class="modules-layout">
           <div class="module-diagram">
@@ -322,40 +338,40 @@
               <line x1="300" y1="180" x2="470" y2="300" />
               <line x1="300" y1="180" x2="300" y2="330" />
             </svg>
-            <div class="module-node core">Silnik sesji</div>
-            <div class="module-node map">Mapy</div>
-            <div class="module-node chars">Postacie</div>
-            <div class="module-node journal">Dziennik</div>
-            <div class="module-node rules">Reguly</div>
-            <div class="module-node audio">Audio</div>
-            <div class="module-node analytics">Statystyki</div>
+            <div class="module-node core">{{ $t("landing.modules.nodes.engine") }}</div>
+            <div class="module-node map">{{ $t("landing.modules.nodes.maps") }}</div>
+            <div class="module-node chars">{{ $t("landing.modules.nodes.characters") }}</div>
+            <div class="module-node journal">{{ $t("landing.modules.nodes.journal") }}</div>
+            <div class="module-node rules">{{ $t("landing.modules.nodes.rules") }}</div>
+            <div class="module-node audio">{{ $t("landing.modules.nodes.audio") }}</div>
+            <div class="module-node analytics">{{ $t("landing.modules.nodes.stats") }}</div>
           </div>
           <div class="modules-info">
             <div class="module-card">
-              <h3>Integracje</h3>
-              <p>Importuj swiaty, potwory i scenariusze z zewnatrz.</p>
+              <h3>{{ $t("landing.modules.cards.integrations.title") }}</h3>
+              <p>{{ $t("landing.modules.cards.integrations.desc") }}</p>
               <div class="module-tags">
-                <span>JSON</span>
-                <span>PDF</span>
-                <span>API</span>
+                <span>{{ $t("landing.modules.cards.integrations.tag1") }}</span>
+                <span>{{ $t("landing.modules.cards.integrations.tag2") }}</span>
+                <span>{{ $t("landing.modules.cards.integrations.tag3") }}</span>
               </div>
             </div>
             <div class="module-card">
-              <h3>Stabilnosc</h3>
-              <p>Synchro stanu, backupy i logi sesji w czasie rzeczywistym.</p>
+              <h3>{{ $t("landing.modules.cards.stability.title") }}</h3>
+              <p>{{ $t("landing.modules.cards.stability.desc") }}</p>
               <div class="module-tags">
-                <span>Backup</span>
-                <span>Audit</span>
-                <span>Sync</span>
+                <span>{{ $t("landing.modules.cards.stability.tag1") }}</span>
+                <span>{{ $t("landing.modules.cards.stability.tag2") }}</span>
+                <span>{{ $t("landing.modules.cards.stability.tag3") }}</span>
               </div>
             </div>
             <div class="module-card">
-              <h3>Rozwoj</h3>
-              <p>Modularna architektura pod scenariusze i kampanie.</p>
+              <h3>{{ $t("landing.modules.cards.growth.title") }}</h3>
+              <p>{{ $t("landing.modules.cards.growth.desc") }}</p>
               <div class="module-tags">
-                <span>Pluginy</span>
-                <span>Skrypty</span>
-                <span>Pakiety</span>
+                <span>{{ $t("landing.modules.cards.growth.tag1") }}</span>
+                <span>{{ $t("landing.modules.cards.growth.tag2") }}</span>
+                <span>{{ $t("landing.modules.cards.growth.tag3") }}</span>
               </div>
             </div>
           </div>
@@ -366,38 +382,36 @@
     <section class="section stats-section" id="stats">
       <div class="section-inner">
         <div class="section-head">
-          <p class="eyebrow">Wyniki</p>
-          <h2>Wydajnosc i wrazenia na poziomie premium.</h2>
-          <p class="section-lead">Minimalne opoznienia, natychmiastowa reakcja, stabilny hosting.</p>
+          <p class="eyebrow">{{ $t("landing.stats.eyebrow") }}</p>
+          <h2>{{ $t("landing.stats.title") }}</h2>
+          <p class="section-lead">{{ $t("landing.stats.lead") }}</p>
         </div>
         <div class="stats-grid">
           <div class="stat-card">
             <div class="stat-value">99.98%</div>
-            <div class="stat-label">Uptime sesji</div>
+            <div class="stat-label">{{ $t("landing.stats.cards.uptime") }}</div>
           </div>
           <div class="stat-card">
             <div class="stat-value">1.6x</div>
-            <div class="stat-label">Szybsze tury</div>
+            <div class="stat-label">{{ $t("landing.stats.cards.fasterTurns") }}</div>
           </div>
           <div class="stat-card">
             <div class="stat-value">8k</div>
-            <div class="stat-label">Tekstury map</div>
+            <div class="stat-label">{{ $t("landing.stats.cards.textures") }}</div>
           </div>
           <div class="stat-card">
             <div class="stat-value">30+</div>
-            <div class="stat-label">Moduly startowe</div>
+            <div class="stat-label">{{ $t("landing.stats.cards.starterModules") }}</div>
           </div>
         </div>
         <div class="quote-grid">
           <div class="quote-card">
-            <p>"BlatyRPG daje MG pelna kontrole nad rytmem sesji. Czujemy sie jak przy
-              stole z prawdziwymi rekwizytami."</p>
-            <div class="quote-author">Anna, MG kampanii winterfall</div>
+            <p>"{{ $t("landing.stats.quotes.first.text") }}"</p>
+            <div class="quote-author">{{ $t("landing.stats.quotes.first.author") }}</div>
           </div>
           <div class="quote-card">
-            <p>"Interfejs ma klimat prawdziwej gry RPG. Zero plastiku, samo zloto i
-              drewno."</p>
-            <div class="quote-author">Krzysiek, gracz</div>
+            <p>"{{ $t("landing.stats.quotes.second.text") }}"</p>
+            <div class="quote-author">{{ $t("landing.stats.quotes.second.author") }}</div>
           </div>
         </div>
       </div>
@@ -405,24 +419,25 @@
 
     <section class="section cta-section parallax" id="cta">
       <div class="cta-panel">
-        <p class="eyebrow">Gotowy na sesje</p>
-        <h2>Wejdz do swiata BlatyRPG i zbuduj stol, ktory pamieta kazda przygode.</h2>
-        <p class="section-lead">
-          Zapros druzyne, wybierz sceny i uruchom sesje w kilka minut. Zero instalacji
-          dodatkowych narzedzi.
-        </p>
+        <p class="eyebrow">{{ $t("landing.cta.eyebrow") }}</p>
+        <h2>{{ $t("landing.cta.title") }}</h2>
+        <p class="section-lead">{{ $t("landing.cta.lead") }}</p>
         <div class="cta-actions">
-          <button type="button" class="cta-btn large">Stworz darmowy stol</button>
-          <router-link class="ghost-link" to="/dice">Testuj rzuty 3D</router-link>
+          <button type="button" class="cta-btn large">
+            {{ $t("landing.cta.primaryCta") }}
+          </button>
+          <router-link class="ghost-link" to="/dice">
+            {{ $t("landing.cta.secondaryCta") }}
+          </router-link>
         </div>
-        <div class="cta-foot">Dziala na desktopie i mobile.</div>
-        <img class="cta-seal" :src="assets.dice20" alt="Kosci k20" />
+        <div class="cta-foot">{{ $t("landing.cta.foot") }}</div>
+        <img class="cta-seal" :src="assets.dice20" :alt="$t('landing.cta.diceAlt')" />
       </div>
     </section>
 
     <footer class="footer">
-      <div>BlatyRPG - premium VTT dla Starych Blatow.</div>
-      <div class="footer-meta">Wersja preview - frontend Vue 3.</div>
+      <div>{{ $t("landing.footer.text") }}</div>
+      <div class="footer-meta">{{ $t("landing.footer.meta") }}</div>
     </footer>
   </div>
 </template>

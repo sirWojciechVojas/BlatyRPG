@@ -1,13 +1,13 @@
 <template>
   <nav v-if="!isHomeRoute" :class="{ 'nav-dice': isDiceRoute }">
-    <router-link to="/">{{ $t("home") }}</router-link>
+    <router-link to="/">{{ $t("nav.home") }}</router-link>
     <span class="nav-sep">|</span>
-    <router-link to="/about">{{ $t("about") }}</router-link>
+    <router-link to="/about">{{ $t("nav.about") }}</router-link>
     <span class="nav-sep">|</span>
-    <router-link to="/dice">{{ $t("diceRoller") }}</router-link>
+    <router-link to="/dice">{{ $t("nav.diceRoller") }}</router-link>
     <span class="nav-sep">|</span>
     <label class="locale-switch">
-      <span>{{ $t("language") }}</span>
+      <span>{{ $t("nav.language") }}</span>
       <select v-model="currentLocale" aria-label="Language">
         <option v-for="locale in locales" :key="locale.code" :value="locale.code">
           {{ locale.label }}

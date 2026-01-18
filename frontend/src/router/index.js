@@ -23,6 +23,13 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "dice" */ "../views/DiceRollerView.vue"),
   },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "not-found",
+    meta: { title: "404" },
+    component: () =>
+      import(/* webpackChunkName: "not-found" */ "../views/NotFoundView.vue"),
+  },
 
 ];
 

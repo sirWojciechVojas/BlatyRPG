@@ -1,119 +1,389 @@
 {
-  "applicationName": "Tabletops-RPG",
-  "home": "Home",
-  "tabletops": "Tabletops",
-  "myTabletops": "My Tabletops",
-  "createTabletop": "Create New Tabletop",
-  "tutorial": "Tutorial",
-  "marketplace": "Marketplaces",
-  "tools": "Tools",
-  "community": "Community",
-  "account": "Account",
-  "welcome": "Welcome",
-  "welcome4U": "We are here for You",
-  "welcome4UDesc": "Need help, have a suggestion, or just want to share your love for TabletopsRPG' Our team is here for any occasion! Please direct all inquiries to {'admin@elite-legend.com'}",
-  "login": "Login",
-  "loggingIn": "Logging In",
-  "signIn": "Sign In",
-  "register": "Register",
-  "registration": "Registration",
-  "logout": "Logout",
-  "fullname": "Full Name",
-  "characterDesc": "Character Description",
-  "username": "Username",
-  "password": "Password",
-  "repeatPassword": "Repeat Password",
-  "dashboard": "User Dashboard",
-  "campaigns": "Campaigns",
-  "characters": "Characters",
-  "maps": "Maps",
-  "chat": "Chat",
-  "settings": "Settings",
-  "profile": "Profile",
-  "view": "View",
-  "edit": "Edit",
-  "delete": "Delete",
-  "personalize": "Personalize",
-  "clone": "Clone",
-  "create": "Create",
-  "save": "Save",
-  "cancel": "Cancel",
-  "yes": "Yes",
-  "no": "No",
-  "confirm": "Confirm",
-  "error": "Error",
-  "success": "Success",
-  "loading": "Loading",
-  "search": "Search",
-  "results": "Results",
-  "not_found": "Not Found",
-  "access_denied": "Access Denied",
-  "contact": "Contact",
-  "help": "Help",
-  "terms": "Terms of Use",
-  "privacy": "Privacy Policy",
-  "startGame": "Start Game",
-  "createCampaign": "Create Campaign",
-  "campaignsStatus": "Campaign Status",
-  "campaignsDesc": "Campaign Description",
-  "GM": "Game Master",
-  "enterMessage": "Enter Message",
-  "send": "Send",
-  "pouch": "Your Wallet Balance:",
-  "getCoin": "Get",
-  "spendCoin": "Spend",
-  "heroTraits": "Hero Traits",
-  "skills&abilities": "Skills and Abilities",
-  "badRequest": "Bad Request",
-  "unauthorized": "Unauthorized",
-  "forbidden": "Forbidden",
-  "notFound": "Not Found",
-  "internalServerError": "Internal Server Error",
-  "generic": "An error occurred",
-  "invalidData": "Invalid Data",
-  "diarySaved": "Your notes have been successfully saved.",
-  "infoAboutCharacter": "Character Information",
-  "falseIdentity": "Your False Identity",
-  "incarnation": "Your Incarnation",
-  "currentProfession": "Current Profession",
-  "previousProfession": "Previous Profession",
-  "race": "Race",
-  "sex": "Sex",
-  "worshipedDeity": "Worshiped Deity",
-  "eyes": "Eyes",
-  "hair": "Hair",
-  "birthplace": "Birthplace",
-  "age": "Age",
-  "height": "Height",
-  "weight": "Weight",
-  "siblings": "Family (siblings)",
-  "starSign": "Star Sign",
-  "disorders": "Mental Disorders",
-  "specialSigns": "Special Marks",
-  "woundsAndScars": "Wounds and Scars",
-  "charHistory": "History",
-  "charHistoryAddition": "Additional Information",
-  "charSecret": "Your Secret",
-  "playersActivity": "Players Activity",
-  "refresh": "Refresh",
-  "subscribe": "Subscribe",
-  "rSuccess": "Success! Now you just have to wait for activation!",
-  "requestAllowed": "Only POST requests are allowed!",
-  "hasAccountAlready": "Already have an account'",
-  "notAccountYet": "Don’t have an account yet'",
-  "campaignIdFail": "No campaign found!",
-  "noAccess": "No Access",
-  "noAccessToCampaign": "You do not have permission to view this campaign!",
-  "noMessages": "No messages to display.",
-  "sethelp": "Click to Add, Drag to Throw!",
-  "labelhelp": "Click to continue, Drag to throw again!",
-  "fav_name": "Attack",
-  "fav_delete": "Delete Favorite",
-  "fav_edit": "Edit Favorite Name",
-  "fav_throw": "Throw Dice",
-  "fav_colorset": "fav_colorset",
-  "fav_texture": "fav_texture",
-  "about": "About",
-  "diceRoller": "Dice Roller",
-  "language": "Language"
+  "app": {
+    "applicationName": "Tabletops-RPG"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "diceRoller": "Dice Roller",
+    "language": "Language",
+    "tabletops": "Tabletops",
+    "myTabletops": "My Tabletops",
+    "createTabletop": "Create New Tabletop",
+    "tutorial": "Tutorial",
+    "marketplace": "Marketplaces",
+    "tools": "Tools",
+    "community": "Community",
+    "account": "Account",
+    "contact": "Contact",
+    "help": "Help",
+    "terms": "Terms of Use",
+    "privacy": "Privacy Policy",
+    "startGame": "Start Game"
+  },
+  "sections": {
+    "dashboard": "User Dashboard",
+    "campaigns": "Campaigns",
+    "characters": "Characters",
+    "maps": "Maps",
+    "chat": "Chat",
+    "settings": "Settings",
+    "profile": "Profile"
+  },
+  "auth": {
+    "login": "Login",
+    "loggingIn": "Logging In",
+    "signIn": "Sign In",
+    "register": "Register",
+    "registration": "Registration",
+    "logout": "Logout",
+    "fullname": "Full Name",
+    "username": "Username",
+    "password": "Password",
+    "repeatPassword": "Repeat Password",
+    "hasAccountAlready": "Already have an account?",
+    "notAccountYet": "Don\u2019t have an account yet?"
+  },
+  "actions": {
+    "view": "View",
+    "edit": "Edit",
+    "delete": "Delete",
+    "personalize": "Personalize",
+    "clone": "Clone",
+    "create": "Create",
+    "save": "Save",
+    "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No",
+    "confirm": "Confirm",
+    "refresh": "Refresh"
+  },
+  "ui": {
+    "loading": "Loading",
+    "search": "Search",
+    "results": "Results"
+  },
+  "status": {
+    "notFound": "Not Found",
+    "accessDenied": "Access Denied",
+    "error": "Error",
+    "success": "Success"
+  },
+  "errors": {
+    "badRequest": "Bad Request",
+    "unauthorized": "Unauthorized",
+    "forbidden": "Forbidden",
+    "notFound": "Not Found",
+    "internalServerError": "Internal Server Error",
+    "generic": "An error occurred",
+    "invalidData": "Invalid Data"
+  },
+  "campaign": {
+    "createCampaign": "Create Campaign",
+    "campaignsStatus": "Campaign Status",
+    "campaignsDesc": "Campaign Description",
+    "campaignIdFail": "No campaign found!",
+    "noAccess": "No Access",
+    "noAccessToCampaign": "You do not have permission to view this campaign!",
+    "gm": "Game Master"
+  },
+  "messages": {
+    "welcome": "Welcome",
+    "welcome4U": "We are here for You",
+    "welcome4UDesc": "Need help, have a suggestion, or just want to share your love for TabletopsRPG? Our team is here for any occasion! Please direct all inquiries to {'admin@elite-legend.com'}",
+    "enterMessage": "Enter Message",
+    "send": "Send",
+    "diarySaved": "Your notes have been successfully saved.",
+    "noMessages": "No messages to display.",
+    "rSuccess": "Success! Now you just have to wait for activation!",
+    "requestAllowed": "Only POST requests are allowed!",
+    "playersActivity": "Players Activity",
+    "subscribe": "Subscribe"
+  },
+  "wallet": {
+    "pouch": "Your Wallet Balance:",
+    "getCoin": "Get",
+    "spendCoin": "Spend"
+  },
+  "character": {
+    "characterDesc": "Character Description",
+    "heroTraits": "Hero Traits",
+    "skills&abilities": "Skills and Abilities"
+  },
+  "profile": {
+    "infoAboutCharacter": "Character Information",
+    "falseIdentity": "Your False Identity",
+    "incarnation": "Your Incarnation",
+    "currentProfession": "Current Profession",
+    "previousProfession": "Previous Profession",
+    "race": "Race",
+    "sex": "Sex",
+    "worshipedDeity": "Worshiped Deity",
+    "eyes": "Eyes",
+    "hair": "Hair",
+    "birthplace": "Birthplace",
+    "age": "Age",
+    "height": "Height",
+    "weight": "Weight",
+    "siblings": "Family (siblings)",
+    "starSign": "Star Sign",
+    "disorders": "Mental Disorders",
+    "specialSigns": "Special Marks",
+    "woundsAndScars": "Wounds and Scars",
+    "charHistory": "History",
+    "charHistoryAddition": "Additional Information",
+    "charSecret": "Your Secret"
+  },
+  "helpers": {
+    "sethelp": "Click to Add, Drag to Throw!",
+    "labelhelp": "Click to continue, Drag to throw again!"
+  },
+  "favorites": {
+    "fav_name": "Attack",
+    "fav_delete": "Delete Favorite",
+    "fav_edit": "Edit Favorite Name",
+    "fav_throw": "Throw Dice",
+    "fav_colorset": "fav_colorset",
+    "fav_texture": "fav_texture"
+  },
+  "landing": {
+    "brand": {
+      "title": "Blaty RPG VTT",
+      "subtitle": "A self-hosted and modern roleplaying platform"
+    },
+    "nav": {
+      "features": "Features",
+      "gallery": "Gallery",
+      "modules": "Modules",
+      "stats": "Stats",
+      "start": "Start",
+      "dice": "3D Dice",
+      "startSession": "Start a session"
+    },
+    "hero": {
+      "eyebrow": "Premium VTT with a fantasy vibe",
+      "logoAlt": "BlatyRPG logo",
+      "title": "BlatyRPG is a virtual tabletop that feels like a classic cRPG.",
+      "lead": "Run sessions in the spirit of Pillars of Eternity. Maps, fog of war, ambient audio, character sheets, and GM tools fused into one command center.",
+      "primaryCta": "Create a table",
+      "secondaryCta": "See the interface",
+      "chips": {
+        "maps": "4K maps",
+        "fog": "Fog of war",
+        "narration": "Narrative automations",
+        "live": "Live sessions"
+      },
+      "metrics": {
+        "scenes": "Scenes and maps",
+        "latency": "Average latency",
+        "hosting": "Session hosting"
+      },
+      "screen": {
+        "title": "Session: Royal Tomb",
+        "badge": "LIVE",
+        "party": "Party",
+        "journal": "Journal"
+      },
+      "cards": {
+        "gmTitle": "GM Mode",
+        "gmText": "Scenes, twists, and secrets always within reach.",
+        "fogTitle": "Fog Control",
+        "fogText": "Dynamic masks and lighting in real time."
+      }
+    },
+    "usp": {
+      "scenes": {
+        "title": "Scenes and maps",
+        "desc": "Layered files, annotations, and hot spots."
+      },
+      "narration": {
+        "title": "Live narration",
+        "desc": "Events, sounds, and GM automations."
+      },
+      "characters": {
+        "title": "Characters",
+        "desc": "Sheets, inventory, statuses, and notes."
+      },
+      "library": {
+        "title": "Library",
+        "desc": "Monsters, locations, and ready-made modules."
+      }
+    },
+    "features": {
+      "eyebrow": "VTT features",
+      "title": "A complete session ecosystem, from scene to chronicle.",
+      "lead": "Create a session in minutes and run it at story pace. BlatyRPG blends modularity with a premium vibe.",
+      "items": {
+        "maps": {
+          "title": "Maps and scenes",
+          "desc": "Layers, grids, masks, and dynamic terrain markers.",
+          "meta1": "Layers",
+          "meta2": "Switches",
+          "meta3": "Hot spots"
+        },
+        "time": {
+          "title": "Time engine",
+          "desc": "Initiative, turns, and automations tailored to your system.",
+          "meta1": "Turns",
+          "meta2": "Ticks",
+          "meta3": "Macros"
+        },
+        "characters": {
+          "title": "Character sheets",
+          "desc": "Rolls, states, gear, and clear character portraits.",
+          "meta1": "Characters",
+          "meta2": "Inventory",
+          "meta3": "Tags"
+        },
+        "narration": {
+          "title": "Narrative layers",
+          "desc": "Notes, secrets, traps, and GM-only intel.",
+          "meta1": "Notes",
+          "meta2": "Secrets",
+          "meta3": "Control"
+        },
+        "audio": {
+          "title": "Audio and mood",
+          "desc": "Playlists, triggered sounds, and ambient per scene.",
+          "meta1": "Playlists",
+          "meta2": "Trigger",
+          "meta3": "Ambient"
+        },
+        "modules": {
+          "title": "Modules and extensions",
+          "desc": "Add mechanics, add-ons, and world libraries.",
+          "meta1": "Plugins",
+          "meta2": "API",
+          "meta3": "Import"
+        }
+      },
+      "callout": {
+        "gm": {
+          "title": "GM Panel",
+          "desc": "Control scenes, initiative, and actors from one place.",
+          "item1": "Party monitoring",
+          "item2": "Event triggers",
+          "item3": "Quick-action panels"
+        },
+        "player": {
+          "title": "Player panel",
+          "desc": "Focus on story with fast access to sheets and journal.",
+          "item1": "Combat widgets",
+          "item2": "Session journal",
+          "item3": "Scene interactions"
+        }
+      }
+    },
+    "gallery": {
+      "eyebrow": "Gallery",
+      "title": "Interface mockups and scene illustrations.",
+      "lead": "Designed like a premium VTT with a strong dark-fantasy mood.",
+      "shots": {
+        "table": {
+          "title": "Session table",
+          "desc": "Map view with layers and tokens.",
+          "alt": "Session map"
+        },
+        "hero": {
+          "title": "Character sheet",
+          "desc": "Stats, gear, statuses.",
+          "alt": "Character panel"
+        },
+        "lore": {
+          "title": "Chronicle and lore",
+          "desc": "Notes, rumors, factions.",
+          "alt": "Campaign chronicle"
+        }
+      },
+      "strip": {
+        "fantasy": {
+          "title": "Fantasy illustrations",
+          "desc": "Backdrops and frames inspired by cRPG iconography."
+        },
+        "infographics": {
+          "title": "Session infographics",
+          "desc": "Data flow between modules and encounter stats."
+        }
+      }
+    },
+    "modules": {
+      "eyebrow": "Ecosystem",
+      "title": "Modules keep everything in one session rhythm.",
+      "lead": "Each piece has a place, but runs as one machine.",
+      "nodes": {
+        "engine": "Session engine",
+        "maps": "Maps",
+        "characters": "Characters",
+        "journal": "Journal",
+        "rules": "Rules",
+        "audio": "Audio",
+        "stats": "Stats"
+      },
+      "cards": {
+        "integrations": {
+          "title": "Integrations",
+          "desc": "Import worlds, monsters, and scenarios from outside.",
+          "tag1": "JSON",
+          "tag2": "PDF",
+          "tag3": "API"
+        },
+        "stability": {
+          "title": "Stability",
+          "desc": "State sync, backups, and live session logs.",
+          "tag1": "Backup",
+          "tag2": "Audit",
+          "tag3": "Sync"
+        },
+        "growth": {
+          "title": "Growth",
+          "desc": "Modular architecture for scenarios and campaigns.",
+          "tag1": "Plugins",
+          "tag2": "Scripts",
+          "tag3": "Packages"
+        }
+      }
+    },
+    "stats": {
+      "eyebrow": "Performance",
+      "title": "Premium performance and feel.",
+      "lead": "Minimal latency, instant response, stable hosting.",
+      "cards": {
+        "uptime": "Session uptime",
+        "fasterTurns": "Faster turns",
+        "textures": "Map textures",
+        "starterModules": "Starter modules"
+      },
+      "quotes": {
+        "first": {
+          "text": "BlatyRPG gives GMs full control over session rhythm. It feels like sitting at a table with real props.",
+          "author": "Anna, Winterfall GM"
+        },
+        "second": {
+          "text": "The interface feels like a real RPG. No plastic, just gold and wood.",
+          "author": "Krzysiek, player"
+        }
+      }
+    },
+    "cta": {
+      "eyebrow": "Ready for a session",
+      "title": "Step into BlatyRPG and build a table that remembers every adventure.",
+      "lead": "Invite the party, choose scenes, and launch a session in minutes. No extra tools to install.",
+      "primaryCta": "Create a free table",
+      "secondaryCta": "Test 3D dice",
+      "foot": "Works on desktop and mobile.",
+      "diceAlt": "d20 dice"
+    },
+    "footer": {
+      "text": "BlatyRPG - premium VTT for Old Tables.",
+      "meta": "Preview version - Vue 3 frontend."
+    }
+  },
+  "notFoundPage": {
+    "eyebrow": "Lost path",
+    "lead": "Looks like this table slipped off the map. Return to the main trail or try again.",
+    "primaryCta": "Back to the home page",
+    "secondaryCta": "Go back",
+    "hint": "You can also check the",
+    "diceAlt": "d20 die"
+  }
 }
