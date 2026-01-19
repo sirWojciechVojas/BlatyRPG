@@ -10,6 +10,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "bootstrap": "^5.3.3",
     "cannon-es": "^0.20.0",
     "core-js": "^3.8.3",
     "jquery": "^3.7.1",
