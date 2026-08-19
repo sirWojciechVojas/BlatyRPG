@@ -1,0 +1,75 @@
+{
+  "vtt": {
+    "scene": {
+      "navigation": {
+        "title": "Sceny",
+        "label": "Lista scen",
+        "empty": "Ta kampania nie ma jeszcze scen."
+      },
+      "actions": {
+        "create": "Nowa scena",
+        "zoomOut": "Pomniejsz",
+        "zoomIn": "Powiększ",
+        "fit": "Dopasuj",
+        "refresh": "Odśwież",
+        "activate": "Aktywuj dla graczy",
+        "settings": "Ustawienia",
+        "retry": "Spróbuj ponownie",
+        "delete": "Usuń",
+        "cancel": "Anuluj",
+        "save": "Zapisz",
+        "deleteConfirm": "Czy na pewno usunąć tę scenę?",
+        "visibleRequired": "Przed aktywacją udostępnij scenę graczom."
+      },
+      "status": {
+        "active": "Aktywna",
+        "hidden": "Ukryta"
+      },
+      "workspace": {
+        "title": "Scena",
+        "noScene": "Wybierz scenę lub utwórz nową.",
+        "loading": "Wczytywanie scen…",
+        "unauthorizedTitle": "Brak dostępu",
+        "unauthorizedBody": "Nie masz uprawnień do scen tej kampanii.",
+        "backgroundError": "Nie udało się wczytać tła sceny.",
+        "canvasLabel": "Mapa sceny: {name}"
+      },
+      "settings": {
+        "createTitle": "Nowa scena",
+        "editTitle": "Ustawienia sceny",
+        "grid": "Siatka"
+      },
+      "fields": {
+        "name": "Nazwa",
+        "description": "Opis",
+        "backgroundUrl": "Adres tła",
+        "width": "Szerokość",
+        "height": "Wysokość",
+        "padding": "Margines mapy",
+        "backgroundColor": "Kolor tła",
+        "gridType": "Typ siatki",
+        "gridSize": "Rozmiar pola",
+        "gridDistance": "Odległość pola",
+        "gridUnit": "Jednostka",
+        "gridColor": "Kolor siatki",
+        "gridOffsetX": "Przesunięcie X",
+        "gridOffsetY": "Przesunięcie Y",
+        "gridOpacity": "Krycie siatki",
+        "sortOrder": "Kolejność",
+        "isVisible": "Widoczna dla graczy"
+      },
+      "grid": {
+        "gridless": "Bez siatki",
+        "square": "Kwadratowa",
+        "hex_pointy": "Heksagonalna — wierzchołek u góry",
+        "hex_flat": "Heksagonalna — płaska u góry"
+      },
+      "errors": {
+        "network": "Brak połączenia z serwerem.",
+        "conflict": "Scena została zmieniona przez innego użytkownika. Odśwież dane.",
+        "generic": "Nie udało się wykonać operacji na scenie.",
+        "validation": "Popraw pola: {fields}."
+      }
+    }
+  }
+}

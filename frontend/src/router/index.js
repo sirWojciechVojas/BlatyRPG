@@ -2,6 +2,7 @@ import { createRouter, createWebHashHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
 import store from "../store";
 import { ensureShopStoreModuleForRoute } from "../store/modules/loadShopModule";
+import { ensureVttStoreModuleForRoute } from "../store/modules/loadVttModule";
 
 const routes = [
   {
@@ -32,6 +33,16 @@ const routes = [
     beforeEnter: () => ensureShopStoreModuleForRoute(store),
     component: () =>
       import(/* webpackChunkName: "shop-gm" */ "../views/ShopGmWorkspace.vue"),
+  },
+  {
+    path: "/campaigns/:campaignId/scenes",
+    name: "scene-workspace",
+    meta: { title: "Scenes" },
+    beforeEnter: () => ensureVttStoreModuleForRoute(store),
+    component: () =>
+      import(
+        /* webpackChunkName: "scene-workspace" */ "../views/SceneWorkspaceView.vue"
+      ),
   },
   {
     path: "/403",

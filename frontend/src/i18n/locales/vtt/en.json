@@ -1,0 +1,75 @@
+{
+  "vtt": {
+    "scene": {
+      "navigation": {
+        "title": "Scenes",
+        "label": "Scene list",
+        "empty": "This campaign has no scenes yet."
+      },
+      "actions": {
+        "create": "New scene",
+        "zoomOut": "Zoom out",
+        "zoomIn": "Zoom in",
+        "fit": "Fit",
+        "refresh": "Refresh",
+        "activate": "Activate for players",
+        "settings": "Settings",
+        "retry": "Try again",
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "save": "Save",
+        "deleteConfirm": "Are you sure you want to delete this scene?",
+        "visibleRequired": "Make the scene visible to players before activating it."
+      },
+      "status": {
+        "active": "Active",
+        "hidden": "Hidden"
+      },
+      "workspace": {
+        "title": "Scene",
+        "noScene": "Select a scene or create a new one.",
+        "loading": "Loading scenes…",
+        "unauthorizedTitle": "Access denied",
+        "unauthorizedBody": "You do not have permission to access this campaign's scenes.",
+        "backgroundError": "The scene background could not be loaded.",
+        "canvasLabel": "Scene map: {name}"
+      },
+      "settings": {
+        "createTitle": "New scene",
+        "editTitle": "Scene settings",
+        "grid": "Grid"
+      },
+      "fields": {
+        "name": "Name",
+        "description": "Description",
+        "backgroundUrl": "Background URL",
+        "width": "Width",
+        "height": "Height",
+        "padding": "Map padding",
+        "backgroundColor": "Background color",
+        "gridType": "Grid type",
+        "gridSize": "Cell size",
+        "gridDistance": "Cell distance",
+        "gridUnit": "Unit",
+        "gridColor": "Grid color",
+        "gridOffsetX": "X offset",
+        "gridOffsetY": "Y offset",
+        "gridOpacity": "Grid opacity",
+        "sortOrder": "Sort order",
+        "isVisible": "Visible to players"
+      },
+      "grid": {
+        "gridless": "Gridless",
+        "square": "Square",
+        "hex_pointy": "Hexagonal — pointy top",
+        "hex_flat": "Hexagonal — flat top"
+      },
+      "errors": {
+        "network": "Could not connect to the server.",
+        "conflict": "Another user changed this scene. Refresh its data.",
+        "generic": "The scene operation failed.",
+        "validation": "Correct these fields: {fields}."
+      }
+    }
+  }
+}

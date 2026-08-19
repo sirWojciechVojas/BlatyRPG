@@ -5,6 +5,12 @@
     <router-link to="/about">{{ $t("nav.about") }}</router-link>
     <span class="nav-sep">|</span>
     <router-link to="/dice">{{ $t("nav.diceRoller") }}</router-link>
+    <template v-if="campaignId">
+      <span class="nav-sep">|</span>
+      <router-link :to="{ name: 'scene-workspace', params: { campaignId } }">{{
+        $t("vtt.scene.navigation.title")
+      }}</router-link>
+    </template>
     <span class="nav-sep">|</span>
     <label class="locale-switch">
       <span>{{ $t("nav.language") }}</span>
@@ -67,10 +73,16 @@ export default {
       },
     },
     usesOverlayNav() {
-      return this.$route?.path === "/dice" || this.$route?.name === "shop-gm";
+      return (
+        this.$route?.path === "/dice" ||
+        ["shop-gm", "scene-workspace"].includes(this.$route?.name)
+      );
     },
     isHomeRoute() {
       return this.$route?.path === "/";
+    },
+    campaignId() {
+      return this.$route?.params?.campaignId || null;
     },
   },
 };

@@ -100,6 +100,17 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->get('traits/(:num)', 'GameDataController::show/$1');
 
         // ----------------------------------------
+        // VTT SCENES
+        // /api/campaigns/{campaignId}/scenes
+        // ----------------------------------------
+        $routes->get('campaigns/(:num)/scenes', 'SceneController::index/$1');
+        $routes->post('campaigns/(:num)/scenes', 'SceneController::create/$1');
+        $routes->get('campaigns/(:num)/scenes/(:num)', 'SceneController::show/$1/$2');
+        $routes->patch('campaigns/(:num)/scenes/(:num)', 'SceneController::update/$1/$2');
+        $routes->delete('campaigns/(:num)/scenes/(:num)', 'SceneController::delete/$1/$2');
+        $routes->post('campaigns/(:num)/scenes/(:num)/activate', 'SceneController::activate/$1/$2');
+
+        // ----------------------------------------
         // SHOP MODULE
         // /api/shop/campaigns/{campaignId}/...
         // ----------------------------------------
