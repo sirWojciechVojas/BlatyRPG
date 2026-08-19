@@ -28,6 +28,25 @@
         {{ $t("dashboard.campaign.openScenes") }}
       </router-link>
       <router-link
+        class="secondary-action"
+        :to="{
+          name: 'character-workspace',
+          params: { campaignId: campaign.id },
+        }"
+      >
+        {{ $t("dashboard.campaign.openCharacters") }}
+      </router-link>
+      <router-link
+        class="secondary-action"
+        :to="{
+          name: 'scene-workspace',
+          params: { campaignId: campaign.id },
+          hash: '#campaign-chat',
+        }"
+      >
+        {{ $t("dashboard.campaign.openChat") }}
+      </router-link>
+      <router-link
         v-if="campaign.capabilities.canOpenShop"
         class="secondary-action"
         :to="{ name: 'shop-gm', params: { campaignId: campaign.id } }"

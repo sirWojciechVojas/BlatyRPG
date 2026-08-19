@@ -4,7 +4,7 @@
     class="app-navigation"
     :class="{
       'app-navigation--overlay': usesOverlayNav,
-      'app-navigation--workspace': isSceneWorkspace,
+      'app-navigation--workspace': isCampaignWorkspace,
     }"
   >
     <router-link to="/">{{ $t("nav.home") }}</router-link>
@@ -21,6 +21,22 @@
       <router-link :to="{ name: 'scene-workspace', params: { campaignId } }">{{
         $t("vtt.scene.navigation.title")
       }}</router-link>
+      <span class="nav-sep">|</span>
+      <router-link
+        :to="{ name: 'character-workspace', params: { campaignId } }"
+      >
+        {{ $t("dashboard.campaign.openCharacters") }}
+      </router-link>
+      <span class="nav-sep">|</span>
+      <router-link
+        :to="{
+          name: 'scene-workspace',
+          params: { campaignId },
+          hash: '#campaign-chat',
+        }"
+      >
+        {{ $t("dashboard.campaign.openChat") }}
+      </router-link>
     </template>
     <span class="nav-sep">|</span>
     <label class="locale-switch">
@@ -89,8 +105,10 @@ export default {
     usesOverlayNav() {
       return this.$route?.path === "/dice" || this.$route?.name === "shop-gm";
     },
-    isSceneWorkspace() {
-      return this.$route?.name === "scene-workspace";
+    isCampaignWorkspace() {
+      return ["scene-workspace", "character-workspace"].includes(
+        this.$route?.name,
+      );
     },
     isHomeRoute() {
       return this.$route?.path === "/";

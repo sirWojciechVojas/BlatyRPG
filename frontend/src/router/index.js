@@ -46,6 +46,15 @@ const routes = [
       ),
   },
   {
+    path: "/campaigns/:campaignId/characters",
+    name: "character-workspace",
+    meta: { title: "Characters", requiresAuth: true },
+    component: () =>
+      import(
+        /* webpackChunkName: "characters" */ "../views/CharacterWorkspaceView.vue"
+      ),
+  },
+  {
     path: "/403",
     name: "forbidden",
     meta: { title: "403" },

@@ -75,7 +75,7 @@
         @delete="deleteScene"
       />
 
-      <CampaignChatPanel :campaign-id="campaignId()" />
+      <CampaignChatPanel id="campaign-chat" :campaign-id="campaignId()" />
     </div>
   </main>
 </template>

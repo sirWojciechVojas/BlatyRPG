@@ -14,7 +14,7 @@
     "home": {
       "eyebrow": "Campaign dashboard",
       "title": "Welcome, {name}",
-      "description": "Choose a campaign and go directly to its scenes or shop."
+      "description": "Choose a campaign and open its scenes, characters, chat, or shop."
     },
     "campaign": {
       "eyebrow": "Your worlds",
@@ -23,6 +23,8 @@
       "inactive": "Inactive",
       "noDescription": "No campaign description.",
       "openScenes": "Open scenes",
+      "openCharacters": "Characters and NPCs",
+      "openChat": "Chat",
       "openShop": "Open shop"
     },
     "roles": { "admin": "Administrator", "gm": "Game Master", "assistant": "Assistant GM", "player": "Player", "observer": "Observer" },

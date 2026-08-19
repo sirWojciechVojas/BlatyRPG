@@ -14,7 +14,7 @@
     "home": {
       "eyebrow": "Panel kampanii",
       "title": "Witaj, {name}",
-      "description": "Wybierz kampanię i przejdź bezpośrednio do scen albo sklepu."
+      "description": "Wybierz kampanię i przejdź do scen, postaci, czatu albo sklepu."
     },
     "campaign": {
       "eyebrow": "Twoje światy",
@@ -23,6 +23,8 @@
       "inactive": "Nieaktywna",
       "noDescription": "Brak opisu kampanii.",
       "openScenes": "Otwórz sceny",
+      "openCharacters": "Postacie i NPC",
+      "openChat": "Czat",
       "openShop": "Otwórz sklep"
     },
     "roles": { "admin": "Administrator", "gm": "Mistrz Gry", "assistant": "Asystent MG", "player": "Gracz", "observer": "Obserwator" },
