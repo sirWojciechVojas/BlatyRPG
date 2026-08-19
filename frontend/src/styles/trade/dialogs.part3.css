@@ -1,0 +1,253 @@
+@keyframes iconFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+.shop-trade-module .assort-merge-dialog {
+  width: min(1080px, 92vw);
+  max-height: min(86vh, 820px);
+  border-radius: 18px;
+  padding: 18px;
+  background:
+    radial-gradient(
+      180px 120px at 12% 12%,
+      rgba(241, 200, 129, 0.15),
+      transparent 70%
+    ),
+    linear-gradient(145deg, rgba(20, 14, 10, 0.96), rgba(7, 8, 12, 0.96));
+  border: 1px solid rgba(216, 183, 120, 0.34);
+  box-shadow:
+    0 30px 60px rgba(0, 0, 0, 0.58),
+    inset 0 0 0 1px rgba(216, 183, 120, 0.14);
+  color: rgba(245, 234, 210, 0.95);
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  gap: 12px;
+  animation: dialogRise 0.24s ease;
+}
+
+.shop-trade-module .assort-merge-dialog__intro {
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  color: rgba(245, 234, 210, 0.8);
+}
+
+.shop-trade-module .assort-merge-dialog__columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 12px;
+  min-height: 0;
+}
+
+.shop-trade-module .assort-merge-panel {
+  border-radius: 14px;
+  border: 1px solid rgba(120, 180, 210, 0.24);
+  background: rgba(0, 0, 0, 0.28);
+  padding: 12px;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+}
+
+.shop-trade-module .assort-merge-panel--left {
+  border-color: rgba(241, 200, 129, 0.34);
+}
+
+.shop-trade-module .assort-merge-panel--right {
+  border-color: rgba(120, 180, 210, 0.34);
+}
+
+.shop-trade-module .assort-merge-panel__title {
+  font-size: 0.75rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(245, 234, 210, 0.86);
+}
+
+.shop-trade-module .assort-merge-panel__rows {
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  gap: 8px;
+  padding-right: 4px;
+}
+
+.shop-trade-module .assort-merge-row {
+  border-radius: 10px;
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.22);
+  border: 1px solid rgba(216, 183, 120, 0.14);
+  display: grid;
+  gap: 6px;
+}
+
+.shop-trade-module .assort-merge-row__label {
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(241, 200, 129, 0.86);
+}
+
+.shop-trade-module .assort-merge-row__choice {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  font-size: 0.75rem;
+  color: rgba(245, 234, 210, 0.92);
+  line-height: 1.35;
+  word-break: break-word;
+}
+
+.shop-trade-module .assort-merge-row__choice input[type="checkbox"] {
+  margin-top: 2px;
+}
+
+.shop-trade-module .shop-activation-dialog {
+  width: min(1080px, 94%);
+  max-height: 86%;
+  background:
+    radial-gradient(
+      480px 280px at 16% 14%,
+      rgba(128, 170, 210, 0.2),
+      transparent 62%
+    ),
+    radial-gradient(
+      420px 260px at 88% 12%,
+      rgba(241, 200, 129, 0.18),
+      transparent 64%
+    ),
+    linear-gradient(148deg, rgba(13, 13, 16, 0.97), rgba(7, 8, 11, 0.98));
+  border: 1px solid rgba(128, 170, 210, 0.44);
+  border-radius: 22px;
+  box-shadow:
+    0 30px 52px rgba(0, 0, 0, 0.64),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  gap: 14px;
+  padding: 18px;
+  color: rgba(245, 234, 210, 0.96);
+  animation: dialogRise 0.28s ease;
+}
+
+.shop-trade-module .shop-activation-dialog__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.shop-trade-module .shop-activation-dialog__subtitle {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  color: rgba(230, 223, 205, 0.84);
+}
+
+.shop-trade-module .shop-activation-dialog__counter {
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  border-radius: 999px;
+  padding: 5px 10px;
+  border: 1px solid rgba(128, 170, 210, 0.45);
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(202, 225, 242, 0.96);
+}
+
+.shop-trade-module .shop-activation-grid {
+  min-height: 0;
+  overflow: auto;
+  padding-right: 4px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 10px;
+}
+
+.shop-trade-module .shop-activation-card {
+  position: relative;
+  overflow: hidden;
+  border-radius: 16px;
+  border: 1px solid rgba(154, 170, 188, 0.35);
+  background:
+    radial-gradient(
+      140px 100px at 15% 10%,
+      rgba(136, 153, 172, 0.2),
+      transparent 62%
+    ),
+    linear-gradient(150deg, rgba(18, 18, 20, 0.95), rgba(8, 9, 12, 0.97));
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  gap: 5px;
+  min-height: 134px;
+  padding: 12px 10px;
+  color: rgba(238, 233, 220, 0.94);
+  text-align: center;
+  transition:
+    transform 0.2s ease,
+    filter 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.shop-trade-module .shop-activation-card:hover {
+  transform: translateY(-2px) scale(1.01);
+  border-color: rgba(164, 201, 231, 0.72);
+  box-shadow:
+    0 14px 24px rgba(0, 0, 0, 0.5),
+    0 0 16px rgba(128, 170, 210, 0.28);
+}
+
+.shop-trade-module .shop-activation-card__shine {
+  position: absolute;
+  inset: -70% -120%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 34%,
+    rgba(255, 255, 255, 0.24) 52%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  transform: translateX(-56%) rotate(12deg);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.shop-trade-module .shop-activation-card__badge {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: rgba(245, 240, 232, 0.96);
+  border: 1px solid rgba(164, 201, 231, 0.42);
+  background: radial-gradient(
+    circle at 26% 28%,
+    rgba(164, 201, 231, 0.72),
+    rgba(20, 27, 36, 0.96)
+  );
+  box-shadow:
+    inset 0 0 14px rgba(0, 0, 0, 0.5),
+    0 8px 14px rgba(0, 0, 0, 0.45);
+}
+
+.shop-trade-module .shop-activation-card__name {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1.22;
+}
+
+.shop-trade-module .shop-activation-card__state {
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(197, 211, 225, 0.9);
+}

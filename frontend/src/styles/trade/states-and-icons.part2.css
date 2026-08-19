@@ -1,0 +1,68 @@
+.shop-trade-module .field-edit-suggestion {
+  border-radius: 999px;
+  border: 1px solid rgba(120, 180, 210, 0.32);
+  background: rgba(5, 8, 12, 0.72);
+  color: rgba(235, 245, 255, 0.9);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  padding: 6px 12px;
+  transition:
+    transform 0.16s ease,
+    border-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.shop-trade-module .field-edit-suggestion:hover {
+  transform: translateY(-1px);
+  border-color: rgba(160, 226, 255, 0.8);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.shop-trade-module .field-edit-suggestion.active {
+  border-color: rgba(160, 226, 255, 0.92);
+  box-shadow:
+    0 0 0 1px rgba(160, 226, 255, 0.42),
+    0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.shop-trade-module .legacy-inventory-icon {
+  display: inline-block;
+  background-image: var(--trade-inventory-sprite);
+  background-repeat: no-repeat;
+  background-size: auto;
+  position: relative;
+}
+
+.shop-trade-module .legacy-inventory-icon:hover {
+  background-color: rgba(30, 80, 190, 0.4);
+}
+
+.shop-trade-module .legacy-inventory-icon.magic::before,
+.shop-trade-module .legacy-inventory-icon.rare::before,
+.shop-trade-module .legacy-inventory-icon.unique::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.shop-trade-module .legacy-inventory-icon.magic::before {
+  background-image: var(--trade-inventory-border-magic);
+}
+
+.shop-trade-module .legacy-inventory-icon.rare::before {
+  background-image: var(--trade-inventory-border-rare);
+}
+
+.shop-trade-module .legacy-inventory-icon.unique::before {
+  background-image: var(--trade-inventory-border-unique);
+}
+
+.shop-trade-module .api-note {
+  padding: 8px 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+}
+
+/* Desktop (Twoje typowe 1707x839 speĹ‚nia ten warunek) */

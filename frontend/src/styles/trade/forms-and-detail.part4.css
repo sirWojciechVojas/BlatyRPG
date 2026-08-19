@@ -1,0 +1,259 @@
+.shop-trade-module .field-edit-price-mode__coin.crown {
+  background-image: var(--trade-crown);
+}
+
+.shop-trade-module .field-edit-price-mode__coin.shilling {
+  background-image: var(--trade-shilling);
+}
+
+.shop-trade-module .field-edit-price-mode__coin.brass {
+  background-image: var(--trade-brass);
+}
+
+.shop-trade-module .field-edit-price-total-mode-note {
+  border: 1px dashed rgba(241, 200, 129, 0.4);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 0.7rem;
+  line-height: 1.35;
+  color: rgba(245, 234, 210, 0.84);
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.shop-trade-module .field-edit-price-stepper-wrap {
+  display: grid;
+  grid-template-columns: 40px minmax(0, 1fr) 40px;
+  gap: 8px;
+  align-items: stretch;
+}
+
+.shop-trade-module .field-edit-price-stepper-btn {
+  min-height: 44px;
+}
+
+.shop-trade-module .field-edit-price-stepper-status {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 4px;
+  border-radius: 10px;
+  border: 1px solid rgba(120, 180, 210, 0.35);
+  background: rgba(5, 9, 14, 0.64);
+  padding: 5px 8px;
+}
+
+.shop-trade-module .field-edit-price-stepper-status__label {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: rgba(245, 234, 210, 0.92);
+}
+
+.shop-trade-module .field-edit-price-stepper-status__mode {
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(120, 180, 210, 0.95);
+}
+
+.shop-trade-module .field-edit-price-presets,
+.shop-trade-module .field-edit-charge-presets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 8px;
+}
+
+.shop-trade-module .field-edit-price-preset,
+.shop-trade-module .field-edit-charge-preset {
+  min-height: 38px;
+  border-radius: 10px;
+  background: rgba(12, 16, 24, 0.84);
+  border-color: rgba(120, 180, 210, 0.35);
+}
+
+.shop-trade-module .field-edit-price-preset.active,
+.shop-trade-module .field-edit-charge-preset.active {
+  border-color: rgba(241, 200, 129, 0.88);
+  box-shadow:
+    0 0 0 1px rgba(241, 200, 129, 0.28),
+    0 10px 20px rgba(0, 0, 0, 0.36);
+}
+
+.shop-trade-module .field-edit-price-preset__value,
+.shop-trade-module .field-edit-charge-preset__value {
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+}
+
+.shop-trade-module .field-edit-price-cap-note {
+  font-size: 0.68rem;
+  color: rgba(250, 165, 150, 0.96);
+  border: 1px solid rgba(190, 90, 70, 0.55);
+  border-radius: 10px;
+  padding: 7px 9px;
+  background: rgba(36, 10, 10, 0.58);
+}
+
+.shop-trade-module .field-edit-charge-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 14px;
+  border: 1px solid rgba(120, 180, 210, 0.36);
+  background:
+    radial-gradient(
+      260px 120px at 18% 12%,
+      rgba(120, 180, 210, 0.24),
+      transparent 65%
+    ),
+    linear-gradient(155deg, rgba(10, 14, 22, 0.95), rgba(6, 7, 12, 0.97));
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 56px 1fr;
+  gap: 10px;
+}
+
+.shop-trade-module .field-edit-charge-hero__shine {
+  position: absolute;
+  inset: -100% -160%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 34%,
+    rgba(255, 255, 255, 0.16) 52%,
+    rgba(255, 255, 255, 0) 70%
+  );
+  transform: translateX(-58%) rotate(11deg);
+  pointer-events: none;
+  animation: fieldEditChargeShine 2.6s ease-in-out infinite;
+}
+
+.shop-trade-module .field-edit-charge-hero__badge {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(241, 200, 129, 0.54);
+  background: rgba(0, 0, 0, 0.34);
+  box-shadow:
+    inset 0 0 16px rgba(0, 0, 0, 0.52),
+    0 8px 18px rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+.shop-trade-module .field-edit-charge-hero__badge .bi {
+  font-size: 1.2rem;
+  color: rgba(241, 200, 129, 0.95);
+}
+
+.shop-trade-module .field-edit-charge-hero__content {
+  display: grid;
+  gap: 3px;
+  z-index: 1;
+}
+
+.shop-trade-module .field-edit-charge-hero__title {
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(120, 180, 210, 0.92);
+}
+
+.shop-trade-module .field-edit-charge-hero__value {
+  font-size: 0.98rem;
+  letter-spacing: 0.06em;
+  color: rgba(245, 234, 210, 0.96);
+  font-weight: 700;
+}
+
+.shop-trade-module .field-edit-charge-hero__status {
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(241, 200, 129, 0.95);
+}
+
+.shop-trade-module .field-edit-charge-hero__description {
+  font-size: 0.67rem;
+  color: rgba(224, 216, 202, 0.86);
+  line-height: 1.35;
+}
+
+.shop-trade-module .field-edit-charge-hero--light {
+  border-color: rgba(128, 202, 148, 0.52);
+}
+
+.shop-trade-module .field-edit-charge-hero--medium {
+  border-color: rgba(120, 180, 210, 0.52);
+}
+
+.shop-trade-module .field-edit-charge-hero--heavy {
+  border-color: rgba(241, 200, 129, 0.62);
+}
+
+.shop-trade-module .field-edit-charge-hero--veryHeavy {
+  border-color: rgba(219, 116, 100, 0.68);
+}
+
+.shop-trade-module .field-edit-charge-controls {
+  display: grid;
+  gap: 6px;
+}
+
+.shop-trade-module .field-edit-charge-stepper {
+  grid-template-columns: 40px minmax(0, 1fr) 40px;
+}
+
+.shop-trade-module .field-edit-charge-stepper .field-edit-stepper__input {
+  min-height: 40px;
+}
+
+.shop-trade-module .field-edit-stepper {
+  display: grid;
+  grid-template-columns: 32px minmax(0, 1fr) 32px;
+  gap: 6px;
+  align-items: center;
+}
+
+.shop-trade-module .field-edit-stepper__btn {
+  min-height: 32px;
+  border-radius: 8px;
+  border: 1px solid rgba(120, 180, 210, 0.4);
+  background: rgba(7, 12, 18, 0.86);
+  color: rgba(220, 240, 255, 0.95);
+  font-weight: 700;
+}
+
+.shop-trade-module .field-edit-stepper__btn:hover {
+  border-color: rgba(160, 226, 255, 0.86);
+}
+
+.shop-trade-module .field-edit-stepper__btn:focus-visible {
+  outline: 2px solid rgba(160, 226, 255, 0.86);
+  outline-offset: 1px;
+}
+
+.shop-trade-module .field-edit-stepper__input {
+  width: 100%;
+  text-align: center;
+}
+
+.shop-trade-module .field-edit-selection-bar--charge {
+  border-color: rgba(241, 200, 129, 0.4);
+}
+
+.shop-trade-module .field-edit-toggle .form-check-input {
+  cursor: pointer;
+}
+
+@keyframes fieldEditChargeShine {
+  0% {
+    transform: translateX(-62%) rotate(11deg);
+    opacity: 0;
+  }
+  18% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(62%) rotate(11deg);
+    opacity: 0;
+  }
+}

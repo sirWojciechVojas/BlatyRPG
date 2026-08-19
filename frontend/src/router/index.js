@@ -1,5 +1,7 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 import HomeView from "../views/HomeView.vue";
+import store from "../store";
+import { ensureShopStoreModuleForRoute } from "../store/modules/loadShopModule";
 
 const routes = [
   {
@@ -19,9 +21,17 @@ const routes = [
   {
     path: "/dice",
     name: "dice",
-    meta: {title: "Dice Roller 3D"},
+    meta: { title: "Dice Roller 3D" },
     component: () =>
       import(/* webpackChunkName: "dice" */ "../views/DiceRollerView.vue"),
+  },
+  {
+    path: "/campaigns/:campaignId/shop",
+    name: "shop-gm",
+    meta: { title: "Shop — GM", requiresGm: true },
+    beforeEnter: () => ensureShopStoreModuleForRoute(store),
+    component: () =>
+      import(/* webpackChunkName: "shop-gm" */ "../views/ShopGmWorkspace.vue"),
   },
   {
     path: "/403",
@@ -37,7 +47,6 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "not-found" */ "../views/NotFoundView.vue"),
   },
-
 ];
 
 const router = createRouter({

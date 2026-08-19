@@ -1,0 +1,182 @@
+.zone-picker-toolbar {
+  flex: 0 0 auto;
+  min-width: 0;
+  width: 100%;
+  max-height: 29px;
+  overflow: visible;
+}
+
+.zone-picker-hub {
+  display: grid;
+  gap: 0;
+  height: 29px;
+  max-height: 29px;
+  min-width: 0;
+  align-content: start;
+  overflow: visible;
+}
+
+.zone-picker-switcher {
+  position: relative;
+  display: grid;
+  grid-template-columns: 29px minmax(0, 1fr) 29px;
+  gap: 4px;
+  align-items: stretch;
+  min-height: 29px;
+  height: 29px;
+  max-height: 29px;
+  overflow: visible;
+}
+
+.zone-picker-switcher.is-open .zone-picker-trigger {
+  border-color: rgba(247, 202, 116, 0.68);
+  box-shadow:
+    0 12px 24px rgba(0, 0, 0, 0.44),
+    inset 0 0 0 1px rgba(247, 202, 116, 0.26);
+}
+
+.zone-picker-nav {
+  height: 29px;
+  max-height: 29px;
+  border-radius: 10px;
+  border: 1px solid rgba(214, 178, 116, 0.44);
+  background: linear-gradient(
+    145deg,
+    rgba(26, 18, 12, 0.96),
+    rgba(9, 7, 5, 0.96)
+  );
+  color: rgba(245, 234, 210, 0.9);
+  font-size: 1rem;
+  font-weight: 700;
+  transition:
+    transform 0.14s ease,
+    border-color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.zone-picker-nav:disabled {
+  opacity: 0.4;
+  cursor: default;
+  transform: none;
+  box-shadow: none;
+}
+
+.zone-picker-nav:not(:disabled):hover {
+  transform: translateY(-1px);
+  border-color: rgba(247, 202, 116, 0.7);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.35);
+}
+
+.zone-picker-trigger {
+  position: relative;
+  display: grid;
+  gap: 0;
+  text-align: left;
+  border-radius: 10px;
+  border: 1px solid rgba(214, 178, 116, 0.44);
+  background:
+    radial-gradient(
+      140% 115% at 0% 100%,
+      rgba(245, 195, 102, 0.14),
+      transparent 58%
+    ),
+    linear-gradient(160deg, rgba(21, 15, 11, 0.95), rgba(10, 8, 6, 0.96));
+  color: rgba(245, 234, 210, 0.96);
+  min-height: 29px;
+  height: 29px;
+  max-height: 29px;
+  padding: 2px 8px;
+  overflow: hidden;
+  transition:
+    border-color 0.18s ease,
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.zone-picker-trigger::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    rgba(255, 223, 160, 0.12) 50%,
+    transparent 100%
+  );
+  transform: translateX(-130%);
+  transition: transform 0.55s ease;
+}
+
+.zone-picker-switcher.is-open .zone-picker-trigger::after,
+.zone-picker-trigger:hover::after {
+  transform: translateX(130%);
+}
+
+.zone-picker-trigger:disabled {
+  opacity: 0.4;
+}
+
+.zone-picker-trigger:not(:disabled):hover {
+  transform: translateY(-1px);
+}
+
+.zone-picker-trigger__full {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto auto;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  max-height: 100%;
+}
+
+.zone-picker-trigger__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.zone-picker-trigger__ordinal {
+  flex-shrink: 0;
+  font-size: 0.58rem;
+  letter-spacing: 0.05em;
+  opacity: 0.72;
+  white-space: nowrap;
+}
+
+.zone-picker-trigger__count {
+  font-size: 0.64rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.zone-picker-trigger__caret {
+  font-size: 0.64rem;
+  transition: transform 0.2s ease;
+}
+
+.zone-picker-trigger__caret.is-open {
+  transform: rotate(180deg);
+}
+
+.zone-picker-trigger__meter {
+  display: block;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+
+.zone-picker-trigger__meter-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    rgba(245, 195, 102, 0.9),
+    rgba(255, 231, 172, 0.96)
+  );
+}

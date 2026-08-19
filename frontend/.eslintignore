@@ -1,0 +1,4 @@
+# Vendor / external library code (nie lintujemy, nie formatujemy)
+src/lib/dice-roller/**
+
+# Jezeli masz jeszcze inne paczki przeniesione jako "lib/vendor", dopisz je tutaj.

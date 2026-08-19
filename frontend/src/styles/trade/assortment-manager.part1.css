@@ -1,0 +1,244 @@
+.shop-trade-module .shop-assortment-layout {
+  --assort-panel-gap: clamp(8px, 0.72vw, 12px);
+  --assort-control-panel-height: clamp(86px, 9.2vh, 108px);
+  --assort-action-height: clamp(34px, 3.9vh, 40px);
+  --assort-list-row-height: clamp(58px, 5.8vh, 68px);
+  --assort-footer-height: clamp(118px, 13vh, 152px);
+  --assort-footer-pad: clamp(7px, 0.7vw, 10px);
+  --assort-footer-gap: clamp(6px, 0.62vw, 9px);
+}
+
+.shop-trade-module .assortment-mode-content {
+  --assort-panel-gap: clamp(8px, 0.72vw, 12px);
+  --assort-control-panel-height: clamp(86px, 9.2vh, 108px);
+  --assort-action-height: clamp(34px, 3.9vh, 40px);
+  --assort-list-row-height: clamp(58px, 5.8vh, 68px);
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.shop-trade-module #tradingBuy.assortment-mode-content,
+.shop-trade-module #tradingSell.assortment-mode-content {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin-inline: 0 !important;
+}
+
+.shop-trade-module .shop-assortment-layout > .shop-assortment-selector-bar {
+  flex: 0 0 var(--trade-control-height);
+  width: 100%;
+  min-width: 0;
+  min-height: var(--trade-control-height);
+  height: var(--trade-control-height);
+  max-height: var(--trade-control-height);
+  margin: var(--assort-panel-gap) 0 0;
+  overflow: hidden;
+}
+
+.shop-trade-module .shop-assortment-selector-label,
+.shop-trade-module .shop-assortment-selector-meta,
+.shop-trade-module .shop-assortment-selector-input {
+  min-height: var(--trade-control-height);
+  height: var(--trade-control-height);
+  max-height: var(--trade-control-height);
+  border-color: rgba(221, 185, 112, 0.42);
+  background:
+    linear-gradient(180deg, rgba(255, 226, 157, 0.08), transparent 52%),
+    rgba(7, 6, 5, 0.58);
+  color: rgba(255, 241, 214, 0.94);
+  font-size: clamp(0.76rem, 0.82vw, 0.88rem);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.shop-trade-module .shop-assortment-selector-label {
+  max-width: 42%;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.shop-trade-module .shop-assortment-selector-input {
+  min-width: 0;
+  box-shadow: none;
+}
+
+.shop-trade-module .shop-assortment-selector-meta {
+  max-width: 28%;
+  color: rgba(239, 222, 190, 0.8);
+  font-size: 0.72rem;
+  font-weight: 700;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shop-trade-module .assortment-mode-content .shop-mode-template-frame {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.shop-trade-module
+  .assortment-mode-content
+  .shop-mode-template-frame__titlebar {
+  flex: 0 0 auto;
+  margin-bottom: var(--assort-panel-gap);
+}
+
+.shop-trade-module
+  .assortment-mode-content
+  .shop-mode-template-frame__titlecopy {
+  min-width: 0;
+}
+
+.shop-trade-module .assortment-mode-content .shop-mode-template-frame__title {
+  color: rgba(255, 239, 204, 0.96);
+  font-size: clamp(0.82rem, 0.9vw, 0.95rem);
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.shop-trade-module .assortment-mode-content .shop-mode-template-frame__body {
+  --bs-gutter-x: 0;
+  --bs-gutter-y: 0;
+  display: grid;
+  flex: 1 1 0;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: minmax(0, 1fr);
+  gap: var(--assort-panel-gap);
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.shop-trade-module .assortment-control-panel,
+.shop-trade-module .assortment-list-panel {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+  border-color: rgba(214, 171, 91, 0.48);
+  background:
+    linear-gradient(180deg, rgba(255, 220, 144, 0.06), transparent 36%),
+    rgba(8, 7, 6, 0.46);
+  box-shadow: inset 0 0 0 1px rgba(255, 230, 169, 0.06);
+}
+
+.shop-trade-module .assortment-control-panel {
+  display: grid;
+  grid-auto-rows: min-content;
+  gap: clamp(7px, 0.62vw, 10px);
+  align-content: start;
+  min-height: var(--assort-control-panel-height);
+  max-height: var(--assort-control-panel-height);
+  overflow: hidden;
+}
+
+.shop-trade-module .assortment-section-title {
+  margin: 0;
+  color: rgba(255, 230, 176, 0.94);
+  font-size: clamp(0.69rem, 0.78vw, 0.78rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.shop-trade-module .assort-filter-grid {
+  display: grid;
+  grid-template-columns: minmax(104px, 0.34fr) minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+
+.shop-trade-module .assort-filter-label {
+  min-width: 0;
+  margin: 0;
+  color: rgba(239, 222, 189, 0.86);
+  font-size: clamp(0.72rem, 0.78vw, 0.82rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.shop-trade-module .assort-filter-input {
+  min-width: 0;
+  height: clamp(32px, 3.4vh, 36px);
+  min-height: clamp(32px, 3.4vh, 36px);
+  border-color: rgba(221, 185, 112, 0.42);
+  border-radius: 7px;
+  background: rgba(0, 0, 0, 0.32);
+  color: rgba(255, 244, 218, 0.96);
+  font-size: clamp(0.76rem, 0.82vw, 0.86rem);
+  line-height: 1.2;
+}
+
+.shop-trade-module .assort-control-meta {
+  display: flex;
+  justify-content: flex-end;
+  min-width: 0;
+  color: rgba(238, 218, 178, 0.72);
+  font-size: 0.72rem;
+  line-height: 1.1;
+}
+
+.shop-trade-module .assortment-list-panel {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: clamp(7px, 0.62vw, 10px);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.shop-trade-module .assortment-list-panel--suggestions {
+  display: flex;
+  flex-direction: column;
+  align-content: stretch;
+}
+
+.shop-trade-module .assortment-list-panel--suggestions .shop-editor-muted,
+.shop-trade-module .assortment-list-panel--suggestions .shop-editor-empty,
+.shop-trade-module
+  .assortment-list-panel--suggestions
+  .shop-mode-template-inline {
+  flex: 0 0 auto;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shop-trade-module
+  .assortment-list-panel--suggestions
+  > .shop-editor-suggestions {
+  flex: 1 1 0;
+  min-height: 0;
+  max-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.shop-trade-module .assort-panel-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  min-height: 24px;
+}

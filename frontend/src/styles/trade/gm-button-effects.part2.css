@@ -1,0 +1,236 @@
+.shop-trade-module .trade-modal-content--with-purpose
+  :is(
+    .shop-assortment-action-btn,
+    .shop-mode-template-actions__row .btn,
+    .shop-editor-actions .btn,
+    .shop-editor-toolbar .btn,
+    .shop-ledger__actions button,
+    .shop-ledger__mini-btn
+  ):hover:not(:disabled),
+.shop-trade-module .trade-modal-content--with-purpose
+  :is(
+    .shop-assortment-action-btn,
+    .shop-mode-template-actions__row .btn,
+    .shop-editor-actions .btn,
+    .shop-editor-toolbar .btn,
+    .shop-ledger__actions button,
+    .shop-ledger__mini-btn
+  ):focus-visible:not(:disabled) {
+  border-color: var(--gm-small-button-edge) !important;
+  color: rgba(255, 250, 233, 0.98) !important;
+  box-shadow:
+    0 9px 16px rgba(0, 0, 0, 0.42),
+    0 0 0 1px rgba(255, 239, 190, 0.14),
+    0 0 18px var(--gm-small-button-glow),
+    inset 0 1px 0 rgba(255, 250, 232, 0.22) !important;
+  filter: brightness(1.15) saturate(1.13);
+  transform: translateY(-2px) scale(1.018);
+}
+
+.shop-trade-module .trade-modal-content--with-purpose
+  :is(
+    .shop-assortment-action-btn,
+    .shop-mode-template-actions__row .btn,
+    .shop-editor-actions .btn,
+    .shop-editor-toolbar .btn,
+    .shop-ledger__actions button,
+    .shop-ledger__mini-btn
+  ):hover:not(:disabled)::before,
+.shop-trade-module .trade-modal-content--with-purpose
+  :is(
+    .shop-assortment-action-btn,
+    .shop-mode-template-actions__row .btn,
+    .shop-editor-actions .btn,
+    .shop-editor-toolbar .btn,
+    .shop-ledger__actions button,
+    .shop-ledger__mini-btn
+  ):focus-visible:not(:disabled)::before {
+  opacity: 1;
+}
+
+.shop-trade-module .trade-modal-content--with-purpose
+  :is(
+    .shop-assortment-action-btn,
+    .shop-mode-template-actions__row .btn,
+    .shop-editor-actions .btn,
+    .shop-editor-toolbar .btn,
+    .shop-ledger__actions button,
+    .shop-ledger__mini-btn
+  ):hover:not(:disabled)::after {
+  opacity: 0.72;
+  transform: translateX(72%) rotate(8deg);
+}
+
+.shop-trade-module .trade-modal-content--with-purpose
+  :is(
+    .shop-assortment-action-btn,
+    .shop-mode-template-actions__row .btn,
+    .shop-editor-actions .btn,
+    .shop-editor-toolbar .btn,
+    .shop-ledger__actions button,
+    .shop-ledger__mini-btn
+  ):active:not(:disabled) {
+  border-color: rgba(255, 238, 190, 0.92) !important;
+  box-shadow:
+    0 4px 9px rgba(0, 0, 0, 0.46),
+    0 0 10px var(--gm-small-button-glow),
+    inset 0 2px 8px rgba(0, 0, 0, 0.54) !important;
+  filter: brightness(0.96) saturate(1.08);
+  transform: translateY(1px) scale(0.978);
+  transition-duration: 0.05s;
+}
+
+.shop-trade-module .trade-modal-content--with-purpose
+  :is(
+    .shop-flank-asset-button,
+    .shop-flank-card,
+    .shop-signboard-row,
+    .shop-signboard-selector__page-btn,
+    .shop-signboard-selector__dot
+  ) {
+  --gm-flank-glow: rgba(255, 211, 118, 0.4);
+  isolation: isolate;
+  position: relative;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease,
+    opacity 0.18s ease,
+    transform 0.18s ease;
+  will-change: transform, filter, box-shadow;
+}
+
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .trade-flank
+  .square.shop-flank-asset-button,
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .square.shop-flank-asset-button {
+  border-radius: var(--gm-flank-button-radius) !important;
+  overflow: hidden;
+  transition:
+    filter 0.18s ease,
+    transform 0.18s ease;
+}
+
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .square.shop-flank-asset-button--button01,
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .square.shop-flank-asset-button--button04 {
+  --gm-flank-glow: rgba(255, 199, 96, 0.26);
+  --gm-flank-ring: rgba(255, 228, 150, 0.58);
+}
+
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .square.shop-flank-asset-button--button02,
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .square.shop-flank-asset-button--button05 {
+  --gm-flank-glow: rgba(139, 218, 255, 0.22);
+  --gm-flank-ring: rgba(185, 237, 255, 0.54);
+}
+
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .square.shop-flank-asset-button--button03,
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .square.shop-flank-asset-button--button06,
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .square.shop-flank-asset-button--button07 {
+  --gm-flank-glow: rgba(255, 108, 86, 0.22);
+  --gm-flank-ring: rgba(255, 194, 135, 0.5);
+}
+
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .trade-flank
+  .square.shop-flank-asset-button::before,
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .trade-flank
+  .square.shop-flank-asset-button::after,
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .square.shop-flank-asset-button::before,
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .square.shop-flank-asset-button::after,
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .shop-flank-asset-button::before,
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .shop-flank-asset-button::after {
+  content: "" !important;
+  position: absolute;
+  pointer-events: none;
+}
+
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .trade-flank
+  .square.shop-flank-asset-button::before,
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .square.shop-flank-asset-button::before,
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .shop-flank-asset-button::before {
+  inset: 3px;
+  border: 1px solid var(--gm-flank-ring, rgba(255, 230, 147, 0.54));
+  border-radius: calc(var(--gm-flank-button-radius) - 3px);
+  background:
+    radial-gradient(
+      ellipse at 50% 50%,
+      var(--gm-flank-glow),
+      transparent 62%
+    ),
+    linear-gradient(
+      180deg,
+      rgba(255, 246, 197, 0.16),
+      transparent 42%,
+      rgba(255, 185, 72, 0.12)
+    );
+  box-shadow:
+    0 0 0 1px rgba(255, 247, 211, 0.1),
+    0 0 10px var(--gm-flank-glow),
+    inset 0 0 12px rgba(255, 232, 168, 0.12);
+  opacity: 0;
+  transform: scale(0.98);
+  transition:
+    opacity 0.18s ease,
+    transform 0.18s ease;
+}
+
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .trade-flank
+  .square.shop-flank-asset-button::after,
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .square.shop-flank-asset-button::after,
+.shop-trade-module
+  .trade-modal-content--with-purpose
+  .shop-flank-asset-button::after {
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    110deg,
+    transparent 32%,
+    rgba(255, 255, 255, 0.34) 46%,
+    rgba(255, 220, 133, 0.22) 51%,
+    transparent 65%
+  );
+  opacity: 0;
+  mix-blend-mode: screen;
+  transform: translateX(-92%);
+  transition:
+    opacity 0.16s ease,
+    transform 0.64s ease;
+}

@@ -1,0 +1,232 @@
+.profile-section-reset {
+  margin-left: auto;
+  border: 1px solid rgba(185, 136, 72, 0.3);
+  background: transparent;
+  color: #baa889;
+  padding: 0.2rem 0.38rem;
+  font-size: 0.62rem;
+}
+
+.profile-compact-panel {
+  border: 1px solid rgba(185, 136, 72, 0.3);
+  border-radius: 0.35rem;
+  background: rgba(26, 18, 14, 0.88);
+}
+
+.profile-compact-panel > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.45rem 0.55rem;
+  color: #d3b67e;
+  cursor: pointer;
+  font-size: 0.72rem;
+}
+
+.profile-compact-panel > summary span:first-child {
+  display: grid;
+}
+
+.profile-compact-panel > summary small {
+  color: #8f8678;
+  font-size: 0.62rem;
+}
+
+.profile-compact-panel__body,
+.profile-tools-grid {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.45rem;
+  border-top: 1px solid rgba(185, 136, 72, 0.18);
+}
+
+.profile-mini-action,
+.profile-tools-buttons button,
+.profile-file-button,
+.profile-tools-inline button,
+.profile-preset-list button {
+  border: 1px solid rgba(185, 136, 72, 0.3);
+  border-radius: 0.25rem;
+  background: rgba(91, 58, 31, 0.35);
+  color: #dac9a9;
+  padding: 0.25rem 0.4rem;
+  font-size: 0.66rem;
+  cursor: pointer;
+}
+
+.profile-market-event {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(8.5rem, 1fr));
+  align-items: end;
+  gap: 0.25rem;
+  padding: 0.3rem;
+  border: 1px solid rgba(185, 136, 72, 0.16);
+}
+
+.profile-market-event input,
+.profile-market-event select,
+.profile-tools-inline input {
+  min-width: 0;
+  height: 1.75rem;
+  border: 1px solid #45372e;
+  border-radius: 0.2rem;
+  background: #17120f;
+  color: #e4d8c3;
+  padding: 0.2rem 0.3rem;
+  font-size: 0.65rem;
+}
+
+.profile-market-event > label {
+  display: grid;
+  gap: 0.1rem;
+  color: #8f8678;
+  font-size: 0.58rem;
+}
+
+.profile-market-event__enabled,
+.profile-market-event__modes label {
+  display: flex !important;
+  align-items: center;
+  gap: 0.2rem;
+  white-space: nowrap;
+}
+
+.profile-market-event__enabled,
+.profile-market-event__remove {
+  align-self: center;
+}
+
+.profile-market-event__enabled input,
+.profile-market-event__modes input {
+  width: auto;
+  height: auto;
+}
+
+.profile-market-event__modes {
+  display: grid;
+  gap: 0.15rem;
+  font-size: 0.58rem;
+}
+
+.profile-market-event__remove {
+  border: 0;
+  background: transparent;
+  color: #d98672;
+  font-size: 1rem;
+}
+
+.profile-tools-grid {
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+}
+
+.profile-tools-grid section {
+  display: grid;
+  align-content: start;
+  gap: 0.3rem;
+}
+
+.profile-tools-grid section > b {
+  color: #c8ad79;
+  font-size: 0.68rem;
+}
+
+.profile-tools-inline,
+.profile-tools-buttons,
+.profile-preset-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.profile-tools-inline input {
+  flex: 1;
+}
+
+.profile-file-button input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.profile-preset-list > span {
+  display: inline-flex;
+}
+
+.profile-history-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: 0.2rem;
+}
+
+.profile-history-list button {
+  display: grid;
+  border: 0;
+  border-bottom: 1px solid rgba(185, 136, 72, 0.12);
+  background: transparent;
+  color: #cfc0a6;
+  text-align: left;
+  font-size: 0.62rem;
+}
+
+.profile-history-list button.active {
+  background: rgba(185, 136, 72, 0.12);
+}
+
+.profile-impact-list {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.64rem;
+}
+
+.profile-impact-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.25rem;
+}
+
+.profile-impact-list small {
+  grid-column: 1 / -1;
+  color: #b88b68;
+}
+
+.profile-reputation-panel {
+  margin-top: 0.5rem;
+}
+
+.profile-actor-reputation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: 0.3rem;
+  padding: 0.45rem;
+  border-top: 1px solid rgba(185, 136, 72, 0.18);
+}
+
+.profile-actor-reputation-grid label {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(7rem, 0.8fr);
+  align-items: center;
+  gap: 0.3rem;
+  color: #b9a789;
+  font-size: 0.64rem;
+}
+
+.profile-actor-reputation-grid select {
+  min-width: 0;
+  min-height: 1.7rem;
+  border: 1px solid #45372e;
+  background: #17120f;
+  color: #e4d8c3;
+  font-size: 0.64rem;
+}
+
+@media (max-width: 900px) {
+  .profile-tools-grid,
+  .profile-market-event {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

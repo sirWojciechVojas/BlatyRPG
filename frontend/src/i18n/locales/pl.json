@@ -48,15 +48,24 @@
     "view": "Zobacz",
     "edit": "Edytuj",
     "delete": "Usuń",
+    "trash": "Wyrzuć",
     "personalize": "Spersonalizuj",
     "clone": "Sklonuj",
     "create": "Utwórz",
+    "add": "Dodaj",
     "save": "Zapisz",
+    "apply": "Zastosuj",
+    "confirm": "Potwierdź",
     "cancel": "Anuluj",
     "yes": "Tak",
     "no": "Nie",
-    "confirm": "Potwierdź",
-    "refresh": "Odśwież"
+    "restore": "Przywróć",
+    "refresh": "Odśwież",
+    "buy": "Kup",
+    "sell": "Sprzedaj",
+    "move": "Przenieś",
+    "close": "Zamknij",
+    "remove": "Usuń"
   },
   "ui": {
     "loading": "Ładowanie",
@@ -177,8 +186,8 @@
   },
   "favorites": {
     "fav_name": "Atak",
-    "fav_delete": "Usuń ulubione",
-    "fav_edit": "Edytuj nazwę ulubionego",
+    "fav_delete": "@:actions.delete ulubione",
+    "fav_edit": "@:actions.edit nazwę ulubionego",
     "fav_throw": "Rzuć kośćmi",
     "fav_colorset": "Zestaw kolorów",
     "fav_texture": "Tekstura"
@@ -402,7 +411,7 @@
       }
     },
     "cta": {
-      "eyebrow": "Gotowy na sesję",
+      "eyebrow": "Gotowy na sesję?",
       "title": "Wejdź do świata BlatyRPG i zbuduj stół, który pamięta każdą przygodę.",
       "lead": "Zaproś drużynę, wybierz sceny i uruchom sesję w kilka minut. Zero instalacji dodatkowych narzędzi.",
       "primaryCta": "Stwórz darmowy stół",
@@ -430,5 +439,2403 @@
     "secondaryCta": "Wróć do poprzedniej",
     "hint": "Możesz też zajrzeć do sekcji",
     "diceAlt": "Kość k20"
+  },
+  "shopEditor": {
+    "openButton": "Sklep-dodaj/edytuj",
+    "profileTitle": "Sklep: profil i cechy",
+    "suggestionsTitle": "Sugestie asortymentu",
+    "saveProfile": "Zapisz profil",
+    "generateSuggestions": "Generuj sugestie",
+    "addSelected": "Dodaj zaznaczone",
+    "addAll": "Dodaj wszystko",
+    "exportJson": "Eksportuj JSON"
+  },
+  "shop": {
+    "payment": {
+      "title": "Płatność z przewalutowaniem",
+      "description": "Wybierz sakiewki, z których sklep ma pobrać środki.",
+      "price": "Cena sklepu",
+      "directDebit": "Z waluty sklepu",
+      "rateAndFee": "Kurs {rate}; koszt wymiany {fee}%",
+      "insufficient": "Wybrane sakiewki nie pokrywają całej ceny.",
+      "refreshing": "Przeliczanie…",
+      "confirm": "Potwierdź płatność"
+    },
+    "access": {
+      "title": "Tymczasowy tryb uprawnień sklepu",
+      "shortTitle": "Tryb dostępu · DEV",
+      "notice": "Narzędzie developerskie. W produkcji zostanie zastąpione logowaniem i prawami do kampanii oraz postaci.",
+      "gm": "Mistrz Gry",
+      "gmDescription": "Pełne zarządzanie sklepami w tej kampanii",
+      "activeUser": "Aktywny użytkownik",
+      "availableCharacters": "Dostępne postacie",
+      "changeUser": "Zmień użytkownika",
+      "changeUserTo": "Zmień użytkownika na: {user}",
+      "playerNumber": "Gracz {number}",
+      "playerCode": "Gracz · {code}",
+      "loadError": "Nie udało się pobrać dostępnych postaci."
+    },
+    "tradeModal": {
+      "title": "Kupno & Sprzedaż",
+      "gmLoginTitle": "Zaloguj się jako Game Master",
+      "close": "@:actions.close",
+      "apiPrefix": "API",
+      "apiLoading": "API: ladowanie",
+      "apiError": "API: blad",
+      "apiReady": "API: gotowe",
+      "apiIdle": "API: bezczynne",
+      "loadingBuy": "Przywoływanie asortymentu...",
+      "loadingSell": "Wycena ekwipunku...",
+      "loadError": "Nie udało się pobrać danych sklepu.",
+      "retryLoad": "Ponów ładowanie",
+      "noActiveShopsTitle": "Brak aktywnych sklepów",
+      "viewSettingsTitle": "Ustawienia widoku"
+    },
+    "defaults": {
+      "personalPseu": {
+        "shopkeeper": "Przedmiot",
+        "suggestion": "Sugestia"
+      },
+      "shopName": {
+        "newWithId": "Nowy sklep {id}",
+        "withId": "Sklep {id}"
+      },
+      "shopBadge": "S"
+    },
+    "dataLabels": {
+      "slots": {
+        "STOISKO": "Stoisko"
+      },
+      "itemPlace": {
+        "head": "GŁOWA",
+        "neck": "SZYJA",
+        "rightHand": "PRAWA RĘKA",
+        "leftHand": "LEWA RĘKA",
+        "torso": "KORPUS",
+        "belt": "PAS",
+        "backpack": "PLECAK"
+      },
+      "owners": {
+        "DEFAULT": "Domyślny stos",
+        "TRASH": "Kosz",
+        "BG1": "BG1",
+        "BG2": "BG2",
+        "BG3": "BG3"
+      }
+    },
+    "common": {
+      "allCaps": "ALL",
+      "chooseOption": "-- wybierz --",
+      "emptyItems": "Brak pozycji.",
+      "icons": "Ikony",
+      "quantity": "Ilość",
+      "qtyPrefix": "qty",
+      "scorePrefix": "score",
+      "classPrefix": "Klasa",
+      "genrePrefix": "Genre",
+      "activeHeroTitle": "Aktywny bohater: {name}",
+      "activeHeroPortraitAlt": "Portret {name}",
+      "shopSettlementWallet": "płatność w tym sklepie",
+      "freePrefix": "Wolne",
+      "overloadPrefix": "Nadmiar",
+      "buyLimitWarning": "Zakup przekroczy limit.",
+      "examplesPrefix": "Przykłady towarów",
+      "draftBadge": "DRAFT"
+    },
+    "viewSettingsDialog": {
+      "ariaLabel": "Ustawienia widoku",
+      "title": "Ustawienia widoku",
+      "optionIcons": "Rozmiar ikon",
+      "close": "@:actions.close",
+      "save": "@:actions.save"
+    },
+    "tradeItemRow": {
+      "quantityPickerAria": "Wybór ilości",
+      "trashTemplate": "SZABLON",
+      "trashItem": "PRZEDMIOT"
+    },
+    "filters": {
+      "buyTypeAria": "Filtry typu przedmiotów (kupno)",
+      "buyTypeSearchAria": "Szukaj klas i kategorii przedmiotów w ofercie",
+      "sellTypeAria": "Filtry typu przedmiotów (sprzedaż)",
+      "sellTypeSearchAria": "Szukaj klas i kategorii przedmiotów w ekwipunku",
+      "sellOwnerAria": "Filtr właściciela ekwipunku",
+      "sellOwnerLabel": "Właściciel",
+      "sellOwnerAll": "Wszyscy",
+      "typeSearchPlaceholder": "Szukaj klasy lub kategorii..."
+    },
+    "suggestions": {
+      "fallbackItemName": "Przedmiot",
+      "templateFallback": "Szablon {id}",
+      "fallbackProfileDescription": "Sugestia dla profilu sklepu",
+      "recommendationAdd": "Dodaj",
+      "recommendationConsider": "Rozważ",
+      "recommendationSkip": "Pomiń",
+      "recommendationRating": "Ocena",
+      "noReason": "Brak uzasadnienia.",
+      "reasonDraftIntro": "Brak gotowego szablonu, przygotowano propozycje szkicu.",
+      "reasonProfileIntro": "Pozycja dopasowana do profilu sklepu.",
+      "reasonClass": "Klasa: {value}.",
+      "reasonGenre": "Genre: {value}.",
+      "reasonLocation": "lokalizacja: {value}",
+      "reasonLegalStatus": "legalnosc: {value}",
+      "reasonWealthTier": "zamoznosc: {value}",
+      "reasonProfile": "Profil: {value}."
+    },
+    "shopEditor": {
+      "header": "Sklep: dodaj i edytuj profil",
+      "editedShop": "Edytowany sklep",
+      "shopType": "Typ sklepu",
+      "newShop": "Nowy sklep",
+      "deleteShop": "@:actions.delete sklep",
+      "manageActivation": "Zarządzaj aktywacją sklepów",
+      "ownerCode": "Właściciel (kod)",
+      "ownerName": "Właściciel (nazwa)",
+      "signboard": "Szyld",
+      "drawSignboardName": "Losuj nazwę szyldu",
+      "signboardAliases": "Aliasy szyldu",
+      "location": "Lokalizacja",
+      "worldProfile": "Profil świata",
+      "legalStatus": "Legalność",
+      "wealthTier": "Zamożność",
+      "reputation": "Reputacja",
+      "seasonality": "Sezonowość",
+      "counterfeitRisk": "Ryzyko podróbek",
+      "autoTags": "Tagi automatyczne",
+      "saveProfile": "@:actions.save profil",
+      "generateStarterSuggestions": "Generuj sugestie startowe",
+      "intro": "Ustaw profil sklepu krok po kroku. Zmiany od razu wpływają na sugestie asortymentu i aktywacje.",
+      "overviewTitle": "Szybki podgląd profilu",
+      "overviewDescription": "Podsumowanie aktualizuje się automatycznie podczas edycji.",
+      "emptyAutoTags": "Tagi pojawią się po uzupełnieniu profilu sklepu.",
+      "tagListLabel": "Wykryte tagi profilu sklepu",
+      "notProvided": "Nie ustawiono",
+      "noSelection": "Brak wybranego sklepu",
+      "toolbarLabel": "Akcje edytora sklepu",
+      "counterfeitBandLabel": "Poziom alarmu: {label}",
+      "counterfeitBands": {
+        "low": "Niskie",
+        "medium": "Średnie",
+        "high": "Wysokie"
+      },
+      "validation": {
+        "fillRequired": "Aby wygenerować sugestie, uzupełnij: {fields}.",
+        "requiredForSuggestions": "Pole wymagane do działania sugestii."
+      },
+      "sections": {
+        "selectionTitle": "Wybór sklepu i szybkie akcje",
+        "selectionDesc": "Wybierz profil do edycji albo utwórz nowy sklep i od razu zarządzaj jego aktywacją.",
+        "identityTitle": "Tożsamość sklepu",
+        "identityDesc": "Nazwij sklep i ustaw właściciela, aby profil był czytelny dla MG i graczy.",
+        "contextTitle": "Otoczenie i zasady działania",
+        "contextDesc": "Te ustawienia określają, gdzie sklep funkcjonuje i jak jest postrzegany w świecie gry.",
+        "marketTitle": "Charakter oferty",
+        "marketDesc": "Zdefiniuj poziom zamożności, reputację i ryzyka. Na tej podstawie system buduje podpowiedzi.",
+        "actionsTitle": "Zapis i sugestie",
+        "actionsDesc": "Najpierw zapisz profil, a potem wygeneruj propozycje startowego asortymentu."
+      },
+      "layoutSections": {
+        "basicData": "Dane podstawowe",
+        "descriptionAliases": "Opis i aliasy",
+        "storeParameters": "Parametry sklepu"
+      },
+      "hints": {
+        "ownerName": "To pole może nadpisać domyślną nazwę wynikającą z kodu właściciela.",
+        "signboard": "Możesz wpisać własną nazwę albo skorzystać z losowania dla szybkiej inspiracji.",
+        "signboardAliases": "Wpisz alternatywne nazwy oddzielone przecinkami.",
+        "autoTags": "Tagi są liczone automatycznie na podstawie typu, lokalizacji, reputacji i legalności."
+      },
+      "tooltips": {
+        "selectionSection": "Najpierw wskazujesz sklep do pracy. Z tego miejsca można też utworzyć nowy profil, usunąć obecny albo zarządzać aktywnością sklepów.",
+        "identitySection": "Ta sekcja opisuje, kto prowadzi sklep i jak ma być rozpoznawany w grze.",
+        "contextSection": "Tutaj ustawiasz realia działania sklepu. Te parametry wpływają na klimat i dobór propozycji towarów.",
+        "marketSection": "Ta sekcja steruje poziomem oferty i ryzyka. Używają jej automatyczne sugestie i filtry profilu.",
+        "actionsSection": "Po zapisaniu profilu możesz od razu wygenerować zestaw propozycji startowych dla sklepu.",
+        "editedShop": "Lista wszystkich dostępnych sklepów. Zmiana wyboru przełącza formularz na inny profil.",
+        "shopType": "Typ sklepu wyznacza główny kierunek oferty i jest jednym z najważniejszych danych dla generatora sugestii.",
+        "newShopButton": "Tworzy nowy, pusty profil sklepu i ustawia go jako aktywny do dalszej edycji.",
+        "manageActivationButton": "Otwiera okno zarządzania tym, które sklepy są aktywne i dostępne podczas handlu.",
+        "deleteShopButton": "Usuwa aktualnie wybrany profil sklepu. Opcja jest aktywna tylko wtedy, gdy sklep może zostać bezpiecznie skasowany.",
+        "ownerCode": "Kod właściciela podpina sklep do konkretnej postaci lub frakcji i pomaga w filtrowaniu danych.",
+        "ownerName": "Własna nazwa właściciela pozwala pokazać bardziej czytelny podpis niż sam kod.",
+        "signboard": "Główna nazwa widoczna dla graczy. Wpływa na charakter sklepu i pojawia się w podpowiedziach.",
+        "drawSignboardButton": "Losuje nową nazwę szyldu na podstawie aktualnego profilu sklepu.",
+        "signboardAliases": "Dodatkowe nazwy pomagają zapisać skróty, warianty regionalne albo potoczne określenia sklepu.",
+        "location": "Lokalizacja ustala otoczenie sklepu i zawęża pulę sensownych towarów oraz klimat oferty.",
+        "worldProfile": "Profil świata dopasowuje sklep do realiów kampanii i modyfikuje opisy oraz rekomendacje.",
+        "legalStatus": "Legalność wpływa na to, jak ryzykowny lub oficjalny jest handel w danym miejscu.",
+        "wealthTier": "Poziom zamożności określa, jak luksusowe i kosztowne towary sklep powinien oferować.",
+        "reputation": "Reputacja opisuje zaufanie do sklepu i wpływa na ton podpowiedzi oraz charakter asortymentu.",
+        "seasonality": "Sezonowość pozwala zaznaczyć, czy sklep działa stale, czy tylko w wybranym okresie.",
+        "counterfeitRisk": "Suwak określa szansę, że w ofercie pojawią się towary podejrzane albo podrobione.",
+        "autoTags": "Tagi profilu wyliczają się same. Nie edytujesz ich ręcznie, ale pomagają szybko ocenić konfigurację sklepu.",
+        "saveProfileButton": "Zapisuje bieżące ustawienia profilu sklepu.",
+        "generateStarterSuggestionsButton": "Tworzy propozycje startowego asortymentu na podstawie aktualnego profilu."
+      },
+      "worldProfileFallback": "Profil swiata bez dodatkowego opisu.",
+      "pricing": {
+        "title": "Polityka cenowa",
+        "description": "Silnik najpierw przelicza walutę, następnie stosuje stawkę bazową, reguły rynkowe i wyjątki według priorytetu. Na końcu pilnuje bezpieczników oraz zaokrągla wynik.",
+        "tabs": {
+          "label": "Sekcje polityki cenowej",
+          "basics": "Stawki",
+          "presets": "Presety",
+          "currency": "Waluty",
+          "guardrails": "Bezpieczniki",
+          "modifiers": "Reguły rynku",
+          "exceptions": "Wyjątki"
+        },
+        "help": {
+          "engine": "Silnik liczy cenę deterministycznie w backendzie: katalog, waluta, stawka bazowa, typ sklepu, transport, zapas i popyt, sezon, zamożność, legalność, reputacja, polityka, wyjątki, korekta MG i bezpieczniki. Interfejs nie powiela obliczeń. Każdy krok widać w zakładce przebiegu.",
+          "basics": "Stawki bazowe rozpoczynają sprzedaż i skup, a progi wartości klasyfikują towar dla późniejszych reguł. Nie zastępują typu sklepu, popytu ani stanu. Typowa sprzedaż to 100–140%, a skup 35–70% katalogu.",
+          "saleRate": "Bazowa cena dla gracza jest stosowana po przeliczeniu waluty, przed regułami rynku. Nie zmienia ceny katalogowej. Typowo 100–140%; aktualnie {value}%. Przykład: katalogowe 100 przy 120% daje bazę 120.",
+          "buybackRate": "Bazowa stawka skupu określa początkową wypłatę sklepu przed stanem, popytem i limitem kapitału. Nie wpływa na sprzedaż. Typowo 35–70%; aktualnie {value}%.",
+          "minimumPrice": "Cena minimalna działa na samym końcu i chroni przed zerowym lub ujemnym wynikiem. Nie podnosi cen powyżej minimum. Typowo 0–5 najmniejszych jednostek; aktualnie {value}.",
+          "roundingStep": "Krok zaokrąglenia dopasowuje wynik końcowy do wygodnych nominałów. Nie zmienia wcześniejszych mnożników. Typowo 1, 5 lub 10; aktualnie {value}. Przykład: krok 5 zmienia 137 na 135 albo 140 zależnie od kierunku.",
+          "roundingMode": "Kierunek określa, czy silnik wybiera najbliższy krok, zawsze wyższy albo zawsze niższy. Nie wpływa na dostępność. Aktualnie: {value}.",
+          "priceBand": "Próg „{label}” klasyfikuje towar według ceny po przeliczeniu waluty. Wpływa na reguły zamożności i wyjątki, ale sam nie zmienia ceny. Aktualna granica: {value}. Progi powinny rosnąć kolejno.",
+          "presets": "Preset ustawia spójny zestaw stawek, bezpieczników i aktywnych reguł. Nie zmienia profilu świata ani asortymentu. Po ręcznej zmianie polityka staje się własna; można ją zapisać pod własną nazwą.",
+          "currency": "Waluta rozliczeniowa i kursy są stosowane przed marżą. Prowizja działa tylko przy różnicy walut. Nie przelicza ponownie ceny już zapisanej w walucie sklepu.",
+          "settlementCurrency": "Waluta rozliczeniowa określa jednostkę ceny końcowej i właściwą sakiewkę. Nie zmienia wartości towaru bez kursu. Aktualnie: {value}. Przykład: ceny w srebrze są najpierw przeliczane do pensów sklepu.",
+          "buyFee": "Prowizja zakupu jest doliczana tylko gdy waluta towaru różni się od waluty sklepu. Nie dotyczy skupu. Typowo 0–10%; aktualnie {value}%.",
+          "sellFee": "Prowizja skupu jest odejmowana od wypłaty tylko przy wymianie obcej waluty. Nie dotyczy ceny dla kupującego. Typowo 0–10%; aktualnie {value}%.",
+          "exchangeRate": "Kurs podaje, ile najmniejszych jednostek waluty „{target}” odpowiada jednej jednostce „{source}”. Nie zawiera marży ani prowizji. Musi być dodatni; aktualnie {value}. Przykład: kurs 2 zmienia 10 na 20 przed dalszymi regułami.",
+          "guardrails": "Bezpieczniki ograniczają skrajne wyniki dopiero po modyfikatorach i chronią przed skupem droższym niż sprzedaż. Nie zastępują poprawnej konfiguracji. Wyjątek MG może je ominąć tylko po świadomym zaznaczeniu.",
+          "guardrailsEnabled": "Przełącznik aktywuje wszystkie skonfigurowane limity. Wyłączenie nie usuwa ich wartości, ale pozwala na dowolnie skrajne ceny. Aktualnie: {value}. Zwykle warto pozostawić bezpieczniki aktywne.",
+          "guardrail": "„{label}” ogranicza wyliczony wynik, gdy przekroczy wskazaną granicę. Nie zmienia ceny mieszczącej się w zakresie. Aktualnie: {value}. Szczegół: {hint}",
+          "modifiers": "Reguły rynku włączają tylko te czynniki, które mają sens dla danego towaru. Wyłączenie reguły usuwa jej wpływ z ceny i breakdownu, ale nie zmienia danych profilu.",
+          "modifier": "Reguła „{label}”: {description} Jej wpływ zależy od towaru i może zostać pominięty, gdy nie pasuje. Aktualnie: {value}. Przykład zastosowania lub pominięcia pokazuje symulator.",
+          "exceptions": "Wyjątek MG działa tylko gdy wszystkie niepuste kryteria pasują. Może użyć mnożnika, korekty kwotowej albo ceny stałej. Nie zmienia innych towarów; wyższy priorytet jest rozpatrywany wcześniej.",
+          "exceptionPicker": "Lista wybiera jeden wyjątek do edycji, dzięki czemu formularz pozostaje zwarty. Nie zmienia kolejności ani działania reguł. Kolejność obliczeń nadal wynika z priorytetu.",
+          "exceptionActive": "Wyłączona reguła zachowuje konfigurację, ale jest pomijana w obliczeniach. Nie wpływa na pozostałe wyjątki. Przydaje się do czasowego testowania wariantów.",
+          "exceptionPriority": "Wyższy priorytet jest rozpatrywany wcześniej. Nie jest mnożnikiem ceny. Typowy zakres to −100 do 100; aktualnie {value}. Przy remisie obowiązuje stabilna kolejność reguł.",
+          "exceptionModes": "Tryby określają, czy wyjątek działa przy sprzedaży graczowi, skupie od gracza, czy w obu przypadkach. Nie zmieniają innych operacji. Co najmniej jeden tryb musi pozostać aktywny.",
+          "exceptionCriterion": "Kryterium „{field}” ma obecnie wartość „{value}”. Puste lub „dowolne” nie ogranicza reguły. Wszystkie ustawione kryteria muszą pasować jednocześnie; towary niespełniające warunku pozostają bez zmian.",
+          "exceptionEffect": "Rodzaj efektu wybiera mnożnik procentowy, dopłatę lub rabat kwotowy albo cenę stałą. Działa tylko po dopasowaniu kryteriów. Cena stała zastępuje wynik, a pozostałe efekty go korygują.",
+          "exceptionEffectValue": "Wartość określa siłę wybranego efektu; aktualnie {value}. Dla mnożnika 100 oznacza brak zmiany, dla korekty 0 nie zmienia kwoty. Bezpieczniki nadal obowiązują, jeśli nie zostały świadomie pominięte.",
+          "exceptionStop": "Po dopasowaniu tej reguły silnik może pominąć wyjątki o niższym priorytecie. Nie zatrzymuje wcześniejszych etapów rynku ani końcowych bezpieczników.",
+          "exceptionIgnoreGuardrails": "Pozwala tej regule ominąć globalne widełki cen. Nie wyłącza walidacji wartości ujemnych ani nieprawidłowych. Używaj tylko dla świadomie ustalonej ceny fabularnej.",
+          "exceptionSuppress": "Zaznaczone reguły ogólne są pomijane tylko wtedy, gdy ten wyjątek pasuje. Nie wyłącza ich dla innych towarów. Przykład: cena urzędowa może pominąć popyt i reputację.",
+          "quickTest": "Test reprezentatywny liczy kilka dobranych towarów jednocześnie, aby ujawnić wpływ ustawień na różne kategorie. Nie zapisuje zmian ani nie modyfikuje asortymentu.",
+          "previewTemplate": "Przedmiot wybiera dane katalogowe, walutę, kategorię, legalność i aktualny zapas użyte w teście. Nie dodaje go do oferty ani nie zapisuje ceny. Aktualny wybór jest widoczny w polu; warto testować towary zwykłe i luksusowe.",
+          "previewMode": "Tryb wybiera sprzedaż graczowi albo skup od gracza, ponieważ używają innych stawek, reguł zapasu i limitów. Nie zmienia zapisanej polityki.",
+          "previewQuantity": "Liczba sztuk wylicza wartość partii i może uruchomić limit budżetu skupu. Nie mnoży ceny jednej sztuki przed modyfikatorami. Zakres podglądu to 1–9999; wybrana wartość jest tylko testem.",
+          "previewCondition": "Stan fizyczny wpływa na wycenę towarów, szczególnie w skupie. Nie zmienia ceny katalogowej ani dostępności kategorii. Dobry stan jest neutralny; zniszczony zwykle mocno obniża wartość.",
+          "previewReputation": "Relacja symuluje warunki konkretnego kupującego lub sprzedającego. Nie zmienia reputacji bazowej sklepu. Neutralna jest punktem odniesienia, a indywidualna relacja może ją zastąpić.",
+          "previewTemporary": "Tymczasowa korekta MG działa po polityce i wyjątkach, ale przed bezpiecznikami i zaokrągleniem. Nie zapisuje się w profilu. Typowy test to −20 do +20%; limit ustala bezpiecznik."
+        },
+        "presets": {
+          "title": "Przypisanie polityki do sklepu",
+          "description": "Wybierz gotową politykę dla tego sklepu. Ręczna zmiana jej zasad tworzy politykę własną; brak przypisania oznacza zasady ogólne.",
+          "general": {
+            "label": "Zasady ogólne",
+            "description": "Brak polityki przypisanej do sklepu. Stosowane są bezpieczne zasady ogólne świata."
+          },
+          "balanced": {
+            "label": "Zrównoważony",
+            "description": "Domyślny handel z 60% skupem i ochroną przed arbitrażem."
+          },
+          "friendly": {
+            "label": "Przyjazny graczom",
+            "description": "Niższe ceny sprzedaży i korzystniejszy skup."
+          },
+          "premium": {
+            "label": "Ekskluzywny",
+            "description": "Wyższa marża, ostrożny skup i szersze widełki cen."
+          },
+          "unrestricted": {
+            "label": "Swobodny rynek",
+            "description": "Bez globalnych widełek; pełną kontrolę przejmują reguły GM."
+          },
+          "custom": {
+            "label": "Polityka własna",
+            "description": "Ustawienia zostały dopasowane ręcznie specjalnie dla tego sklepu."
+          },
+          "customName": "Nazwa własnej polityki",
+          "saveCustom": "Zapisz preset"
+        },
+        "assignment": {
+          "selected": "Aktualnie stosowana",
+          "active": "Wybrana",
+          "shop": "Przypisanie dotyczy sklepu: {shop}"
+        },
+        "basics": {
+          "title": "Stawki bazowe i skala wartości",
+          "description": "Wartości są bezwymiarowe i działają zarówno dla pensów, dolarów, kredytów, jak i innych jednostek systemowych.",
+          "saleRate": "Bazowa cena dla gracza (%)",
+          "saleRateHint": "100% oznacza cenę katalogową przed regułami rynku.",
+          "buybackRate": "Bazowa stawka skupu (%)",
+          "buybackRateHint": "Procent ceny katalogowej wypłacany przed dalszymi korektami.",
+          "minimumPrice": "Cena minimalna",
+          "minimumPriceHint": "Ustaw 0, jeżeli dopuszczasz darmowe przedmioty.",
+          "roundingStep": "Krok zaokrąglenia",
+          "roundingStepHint": "Np. 5 zaokrągla wynik do wielokrotności pięciu jednostek.",
+          "roundingMode": "Kierunek zaokrąglenia",
+          "roundingModes": {
+            "nearest": "Do najbliższej",
+            "up": "Zawsze w górę",
+            "down": "Zawsze w dół"
+          },
+          "priceBands": {
+            "cheapMax": "Granica: tani",
+            "midMax": "Granica: standardowy",
+            "highMax": "Granica: drogi"
+          },
+          "priceBandHints": {
+            "cheapMax": "Poniżej tej kwoty przedmiot trafia do najtańszego progu.",
+            "midMax": "Górna granica zwykłych przedmiotów w walucie rozliczeniowej.",
+            "highMax": "Powyżej tej kwoty przedmiot jest traktowany jako luksusowy."
+          }
+        },
+        "currency": {
+          "title": "Waluty i kantor",
+          "description": "Każda cena źródłowa jest przeliczana do jednej waluty rozliczeniowej przed naliczeniem marży. Pozwala to bezpiecznie łączyć regionalne monety lub waluty z różnych realiów.",
+          "settlement": "Waluta rozliczeniowa sklepu",
+          "settlementHint": "W tej walucie sklep pokazuje ceny i rozlicza odpowiednią sakiewkę bohatera. Zmiana zacznie obowiązywać po zapisaniu profilu sklepu.",
+          "buyFee": "Prowizja przy zakupie (%)",
+          "buyFeeHint": "Doliczana, gdy waluta przedmiotu różni się od rozliczeniowej.",
+          "sellFee": "Prowizja przy skupie (%)",
+          "sellFeeHint": "Odejmowana od wypłaty za wymianę obcej waluty.",
+          "paymentExchangeFee": "Koszt przewalutowania płatności (%)",
+          "paymentExchangeFeeHint": "Doliczany do kwoty pobieranej z obcej sakiewki bohatera.",
+          "rates": "Kursy wymiany",
+          "acceptCurrency": "Sklep przyjmuje walutę: {currency}",
+          "ratesHint": "Kurs określa liczbę najmniejszych jednostek waluty rozliczeniowej za jedną najmniejszą jednostkę waluty źródłowej.",
+          "rateUnit": "1 jednostka {source} = kurs × jednostka {target}",
+          "missingRate": "Brak zapisanego kursu dla waluty tego przedmiotu — podgląd tymczasowo zakłada kurs 1:1. Ustaw kurs przed udostępnieniem sklepu."
+        },
+        "guardrails": {
+          "title": "Bezpieczniki ekonomiczne",
+          "description": "Ograniczają skrajne wyniki wielu nakładających się reguł i domyślnie nie pozwalają zarabiać na natychmiastowym odkupieniu tego samego towaru.",
+          "enabled": "Włącz bezpieczniki",
+          "fields": {
+            "buyMinMultiplier": "Minimalna cena dla gracza (%)",
+            "buyMaxMultiplier": "Maksymalna cena dla gracza (%)",
+            "sellMinMultiplier": "Minimalny skup (%)",
+            "sellMaxMultiplier": "Maksymalny skup (%)",
+            "maxBuybackRatio": "Skup względem ceny sprzedaży (%)",
+            "maxTemporaryPercent": "Maks. korekta tymczasowa (%)",
+            "minimumAvailabilityChance": "Min. dostępność (%)",
+            "maximumAvailabilityChance": "Maks. dostępność (%)"
+          },
+          "hints": {
+            "buyMinMultiplier": "Dolna granica względem ceny katalogowej po przeliczeniu waluty.",
+            "buyMaxMultiplier": "Górna granica względem ceny katalogowej po przeliczeniu waluty.",
+            "sellMinMultiplier": "Najniższa dopuszczalna wypłata względem ceny katalogowej.",
+            "sellMaxMultiplier": "Najwyższa dopuszczalna wypłata względem ceny katalogowej.",
+            "maxBuybackRatio": "Chroni przed skupem droższym niż cena tego samego przedmiotu w sklepie.",
+            "maxTemporaryPercent": "Ogranicza przypadkowo skrajną korektę w symulatorze i transakcji.",
+            "minimumAvailabilityChance": "Dolny limit wyliczonej szansy pojawienia się towaru.",
+            "maximumAvailabilityChance": "Górny limit wyliczonej szansy pojawienia się towaru."
+          }
+        },
+        "modifiersTitle": "Ogólne reguły rynku",
+        "modifiersDescription": "Możesz wyłączyć całą regułę tutaj albo pominąć ją tylko w wybranym wyjątku.",
+        "exceptions": {
+          "title": "Wyjątki i reguły specjalne",
+          "description": "Wyższy priorytet działa wcześniej. Wszystkie niepuste kryteria muszą pasować; wartości w jednym kryterium są alternatywami.",
+          "add": "Dodaj wyjątek",
+          "empty": "Brak wyjątków. Sklep korzysta wyłącznie z reguł ogólnych.",
+          "defaultName": "Wyjątek {number}",
+          "choose": "Edytowany wyjątek",
+          "active": "Aktywny",
+          "name": "Nazwa reguły",
+          "priority": "Priorytet",
+          "remove": "Usuń",
+          "when": "Kiedy reguła pasuje",
+          "then": "Wtedy zastosuj",
+          "any": "Dowolne",
+          "item": "Konkretny przedmiot",
+          "itemClass": "Klasa przedmiotu",
+          "itemGenre": "Gatunek/kategoria",
+          "currency": "Waluta źródłowa",
+          "priceTier": "Próg wartości",
+          "legality": "Legalność przedmiotu",
+          "availability": "Dostępność w sklepie",
+          "effect": "Rodzaj korekty",
+          "stop": "Zatrzymaj dalsze wyjątki po tej regule",
+          "ignoreGuardrails": "Pozwól tej regule ominąć bezpieczniki",
+          "disableModifiers": "Pomiń reguły ogólne dla tego wyjątku",
+          "disableModifiersHint": "Zaznaczone modyfikatory nie będą liczone, gdy ten wyjątek pasuje.",
+          "effects": {
+            "multiplier": "Procent ceny",
+            "additive": "Dopłata lub rabat",
+            "fixed": "Cena stała"
+          },
+          "effectValues": {
+            "multiplier": "Docelowy procent (100 = bez zmian)",
+            "additive": "Zmiana w jednostkach waluty",
+            "fixed": "Cena w walucie rozliczeniowej"
+          },
+          "modes": { "buy": "Sprzedaż graczowi", "sell": "Skup od gracza" },
+          "priceTiers": {
+            "cheap": "Tani",
+            "mid": "Standardowy",
+            "high": "Drogi",
+            "luxury": "Luksusowy"
+          },
+          "legalities": {
+            "legal": "Legalny",
+            "grey": "Szara strefa",
+            "illegal": "Nielegalny"
+          },
+          "availabilityBands": {
+            "none": "Brak",
+            "scarce": "Ostatnia sztuka",
+            "low": "Niska",
+            "medium": "Średnia",
+            "high": "Wysoka"
+          }
+        },
+        "previewTemplate": "Przedmiot podglądu",
+        "previewTemplateTooltip": "Wybierz szablon, dla którego chcesz obejrzeć kalkulację ceny sprzedaży i skupu.",
+        "stockedInShop": "w asortymencie",
+        "emptyPreview": "Dodaj albo wybierz szablon przedmiotu, aby zobaczyć kalkulację.",
+        "basePrice": "Cena bazowa po przeliczeniu",
+        "stockQuantity": "Dostępna ilość",
+        "simulator": {
+          "title": "Symulator cen",
+          "description": "Backend porównuje zapisany i roboczy profil.",
+          "quickTest": "Test reprezentatywny",
+          "mode": "Tryb",
+          "playerBuys": "Gracz kupuje",
+          "shopBuys": "Sklep skupuje",
+          "quantity": "Sztuki",
+          "condition": "Stan",
+          "conditions": {
+            "ruined": "Zniszczony",
+            "poor": "Słaby",
+            "worn": "Zużyty",
+            "good": "Dobry",
+            "excellent": "Doskonały"
+          },
+          "reputation": "Relacja",
+          "temporary": "Korekta tymczasowa %",
+          "calculating": "Przeliczanie…",
+          "error": "Nie udało się przeliczyć",
+          "catalog": "Katalog",
+          "converted": "Po walucie",
+          "preModifiers": "Stawka bazowa",
+          "savedPrice": "Przed zmianą / szt.",
+          "draftUnitPrice": "Po zmianie / szt.",
+          "total": "Partia",
+          "availability": "Dostępność",
+          "resultTabs": "Widok wyników symulatora",
+          "breakdownItem": "Przedmiot analizowany w przebiegu",
+          "breakdownStages": "Zakres etapów obliczenia",
+          "views": {
+            "summary": "Wynik",
+            "breakdown": "Przebieg obliczeń"
+          },
+          "breakdown": "Pełny przebieg",
+          "skipped": "pominięto"
+        },
+        "reasonCodes": {
+          "catalog_price": "Cena źródłowa przedmiotu.",
+          "currency_conversion": "Przeliczono do waluty rozliczeniowej.",
+          "currency_rate_missing": "Brak kursu; przyjęto awaryjnie 1:1.",
+          "sale_base": "Zastosowano bazową stawkę sprzedaży.",
+          "buyback_base": "Zastosowano bazową stawkę skupu.",
+          "ordinary_legal_good_unaffected": "Zwykły legalny towar nie wymaga premii za ryzyko.",
+          "season_not_relevant_for_category": "Pora roku nie dotyczy tej kategorii.",
+          "no_active_market_event_for_item": "Brak aktywnego wydarzenia pasującego do towaru.",
+          "normal_demand": "Popyt jest neutralny.",
+          "standard_condition": "Stan dobry nie wymaga korekty.",
+          "no_temporary_modifier": "Nie podano tymczasowej korekty.",
+          "no_manual_adjustment": "Brak ręcznej ceny MG.",
+          "disabled": "Reguła została wyłączona.",
+          "guardrail_not_needed": "Cena mieści się w bezpiecznym zakresie.",
+          "wealth_limit_not_reached": "Kapitał sklepu wystarcza na skup.",
+          "rounding_not_needed": "Cena jest już zgodna z krokiem zaokrąglenia.",
+          "minimum_not_needed": "Cena przekracza ustawione minimum.",
+          "pricing_policy_selected": "Wybrano politykę; ten krok nie zmienia jeszcze ceny.",
+          "shop_type_buy": "Specjalizacja sklepu zmienia marżę sprzedaży dla tej kategorii.",
+          "shop_type_sell": "Specjalizacja sklepu zmienia ofertę skupu tej kategorii.",
+          "no_type": "Profil nie ma jeszcze przypisanego typu sklepu.",
+          "availability_buy": "Cena sprzedaży reaguje na aktualny zapas.",
+          "availability_sell": "Oferta skupu uwzględnia aktualny zapas.",
+          "demand_buy": "Popyt zmienia cenę dla kupującego.",
+          "demand_sell": "Popyt zmienia kwotę oferowaną w skupie.",
+          "condition_buy": "Stan zmienia cenę sprzedawanej sztuki.",
+          "condition_sell": "Stan zmienia wycenę sztuki w skupie.",
+          "wealth_buy": "Zamożność wpływa na marżę tej klasy cenowej.",
+          "wealth_sell": "Kapitał sklepu wpływa na wycenę tej klasy w skupie.",
+          "legality_buy": "Do ceny dodano koszt legalności lub ryzyka.",
+          "legality_sell": "Legalność zmienia gotowość sklepu do skupu.",
+          "reputation_buy": "Relacja kupującego ze sklepem zmienia cenę.",
+          "reputation_sell": "Relacja sprzedającego zmienia ofertę skupu.",
+          "location_buy": "Lokalizacja, transport i pochodzenie towaru zmieniają cenę.",
+          "location_sell": "Lokalizacja i lokalna podaż zmieniają ofertę skupu.",
+          "seasonality_buy": "Sezon dotyczy tej kategorii i zmienia cenę.",
+          "seasonality_sell": "Sezon dotyczy tej kategorii i zmienia skup.",
+          "active_market_events": "Aktywne wydarzenie pasuje do daty i zakresu towaru.",
+          "world_profile_buy": "Realia świata wpływają na tę kategorię przy sprzedaży.",
+          "world_profile_sell": "Realia świata wpływają na tę kategorię przy skupie.",
+          "no_world_profile": "Brak danych profilu świata dla tej reguły.",
+          "counterfeit_risk_not_material": "Towar nie jest istotnie podatny na fałszerstwo.",
+          "counterfeit_buy": "Ryzyko pochodzenia zmienia cenę dla kupującego.",
+          "counterfeit_sell": "Ryzyko pochodzenia zmienia ofertę skupu.",
+          "deterministic_counterfeit_suspected": "Deterministyczny test wskazał podejrzanie tanią podróbkę.",
+          "temporary_gm_modifier": "Zastosowano tymczasową korektę MG.",
+          "manual_adjustment_fixed": "MG ustawił ręcznie cenę tej pozycji.",
+          "policy_rule_fixed": "Wyjątek MG ustawił cenę stałą.",
+          "policy_rule_additive": "Wyjątek MG dodał korektę kwotową.",
+          "policy_rule_multiplier": "Wyjątek MG zastosował mnożnik.",
+          "invalid_or_negative_price": "Nieprawidłową lub ujemną cenę zastąpiono bezpieczną wartością.",
+          "guardrail_range": "Cena została ograniczona do skonfigurowanych widełek.",
+          "wealth_buyback_limit": "Budżet lub limit sztuki ograniczył skup.",
+          "rounding": "Cenę dopasowano do ustawionego kroku.",
+          "minimum_price": "Zastosowano minimalną dozwoloną cenę.",
+          "guardrail_buyback_ratio": "Skup ograniczono względem ceny sprzedaży, aby uniknąć arbitrażu."
+        },
+        "noActiveModifiers": "Brak aktywnych modyfikatorów ponad stawkę bazową.",
+        "breakdown": {
+          "buybackBase": "Bazowa stawka skupu",
+          "saleBase": "Bazowa stawka sprzedaży",
+          "currencyConversion": "Przeliczenie waluty i prowizja",
+          "guardrailRange": "Ograniczenie do widełek",
+          "guardrailBuybackRatio": "Ochrona przed arbitrażem",
+          "rounding": "Zaokrąglenie",
+          "minimumPrice": "Cena minimalna",
+          "policyRule": "Reguła specjalna"
+        },
+        "cards": {
+          "buy": {
+            "title": "Cena sprzedazy sklepu",
+            "description": "Kwota, którą zapłaci gracz za zakup w sklepie."
+          },
+          "sell": {
+            "title": "Cena skupu sklepu",
+            "description": "Kwota, którą sklep zapłaci graczowi za odsprzedanie przedmiotu."
+          }
+        },
+        "toggles": {
+          "shopType": "Uwzgledniaj typ sklepu",
+          "availability": "Uwzgledniaj dostepnosc przedmiotu",
+          "wealth": "Uwzgledniaj zamoznosc",
+          "legality": "Uwzgledniaj legalnosc",
+          "reputation": "Uwzgledniaj reputacje",
+          "location": "Uwzgledniaj lokalizacje",
+          "seasonality": "Uwzgledniaj sezonowosc",
+          "worldProfile": "Uwzgledniaj profil swiata",
+          "counterfeitRisk": "Uwzględniaj ryzyko podróbek",
+          "demand": "Uwzględniaj popyt",
+          "condition": "Uwzględniaj stan",
+          "marketEvents": "Uwzględniaj wydarzenia"
+        },
+        "toggleDescriptions": {
+          "shopType": "Premiuje towary pasujace do specjalizacji sklepu i podnosi ceny poza profilem.",
+          "availability": "Reaguje na liczbe sztuk tego przedmiotu w asortymencie danego sklepu.",
+          "wealth": "Zmienia marze oraz skup zalezne od poziomu zamoznosci sklepu i klasy towaru.",
+          "legality": "Rozroznia towary legalne, graniczne i nielegalne oraz dopasowuje je do statusu sklepu.",
+          "reputation": "Podbija albo tlumi ceny zaleznie od renomy oraz wiarygodnosci sklepu.",
+          "location": "Uwzglednia lokalne warunki handlu i dopasowanie typu sklepu do miejsca.",
+          "seasonality": "Naklada sezonowe wzrosty albo obnizki dla wybranych klas i gatunkow towarow.",
+          "worldProfile": "Dodaje modyfikatory wynikajace z profilu kampanii i realiow swiata.",
+          "counterfeitRisk": "Koryguje ceny towarów wrażliwych na fałszerstwa i jakość pochodzenia.",
+          "demand": "Reaguje na popyt na konkretny towar, szczególnie przy skupie.",
+          "condition": "Zmienia wycenę zależnie od stanu egzemplarza.",
+          "marketEvents": "Stosuje tylko aktywne zdarzenia pasujące zakresem do towaru."
+        }
+      },
+      "options": {
+        "locationType": {
+          "metropolia": "Metropolia",
+          "miasto": "Miasto",
+          "miasteczko": "Miasteczko",
+          "wies": "Wies",
+          "jarmark": "Jarmark",
+          "port": "Port",
+          "port_morski": "Port morski",
+          "port_rzeczny": "Port rzeczny",
+          "forteca": "Forteca",
+          "przy_trakcie": "Przy trakcie",
+          "obrzeza": "Obrzeza",
+          "dzielnica_bogata": "Dzielnica bogata",
+          "dzielnica_biedna": "Dzielnica biedna",
+          "strefa_swiatynna": "Strefa swiatynna",
+          "strefa_cechowa": "Strefa cechowa"
+        },
+        "legalStatus": {
+          "legal": "Legalny",
+          "licensed": "Licencjonowany",
+          "grey": "Szara strefa",
+          "illegal": "Nielegalny",
+          "mixed": "Mieszany"
+        },
+        "wealthTier": {
+          "nedzny": "Nedzny",
+          "biedny": "Biedny",
+          "standard": "Standard",
+          "bogaty": "Bogaty",
+          "elitarny": "Elitarny",
+          "luksusowy": "Luksusowy"
+        },
+        "reputation": {
+          "fatalna": "Fatalna",
+          "zla": "Zla",
+          "podejrzana": "Podejrzana",
+          "neutralna": "Neutralna",
+          "dobra": "Dobra",
+          "znakomita": "Znakomita"
+        },
+        "seasonality": {
+          "caloroczny": "Caloroczny",
+          "sezonowy": "Sezonowy",
+          "wiosna": "Wiosna",
+          "lato": "Lato",
+          "jesien": "Jesien",
+          "zima": "Zima",
+          "zniwa": "Zniwa",
+          "jarmark": "Jarmark",
+          "swieta": "Swieta"
+        }
+      }
+    },
+    "activationDialog": {
+      "ariaLabel": "Aktywacja sklepów",
+      "title": "Aktywne sklepy dla gracza",
+      "subtitle": "Kliknij kartę sklepu, aby włączyć lub ukryć go dla graczy.",
+      "activeCount": "Aktywne: {active}/{total}",
+      "statusActive": "Aktywny",
+      "statusInactive": "Nieaktywny",
+      "currentShop": "Bieżący sklep",
+      "close": "@:actions.close"
+    },
+    "assortment": {
+      "sourceLabel": "Źródło (Stos / Kosz)",
+      "searchPlaceholder": "Szukaj po nazwie lub opisie...",
+      "historyPrefix": "Historia",
+      "undo": "Cofnij",
+      "selectedPrefix": "Zaznaczone",
+      "moveToShop": "@:actions.move ->",
+      "targetShop": "Sklep docelowy",
+      "shopAssortmentTab": "Asortyment sklepu",
+      "suggestionsTab": "Sugestie i losowanie",
+      "moveToStack": "<- @:actions.move",
+      "suggestionsHeader": "Sugestie i losowanie asortymentu",
+      "generateSuggestions": "Generuj sugestie",
+      "addSelected": "Dodaj zaznaczone",
+      "addAll": "Dodaj wszystko",
+      "rollInstancesLabel": "Losuj instancji:",
+      "rollStarter": "Losuj startowy",
+      "visibleItems": "Widoczne pozycje: {count}. Łączna liczba sztuk: {units}.",
+      "loadedRange": "Zaladowano sugestie: {shown} z {total}. Laczna liczba sztuk: {units}.",
+      "loadMoreSuggestions": "Pokaz kolejne {count}",
+      "noMoreSuggestions": "Brak kolejnych sugestii do doladowania.",
+      "noSuggestionsSetProfile": "Brak sugestii. Ustaw profil sklepu i kliknij \"Generuj sugestie\".",
+      "starterHeader": "Sugestie startowego asortymentu",
+      "refreshSuggestions": "@:actions.refresh sugestie",
+      "addDraftTemplates": "Dodaj DRAFT do szablonów",
+      "addSelectedInstances": "Dodaj zaznaczone instancje",
+      "addAllInstances": "Dodaj wszystkie instancje",
+      "rollStarterBatch": "Losuj kilkanaście startowych",
+      "noSuggestionsSaveProfile": "Brak sugestii. Zapisz profil sklepu i kliknij \"Generuj sugestie startowe\".",
+      "draftMissingTemplateBadge": "DRAFT brak szablonu",
+      "stackCandidateLabel": "Możliwy stack: {count}x",
+      "remainingRecommendations": "Rekomendacje dla pozostalych szablonów: {shown} z {total}.",
+      "allRecommendationsShown": "Wszystkie ocenione szablony znajdują się na liście sugestii.",
+      "mergeSimilarButton": "Scal podobne",
+      "rollPreview": "Dry-run",
+      "applyPreviewResult": "@:actions.apply ten wynik",
+      "previewSummary": "Plan zmian: {unique} pozycji / {instances} sztuk (cel: {target}).",
+      "previewDelta": "Zmiana vs obecny sklep: pozycje {deltaUnique}, sztuki {deltaInstances}."
+    },
+    "quickTransfer": {
+      "title": "Narzędzia asortymentu",
+      "gmTransferTitle": "GM: szybki transfer",
+      "itemLabel": "Przedmiot",
+      "moveToLabel": "@:actions.move do",
+      "moveButton": "@:actions.move",
+      "containersOverview": "Kontenery i zawartość",
+      "emptyShort": "Brak",
+      "actionsPreview": "Szybkie akcje i podgląd",
+      "shopPurchaseTitle": "Zakup ze sklepu",
+      "shopLabel": "Sklep",
+      "goodsLabel": "Towar",
+      "buyerLabel": "Kupuje",
+      "buyButton": "@:actions.buy",
+      "noGoodsInShop": "Brak towaru w sklepie.",
+      "quantityLabel": "Ilość",
+      "gmQuantityHint": "Maksymalnie dostepne: {max}"
+    },
+    "iconDialog": {
+      "ariaLabel": "Wybierz ikonę przedmiotu",
+      "title": "Wybór ikony",
+      "close": "@:actions.close",
+      "metadataTitle": "Metadane ikony",
+      "iconClassPlaceholder": "Numer vNNNN",
+      "addIconPlaceholder": "Dodaj vNNNN",
+      "namePlaceholder": "Nazwa ikony",
+      "descriptionPlaceholder": "Opis ikony",
+      "specialMarksPlaceholder": "Znaki szczególne",
+      "autoTagsPlaceholder": "Tagi automatyczne",
+      "typesMulti": "Typy (wiele)",
+      "subtypesMulti": "Podtypy (wiele)",
+      "applyMetadata": "@:actions.apply metadane",
+      "collectionTitle": "Kolekcja ikon",
+      "searchPlaceholder": "Szukaj po ID, nazwie, opisie, tagach...",
+      "allTypes": "Wszystkie typy",
+      "allSubtypes": "Wszystkie podtypy",
+      "sortAsc": "Sortowanie: rosnąco",
+      "sortDesc": "Sortowanie: malejąco",
+      "emptyFiltered": "Brak ikon dla wybranych filtrów.",
+      "addIcon": "Dodaj",
+      "deleteIcon": "Usuń",
+      "errors": {
+        "invalidClass": "Podaj numer ikony w formacie v0001-v1375.",
+        "classTaken": "{iconClass} jest już widoczna w katalogu. Użyj drag&drop, aby zamienić sloty.",
+        "classVisible": "{iconClass} jest już widoczna w katalogu.",
+        "chooseIconFirst": "Najpierw wybierz ikonę."
+      },
+      "cancel": "@:actions.cancel",
+      "saveSelection": "@:actions.save wybór"
+    },
+    "ownerDialog": {
+      "ariaLabel": "Wybierz wlaściciela",
+      "title": "Wybór właściciela",
+      "close": "@:actions.close",
+      "currentSelection": "Aktualny wybór",
+      "selectionDescription": "Opis wyboru",
+      "ownerChip": "Właściciel",
+      "noDescription": "Brak opisu.",
+      "optionDescriptions": {
+        "DEFAULT": "Domyslny stos. Przedmiot trafia do kontenera DEFAULT.",
+        "TRASH": "Przedmiot trafia do kosza i czeka na przywrocenie lub usuniecie.",
+        "BG1": "Wlasciciel: Bohater Glowny 1. Sprzet przypisany do tej postaci.",
+        "BG2": "Wlasciciel: Bohater Glowny 2. Sprzet przypisany do tej postaci.",
+        "BG3": "Wlasciciel: Bohater Glowny 3. Sprzet przypisany do tej postaci."
+      },
+      "cancel": "@:actions.cancel",
+      "saveSelection": "@:actions.save wybór"
+    },
+    "fieldEditDialog": {
+      "ariaLabel": "Edycja pola",
+      "title": "{field} ({context})",
+      "defaultField": "Pole",
+      "searchPlaceholder": "Filtruj sugestie...",
+      "valuePlaceholder": "Wpisz wartosc dla: {field}",
+      "editField": "Edytuj pole {field}",
+      "noSuggestions": "Brak sugestii.",
+      "targets": {
+        "default": "formularz",
+        "template": "szablon",
+        "newTemplate": "nowy szablon",
+        "inventory": "przedmiot"
+      },
+      "fields": {
+        "ITEM_CLASS": "ITEM_CLASS",
+        "ITEM_ID": "ITEM_ID",
+        "IMG_CLASS": "IMG_CLASS",
+        "OWNER_OPT": "OWNER_OPT",
+        "ITEM_PLACE": "ITEM_PLACE",
+        "ITEM_GENRE": "ITEM_GENRE",
+        "PRIZE": "PRIZE",
+        "CHARGE": "CHARGE"
+      },
+      "validation": {
+        "required": "To pole jest wymagane.",
+        "invalidNumber": "Wpisz poprawna liczbe.",
+        "nonNegative": "Wartosc musi byc >= 0."
+      }
+    },
+    "weaponStatsDialog": {
+      "ariaLabel": "Statystyki broni",
+      "title": "Statystyki broni",
+      "close": "@:actions.close",
+      "topBarTitle": "Statystyki broni {context}",
+      "sourceTemplate": "Szablon",
+      "sourceItem": "Przedmiot",
+      "selectLabel": "Wybierz bron (ITEM_ID)",
+      "emptySelection": "Wybierz bron z listy",
+      "noOptions": "Brak zdefiniowanych broni.",
+      "fieldsTitle": "Parametry z legacy (w_bron)",
+      "name": "Nazwa",
+      "type": "Typ",
+      "handed": "Trzymanie",
+      "category": "Kategoria",
+      "dice": "Kosci",
+      "modifier": "Modyfikator",
+      "damage": "Obrazenia",
+      "range": "Zasieg",
+      "reload": "Przeladowanie",
+      "qualities": "Cechy",
+      "load": "Obciazenie",
+      "featuresId": "Id cech",
+      "occuChance": "Szansa wystapienia",
+      "featureSelectHint": "Wybierz ceche, aby zobaczyc opis.",
+      "add": "@:actions.add",
+      "remove": "@:actions.delete",
+      "features": {
+        "heavy": {
+          "name": "Ciezki",
+          "description": "Masywna bron, trudniejsza w prowadzeniu na krotkim dystansie.",
+          "mechanics": "Najczesciej daje kary do precyzji lub inicjatywy, ale zwieksza sile uderzenia."
+        },
+        "crushing": {
+          "name": "Druzgocacy",
+          "description": "Uderzenie przenosi sile przez pancerz i twarde oslon.",
+          "mechanics": "Zwykle poprawia skutecznosc przeciw pancerzowi albo wzmacnia testy ogluszenia/powalenia."
+        },
+        "stunning": {
+          "name": "Ogluszajacy",
+          "description": "Bron nastawiona na dezorientacje i chwilowe obezwladnienie celu.",
+          "mechanics": "Moze nakladac czasowe kary kontroli lub wymuszac testy ogluszenia."
+        },
+        "fast": {
+          "name": "Szybki",
+          "description": "Wywazona pod szybkie ponowienie ataku i reakcje w walce.",
+          "mechanics": "Czesto daje bonus do tempa atakow albo ulatwia akcje nastepcze."
+        },
+        "precise": {
+          "name": "Precyzyjny",
+          "description": "Zapewnia lepsza kontrole prowadzenia ostrza i miejsca trafienia.",
+          "mechanics": "Zwykle zwieksza szanse trafienia, ulatwia celowane ciosy lub stabilizuje krytyki."
+        },
+        "balanced": {
+          "name": "Wywazona",
+          "description": "Rozklad masy ulatwia plynne przejscie miedzy atakiem a obrona.",
+          "mechanics": "Najczesciej zmniejsza kary obslugi i wspiera testy obrony/parowania."
+        }
+      },
+      "cancel": "@:actions.cancel",
+      "save": "@:actions.save"
+    },
+    "itemDetailDialog": {
+      "ariaLabel": "Szczegóły przedmiotu",
+      "title": "Szczegóły przedmiotu",
+      "close": "@:actions.close",
+      "fallbackItemName": "Przedmiot",
+      "sourcePrefix": "Źródło",
+      "nicknameLabel": "Pseudonim",
+      "nicknamePlaceholder": "Wpisz pseudonim...",
+      "nicknameModeReplace": "Pseudonim: zastepuje",
+      "nicknameModeAppend": "Pseudonim: dopisek",
+      "sources": {
+        "shop": "Sklep",
+        "inventory": "Ekwipunek",
+        "trash": "Kosz"
+      },
+      "save": "@:actions.save",
+      "priceWeightSingle": "Cena i ciężar (1 szt.)",
+      "chargeLabel": "Ciężar",
+      "rawPrice": "Wartość bazowa: {value} / szt.",
+      "appraise": "Wyceń",
+      "valueHidden": "Ukryta",
+      "fullData": "Pełne dane",
+      "noData": "Brak danych do wyświetlenia.",
+      "noDataShort": "Brak danych",
+      "sections": {
+        "overview": "Opis i pochodzenie",
+        "commerce": "Handel",
+        "mechanics": "Mechanika",
+        "advanced": "Dane zaawansowane"
+      },
+      "availability": {
+        "available": "Dostępny",
+        "availableQuantity": "Dostępne: {quantity}",
+        "unavailable": "Niedostępny"
+      },
+      "metaLabels": {
+        "name": "Nazwa",
+        "description": "Opis",
+        "shortDescription": "Krótki opis",
+        "fullDescription": "Pełny opis",
+        "class": "Klasa",
+        "category": "Kategoria",
+        "price": "Cena",
+        "value": "Wartość",
+        "currency": "Waluta",
+        "quantity": "Ilość",
+        "availability": "Dostępność",
+        "owner": "Właściciel",
+        "shop": "Sklep / opiekun",
+        "stats": "Statystyki",
+        "special": "Cechy specjalne",
+        "requirements": "Wymagania",
+        "tags": "Tagi",
+        "technical": "Techniczne",
+        "weight": "Ciezar"
+      }
+    },
+    "suggestionDialog": {
+      "ariaLabel": "Szczegóły sugestii",
+      "title": "Szczegóły sugestii",
+      "close": "@:actions.close",
+      "suggestionLabel": "Sugestia",
+      "whySuggestion": "Dlaczego ta sugestia",
+      "templateVsPersonalizedTitle": "Szablon vs przedmiot spersonalizowany",
+      "templateVsPersonalizedBody": "Szablon definiuje wzorzec (NAME, ITEM_CLASS, ITEM_GENRE, PRIZE, CHARGE). Przedmiot spersonalizowany to konkretna sztuka w sklepie (PERSONAL_PSEU, PERSONAL_DESC, PERSONAL_COST).",
+      "personalizedVariant": "Wariant spersonalizowanego przedmiotu",
+      "variantPrice": "{value} brass",
+      "cancel": "@:actions.cancel",
+      "createTemplateOnly": "@:actions.create tylko szablon",
+      "createTemplateAndItem": "@:actions.create szablon i dodaj przedmiot",
+      "addItem": "Dodaj przedmiot"
+    },
+    "shopView": {
+      "identifiersSection": "Identyfikatory",
+      "personalizationSection": "Personalizacja",
+      "classificationOwnershipSection": "Klasyfikacja i własność",
+      "ownerField": "OWNER",
+      "economySection": "Ekonomia",
+      "emptyGoods": "Brak towarów.",
+      "summaryCost": "Koszt"
+    },
+    "templateEditor": {
+      "editTemplate": "Edycja szablonu",
+      "deleteToTrash": "@:actions.delete -> kosz",
+      "newTemplate": "Nowy szablon",
+      "descriptionSection": "Opis",
+      "classificationSection": "Klasyfikacja",
+      "economySection": "Ekonomia",
+      "clearForm": "Wyczyść",
+      "summaryPrice": "Cena"
+    },
+    "trashView": {
+      "trashZone": "Strefa kosza",
+      "slotsPrefix": "Miejsca",
+      "zoneFilterPlaceholder": "Filtr strefy (np. BG12)",
+      "noZonesForFilter": "Brak stref dla: {value}",
+      "generalZone": "Kosz ogólny",
+      "discardZoneSuffix": "Strefa wyrzucania",
+      "ownerZone": "{ownerLabel} - {suffix}"
+    },
+    "assortmentMerge": {
+      "ariaLabel": "Łączenie podobnych przedmiotów",
+      "title": "Scal podobne przedmioty",
+      "close": "@:actions.close",
+      "instructions": "Dla każdego pola zaznacz, z którego okna ma zostać pobrana finalna wartość.",
+      "leftTitle": "Pozycja A",
+      "rightTitle": "Pozycja B",
+      "cancel": "@:actions.cancel",
+      "confirm": "@:actions.confirm",
+      "fields": {
+        "name": "Nazwa",
+        "slot": "Slot",
+        "itemPlace": "Miejsce",
+        "personalPseu": "Pseudonim",
+        "personalDesc": "Opis personalny",
+        "personalCost": "Koszt personalny",
+        "description": "Opis",
+        "imgClass": "Klasa ikony",
+        "prize": "Cena bazowa",
+        "charge": "Ciezar"
+      }
+    },
+    "modules": {
+      "shop": "Sklep: {name}",
+      "shopTitle": "Ekwipunek BG",
+      "characterInventoryTitle": "Ekwipunek: {name}",
+      "signboard": "Szyld",
+      "signboardTitle": "Aktywny sklep",
+      "templates": "Szablony dodaj/edytuj",
+      "templatesTitle": "Dodaj/edytuj",
+      "defaultStack": "PRZEDMIOTY-SPERSONALIZUJ",
+      "defaultStackTitle": "Stos (Domyślny)",
+      "trash": "Otchłań odrzutów (Kosz)",
+      "trashTitle": "Kosz",
+      "shopEditor": "Sklep-dodaj/edytuj",
+      "shopEditorTitle": "Profil sklepu",
+      "assortment": "Sklep-ustal asortyment",
+      "assortmentTitle": "Asortyment i sugestie",
+      "quickTransfer": "Sklep-szybki transfer/podgląd",
+      "quickTransferTitle": "Transfer i podgląd",
+      "transactionLedger": "Rejestr transakcji",
+      "walletStatus": "Sakiewki BG",
+      "encumbranceStatus": "Obciazenie BG",
+      "bgEquipmentTrash": "Ekwipunek BG + Trash",
+      "futureTitle": "Moduł rozwojowy",
+      "other": "Szablony",
+      "otherTitle": "Lista"
+    },
+    "containers": {
+      "unknownContainer": "Nieznany kontener",
+      "generalTrash": "Otchłań Odrzutów (ogólny)",
+      "playerTrash": "{ownerLabel} - {suffix}",
+      "genericContainer": "Kontener",
+      "containerFallback": "Kontener {id}"
+    },
+    "alerts": {
+      "shopCreateFailed": "Nie udało się utworzyć sklepu.",
+      "shopCreated": "Dodano nowy sklep.",
+      "shopMinOne": "Musi pozostać co najmniej jeden sklep.",
+      "shopDeleteFailed": "Nie udało sie usunąć sklepu.",
+      "shopDeleted": "Usunięto sklep.",
+      "shopActivationFailed": "Nie udało sie zmienic aktywacji sklepu.",
+      "shopActivated": "Aktywowano sklep: {name}.",
+      "shopDeactivated": "Ukryto sklep: {name}.",
+      "signboardGenerateFailed": "Nie udało sie wygenerowac nazwy szyldu.",
+      "signboardGenerated": "Wylosowano szyld: {name}.",
+      "noActiveShop": "Brak aktywnego sklepu.",
+      "shopProfileSaved": "Profil sklepu zapisany.",
+      "shopProfileSaveFailed": "Nie udalo sie zapisac profilu sklepu.",
+      "noSuggestionsForConfig": "Brak sugestii dla wybranej konfiguracji.",
+      "suggestionsGenerated": "Wygenerowano {count} sugestii asortymentu.",
+      "noSelectedSuggestions": "Brak zaznaczonych sugestii.",
+      "suggestionsApplied": "Dodano {count} sugerowanych pozycji.",
+      "noSuggestionsToAdd": "Brak sugestii do dodania.",
+      "suggestionsAllApplied": "Dodano {count} pozycji z listy sugestii.",
+      "noDraftSuggestions": "Brak pozycji DRAFT do dodania do szablonow.",
+      "draftTemplatesCreated": "Dodano {count} pozycji do szablonow.",
+      "rollPreviewEmpty": "Brak sugestii do podgladu losowania.",
+      "rollPreviewReady": "Podglad gotowy: {unique} pozycji / {instances} sztuk (cel: {target}).",
+      "rollPreviewApplied": "Zastosowano wynik: {unique} pozycji / {instances} sztuk.",
+      "noSuggestionsForRoll": "Brak sugestii do losowania asortymentu.",
+      "rollApplied": "Wylosowano {unique} pozycji i {instances} sztuk lacznie.",
+      "chooseIconFirst": "Najpierw wybierz ikone.",
+      "chooseOptionFirst": "Najpierw wybierz opcje.",
+      "trashGeneralFull": "Kosz ogolny jest pelny.",
+      "trashOwnerFull": "Kosz {ownerLabel} jest pelny ({used}/{limit}).",
+      "restoredFromTrash": "Przedmiot przywrócono z kosza.",
+      "templateCreated": "Szablon zapisano w bazie.",
+      "templateCreateFailed": "Nie udało się zapisać nowego szablonu.",
+      "templateSaved": "Szablon zaktualizowano w bazie.",
+      "templateSaveFailed": "Nie udało się zapisać szablonu.",
+      "inventorySaveFailed": "Nie udało się zapisać personalizacji przedmiotu.",
+      "templateMovedToTrash": "Szablon przeniesiono do kosza.",
+      "overweight": "Za ciężko: {current}/{limit} {unit}.",
+      "encumbranceExceeded": "Transakcja przekroczyłaby dopuszczalny udźwig postaci.",
+      "walletInsufficient": "Brak wystarczających środków w sakiewce.",
+      "paymentQuoteStale": "Cena, kurs lub saldo uległy zmianie. Sprawdź odświeżoną wycenę.",
+      "paymentConversionRequired": "Ta płatność wymaga potwierdzenia przewalutowania.",
+      "shopInactive": "Ten sklep jest nieaktywny.",
+      "missingExchangeRate": "Sklep nie ma ustawionego kursu dla waluty tego przedmiotu. Poproś GM o uzupełnienie polityki cenowej.",
+      "tradeInvalidPayload": "Nie udało się przygotować danych transakcji.",
+      "tradeUnauthorized": "Brak uprawnień albo tokena do wykonania transakcji przez API.",
+      "tradeFailed": "Nie udało się wykonać transakcji.",
+      "templateIdExists": "ID szablonu już istnieje.",
+      "trashDeletedPermanent": "Pozycja została usunięta trwale z kosza.",
+      "inventoryMovedToTrash": "Przedmiot przeniesiono do kosza.",
+      "noContainersToEdit": "Brak kontenerów do edycji.",
+      "noShopContainersToEdit": "Brak kontenerów sklepu do edycji.",
+      "selectTwoSimilarForMerge": "Zaznacz dokładnie dwa podobne przedmioty.",
+      "mergePrepareFailed": "Nie udało się przygotować porównania.",
+      "mergeItemsMissing": "Nie znaleziono przedmiotów do połączenia.",
+      "mergeReadFailed": "Nie udało się odczytać danych do połączenia.",
+      "mergeSuccess": "Połączono podobne przedmioty.",
+      "selectContainers": "Wybierz kontenery.",
+      "selectDifferentContainers": "Wybierz różne kontenery.",
+      "sourceMustBeStackOrTrash": "Zródłem może być tylko Stos albo Kosz.",
+      "selectTargetShop": "Wybierz sklep docelowy.",
+      "sourceMustBeShop": "Źrodłem musi być sklep.",
+      "targetMustBeStackOrTrash": "Celem może byc tylko Stos albo Kosz.",
+      "unknownTransferDirection": "Nieznany kierunek transferu.",
+      "noItemsSelected": "Brak zaznaczonych przedmiotów.",
+      "selectItem": "Wybierz przedmiot.",
+      "selectTargetContainer": "Wybierz kontener docelowy.",
+      "itemAlreadyInContainer": "Przedmiot jest już w tym kontenerze.",
+      "selectShopAndReceiver": "Wybierz sklep i odbiorcę.",
+      "selectGoods": "Wybierz towar.",
+      "noAvailableQuantity": "Brak dostępnej ilości."
+    },
+    "validation": {
+      "common": {
+        "invalidForm": "Formularz zawiera błędy."
+      },
+      "template": {
+        "id": "ID musi być liczba większa od 0.",
+        "name": "Pole NAME jest wymagane.",
+        "description": "Pole DESCRIPTION jest wymagane.",
+        "itemClass": "Pole ITEM_CLASS jest wymagane.",
+        "itemIdWeapon": "Pole ITEM_ID jest wymagane dla WEAPON.",
+        "prize": "Pole PRIZE musi być liczba >= 0.",
+        "charge": "Pole CHARGE musi być liczba >= 0."
+      },
+      "inventory": {
+        "id": "Pole ID jest nieprawidłowe.",
+        "invId": "Pole INV_ID musi być poprawna liczba.",
+        "personalCost": "Pole PERSONAL_COST musi być liczba >= 0.",
+        "quantity": "Pole QUANTITY musi być liczba >= 0.",
+        "prize": "Pole PRIZE musi być liczba >= 0.",
+        "charge": "Pole CHARGE musi być liczba >= 0."
+      }
+    },
+    "workspace": {
+      "title": "Sklep — panel GM",
+      "navigation": "Główna nawigacja sklepu",
+      "shop": "Sklep",
+      "createShop": {
+        "action": "Dodaj sklep",
+        "eyebrow": "Nowy punkt handlowy",
+        "title": "Dodaj sklep",
+        "description": "Wybierz rodzaj działalności, ustal szyld i utwórz osobny sklep. System zapisze jego profil, a ofertę pozostawi pustą.",
+        "help": "Dodaje osobny sklep, a nie kolejny profil bieżącego sklepu. Nowy sklep otrzyma własny profil, status i asortyment. Nie kopiuje obecnej oferty.",
+        "type": "Rodzaj działalności",
+        "chooseType": "Wybierz fach lub rodzaj handlu…",
+        "typeHelp": "Rodzaj działalności zapisuje się w profilu nowego sklepu i steruje doborem słów podczas losowania szyldu. Nie narzuca nazwy — nadal możesz wpisać własną.",
+        "typeRequired": "Wybierz rodzaj działalności.",
+        "otherTypes": "Pozostałe działalności",
+        "name": "Nazwa sklepu / szyld",
+        "nameHint": "Nazwa widoczna na liście sklepów i w profilu.",
+        "nameHelp": "Nazwa identyfikuje ten konkretny sklep w kampanii. Nie ustala typu działalności ani polityki cenowej. Typowo ma 2–6 słów, na przykład „Pod Czarnym Młotem”.",
+        "nameRequired": "Nazwa sklepu jest wymagana.",
+        "rollName": "Losuj nazwę",
+        "rollNameHelp": "Losuje niepowtarzający się szyld pasujący do wybranego fachu i właściciela. Nowy sklep zaczyna z domyślnymi realiami miejskimi; po ich zmianie możesz losować dokładniej w profilu. Wynik można poprawić ręcznie.",
+        "rollNameError": "Nie udało się wylosować nazwy dla wybranego rodzaju sklepu.",
+        "owner": "Właściciel sakiewki",
+        "ownerHelp": "Właściciel wskazuje postać lub podmiot rozliczający transakcje sklepu. Nie jest profilem sklepu i nie ustala automatycznie jego typu. Dla niezależnego kupca wybierz npc.",
+        "ownerName": "Imię właściciela",
+        "ownerNameHint": "Opcjonalna nazwa fabularna kupca.",
+        "ownerNameHelp": "Imię właściciela jest opisem fabularnym. Nie zmienia salda, cen ani uprawnień. Przykład: „Mistrz Ortwin”.",
+        "independentOwner": "niezależny kupiec",
+        "resultHint": "Po utworzeniu otworzy się profil nowego sklepu.",
+        "submit": "Utwórz sklep",
+        "creating": "Tworzenie…",
+        "close": "Zamknij formularz",
+        "createError": "Nie udało się utworzyć sklepu. Sprawdź połączenie i spróbuj ponownie."
+      },
+      "active": "Aktywny",
+      "inactive": "Nieaktywny",
+      "moreActions": "Więcej operacji",
+      "shopSections": "Sekcje sklepu",
+      "advanced": "Zaawansowane",
+      "technical": "Dane techniczne — tylko do odczytu",
+      "offer": "Oferta",
+      "catalog": "Katalog",
+      "warehouse": "Magazyn",
+      "history": "Historia",
+      "items": "Przedmioty",
+      "catalogModes": {
+        "navigation": "Tryb pracy katalogu",
+        "templates": "Szablony",
+        "instances": "Instancje przedmiotów",
+        "dictionaries": "Słowniki PL/EN",
+        "templatesTitle": "Katalog szablonów przedmiotów",
+        "templatesDescription": "Szablon jest wzorcem danych używanym do tworzenia ofert i konkretnych sztuk przedmiotów.",
+        "instancesTitle": "Tworzenie realnej instancji przedmiotu",
+        "instancesDescription": "Wybierz szablon, ustaw indywidualne dane i wskaż kontener, w którym ma powstać konkretna sztuka.",
+        "dictionariesTitle": "Słowniki domenowe przedmiotów",
+        "dictionariesDescription": "Kanoniczne mapowanie kodów technicznych na czytelne nazwy polskie i angielskie.",
+        "newTemplate": "Nowy szablon",
+        "templateEditor": "Edycja szablonu",
+        "templateHint": "Zmiany dotyczą wzorca, nie istniejących już instancji.",
+        "instanceEditor": "Nowa instancja",
+        "basedOn": "Na podstawie szablonu",
+        "selectTemplate": "Wybierz szablon z listy po lewej stronie.",
+        "createInstance": "Utwórz instancję"
+      },
+      "dictionaries": {
+        "navigation": "Grupy słowników",
+        "iconCategories": "Kategorie ikon",
+        "iconCategoriesDescription": "Edytowalne polskie i angielskie nazwy głównych grup opisujących wygląd grafik.",
+        "iconSubcategories": "Podkategorie ikon",
+        "iconSubcategoriesDescription": "Dokładniejsze typy grafik wraz z edytowalną kategorią nadrzędną, klasą i rodzajem przedmiotu.",
+        "classes": "Klasy przedmiotów",
+        "classesDescription": "Szerokie domeny danych przedmiotu używane przez pole ITEM_CLASS i automatyczne dopasowanie ikon.",
+        "genres": "Rodzaje przedmiotów",
+        "genresDescription": "Dokładniejsze zastosowania przedmiotu używane przez pole ITEM_GENRE i automatyczne dopasowanie ikon.",
+        "attributes": "Atrybuty",
+        "attributesDescription": "Dodatkowe właściwości mechaniczne przedmiotów, niezależne od klasyfikacji grafiki.",
+        "code": "Kod techniczny",
+        "appliesTo": "Stosowanie",
+        "relationship": "Powiązanie",
+        "parentCategory": "Kategoria nadrzędna",
+        "allClasses": "Wszystkie klasy",
+        "add": "Dodaj wpis",
+        "addTitle": "Nowy wpis: {group}",
+        "addDescription": "Nazwy PL/EN i powiązania będą od razu dostępne w edytorze ikon.",
+        "labelPl": "Nazwa polska",
+        "labelEn": "Nazwa angielska",
+        "selectParentCategory": "Wybierz kategorię nadrzędną",
+        "defaultClass": "Powiązana klasa",
+        "defaultGenre": "Powiązany rodzaj",
+        "inheritClass": "Dziedzicz klasę z kategorii",
+        "inheritGenre": "Dziedzicz rodzaj z kategorii",
+        "canonicalValue": "Użyj powiązania kanonicznego",
+        "relationsHint": "Kody oddzielone przecinkami",
+        "noRestrictions": "Bez ograniczeń — wszystkie",
+        "unlockCode": "Odblokuj zmianę kodu technicznego",
+        "cancelCodeChange": "Anuluj zmianę kodu",
+        "codeUnlocked": "Kod odblokowany — zapis zmieni identyfikator.",
+        "invalidCode": "Kod musi zaczynać się literą i zawierać co najmniej 2 znaki: A–Z, 0–9 lub _.",
+        "requiredLabels": "Uzupełnij polską i angielską nazwę.",
+        "parentRequired": "Wybierz kategorię nadrzędną.",
+        "saveError": "Nie udało się zapisać wpisu. Sprawdź, czy kod nie jest już zajęty.",
+        "archiveQuestion": "Wyłączyć ten wpis słownika?",
+        "newCode": "Kod techniczny nowego wpisu",
+        "newLabelPl": "Polska nazwa",
+        "newLabelEn": "Angielska nazwa"
+      },
+      "mechanics": {
+        "title": "Mechanika użycia",
+        "description": "Akcje dostępne później w ekwipunku postaci: testy, koszty i efekty.",
+        "inheritanceMode": "Dziedziczenie",
+        "modes": {
+          "INHERIT": "Tylko klasa i rodzaj",
+          "EXTEND": "Dziedzicz i rozszerz",
+          "REPLACE": "Tylko ten szablon"
+        },
+        "add": "Dodaj mechanikę",
+        "empty": "Brak mechanik na tym poziomie.",
+        "code": "Kod mechaniki",
+        "labelPl": "Nazwa polska",
+        "labelEn": "Nazwa angielska",
+        "trigger": "Moment aktywacji",
+        "handler": "Sposób wykonania",
+        "actionLabel": "Tekst przycisku",
+        "actionPlaceholder": "np. Zaatakuj, Wypij, Zjedz",
+        "mechanicDescription": "Opis działania dla gracza i MG",
+        "test": "Wymaga testu / rzutu",
+        "formula": "Formuła rzutu",
+        "targetKey": "Cecha / próg",
+        "difficulty": "Modyfikator",
+        "cost": "Koszt użycia",
+        "quantityCost": "Zużyj sztuk",
+        "chargeCost": "Zużyj ładunków",
+        "resourceCost": "Inny zasób",
+        "effects": "Efekty mechaniki",
+        "addEffect": "Dodaj efekt",
+        "condition": "Warunek",
+        "effectType": "Rodzaj efektu",
+        "effectTarget": "Cel efektu",
+        "effectValue": "Wartość",
+        "effectDescription": "Opis efektu",
+        "valuePlaceholder": "np. 1d10 + SB, 2, POISONED",
+        "noEffects": "Brak efektów. Dodaj obrażenia, leczenie, status, modyfikator lub efekt własny.",
+        "extension": "Integracja dedykowana / parametry zaawansowane",
+        "handlerKey": "Klucz procedury",
+        "parameters": "Parametry JSON",
+        "invalidParameters": "Parametry muszą być poprawnym obiektem JSON.",
+        "remove": "Usuń mechanikę",
+        "selectOrAdd": "Wybierz mechanikę z lewej strony albo dodaj nową.",
+        "futureHint": "Ta definicja będzie zasilać przyszłe przyciski akcji w ekwipunku postaci bez wiązania GUI z jedną mechaniką systemową.",
+        "overrideHere": "Nadpisz na poziomie szablonu",
+        "newMechanic": "Nowa mechanika",
+        "dictionaryTitle": "Mechanika: {entry}",
+        "dictionaryHint": "Ta konfiguracja będzie dziedziczona przez wszystkie zgodne szablony.",
+        "shortLabel": "Mechanika ({count})",
+        "weaponContext": "Parametry bojowe broni",
+        "weaponContextHint": "Wartości dostępne dla mechaniki ataku i przyszłych rzutów walki.",
+        "weaponTypeHint": "np. kusza, miecz, broń palna",
+        "rangeHint": "np. 30 m / bliski",
+        "triggers": {
+          "USE": "Użycie",
+          "ATTACK": "Atak",
+          "CONSUME": "Spożycie",
+          "EQUIP": "Założenie",
+          "PASSIVE": "Efekt pasywny",
+          "CUSTOM": "Własny moment"
+        },
+        "handlers": {
+          "GENERIC": "Akcja ogólna",
+          "DICE_TEST": "Test kością",
+          "ATTACK": "Atak i obrażenia",
+          "CONSUME": "Spożycie przedmiotu",
+          "APPLY_EFFECTS": "Nałożenie efektów",
+          "CUSTOM": "Dedykowana procedura"
+        },
+        "conditions": {
+          "ALWAYS": "Zawsze",
+          "SUCCESS": "Po sukcesie",
+          "FAILURE": "Po porażce"
+        },
+        "effectTypes": {
+          "DAMAGE": "Obrażenia",
+          "HEAL": "Leczenie",
+          "STATUS": "Status",
+          "MODIFIER": "Modyfikator",
+          "RESOURCE": "Zasób",
+          "CUSTOM": "Efekt własny"
+        },
+        "targets": {
+          "SELF": "Użytkownik",
+          "TARGET": "Wybrany cel",
+          "AREA": "Obszar"
+        },
+        "sources": {
+          "CLASS": "Klasa",
+          "GENRE": "Rodzaj",
+          "TEMPLATE": "Szablon"
+        }
+      },
+      "encumbrance": {
+        "preset": "Typowe obciążenie",
+        "custom": "Własna wartość",
+        "customValue": "Wartość obciążenia"
+      },
+      "instanceStack": {
+        "title": "Stos instancji przedmiotów",
+        "editorTitle": "Rozbudowana personalizacja instancji",
+        "expandedAttributes": "Atrybuty instancji",
+        "expandedAttributesHint": "Zaznacz wszystkie cechy właściwe dla tej konkretnej sztuki.",
+        "filters": "Filtrowanie instancji według położenia",
+        "defaultTarget": "Stos (Domyślny)",
+        "unassigned": "Nieprzypisane",
+        "all": "Wszystkie",
+        "characters": "U bohaterów",
+        "shops": "W sklepach",
+        "trash": "Archiwum",
+        "noOwner": "Bez właściciela",
+        "kinds": {
+          "unassigned": "Nieprzypisany",
+          "character": "Bohater",
+          "shop": "Sklep",
+          "trash": "Archiwum",
+          "system": "Kontener systemowy"
+        }
+      },
+      "cart": {
+        "walletAfter": "Sakiewka po operacji",
+        "lastTrade": "Ostatnia operacja"
+      },
+      "archive": "Archiwum",
+      "archivedItems": "Przedmioty",
+      "archivedTemplates": "Szablony",
+      "archiveSelected": "Archiwizuj ({count})",
+      "bulkQuantity": "Ilość dla zaznaczonych",
+      "setQuantity": "Ustaw ilość",
+      "moveTarget": "Kontener docelowy",
+      "moveSelected": "Przenieś",
+      "quickTransfer": "Szybki transfer",
+      "archiveQuestion": "Przenieść ten szablon do archiwum?",
+      "empty": "Brak pozycji spełniających kryteria.",
+      "allTypes": "Wszystkie typy",
+      "suggestions": "Sugestie",
+      "offerInstances": "Konkretne przedmioty w sklepie",
+      "instanceCount": "{count} szt. · {groups} wierszy po agregacji",
+      "classification": "Klasa · gatunek",
+      "selectAll": "Zaznacz wszystko",
+      "deselectAll": "Odznacz wszystko",
+      "moveToTrash": "Do kosza ({count})",
+      "movingToTrash": "Przenoszenie…",
+      "emptyOfferInstances": "Ten sklep nie ma jeszcze żadnych konkretnych przedmiotów.",
+      "unnamedItem": "Przedmiot bez nazwy",
+      "suggestionPanel": {
+        "title": "Sugestie do dodania",
+        "hint": "Propozycje nie są asortymentem, dopóki nie dodasz konkretnej sztuki.",
+        "empty": "Brak wygenerowanych sugestii dla profilu tego sklepu.",
+        "generate": "Wygeneruj sugestie",
+        "addAll": "Dodaj wszystkie",
+        "addingAll": "Dodawanie wszystkich…",
+        "saveTemplate": "Zapisz szablon",
+        "creatingTemplate": "Zapisywanie…",
+        "templateReady": "Szablon gotowy",
+        "addOne": "Dodaj 1 szt.",
+        "adding": "Dodawanie…",
+        "defaultReason": "Dopasowanie do profilu sklepu."
+      },
+      "transfer": {
+        "title": "Transfer konkretnych przedmiotów",
+        "from": "Z",
+        "to": "Do",
+        "selectSource": "Wybierz kontener źródłowy",
+        "selectTarget": "Wybierz kontener docelowy",
+        "swap": "Zamień kontener źródłowy z docelowym",
+        "searchSource": "Szukaj w kontenerze źródłowym",
+        "selected": "Wybrano: {count}",
+        "clear": "Wyczyść",
+        "saving": "Przenoszenie…",
+        "apply": "Zastosuj transfer ({count})",
+        "sourceItems": "Przedmioty źródłowe",
+        "targetItems": "Przedmioty docelowe",
+        "sourceHint": "Dostępne konkretne sztuki: {count}",
+        "targetHint": "Stan kontenera: {before} → {after}",
+        "previewTitle": "Podgląd operacji",
+        "previewHint": "Każdy wiersz oznacza jedną realną instancję.",
+        "emptySource": "Brak przedmiotów w wybranym kontenerze.",
+        "emptyTarget": "Kontener docelowy jest pusty.",
+        "emptyPreview": "Zaznacz przedmioty po lewej, aby przygotować atomowy transfer.",
+        "removeFromPreview": "Usuń przedmiot z podglądu"
+      },
+      "stockPreview": "Podgląd zatowarowania",
+      "previewItems": "Podgląd zmian: {count} pozycji",
+      "diff": {
+        "added": "Dodane",
+        "changed": "Zmienione",
+        "removed": "Usunięte"
+      },
+      "pricePolicy": "Polityka cenowa",
+      "pricingSummary": "Zakup bazowo {buy}%, sprzedaż {sell}%. Aktywne modyfikatory są stosowane w kolejności tabeli.",
+      "editPolicy": "Rozwiń tabelę modyfikatorów",
+      "modifier": "Modyfikator",
+      "enabled": "Aktywny",
+      "duplicate": "Duplikuj",
+      "duplicateProfile": "Duplikuj profil",
+      "duplicateWithOffer": "Duplikuj profil z ofertą",
+      "duplicateProfileQuestion": "Utworzyć nieaktywną kopię profilu sklepu?",
+      "duplicateOfferQuestion": "Utworzyć nieaktywną kopię profilu wraz z aktualną ofertą?",
+      "exportJson": "Eksportuj JSON",
+      "deleteShop": "Usuń sklep",
+      "deleteShopQuestion": "Sklep zostanie miękko usunięty. Tej operacji nie wykonuj przypadkowo.",
+      "unsavedQuestion": "Masz niezapisane zmiany. Opuścić edycję?",
+      "details": "Szczegóły",
+      "noDescription": "Brak opisu.",
+      "id": "ID",
+      "date": "Data",
+      "shopLabel": "Sklep",
+      "actor": "Aktor",
+      "type": "Typ",
+      "seller": "Sprzedający",
+      "buyer": "Kupujący",
+      "quantity": "Ilość",
+      "total": "Suma",
+      "currency": "Waluta",
+      "status": "Status",
+      "ledgerStatus": {
+        "executed": "Wykonana",
+        "failed": "Nieudana",
+        "reversed": "Cofnięta",
+        "redone": "Ponowiona",
+        "corrected": "Skorygowana"
+      },
+      "ledgerDrawer": {
+        "title": "Szczegóły transakcji",
+        "close": "Zamknij szczegóły",
+        "value": "Wartość transakcji",
+        "lines": "Pozycje",
+        "items": "Przedmioty",
+        "item": "Przedmiot",
+        "noItemName": "Przedmiot bez nazwy",
+        "unitPrice": "Cena jednostkowa",
+        "lineTotal": "Wartość pozycji",
+        "parties": "Strony transakcji",
+        "pricing": "Rozliczenie",
+        "basePrice": "Cena bazowa",
+        "finalPrice": "Cena końcowa",
+        "difference": "Różnica",
+        "history": "Historia operacji",
+        "audit": "Dane audytowe",
+        "updated": "Ostatnia zmiana",
+        "performedBy": "Wykonał",
+        "parent": "Transakcja źródłowa",
+        "correction": "Powód korekty",
+        "note": "Notatka GM",
+        "technical": "Pełne dane techniczne",
+        "modifiers": "Modyfikatory ceny",
+        "conditions": "Warunki transakcji",
+        "before": "Snapshot przed",
+        "after": "Snapshot po"
+      },
+      "tabs": {
+        "shops": "Sklepy",
+        "catalog": "Katalog",
+        "warehouse": "Magazyn",
+        "history": "Historia"
+      },
+      "subtabs": { "profile": "Profil", "offer": "Oferta", "prices": "Ceny" },
+      "density": { "compact": "Kompaktowy", "comfortable": "Wygodny" },
+      "sort": {
+        "name": "Nazwa",
+        "price": "Cena",
+        "availability": "Dostępność"
+      },
+      "formStatus": {
+        "clean": "Zapisano",
+        "dirty": "Niezapisane zmiany",
+        "saving": "Zapisywanie",
+        "error": "Błąd zapisu"
+      },
+      "fields": {
+        "name": "Nazwa / szyld",
+        "type": "Typ sklepu",
+        "owner": "Właściciel",
+        "activity": "Aktywność",
+        "autoTags": "Tagi automatyczne",
+        "worldProfile": "Profil świata",
+        "location": "Lokalizacja",
+        "legality": "Legalność",
+        "wealth": "Zamożność",
+        "reputation": "Reputacja",
+        "seasonality": "Sezonowość",
+        "counterfeitRisk": "Ryzyko fałszerstwa",
+        "aliases": "Aliasy szyldu"
+      },
+      "profile": {
+        "eyebrow": "Warsztat kupiecki · późne średniowiecze",
+        "title": "Profil sklepu",
+        "description": "Zbuduj wiarygodne miejsce handlu: od szyldu i właściciela po prawo targowe, klientelę oraz ryzyko obrotu fałszywą monetą.",
+        "discard": "Cofnij zmiany",
+        "discardQuestion": "Odrzucić wszystkie niezapisane zmiany w tym profilu?",
+        "chooseType": "Wybierz fach lub rodzaj handlu…",
+        "resetSection": "Przywróć sugerowane",
+        "randomName": {
+          "action": "Losuj nazwę",
+          "help": "Losuje nowy szyld na podstawie aktualnego rodzaju działalności oraz realiów profilu. Nie zmienia typu, cen ani oferty i nie zapisuje formularza. Kolejne losowania unikają powtórzeń w obrębie danego fachu."
+        },
+        "tabs": {
+          "label": "Sekcje profilu sklepu",
+          "previewLabel": "Podgląd profilu sklepu",
+          "identity": "Tożsamość",
+          "setting": "Realia",
+          "economy": "Rynek",
+          "events": "Wydarzenia",
+          "archetype": "Archetyp",
+          "tools": "Narzędzia",
+          "simulator": "Symulator",
+          "summary": "Podsumowanie"
+        },
+        "help": {
+          "signboardName": "Szyld jest główną nazwą widoczną dla graczy i w historii operacji. Nie zmienia ceny ani dostępności. Zwykle wystarcza krótka nazwa o długości 2–6 słów. Przykład: „Pod Mosiężnym Kluczem”.",
+          "typeId": "Typ sklepu określa preferowane kategorie, marżę, skup i szansę dostępności. Nie zmienia automatycznie każdego towaru. Aktualnie: {value}. Przykład: płatnerz korzystniej wycenia pancerze niż żywność.",
+          "ownerCode": "Właściciel wskazuje postać lub podmiot, do którego należy sklep i jego sakiewka. Nie ustala reputacji klientów. Aktualnie wybrana pozycja jest używana przy zapisie i rozliczeniach. Przykład: niezależny kupiec może korzystać z właściciela npc.",
+          "ownerName": "Nazwa właściciela jest opisem fabularnym pokazywanym zamiast technicznego kodu. Nie zmienia cen, budżetu ani praw dostępu. Typowo jest to imię i przydomek, na przykład „Mistrz Ortwin”.",
+          "activity": "Aktywny sklep może być używany w handlu i generatorze oferty. Wyłączenie nie usuwa profilu ani historii i nie przelicza cen. Przykład: kram sezonowy można wyłączyć po zakończeniu jarmarku.",
+          "aliases": "Aliasy to alternatywne nazwy szyldu rozdzielone przecinkami. Ułatwiają wyszukiwanie i narrację, ale nie wpływają na ekonomię. Typowo dodaje się 0–3 warianty regionalne lub potoczne.",
+          "worldProfileId": "Profil świata ustala ogólną siłę nabywczą i dostępność, lecz stosuje korekty zależne od klasy towaru. Aktualnie: {value}. Typowy wybór to profil standardowy.",
+          "locationType": "Lokalizacja opisuje transport, lokalną podaż i import. Nie podnosi jednakowo wszystkich cen. Aktualnie: {value}. Port ułatwia import, a wieś ogranicza luksusy.",
+          "legalStatus": "Legalność steruje dostępnością dóbr legalnych, reglamentowanych i zakazanych oraz premią za ryzyko. Nie zmienia zwykłego chleba. Aktualnie: {value}.",
+          "wealthTier": "Zamożność określa kapitał sklepu, limit skupu i udział drogich towarów. W mniejszym stopniu wpływa na marżę; nie oznacza, że wszystko jest droższe. Aktualnie: {value}.",
+          "reputation": "Reputacja bazowa jest używana, gdy bohater nie ma własnej relacji ze sklepem. Wpływa na zakup i skup, nie na cenę katalogową. Aktualnie: {value}.",
+          "seasonality": "Sezonowość działa wyłącznie na pasujące kategorie. Nie jest płaskim procentem dla całej oferty. Aktualnie: {value}. Zima podnosi znaczenie odzieży i narzędzi.",
+          "counterfeitRisk": "Ryzyko fałszerstwa to prawdopodobieństwo podejrzanej wyceny towarów podatnych na podróbki. Nie wpływa istotnie na proste dobra. Zakres 0–100%, aktualnie {value}%.",
+          "demandLevel": "Popyt działa na konkretną wycenę, szczególnie przy skupie. Nie zastępuje stanu magazynu. Aktualnie: {value}; typowy poziom to normalny.",
+          "availabilityBias": "Korekta szansy pojawienia się towaru w punktach procentowych. Nie zmienia bezpośrednio ceny. Typowy zakres: −15 do +15; aktualnie {value} pp.",
+          "buybackBudget": "Kapitał na całą partię skupu. Puste pole korzysta z zamożności i nie zwiększa ceny sprzedaży. Aktualnie: {value}.",
+          "maxBuybackItemValue": "Maksymalna wycena jednej sztuki w skupie. Puste pole oznacza limit z zamożności; nie ogranicza ceny sprzedaży. Aktualnie: {value}.",
+          "expensiveStockLimit": "Limit drogich pozycji w generowanej ofercie. Puste pole wybiera wartość z zamożności i nie usuwa ręcznych towarów. Aktualnie: {value}.",
+          "localCategories": "Dobra pozyskiwane w okolicy są tańsze w transporcie i częściej trafiają do oferty. Nie wpływa to na inne kategorie. Aktualnie: {value}.",
+          "importedCategories": "Dobra z daleka są dostępniejsze w porcie, a poza szlakami mają premię transportową. Inne towary się nie zmieniają. Aktualnie: {value}.",
+          "actorReputation": "Relacja bohatera lub drużyny zastępuje reputację bazową tylko dla tego aktora. Wpływa na jego zakup i skup. Ustawionych relacji: {count}.",
+          "autoTags": "Tagi są wyliczane z typu, miejsca, prawa i pozostałych ustawień profilu. Wpływają na wyszukiwanie i dobór sugestii, ale same nie zmieniają ceny. Aktualny zestaw jest widoczny obok i aktualizuje się automatycznie.",
+          "marketEvents": "Wydarzenie rynkowe działa tylko w podanym terminie, trybie i zakresie towarów. Może zmienić cenę oraz dostępność, ale nie cenę katalogową. Typowo używa się mnożnika 80–150%. Przykład: zamknięty szlak podnosi koszt importu.",
+          "eventEnabled": "Przełącznik włącza regułę bez usuwania jej ustawień. Wyłączone wydarzenie nie wpływa na ceny ani dostępność. Przydaje się do przygotowania zdarzenia przed sesją.",
+          "eventName": "Nazwa służy MG do rozpoznania reguły w breakdownie i historii. Nie wpływa na sposób liczenia. Typowo opisuje przyczynę, na przykład „oblężenie miasta”.",
+          "eventType": "Rodzaj nadaje wydarzeniu znaczenie fabularne i wartości początkowe, które można doprecyzować. Sam typ nie rozszerza zakresu na wszystkie towary. Przykład: nieurodzaj warto ograniczyć do żywności.",
+          "eventDates": "Daty wyznaczają okres włącznie z dniem rozpoczęcia i zakończenia. Poza nim reguła jest pomijana. Data końca nie może poprzedzać daty początku.",
+          "eventPrice": "Cena w procentach jest mnożnikiem dla pasujących towarów: 100% nie zmienia ceny, 120% podnosi ją o 20%. Nie zmienia dostępności. Bezpieczny zakres formularza to 10–500%.",
+          "eventAvailability": "Dostępność dodaje lub odejmuje punkty procentowe dla pasujących towarów. Nie zmienia ceny. Typowy zakres to −30 do +30 pp; bezpieczniki ograniczają wynik końcowy.",
+          "eventModes": "Tryb określa, czy wydarzenie działa przy sprzedaży graczowi, skupie od gracza, czy w obu sytuacjach. Nie zmienia pozostałych operacji. Przykład: niedobór może podnosić sprzedaż i skup.",
+          "eventClasses": "Klasy ograniczają wydarzenie do głównych rodzin przedmiotów. Puste pole oznacza każdą klasę. Kilka wartości rozdziel przecinkami. Przykład: broń i pancerz podczas wojny.",
+          "eventGenres": "Kategorie zawężają regułę dokładniej niż klasa. Puste pole nie nakłada ograniczenia. Kilka wartości rozdziel przecinkami. Przykład: zboże podczas nieurodzaju.",
+          "eventLocations": "Lokalizacje sprawiają, że reguła działa tylko w pasującym miejscu. Puste pole oznacza każdą lokalizację. Przykład: zamknięty szlak może dotyczyć sklepu przy trakcie.",
+          "eventItems": "Identyfikatory ograniczają wydarzenie do konkretnych szablonów. Puste pole nie ogranicza towarów. To precyzyjny wyjątek, na przykład dla jednego reglamentowanego lekarstwa.",
+          "profileTools": "Narzędzia zarządzają gotowymi ustawieniami, kopią profilu, przenośnym plikiem i historią. Nie wykonują transakcji ani nie zmieniają oferty bez wyraźnego polecenia.",
+          "profilePresets": "Własny preset zapisuje ustawienia profilu do ponownego użycia. Nie zawiera danych kampanii ani historii transakcji. Przykład: można zachować wariant „ubogi kram zimowy”.",
+          "profileOperations": "Duplikowanie tworzy osobny profil, eksport przygotowuje przenośny json, a import waliduje i zapisuje ustawienia przez api. Operacje nie kopiują danych zależnych od kampanii.",
+          "profileHistory": "Historia zawiera zapisane rewizje profilu i polityki. Wybranie rewizji tylko ładuje jej wartości do formularza; zmiana trafia do bazy dopiero po zapisaniu."
+        },
+        "market": {
+          "demand": "Popyt bazowy",
+          "availabilityBias": "Dostępność ± pp",
+          "buybackBudget": "Budżet skupu",
+          "maxBuybackItemValue": "Limit sztuki w skupie",
+          "expensiveStockLimit": "Limit drogich towarów",
+          "localCategories": "Dobra lokalne",
+          "importedCategories": "Dobra importowane",
+          "categoryPlaceholder": "np. FOOD, GRAIN",
+          "actorReputation": "Relacje z bohaterami",
+          "useBaseReputation": "Reputacja bazowa",
+          "auto": "auto",
+          "demandLevels": {
+            "very_low": "Bardzo niski",
+            "low": "Niski",
+            "normal": "Normalny",
+            "high": "Wysoki",
+            "extreme": "Skrajny"
+          }
+        },
+        "events": {
+          "title": "Tymczasowe wydarzenia rynkowe",
+          "description": "Daty i zakres decydują, których towarów dotyczy zdarzenie.",
+          "add": "Dodaj wydarzenie",
+          "choose": "Wybierz wydarzenie do edycji",
+          "empty": "Brak aktywnych lub zaplanowanych wydarzeń.",
+          "active": "Aktywne",
+          "enabledHint": "Reguła uczestniczy w obliczeniach",
+          "name": "Nazwa wydarzenia",
+          "kind": "Rodzaj wydarzenia",
+          "startsAt": "Początek",
+          "endsAt": "Koniec",
+          "price": "Cena %",
+          "availability": "Dostępność ± pp",
+          "modes": "Tryb transakcji",
+          "classes": "Klasy przedmiotów",
+          "genres": "Kategorie towarów",
+          "locations": "Lokalizacje",
+          "items": "ID towarów",
+          "types": {
+            "war": "Wojna",
+            "plague": "Zaraza",
+            "siege": "Oblężenie",
+            "festival": "Święto",
+            "crop_failure": "Nieurodzaj",
+            "closed_route": "Zamknięty szlak",
+            "custom": "Własne"
+          }
+        },
+        "tools": {
+          "title": "Presety, wymiana i historia",
+          "description": "Operacje na realnym profilu; import i rewizje zapisują się przez API.",
+          "presets": "Własne presety profilu",
+          "presetName": "Nazwa presetu",
+          "operations": "Operacje",
+          "duplicate": "Duplikuj profil",
+          "copyPrefix": "Kopia —",
+          "export": "Eksport JSON",
+          "import": "Import JSON",
+          "history": "Historia zmian",
+          "chooseRevision": "Wybierz zapisaną rewizję",
+          "useRevision": "Użyj tych wartości jako roboczych",
+          "imported": "Profil zaimportowano i zapisano.",
+          "importFailed": "Plik nie jest poprawnym eksportem profilu."
+        },
+        "validation": {
+          "required": "To pole jest potrzebne do zapisania kompletnego profilu."
+        },
+        "typeAdvisor": {
+          "title": "Proponowane rodzaje działalności",
+          "hint": "Dobór reaguje na lokalizację, status prawny i zamożność sklepu.",
+          "otherCategory": "Pozostałe działalności"
+        },
+        "archetypes": {
+          "title": "Punkt wyjścia",
+          "hint": "Archetyp ustawia sugerowany fach i realia handlu, zachowując nazwę oraz właściciela.",
+          "guildWorkshop": {
+            "name": "Warsztat cechowy",
+            "description": "Licencjonowany rzemieślnik w kwartale cechów"
+          },
+          "marketStall": {
+            "name": "Kram targowy",
+            "description": "Skromny handel pod kontrolą poborcy targowego"
+          },
+          "merchantHouse": {
+            "name": "Dom kupiecki",
+            "description": "Zamożny skład w dzielnicy patrycjatu"
+          },
+          "courtSupplier": {
+            "name": "Złotnik dworski",
+            "description": "Kosztowności i insygnia wykonywane dla możnych"
+          },
+          "itinerantTrader": {
+            "name": "Wędrowny handlarz",
+            "description": "Sezonowy obrót między traktem i jarmarkiem"
+          },
+          "fence": {
+            "name": "Paser",
+            "description": "Dyskretny handel na obrzeżach prawa"
+          },
+          "apothecary": {
+            "name": "Apteka miejska",
+            "description": "Licencjonowane leki, maści i surowce lecznicze"
+          },
+          "roadsideInn": {
+            "name": "Zajazd przy trakcie",
+            "description": "Nocleg, stajnia i zapasy dla podróżnych"
+          },
+          "portWarehouse": {
+            "name": "Skład portowy",
+            "description": "Import, beczki i towary przechodzące przez komorę celną"
+          },
+          "monasticScriptorium": {
+            "name": "Skryptorium klasztorne",
+            "description": "Kopie ksiąg, dokumenty i materiały piśmienne"
+          },
+          "armourer": {
+            "name": "Warsztat płatnerza",
+            "description": "Cechowa produkcja i naprawa pancerzy"
+          },
+          "clothMerchant": {
+            "name": "Skład sukiennika",
+            "description": "Sukno, bele tkanin i handel dalekosiężny"
+          },
+          "saltMerchant": {
+            "name": "Skład soli",
+            "description": "Reglamentowany obrót solą i konserwowaną żywnością"
+          },
+          "moneyChanger": {
+            "name": "Kantor kupiecki",
+            "description": "Wymiana monet, wycena kruszcu i weksle"
+          },
+          "printHouse": {
+            "name": "Oficyna drukarska",
+            "description": "Późny XV wiek: obwieszczenia, broszury i tanie księgi"
+          }
+        },
+        "identity": {
+          "title": "Tożsamość i piecza",
+          "description": "Określ, co widzą klienci i kto odpowiada za sklep.",
+          "nameHint": "Nazwa z szyldu, np. „Pod Trzema Kluczami”.",
+          "typeHint": "Typ steruje sugestiami asortymentu i powinien opisywać główny fach.",
+          "ownerHint": "Postać lub jednostka, do której należy sklep i jego kontenery.",
+          "ownerName": "Imię właściciela / zarządcy",
+          "ownerNameHint": "Nazwa fabularna: mistrz cechu, wdowa kupiecka albo faktor.",
+          "activityHint": "Nieaktywny sklep pozostaje w kampanii, lecz nie jest dostępny w handlu.",
+          "aliasesHint": "Nazwy potoczne oddziel przecinkami; pomagają w wyszukiwaniu i sugestiach.",
+          "independentNpc": "niezależny bohater niezależny"
+        },
+        "setting": {
+          "title": "Miejsce i porządek handlu",
+          "description": "Osadź sklep w prawie miejskim, zamożności dzielnicy i rytmie roku.",
+          "worldHint": "Reguły kampanii wpływające na ceny, dostępność i gospodarkę."
+        },
+        "economy": {
+          "title": "Moneta i wiarygodność obrotu",
+          "description": "Ryzyko fałszerstwa pomaga określić bezpieczeństwo płatności i charakter klienteli.",
+          "riskHint": "0% oznacza rygorystyczną kontrolę monety, 100% — obrót niemal bez weryfikacji.",
+          "riskLow": "Kontrolowany obrót",
+          "riskHigh": "Powszechne fałszerstwa",
+          "recommended": "Ustaw wartość sugerowaną przez profil: {value}%",
+          "tagsHint": "Powstają z typu, profilu świata i lokalizacji; zasilają sugestie asortymentu."
+        },
+        "preview": {
+          "signboard": "Szyld zakładu",
+          "unnamed": "Sklep bez nazwy",
+          "noType": "Nie wybrano rodzaju handlu",
+          "title": "Spójność profilu",
+          "completionHint": "Kompletność podstaw wymaganych przez mechanikę sklepu.",
+          "logicCheck": "Kontrola realiów",
+          "consistent": "Ustawienia tworzą spójny profil handlowy.",
+          "saveAndSuggest": "Zapisz i przygotuj ofertę",
+          "saveHint": "Druga akcja zapisuje profil, a następnie tworzy sugestie asortymentu.",
+          "marketImpact": "Wpływ roboczych ustawień",
+          "buybackLimited": "skup ograniczony kapitałem"
+        },
+        "locations": {
+          "dzielnica_kupiecka": {
+            "label": "Dzielnica kupiecka",
+            "description": "Składy, kantory i domy patrycjatu."
+          },
+          "dzielnica_rzemieslnicza": {
+            "label": "Dzielnica rzemieślnicza",
+            "description": "Warsztaty skupione pod nadzorem cechów."
+          },
+          "rynek": {
+            "label": "Rynek miejski",
+            "description": "Stałe kramy i handel pod okiem władz."
+          },
+          "miasto": {
+            "label": "Miasto — inna dzielnica",
+            "description": "Uniwersalne położenie wewnątrz murów."
+          },
+          "przedmiescie": {
+            "label": "Przedmieście",
+            "description": "Niższe czynsze, słabsza kontrola i gorsza sława."
+          },
+          "port": {
+            "label": "Port / nabrzeże",
+            "description": "Towary przywoźne, cło i zmienna klientela."
+          },
+          "zamek": {
+            "label": "Zamek / podgrodzie",
+            "description": "Dwór, garnizon i dostawy na zamówienie."
+          },
+          "klasztor": {
+            "label": "Klasztor / osada kościelna",
+            "description": "Handel pod opieką instytucji kościelnej."
+          },
+          "wies": {
+            "label": "Wieś",
+            "description": "Podstawowe towary i ograniczona siła nabywcza."
+          },
+          "trakt": {
+            "label": "Trakt / zajazd",
+            "description": "Podróżni, kupcy w drodze i nieregularne dostawy."
+          },
+          "jarmark": {
+            "label": "Jarmark okresowy",
+            "description": "Tymczasowy handel zależny od kalendarza targów."
+          }
+        },
+        "guidance": {
+          "locationType": {
+            "dzielnica_kupiecka": "Dobre miejsce dla składów hurtowych, faktorów i towarów importowanych.",
+            "dzielnica_rzemieslnicza": "Najbardziej wiarygodne miejsce dla fachu regulowanego przez cech.",
+            "rynek": "Duży ruch klientów, opłata targowa i częste kontrole miar.",
+            "miasto": "Neutralne położenie, które nie narzuca konkretnej klienteli.",
+            "przedmiescie": "Tańszy lokal i większa swoboda kosztem bezpieczeństwa oraz reputacji.",
+            "port": "Sprzyja importom, kontrabandzie i szybkim zmianom dostępności.",
+            "zamek": "Klientela zamożna, lecz wymagająca pozwoleń lub protekcji.",
+            "klasztor": "Dobra lokalizacja dla skryptoriów, ziół, jadła i usług pielgrzymich.",
+            "wies": "Niewielki popyt na luksusy; dominują potrzeby codzienne i naprawy.",
+            "trakt": "Zaopatrzenie jest nieregularne, a klientela stale się zmienia.",
+            "jarmark": "Profil powinien zwykle mieć sezonowość jarmarczną lub sezonową."
+          },
+          "legalStatus": {
+            "legal": "Sklep przestrzega prawa targowego bez szczególnego przywileju.",
+            "licensed": "Przywilej, koncesja albo członkostwo cechowe ogranicza konkurencję.",
+            "mixed": "Legalna lada skrywa część towarów bez opłaty, cechy lub pochodzenia.",
+            "grey": "Władze tolerują handel, dopóki daniny płyną i nie ma skarg.",
+            "illegal": "Towar i transakcje wymagają pośredników, haseł albo ochrony."
+          },
+          "wealthTier": {
+            "nedzny": "Towar z odzysku, zapasy minimalne i klientela walcząca o każdy denar.",
+            "biedny": "Mały wybór, proste wykonanie i częsty handel wymienny.",
+            "standard": "Typowy poziom miejskiego rzemieślnika lub stałego kramu.",
+            "bogaty": "Dobry zapas, towary przywoźne i możliwość kredytu kupieckiego.",
+            "elitarny": "Wysoka jakość, zamówienia specjalne i dostęp dzięki rekomendacji.",
+            "luksusowy": "Najrzadsze dobra dla dworu, patrycjatu i wielkich świątyń."
+          },
+          "reputation": {
+            "fatalna": "Sklep znany z oszustw, przemocy albo złamania przysiąg.",
+            "zla": "Klienci kupują tu głównie z braku alternatywy.",
+            "podejrzana": "Krążą pogłoski o szemranych dostawach i nierzetelnych miarach.",
+            "neutralna": "Miejsce znane, lecz bez szczególnego autorytetu.",
+            "dobra": "Rzetelna miara, uczciwy towar i klienci z polecenia.",
+            "znakomita": "Renoma sięga poza dzielnicę i przyciąga wpływowych nabywców."
+          },
+          "seasonality": {
+            "caloroczny": "Stały lokal i regularne dostawy przez większość roku.",
+            "sezonowy": "Sklep działa tylko wtedy, gdy pozwala pogoda, surowiec albo ruch podróżnych.",
+            "wiosna": "Najlepsza podaż i ruch przypadają na wiosenne wznowienie handlu.",
+            "lato": "Szczyt przypada na podróże, budowy, zbiory ziół i kampanie wojenne.",
+            "jesien": "Profil związany ze zbiorami, zapasami i handlem po żniwach.",
+            "zima": "Towary i usługi szczególnie potrzebne w chłodnej porze.",
+            "jarmark": "Sklep otwiera się wraz z cyklicznym targiem lub świętem."
+          }
+        },
+        "warnings": {
+          "missingType": "Wybierz główny rodzaj handlu — bez niego sugestie asortymentu będą przypadkowe.",
+          "wealthLocation": "Bardzo zamożny sklep w tej lokalizacji potrzebuje fabularnego uzasadnienia: protekcji, monopolu albo ukrytej klienteli.",
+          "lowRiskIllegal": "Nielegalny lub szarostrefowy obrót zwykle wiąże się z większym ryzykiem fałszywej monety.",
+          "reputableIllegal": "Dobra reputacja nielegalnego sklepu powinna oznaczać renomę w określonym, zamkniętym środowisku.",
+          "fairLocation": "Sezonowość jarmarczna poza targiem, rynkiem lub traktem wymaga wyjaśnienia.",
+          "riskMismatch": "Ustawione ryzyko wyraźnie odbiega od statusu prawnego, miejsca i reputacji. Możesz użyć wartości sugerowanej.",
+          "extremeAvailability": "Skrajna korekta dostępności może zdominować typ sklepu, lokalizację i wydarzenia.",
+          "buybackLimits": "Limit jednej sztuki jest wyższy niż cały budżet skupu, więc w praktyce zadziała niższy budżet.",
+          "localImportConflict": "Ta sama kategoria jest oznaczona jako lokalna i importowana. Usuń ją z jednej listy.",
+          "extremeMarketEvent": "Aktywne wydarzenie ma skrajny mnożnik ceny. Sprawdź jego datę i zakres."
+        }
+      },
+      "options": {
+        "legalStatus": {
+          "legal": "Legalny",
+          "licensed": "Licencjonowany",
+          "mixed": "Mieszany",
+          "grey": "Szara strefa",
+          "illegal": "Nielegalny"
+        },
+        "wealth": {
+          "nedzny": "Nędzny",
+          "biedny": "Biedny",
+          "standard": "Standardowy",
+          "bogaty": "Bogaty",
+          "elitarny": "Elitarny",
+          "luksusowy": "Luksusowy"
+        },
+        "reputation": {
+          "fatalna": "Fatalna",
+          "zla": "Zła",
+          "podejrzana": "Podejrzana",
+          "neutralna": "Neutralna",
+          "dobra": "Dobra",
+          "znakomita": "Znakomita"
+        },
+        "seasonality": {
+          "caloroczny": "Całoroczny",
+          "sezonowy": "Sezonowy",
+          "wiosna": "Wiosna",
+          "lato": "Lato",
+          "jesien": "Jesień",
+          "zima": "Zima",
+          "jarmark": "Jarmark"
+        }
+      },
+      "item": {
+        "name": "Nazwa",
+        "class": "Klasa",
+        "genre": "Gatunek",
+        "price": "Cena",
+        "charge": "Obciążenie",
+        "icon": "Ikona",
+        "description": "Opis",
+        "details": "Szczegóły",
+        "weaponType": "Typ broni",
+        "damage": "Obrażenia",
+        "range": "Zasięg",
+        "source": "Źródło",
+        "attributes": "Atrybuty",
+        "selectAttribute": "Wybierz atrybut…",
+        "removeAttribute": "Usuń atrybut",
+        "chooseIcon": "Wybierz",
+        "targetContainer": "Kontener docelowy"
+      },
+      "currency": {
+        "currency": "Waluta / region",
+        "editPrice": "Edytuj cenę i walutę",
+        "canonicalHint": "Wartość bazowa do obliczeń i wymiany"
+      },
+      "iconPicker": {
+        "title": "Wybór ikony przedmiotu",
+        "description": "Wybierz grafikę ze zbioru ikon ekwipunku.",
+        "editTitle": "Edycja biblioteki ikon",
+        "editDescription": "Edytuj metadane lub podmień pliki wybranej ikony. Nie zmienia to przypisania przedmiotu.",
+        "search": "Szukaj po kodzie, nazwie lub kategorii…",
+        "category": "Kategoria ikony",
+        "subtype": "Podkategoria ikony",
+        "source": "Nazwa źródłowa ikony",
+        "allCategories": "Wszystkie kategorie",
+        "allSubtypes": "Wszystkie podkategorie",
+        "allSources": "Wszystkie źródła",
+        "quickFilters": "Szybkie filtry kategorii ikon",
+        "modeLabel": "Tryb pracy z ikoną",
+        "selectMode": "1. Wybierz dla szablonu / przedmiotu",
+        "selectModeHint": "Zmień przypisanie: obecna ikona → nowa ikona",
+        "editMode": "2. Edytuj ikonę",
+        "editModeHint": "Zmień metadane lub pliki grafiki tego samego kodu",
+        "results": "Wyniki: {count}",
+        "useIcon": "Wybierz tę ikonę",
+        "currentIcon": "Obecna ikona",
+        "newIcon": "Nowa ikona",
+        "iconSelected": "Ta ikona jest wybrana",
+        "selectionInstruction": "Kliknij inną ikonę w siatce, sprawdź zmianę powyżej i zatwierdź. Dwuklik wybiera ją od razu.",
+        "editingIcon": "Edytujesz ikonę",
+        "addIcon": "+ Dodaj ikonę",
+        "addIconTitle": "Dodaj nową ikonę",
+        "replaceFiles": "Podmień grafikę",
+        "replaceThisIcon": "Podmień grafikę ikony {code}",
+        "replaceFilesTitle": "Podmień pliki ikony {code}",
+        "currentArtwork": "Obecna grafika",
+        "newArtwork": "Nowa grafika",
+        "chooseFile": "Wybierz plik",
+        "twoFilesHint": "Wymagane są dwa kwadratowe pliki tej samej grafiki: 42×42 i 144×144 px.",
+        "saveFiles": "Zapisz oba pliki",
+        "uploading": "Dodawanie…",
+        "deleteIcon": "Usuń ikonę",
+        "invalidUpload": "Wybierz plik PNG, JPEG lub WebP o rozmiarze do 4 MB.",
+        "invalidDimensions": "Plik musi być obrazem PNG, JPEG lub WebP o wymiarach dokładnie {size}×{size} px (maks. 4 MB).",
+        "uploadError": "Nie udało się dodać ikony.",
+        "editMetadata": "Edytuj metadane ikony {code}",
+        "identitySection": "Tożsamość ikony",
+        "identitySectionHint": "Nazwa i opis tej konkretnej grafiki",
+        "identitySectionHelp": "Tożsamość opisuje sam plik ikony: jak nazywać grafikę, co przedstawia i z jakiego pliku pochodzi. Nie decyduje o tym, do jakich przedmiotów ikona będzie automatycznie dopasowywana.",
+        "classificationSection": "Klasyfikacja ikony",
+        "classificationSectionHint": "Co przedstawia grafika i gdzie ją znaleźć",
+        "classificationSectionHelp": "Klasyfikacja porządkuje bibliotekę według tego, co widać na grafice. Kategoria jest poziomem głównym, a podkategoria dokładniejszym opisem. Te pola sterują filtrami biblioteki ikon.",
+        "matchingSection": "Dopasowanie do przedmiotów",
+        "matchingSectionHint": "Dla jakich danych przedmiotu proponować ikonę",
+        "matchingSectionHelp": "Dopasowanie nie opisuje położenia ikony w bibliotece. Określa, do jakich klas i rodzajów przedmiotów automat może proponować tę grafikę. Przykład: ikona butelki może być sklasyfikowana jako Mikstura, a dopasowana do klasy Alchemia i rodzaju Leczniczy.",
+        "name": "Nazwa ikony",
+        "nameHelp": "Czytelna polska nazwa grafiki widoczna w bibliotece. Nie zmienia nazwy przedmiotów, które używają tej ikony.",
+        "sourceFile": "Źródłowa nazwa pliku",
+        "sourceFileHelp": "Oryginalna nazwa pliku graficznego. Pole tylko do odczytu, używane do identyfikacji źródła i wyszukiwania.",
+        "metadataDescription": "Opis znaczenia",
+        "descriptionHelp": "Krótki opis tego, co przedstawia grafika i w jakim kontekście wizualnym warto jej użyć.",
+        "keywords": "Słowa dopasowania",
+        "keywordsHelp": "Polskie słowa i frazy oddzielone przecinkami. Automat porównuje je z nazwą i opisem przedmiotu, aby zaproponować tę ikonę.",
+        "itemClasses": "Klasa przedmiotu",
+        "itemClassHelp": "Szeroka domena danych przedmiotu, np. Broń, Alchemia albo Narzędzie. Odpowiada polu ITEM_CLASS szablonu i służy do automatycznych podpowiedzi.",
+        "itemGenres": "Rodzaj przedmiotu",
+        "itemGenreHelp": "Dokładniejsze zastosowanie przedmiotu w obrębie klasy, np. Leczniczy, Tarcza, Walka wręcz albo Użytkowy. Odpowiada polu ITEM_GENRE.",
+        "categories": "Kategoria ikony",
+        "categoryHelp": "Główna grupa opisująca to, co widać na grafice. Lista zawsze pokazuje pełny zestaw kategorii. Zmiana kategorii zawęża podkategorię oraz dozwolone dopasowania.",
+        "subcategories": "Podkategoria ikony",
+        "subcategoryHelp": "Dokładniejszy typ grafiki w wybranej kategorii. Lista zależy wyłącznie od kategorii, np. Ubranie → Płaszcze, Szaty, Pasy lub Torby.",
+        "metadataFields": {
+          "typeKey": "Kategoria ikony",
+          "subtypeKey": "Podkategoria ikony",
+          "itemClass": "Klasa przedmiotu",
+          "itemGenre": "Rodzaj przedmiotu"
+        },
+        "relationsAdjusted": "Dostosowano powiązane pola: {changes}.",
+        "legacyMultipleValues": "Ten starszy rekord ma wiele wartości. Edytor pokazuje wartości główne, a zapis znormalizuje każde pole do jednej wartości.",
+        "listHint": "np. tarcza, puklerz, osłona",
+        "codesHint": "kody oddzielone przecinkami",
+        "restoreDefaults": "Przywróć domyślne",
+        "saving": "Zapisywanie…",
+        "saveError": "Nie udało się zapisać metadanych ikony.",
+        "loadError": "Nie udało się pobrać metadanych ikon.",
+        "previous": "Poprzednia",
+        "next": "Następna",
+        "pagination": "Stronicowanie ikon",
+        "firstPage": "Pierwsza strona",
+        "lastPage": "Ostatnia strona",
+        "visibleRange": "Ikony {from}–{to} z {total}"
+      }
+    }
+  },
+  "common": {
+    "actions": {
+      "save": "@:actions.save",
+      "cancel": "@:actions.cancel",
+      "close": "@:actions.close",
+      "delete": "@:actions.delete",
+      "add": "@:actions.add",
+      "edit": "@:actions.edit",
+      "confirm": "@:actions.confirm",
+      "create": "@:actions.create"
+    },
+    "validation": {
+      "required": "To pole jest wymagane.",
+      "invalidNumber": "Wpisz poprawna liczbe.",
+      "nonNegative": "Wartosc musi byc wieksza lub rowna 0.",
+      "nonNegativeInteger": "Wartosc musi byc liczba calkowita >= 0."
+    }
+  },
+  "modals": {
+    "tradeMain": {
+      "title": "@:shop.tradeModal.title"
+    },
+    "iconClass": {
+      "ariaLabel": "@:shop.iconDialog.ariaLabel",
+      "title": "@:shop.iconDialog.title",
+      "purpose": "Wybierz ikone i uzupelnij jej metadane, aby latwiej filtrowac i wyszukiwac przedmioty.",
+      "metadataTitle": "@:shop.iconDialog.metadataTitle",
+      "iconClassPlaceholder": "@:shop.iconDialog.iconClassPlaceholder",
+      "addIconPlaceholder": "@:shop.iconDialog.addIconPlaceholder",
+      "namePlaceholder": "@:shop.iconDialog.namePlaceholder",
+      "descriptionPlaceholder": "@:shop.iconDialog.descriptionPlaceholder",
+      "specialMarksPlaceholder": "@:shop.iconDialog.specialMarksPlaceholder",
+      "autoTagsPlaceholder": "@:shop.iconDialog.autoTagsPlaceholder",
+      "typesMulti": "@:shop.iconDialog.typesMulti",
+      "subtypesMulti": "@:shop.iconDialog.subtypesMulti",
+      "applyMetadata": "@:shop.iconDialog.applyMetadata",
+      "collectionTitle": "@:shop.iconDialog.collectionTitle",
+      "searchPlaceholder": "@:shop.iconDialog.searchPlaceholder",
+      "allTypes": "@:shop.iconDialog.allTypes",
+      "allSubtypes": "@:shop.iconDialog.allSubtypes",
+      "sortAsc": "@:shop.iconDialog.sortAsc",
+      "sortDesc": "@:shop.iconDialog.sortDesc",
+      "emptyFiltered": "@:shop.iconDialog.emptyFiltered",
+      "addIcon": "@:shop.iconDialog.addIcon",
+      "deleteIcon": "@:shop.iconDialog.deleteIcon",
+      "errors": {
+        "invalidClass": "@:shop.iconDialog.errors.invalidClass",
+        "classTaken": "@:shop.iconDialog.errors.classTaken",
+        "classVisible": "@:shop.iconDialog.errors.classVisible",
+        "chooseIconFirst": "@:shop.iconDialog.errors.chooseIconFirst"
+      }
+    },
+    "ownerOption": {
+      "ariaLabel": "@:shop.ownerDialog.ariaLabel",
+      "title": "@:shop.ownerDialog.title",
+      "purpose": "Wybierz wlasciciela przedmiotu. To ustawia kontener i logike dalszej obslugi pozycji.",
+      "currentSelection": "@:shop.ownerDialog.currentSelection",
+      "selectionDescription": "@:shop.ownerDialog.selectionDescription",
+      "ownerChip": "@:shop.ownerDialog.ownerChip",
+      "noDescription": "@:shop.ownerDialog.noDescription",
+      "optionDescriptions": {
+        "DEFAULT": "@:shop.ownerDialog.optionDescriptions.DEFAULT",
+        "TRASH": "@:shop.ownerDialog.optionDescriptions.TRASH",
+        "BG1": "@:shop.ownerDialog.optionDescriptions.BG1",
+        "BG2": "@:shop.ownerDialog.optionDescriptions.BG2",
+        "BG3": "@:shop.ownerDialog.optionDescriptions.BG3"
+      }
+    },
+    "weaponStats": {
+      "ariaLabel": "@:shop.weaponStatsDialog.ariaLabel",
+      "title": "@:shop.weaponStatsDialog.title",
+      "purpose": "Skonfiguruj ID broni i jej statystyki legacy w jednym miejscu, bez opuszczania edycji pola.",
+      "topBarTitle": "@:shop.weaponStatsDialog.topBarTitle",
+      "sourceTemplate": "@:shop.weaponStatsDialog.sourceTemplate",
+      "sourceItem": "@:shop.weaponStatsDialog.sourceItem",
+      "selectLabel": "@:shop.weaponStatsDialog.selectLabel",
+      "emptySelection": "@:shop.weaponStatsDialog.emptySelection",
+      "noOptions": "@:shop.weaponStatsDialog.noOptions",
+      "fieldsTitle": "@:shop.weaponStatsDialog.fieldsTitle",
+      "featureSelectHint": "@:shop.weaponStatsDialog.featureSelectHint",
+      "fields": {
+        "name": "@:shop.weaponStatsDialog.name",
+        "type": "@:shop.weaponStatsDialog.type",
+        "handed": "@:shop.weaponStatsDialog.handed",
+        "category": "@:shop.weaponStatsDialog.category",
+        "dice": "@:shop.weaponStatsDialog.dice",
+        "modifier": "@:shop.weaponStatsDialog.modifier",
+        "damage": "@:shop.weaponStatsDialog.damage",
+        "range": "@:shop.weaponStatsDialog.range",
+        "reload": "@:shop.weaponStatsDialog.reload",
+        "qualities": "@:shop.weaponStatsDialog.qualities",
+        "load": "@:shop.weaponStatsDialog.load",
+        "featuresId": "@:shop.weaponStatsDialog.featuresId",
+        "occuChance": "@:shop.weaponStatsDialog.occuChance"
+      },
+      "features": {
+        "heavy": {
+          "name": "@:shop.weaponStatsDialog.features.heavy.name",
+          "description": "@:shop.weaponStatsDialog.features.heavy.description",
+          "mechanics": "@:shop.weaponStatsDialog.features.heavy.mechanics"
+        },
+        "crushing": {
+          "name": "@:shop.weaponStatsDialog.features.crushing.name",
+          "description": "@:shop.weaponStatsDialog.features.crushing.description",
+          "mechanics": "@:shop.weaponStatsDialog.features.crushing.mechanics"
+        },
+        "stunning": {
+          "name": "@:shop.weaponStatsDialog.features.stunning.name",
+          "description": "@:shop.weaponStatsDialog.features.stunning.description",
+          "mechanics": "@:shop.weaponStatsDialog.features.stunning.mechanics"
+        },
+        "fast": {
+          "name": "@:shop.weaponStatsDialog.features.fast.name",
+          "description": "@:shop.weaponStatsDialog.features.fast.description",
+          "mechanics": "@:shop.weaponStatsDialog.features.fast.mechanics"
+        },
+        "precise": {
+          "name": "@:shop.weaponStatsDialog.features.precise.name",
+          "description": "@:shop.weaponStatsDialog.features.precise.description",
+          "mechanics": "@:shop.weaponStatsDialog.features.precise.mechanics"
+        },
+        "balanced": {
+          "name": "@:shop.weaponStatsDialog.features.balanced.name",
+          "description": "@:shop.weaponStatsDialog.features.balanced.description",
+          "mechanics": "@:shop.weaponStatsDialog.features.balanced.mechanics"
+        }
+      }
+    },
+    "fieldEdit": {
+      "ariaLabel": "@:shop.fieldEditDialog.ariaLabel",
+      "title": "Edycja: {field} ({context})",
+      "purpose": "To okno sluzy do bezpiecznej edycji wybranego pola wraz z gotowymi podpowiedziami.",
+      "defaultField": "@:shop.fieldEditDialog.defaultField",
+      "searchPlaceholder": "@:shop.fieldEditDialog.searchPlaceholder",
+      "valuePlaceholder": "@:shop.fieldEditDialog.valuePlaceholder",
+      "noSuggestions": "@:shop.fieldEditDialog.noSuggestions",
+      "actions": {
+        "editField": "@:shop.fieldEditDialog.editField"
+      },
+      "common": {
+        "emptyValue": "-",
+        "stepUp": "Zwieksz wartosc",
+        "stepDown": "Zmniejsz wartosc"
+      },
+      "targets": {
+        "default": "@:shop.fieldEditDialog.targets.default",
+        "template": "@:shop.fieldEditDialog.targets.template",
+        "newTemplate": "@:shop.fieldEditDialog.targets.newTemplate",
+        "inventory": "@:shop.fieldEditDialog.targets.inventory"
+      },
+      "fields": {
+        "labels": {
+          "ITEM_CLASS": "Klasa przedmiotu",
+          "ITEM_ID": "ID przedmiotu",
+          "IMG_CLASS": "Ikona przedmiotu",
+          "OWNER_OPT": "Wlasciciel",
+          "ITEM_PLACE": "Miejsce przedmiotu",
+          "ITEM_GENRE": "Gatunek przedmiotu",
+          "PRIZE": "Cena",
+          "CHARGE": "Ciezar"
+        },
+        "itemClass": {
+          "selected": "Wybrano klase: {label} ({code})",
+          "searchPlaceholder": "Szukaj klasy po kodzie, nazwie lub opisie...",
+          "groups": {
+            "equipment": "Sprzet",
+            "consumables": "Zuzywalne",
+            "treasures": "Skarby",
+            "other": "Inne"
+          },
+          "options": {
+            "WEAPON": {
+              "label": "Bron",
+              "description": "Przedmioty do walki wrecz i dystansowej."
+            },
+            "ARMOR": {
+              "label": "Pancerz",
+              "description": "Ochrona ciala i elementy obronne."
+            },
+            "CLOTH": {
+              "label": "Odziez",
+              "description": "Ubrania i elementy stroju."
+            },
+            "ARMAMENT": {
+              "label": "Uzbrojenie",
+              "description": "Wyposazenie bojowe i militarne."
+            },
+            "TOOL": {
+              "label": "Narzedzie",
+              "description": "Przybory rzemieslnicze i uzytkowe."
+            },
+            "CUTLERY": {
+              "label": "Sztucce",
+              "description": "Noze, lyzki i drobne przybory."
+            },
+            "POTION": {
+              "label": "Mikstura",
+              "description": "Plyny i eliksiry o dzialaniu specjalnym."
+            },
+            "FOOD": {
+              "label": "Zywnosc",
+              "description": "Jedzenie i produkty spozywcze."
+            },
+            "ALCHEMY": {
+              "label": "Alchemia",
+              "description": "Skladniki i wyroby alchemiczne."
+            },
+            "POWDER": {
+              "label": "Proch",
+              "description": "Ladunki i materialy sypkie."
+            },
+            "JEWELLERY": {
+              "label": "Bizuteria",
+              "description": "Kosztownosci i ozdoby."
+            },
+            "MAGIC": {
+              "label": "Magia",
+              "description": "Przedmioty o naturze magicznej."
+            },
+            "GADGET": {
+              "label": "Gadzet",
+              "description": "Nietypowe urzadzenia i mechanizmy."
+            },
+            "STATIONERY": {
+              "label": "Papiernicze",
+              "description": "Ksiazki, notatki i przybory pisarskie."
+            },
+            "FORAGE": {
+              "label": "Surowce",
+              "description": "Materialy naturalne i zbiory terenowe."
+            },
+            "ANIMAL": {
+              "label": "Zwierzeta",
+              "description": "Towary zwiazane ze zwierzetami."
+            }
+          }
+        },
+        "itemGenre": {
+          "selected": "Klasa: {classCode} | Gatunek: {value}",
+          "selectClassFirst": "Najpierw wybierz klase przedmiotu.",
+          "inputPlaceholder": "Wpisz lub wybierz gatunek...",
+          "searchPlaceholder": "Filtruj dostepne gatunki...",
+          "noResults": "Brak pasujacych gatunkow."
+        },
+        "prize": {
+          "crown": "Korony",
+          "shilling": "Szylingi",
+          "penny": "Pensy",
+          "total": "Lacznie: {total} (K:{crown}, S:{shilling}, P:{penny})",
+          "modeLabel": "Tryb monet",
+          "modes": {
+            "crown": "Korony",
+            "shilling": "Szylingi",
+            "penny": "Pensy"
+          },
+          "totalPennyModeLabel": "Pensy lacznie",
+          "totalPennyHint": "Kliknij aktywna ikone, aby przejsc na tryb pensow lacznych.",
+          "totalPennyCapHint": "W trybie pensow lacznych maksymalna wartosc to 1000 pensow.",
+          "stepLabel": "Krok: {step}",
+          "stepValue": "{value} {unit}",
+          "increaseByStep": "Dodaj aktywny krok ceny",
+          "decreaseByStep": "Odejmij aktywny krok ceny",
+          "presetValue": "{value} {unit}",
+          "selectPresetAria": "Ustaw krok ceny: {value}",
+          "units": {
+            "crownShort": "zk",
+            "shillingShort": "s",
+            "pennyShort": "p"
+          }
+        },
+        "charge": {
+          "heroTitle": "Profil ciezaru",
+          "currentValue": "{value} {unit}",
+          "unit": "KP",
+          "value": "Ciezar przedmiotu",
+          "stepLabel": "Krok: {step}",
+          "stepValue": "{value} {unit}",
+          "increaseByStep": "Zwiekssz ciezar o aktywny krok",
+          "decreaseByStep": "Zmniejsz ciezar o aktywny krok",
+          "presetLabel": "{value} {unit}",
+          "selectPresetAria": "Ustaw krok ciezaru: {value} {unit}",
+          "tiers": {
+            "light": "Lekki",
+            "medium": "Umiarkowany",
+            "heavy": "Ciezki",
+            "veryHeavy": "Bardzo ciezki"
+          },
+          "tiersDesc": {
+            "light": "Drobny ekwipunek, niemal bez odczuwalnego obciazenia.",
+            "medium": "Typowy ekwipunek podroznika, nadal wygodny w ruchu.",
+            "heavy": "Znaczny ciezar, ogranicza tempo i wygode.",
+            "veryHeavy": "Skrajny ciezar, wymaga szczegolnej ostroznosci."
+          }
+        }
+      },
+      "icon": {
+        "metadataTitle": "@:modals.iconClass.metadataTitle",
+        "namePlaceholder": "@:modals.iconClass.namePlaceholder",
+        "descriptionPlaceholder": "@:modals.iconClass.descriptionPlaceholder",
+        "specialMarksPlaceholder": "@:modals.iconClass.specialMarksPlaceholder",
+        "autoTagsPlaceholder": "@:modals.iconClass.autoTagsPlaceholder",
+        "typesMulti": "@:modals.iconClass.typesMulti",
+        "subtypesMulti": "@:modals.iconClass.subtypesMulti",
+        "applyMetadata": "@:modals.iconClass.applyMetadata",
+        "collectionTitle": "@:modals.iconClass.collectionTitle",
+        "searchPlaceholder": "@:modals.iconClass.searchPlaceholder",
+        "allTypes": "@:modals.iconClass.allTypes",
+        "allSubtypes": "@:modals.iconClass.allSubtypes",
+        "sortAsc": "@:modals.iconClass.sortAsc",
+        "sortDesc": "@:modals.iconClass.sortDesc",
+        "emptyFiltered": "@:modals.iconClass.emptyFiltered"
+      },
+      "owner": {
+        "currentSelection": "@:modals.ownerOption.currentSelection",
+        "selectionDescription": "@:modals.ownerOption.selectionDescription",
+        "ownerChip": "@:modals.ownerOption.ownerChip"
+      },
+      "weapon": {
+        "selectLabel": "@:modals.weaponStats.selectLabel",
+        "fieldsTitle": "@:modals.weaponStats.fieldsTitle",
+        "name": "@:modals.weaponStats.fields.name",
+        "type": "@:modals.weaponStats.fields.type",
+        "handed": "@:modals.weaponStats.fields.handed",
+        "category": "@:modals.weaponStats.fields.category",
+        "damage": "@:modals.weaponStats.fields.damage",
+        "dice": "@:modals.weaponStats.fields.dice",
+        "modifier": "@:modals.weaponStats.fields.modifier",
+        "load": "@:modals.weaponStats.fields.load",
+        "range": "@:modals.weaponStats.fields.range",
+        "reload": "@:modals.weaponStats.fields.reload",
+        "featuresId": "@:modals.weaponStats.fields.featuresId",
+        "occuChance": "@:modals.weaponStats.fields.occuChance",
+        "qualities": "@:modals.weaponStats.fields.qualities"
+      }
+    },
+    "itemDetail": {
+      "ariaLabel": "@:shop.itemDetailDialog.ariaLabel",
+      "title": "@:shop.itemDetailDialog.title",
+      "purpose": "Podglad i szybka personalizacja wybranej pozycji z pelnym zestawem metadanych.",
+      "fallbackItemName": "@:shop.itemDetailDialog.fallbackItemName",
+      "sourcePrefix": "@:shop.itemDetailDialog.sourcePrefix",
+      "nicknameLabel": "@:shop.itemDetailDialog.nicknameLabel",
+      "nicknamePlaceholder": "@:shop.itemDetailDialog.nicknamePlaceholder",
+      "priceWeightSingle": "@:shop.itemDetailDialog.priceWeightSingle",
+      "chargeLabel": "@:shop.itemDetailDialog.chargeLabel",
+      "rawPrice": "@:shop.itemDetailDialog.rawPrice",
+      "appraise": "@:shop.itemDetailDialog.appraise",
+      "valueHidden": "@:shop.itemDetailDialog.valueHidden",
+      "fullData": "@:shop.itemDetailDialog.fullData",
+      "noData": "@:shop.itemDetailDialog.noData"
+    },
+    "suggestionDetail": {
+      "ariaLabel": "@:shop.suggestionDialog.ariaLabel",
+      "title": "@:shop.suggestionDialog.title",
+      "purpose": "Sprawdz, dlaczego sugestia zostala zaproponowana i wybierz wariant dodania do sklepu.",
+      "suggestionLabel": "@:shop.suggestionDialog.suggestionLabel",
+      "whySuggestion": "@:shop.suggestionDialog.whySuggestion",
+      "templateVsPersonalizedTitle": "@:shop.suggestionDialog.templateVsPersonalizedTitle",
+      "templateVsPersonalizedBody": "@:shop.suggestionDialog.templateVsPersonalizedBody",
+      "personalizedVariant": "@:shop.suggestionDialog.personalizedVariant",
+      "variantPrice": "@:shop.suggestionDialog.variantPrice",
+      "createTemplateOnly": "@:shop.suggestionDialog.createTemplateOnly",
+      "createTemplateAndItem": "@:shop.suggestionDialog.createTemplateAndItem",
+      "addItem": "@:shop.suggestionDialog.addItem"
+    },
+    "assortmentMerge": {
+      "ariaLabel": "@:shop.assortmentMerge.ariaLabel",
+      "title": "@:shop.assortmentMerge.title",
+      "purpose": "Porownaj dwie podobne pozycje i zdecyduj, z ktorego zrodla zapisac koncowe wartosci pol.",
+      "instructions": "@:shop.assortmentMerge.instructions",
+      "leftTitle": "@:shop.assortmentMerge.leftTitle",
+      "rightTitle": "@:shop.assortmentMerge.rightTitle",
+      "fields": {
+        "name": "@:shop.assortmentMerge.fields.name",
+        "itemPlace": "@:shop.assortmentMerge.fields.itemPlace",
+        "personalPseu": "@:shop.assortmentMerge.fields.personalPseu",
+        "personalDesc": "@:shop.assortmentMerge.fields.personalDesc",
+        "personalCost": "@:shop.assortmentMerge.fields.personalCost",
+        "description": "@:shop.assortmentMerge.fields.description",
+        "imgClass": "@:shop.assortmentMerge.fields.imgClass",
+        "prize": "@:shop.assortmentMerge.fields.prize",
+        "charge": "@:shop.assortmentMerge.fields.charge"
+      }
+    },
+    "viewSettings": {
+      "ariaLabel": "@:shop.viewSettingsDialog.ariaLabel",
+      "title": "@:shop.viewSettingsDialog.title",
+      "purpose": "Dostosuj parametry widoku handlu, aby interfejs byl czytelny na Twoim ekranie.",
+      "fields": {
+        "iconSize": "@:shop.viewSettingsDialog.optionIcons",
+        "icons": "@:shop.common.icons"
+      }
+    },
+    "shopActivation": {
+      "ariaLabel": "@:shop.activationDialog.ariaLabel",
+      "title": "@:shop.activationDialog.title",
+      "purpose": "Zarzadzaj widocznoscia sklepow dla graczy bez zmiany konfiguracji danych.",
+      "subtitle": "@:shop.activationDialog.subtitle",
+      "activeCount": "@:shop.activationDialog.activeCount",
+      "statusActive": "@:shop.activationDialog.statusActive",
+      "statusInactive": "@:shop.activationDialog.statusInactive",
+      "currentShop": "@:shop.activationDialog.currentShop"
+    }
   }
 }

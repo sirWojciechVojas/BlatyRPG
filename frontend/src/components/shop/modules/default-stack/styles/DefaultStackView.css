@@ -1,0 +1,20 @@
+﻿:global(.shop-trade-module .trade-list-shell--sell-default-stack) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--trade-panel-stack-gap);
+  min-height: 0;
+  overflow: visible;
+}
+
+:global(.shop-trade-module .trade-list-shell--sell-default-stack > .shop-base-layout__toolbar) {
+  flex: 0 0 auto;
+  min-height: 0;
+  z-index: 6;
+}
+
+:global(.shop-trade-module .trade-list-shell--sell-default-stack > .trade-list--sell-default-stack) {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+}

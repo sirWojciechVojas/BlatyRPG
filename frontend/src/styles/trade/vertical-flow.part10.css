@@ -1,0 +1,555 @@
+.shop-trade-module .currency-display--row,
+.shop-trade-module .currency-display--summary,
+.shop-trade-module .currency-display--wallet {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  justify-content: stretch;
+  column-gap: 4px;
+}
+
+.shop-trade-module .currency-display--row .currency-display__pair,
+.shop-trade-module .currency-display--summary .currency-display__pair,
+.shop-trade-module .currency-display--wallet .currency-display__pair {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: calc(var(--trade-coin-icon-height) + 8px);
+  grid-template-columns: var(--trade-coin-icon-width) minmax(0, 1fr);
+  column-gap: 4px;
+  padding: 3px;
+  border: 1px solid var(--trade-coin-compartment-border);
+  border-radius: 2px;
+  background: var(--trade-coin-compartment-bg);
+  box-shadow:
+    inset 0 1px 1px rgba(255, 237, 190, 0.08),
+    inset 0 -2px 4px rgba(0, 0, 0, 0.46);
+}
+
+.shop-trade-module
+  .currency-display--row
+  .currency-display__pair:nth-child(1),
+.shop-trade-module
+  .currency-display--summary
+  .currency-display__pair:nth-child(1),
+.shop-trade-module
+  .currency-display--wallet
+  .currency-display__pair:nth-child(1) {
+  --trade-coin-compartment-border: rgba(190, 142, 48, 0.42);
+  --trade-coin-compartment-bg: rgba(83, 58, 13, 0.24);
+}
+
+.shop-trade-module
+  .currency-display--row
+  .currency-display__pair:nth-child(2),
+.shop-trade-module
+  .currency-display--summary
+  .currency-display__pair:nth-child(2),
+.shop-trade-module
+  .currency-display--wallet
+  .currency-display__pair:nth-child(2) {
+  --trade-coin-compartment-border: rgba(190, 190, 181, 0.34);
+  --trade-coin-compartment-bg: rgba(105, 108, 104, 0.16);
+}
+
+.shop-trade-module
+  .currency-display--row
+  .currency-display__pair:nth-child(3),
+.shop-trade-module
+  .currency-display--summary
+  .currency-display__pair:nth-child(3),
+.shop-trade-module
+  .currency-display--wallet
+  .currency-display__pair:nth-child(3) {
+  --trade-coin-compartment-border: rgba(177, 105, 55, 0.42);
+  --trade-coin-compartment-bg: rgba(101, 48, 24, 0.2);
+}
+
+.shop-trade-module
+  :is(
+    .currency-display--row,
+    .currency-display--summary,
+    .currency-display--wallet
+  )
+  .trade-coin-line__value {
+  width: 100%;
+  max-width: none;
+}
+
+.shop-trade-module .currency-display--row {
+  width: var(--trade-price-col-width);
+  min-width: var(--trade-price-col-width);
+  max-width: var(--trade-price-col-width);
+  justify-self: end;
+}
+
+.shop-trade-module .currency-display--row {
+  --trade-coin-icon-width: clamp(13px, 0.86vw, 15px);
+  --trade-coin-icon-height: clamp(13px, 0.84vw, 15px);
+  --trade-coin-value-width: clamp(23px, 1.65vw, 28px);
+}
+
+.shop-trade-module .currency-display--summary {
+  --trade-coin-icon-width: clamp(13px, 0.86vw, 15px);
+  --trade-coin-icon-height: clamp(13px, 0.84vw, 15px);
+  --trade-coin-value-width: clamp(23px, 1.65vw, 28px);
+  width: var(--trade-price-col-width);
+  min-width: var(--trade-price-col-width);
+  max-width: var(--trade-price-col-width);
+  justify-self: end;
+}
+
+.shop-trade-module .currency-display--wallet {
+  --trade-coin-icon-width: clamp(12px, 0.88vw, 15px);
+  --trade-coin-icon-height: clamp(12px, 0.82vw, 15px);
+  --trade-coin-value-width: clamp(2.2em, 1.85vw, 2.55em);
+  width: 100%;
+  min-width: 0;
+  padding: 7px 8px;
+  column-gap: 3px;
+  justify-content: stretch;
+  border-radius: 9px;
+  background: rgba(0, 0, 0, 0.34);
+  box-shadow:
+    inset 0 0 0 1px rgba(216, 183, 120, 0.16),
+    inset 0 8px 18px rgba(0, 0, 0, 0.32);
+}
+
+.shop-trade-module .currency-display--wallet .trade-coin-line__value {
+  font-size: clamp(0.68rem, 0.7vw, 0.82rem);
+}
+
+.shop-trade-module .currency-display--detail {
+  --trade-coin-icon-width: 21px;
+  --trade-coin-icon-height: 20px;
+  --trade-coin-value-width: 3.7em;
+  min-width: 230px;
+}
+
+.shop-trade-module .trade-modal__row-image,
+.shop-trade-module .item-detail-preview-image {
+  display: block;
+  object-fit: contain;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.shop-trade-module .trade-modal__row-image {
+  width: var(--trade-icon-size) !important;
+  height: var(--trade-icon-size) !important;
+  border-radius: 7px;
+  filter: drop-shadow(0 5px 8px rgba(0, 0, 0, 0.55));
+}
+
+.shop-trade-module .item-detail-preview-image {
+  width: min(70%, 150px);
+  height: min(70%, 150px);
+  border-radius: 12px;
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0.6));
+}
+
+.shop-trade-module .trade-modal__row--unavailable {
+  cursor: not-allowed;
+  filter: grayscale(0.55) saturate(0.55);
+  opacity: 0.62;
+}
+
+.shop-trade-module .trade-modal__row--unavailable:hover {
+  transform: none;
+  border-color: rgba(130, 105, 78, 0.34);
+  box-shadow: inset 0 0 0 1px rgba(255, 232, 180, 0.04);
+}
+
+.shop-trade-module .trading-empty {
+  margin: var(--trade-space-2);
+  border: 1px dashed rgba(216, 183, 120, 0.38);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.32);
+  color: rgba(244, 227, 194, 0.82);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+}
+
+.shop-trade-module .item-detail-dialog {
+  width: min(760px, calc(100% - 24px));
+  max-height: calc(100% - 24px);
+  padding: 8px;
+  overflow: hidden;
+  border: 1px solid #9c6a32;
+  border-radius: 3px;
+  background:
+    linear-gradient(90deg, rgba(255, 215, 136, 0.05), transparent 12% 88%, rgba(255, 215, 136, 0.05)),
+    linear-gradient(145deg, #1d120a, #090705 60%, #160d08);
+  box-shadow:
+    0 24px 60px rgba(0, 0, 0, 0.78),
+    inset 0 0 0 2px #28170c,
+    inset 0 0 0 3px rgba(207, 150, 75, 0.38),
+    inset 0 0 24px rgba(0, 0, 0, 0.84);
+}
+
+.shop-trade-module .currency-display--row,
+.shop-trade-module .currency-display--summary {
+  column-gap: 3px;
+}
+
+.shop-trade-module .currency-display--row .currency-display__pair,
+.shop-trade-module .currency-display--summary .currency-display__pair {
+  column-gap: 2px;
+  padding: 2px;
+}
+
+.shop-trade-module .item-detail-titlebar {
+  min-height: 46px;
+  justify-content: flex-start;
+  margin: -8px -8px 0;
+  padding: 0 50px 0 16px;
+  border: 0;
+  border-radius: 2px 2px 0 0;
+  background: var(--trade-titlebar);
+  background-size: 100% 100%;
+  box-shadow:
+    0 2px 0 #0a0604,
+    0 3px 0 rgba(202, 146, 73, 0.48),
+    inset 0 -10px 18px rgba(0, 0, 0, 0.34);
+  text-align: left;
+}
+
+.shop-trade-module .item-detail-title-text {
+  font:
+    700 clamp(0.98rem, 1.8vw, 1.18rem) "EB Garamond",
+    Garamond,
+    "Times New Roman",
+    serif;
+  letter-spacing: 0.075em;
+  color: #fff3d0;
+  text-shadow:
+    0 2px 2px #000,
+    0 0 7px rgba(255, 203, 111, 0.26);
+}
+
+.shop-trade-module .item-detail-close {
+  right: 10px;
+  width: 27px;
+  height: 27px;
+  padding: 0 0 2px;
+  border: 1px solid #c08a4d;
+  border-radius: 2px;
+  background: linear-gradient(#402317, #170c08);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 223, 164, 0.15),
+    0 1px 3px #000;
+  color: #f4d39a;
+  font: 700 1.25rem/1 Georgia, serif;
+}
+
+.shop-trade-module .item-detail-close:hover {
+  border-color: #efbd76;
+  background: linear-gradient(#623326, #21100b);
+  color: #fff3d1;
+}
+
+.shop-trade-module .item-detail-body {
+  margin-top: 4px;
+  overflow: auto;
+  border: 1px solid rgba(185, 126, 58, 0.55);
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.015), transparent 28%),
+    #0d0b09;
+  box-shadow:
+    inset 0 0 0 1px #070504,
+    inset 0 0 22px rgba(0, 0, 0, 0.72);
+  scrollbar-width: thin;
+  scrollbar-color: #91602d #100b08;
+}
+
+.shop-trade-module .item-detail-preview {
+  top: 12px;
+  right: 12px;
+  width: 120px;
+  height: 120px;
+}
+
+.shop-trade-module .item-detail-preview-frame {
+  box-sizing: border-box;
+  width: 120px;
+  min-width: 120px;
+  max-width: 120px;
+  height: 120px;
+  min-height: 120px;
+  max-height: 120px;
+  aspect-ratio: 1 / 1;
+  margin: 0;
+  border: 1px solid #9c6a32;
+  border-radius: 0;
+  background:
+    linear-gradient(135deg, rgba(238, 188, 111, 0.08), transparent 42%),
+    linear-gradient(145deg, #4a2c16, #130b07 70%);
+  box-shadow:
+    inset 0 0 0 2px #1b0f08,
+    inset 0 0 14px rgba(0, 0, 0, 0.72),
+    0 5px 12px rgba(0, 0, 0, 0.68);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+
+.shop-trade-module .item-detail-preview-frame::after {
+  position: absolute;
+  z-index: 0;
+  inset: 11px 25px;
+  content: "";
+  border: 1px solid rgba(220, 165, 82, 0.38);
+  border-radius: 50%;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(193, 128, 50, 0.18),
+    rgba(75, 40, 15, 0.08) 55%,
+    transparent 74%
+  );
+  box-shadow:
+    0 0 13px rgba(215, 151, 62, 0.24),
+    inset 0 0 12px rgba(223, 165, 79, 0.14);
+  pointer-events: none;
+}
+
+.shop-trade-module
+  .item-detail-preview-frame
+  > .item-detail-preview-img.item-icon {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 112px !important;
+  min-width: 112px;
+  max-width: 112px;
+  height: 112px !important;
+  min-height: 112px;
+  max-height: 112px;
+  aspect-ratio: 1 / 1;
+  overflow: visible;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  filter:
+    drop-shadow(0 8px 10px rgba(0, 0, 0, 0.7))
+    saturate(0.92);
+}
+
+.shop-trade-module .item-detail-charge {
+  z-index: 2;
+  right: 3px;
+  bottom: 3px;
+  padding: 1px 5px;
+  border-radius: 2px;
+  background: rgba(15, 9, 5, 0.92);
+  font-size: 0.58rem;
+}
+
+.shop-trade-module .item-detail-info {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+}
+
+.shop-trade-module .item-detail-meta {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-content: start;
+  gap: 0;
+  overflow: visible;
+}
+
+.shop-trade-module .item-detail-section {
+  display: grid;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 0;
+  border-bottom: 1px solid rgba(177, 119, 54, 0.31);
+  border-radius: 0;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.025), transparent);
+}
+
+.shop-trade-module .item-detail-section--overview {
+  order: 1;
+  min-height: 140px;
+  padding-right: 146px;
+  background:
+    radial-gradient(circle at 85% 15%, rgba(93, 120, 61, 0.16), transparent 38%),
+    linear-gradient(115deg, rgba(26, 54, 31, 0.66), rgba(15, 17, 13, 0.4) 55%, rgba(8, 8, 7, 0.9));
+}
+
+.shop-trade-module .item-detail-section--mechanics {
+  order: 2;
+  background:
+    linear-gradient(90deg, rgba(129, 103, 65, 0.09), transparent 60%),
+    #11100e;
+}
+
+.shop-trade-module .item-detail-section--commerce {
+  order: 3;
+  background:
+    linear-gradient(90deg, rgba(67, 39, 64, 0.42), rgba(20, 14, 20, 0.75) 70%),
+    #100d0f;
+}
+
+.shop-trade-module .item-detail-section--advanced {
+  order: 4;
+  grid-column: 1;
+  padding: 7px 12px;
+  background: #0b0a09;
+}
+
+.shop-trade-module .item-detail-subtitle {
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(212, 166, 94, 0.23);
+  color: #d7ab69;
+  font:
+    700 0.65rem/1.2 "EB Garamond",
+    Garamond,
+    Georgia,
+    serif;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.shop-trade-module summary.item-detail-subtitle {
+  padding-bottom: 0;
+  border-bottom: 0;
+  cursor: pointer;
+}
+
+.shop-trade-module .item-detail-section-lines {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1px 14px;
+}
+
+.shop-trade-module .item-detail-line {
+  display: grid;
+  grid-template-columns: minmax(84px, auto) minmax(0, 1fr);
+  align-items: baseline;
+  gap: 7px;
+  min-height: 23px;
+  padding: 3px 0;
+  border-top: 0;
+}
+
+.shop-trade-module .item-detail-label {
+  color: #c89b59;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+}
+
+.shop-trade-module .item-detail-text {
+  min-width: 0;
+  color: #e8dcc3;
+  font:
+    400 0.78rem/1.28 "EB Garamond",
+    Garamond,
+    Georgia,
+    serif;
+}
+
+.shop-trade-module .item-detail-line--short-description,
+.shop-trade-module .item-detail-line--full-description {
+  grid-column: 1 / -1;
+  grid-template-columns: 1fr;
+  gap: 3px;
+  margin-right: -134px;
+  padding: 7px 8px;
+  border-top: 1px solid rgba(208, 159, 87, 0.23);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.shop-trade-module .item-detail-line--short-description .item-detail-text,
+.shop-trade-module .item-detail-line--full-description .item-detail-text {
+  font-size: 0.82rem;
+  line-height: 1.38;
+  color: #f0e3c8;
+}
+
+.shop-trade-module .item-detail-line--weight .item-detail-text {
+  color: #d2bd98;
+}
+
+.shop-trade-module .item-detail-line-currency,
+.shop-trade-module .item-detail-line-currency.currency-display--row {
+  width: min(100%, var(--trade-price-col-width));
+  min-width: 0;
+  max-width: var(--trade-price-col-width);
+  justify-self: end;
+}
+
+.shop-trade-module .item-detail-appraisal {
+  justify-content: flex-end;
+  color: #a99779;
+}
+
+.shop-trade-module .item-detail-appraisal .btn {
+  border-color: #87602f;
+  border-radius: 2px;
+  background: linear-gradient(#382415, #160d08);
+  color: #e4bd7c;
+}
+
+.shop-trade-module .item-detail-nickname {
+  gap: 8px;
+  margin: 0;
+  padding: 7px 10px;
+  border: 0;
+  border-radius: 0;
+  background:
+    linear-gradient(90deg, rgba(119, 73, 31, 0.18), transparent),
+    #0d0a08;
+}
+
+.shop-trade-module .item-detail-nickname-label {
+  color: #c79a58;
+}
+
+.shop-trade-module .item-detail-nickname .trade-input {
+  min-height: 27px;
+  border-color: rgba(157, 103, 45, 0.55);
+  border-radius: 2px;
+  background: rgba(0, 0, 0, 0.44);
+}
+
+.shop-trade-module .item-detail-nickname .btn {
+  min-height: 27px;
+  border-radius: 2px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+}
+
+@media (max-width: 620px) {
+  .shop-trade-module .item-detail-dialog {
+    width: calc(100% - 12px);
+    max-height: calc(100% - 12px);
+  }
+
+  .shop-trade-module .item-detail-titlebar {
+    padding-left: 11px;
+    padding-right: 46px;
+  }
+
+  .shop-trade-module .item-detail-section-lines {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-trade-module .item-detail-section--overview {
+    padding-right: 140px;
+  }
+
+  .shop-trade-module .item-detail-line--short-description,
+  .shop-trade-module .item-detail-line--full-description {
+    margin-right: -128px;
+  }
+
+  .shop-trade-module .item-detail-nickname {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .shop-trade-module .item-detail-nickname-row {
+    flex-wrap: wrap;
+  }
+}

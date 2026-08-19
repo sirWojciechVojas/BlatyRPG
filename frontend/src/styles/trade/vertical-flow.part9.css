@@ -1,0 +1,257 @@
+.shop-trade-module .shop-signboard-details__identity {
+  min-width: 0;
+  display: grid;
+  gap: 1px;
+}
+
+.shop-trade-module .shop-signboard-details__identity strong,
+.shop-trade-module .shop-signboard-details__identity span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shop-trade-module .shop-signboard-details__identity strong {
+  color: #fff0c6;
+  font-size: clamp(0.72rem, 0.8vw, 0.9rem);
+  line-height: 1.08;
+}
+
+.shop-trade-module .shop-signboard-details__identity span {
+  color: #dcb873;
+  font-size: 0.62rem;
+  line-height: 1.05;
+}
+
+.shop-trade-module .shop-signboard-details__rows {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+  gap: 2px 7px;
+  margin: 6px 0 0;
+  font-size: clamp(0.54rem, 0.58vw, 0.64rem);
+  line-height: 1.12;
+}
+
+.shop-trade-module .shop-signboard-details__rows dt,
+.shop-trade-module .shop-signboard-details__rows dd {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shop-trade-module .shop-signboard-details__rows dt {
+  color: rgba(226, 200, 147, 0.74);
+  font-weight: 600;
+}
+
+.shop-trade-module .shop-signboard-details__rows dd {
+  color: #f2dfb2;
+  text-align: right;
+}
+
+.shop-trade-module .shop-signboard-details__note {
+  margin: 6px 0 0;
+  color: rgba(232, 209, 163, 0.82);
+  font-size: 0.62rem;
+  line-height: 1.18;
+}
+
+.shop-trade-module .wallet-stack,
+.shop-trade-module .wallet-tile,
+.shop-trade-module .active-bg-avatar,
+.shop-trade-module .encumbrance-tile {
+  width: var(--trade-side-panel-width);
+}
+
+.shop-trade-module .wallet-stack {
+  gap: var(--trade-module-gap);
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.shop-trade-module .active-bg-avatar {
+  padding: var(--trade-space-2);
+}
+
+.shop-trade-module .active-bg-avatar__frame {
+  width: 100%;
+  max-width: 196px;
+  justify-self: center;
+}
+
+.shop-trade-module .wallet-tile,
+.shop-trade-module .encumbrance-tile {
+  padding: var(--trade-space-2);
+}
+
+.shop-trade-module .wallet-row {
+  grid-template-columns: 21px minmax(0, 1fr);
+  gap: var(--trade-space-1);
+  padding: var(--trade-space-1);
+}
+
+.shop-trade-module .wallet-icon {
+  width: 18px;
+  height: 13px;
+}
+
+.shop-trade-module .wallet-title,
+.shop-trade-module .encumbrance-title,
+.shop-trade-module .encumbrance-unit,
+.shop-trade-module .encumbrance-meta,
+.shop-trade-module .encumbrance-over,
+.shop-trade-module .encumbrance-warning {
+  line-height: 1.12;
+}
+
+@media (max-height: 760px) {
+  .shop-trade-module {
+    --trade-header-height: 42px;
+    --trade-footer-height: 38px;
+    --trade-purpose-height: 18px;
+    --trade-heading-height: 22px;
+    --trade-control-height: 29px;
+    --trade-summary-height: 24px;
+    --trade-action-height: 36px;
+    --trade-notification-height: 42px;
+    --trade-notification-stack-height: 92px;
+    --trade-module-gap: 4px;
+    --trade-column-gap: 8px;
+    --trade-list-gap: 4px;
+    --trade-list-padding-y: 5px;
+    --trade-modal-height: clamp(540px, 87vh, 660px);
+    --trade-flank-column-width: 224px;
+    --trade-flank-padding-x: clamp(6px, 0.65vw, 10px);
+    --trade-price-col-width: clamp(142px, 9.2vw, 158px);
+  }
+
+  .shop-trade-module .trade-modal__row-desc {
+    -webkit-line-clamp: 2;
+    max-height: 2.4em;
+  }
+
+  .shop-trade-module .active-bg-avatar__badge,
+  .shop-trade-module .shop-flank-card__subtitle {
+    display: none;
+  }
+}
+
+@media (min-height: 1000px) {
+  .shop-trade-module {
+    --trade-modal-height: 820px;
+    --trade-item-row-height: clamp(
+      54px,
+      calc(var(--trade-icon-size, 34px) + 18px),
+      76px
+    );
+  }
+}
+
+@media (min-width: 2300px) and (min-height: 1200px) {
+  .shop-trade-module {
+    --trade-modal-height: 840px;
+    --trade-modal-width: 1600px;
+  }
+}
+
+@media (max-width: 1320px) {
+  .shop-trade-module {
+    --trade-column-gap: 8px;
+    --trade-flank-column-width: 224px;
+    --trade-flank-padding-x: clamp(6px, 0.65vw, 10px);
+    --trade-price-col-width: 154px;
+    --trade-filter-rail-offset: calc(
+      var(--trade-filter-btn-size) + var(--trade-space-1)
+    );
+  }
+
+  .shop-trade-module .trade-grid {
+    grid-template-columns:
+      minmax(0, var(--trade-flank-column-width))
+      minmax(320px, 1fr)
+      minmax(320px, 1fr)
+      minmax(0, var(--trade-flank-column-width));
+  }
+}
+
+@media (max-width: 900px) {
+  .shop-trade-module {
+    --trade-modal-w: min(95vw, var(--trade-modal-width));
+    --trade-modal-height: min(92vh, 780px);
+  }
+
+  .shop-trade-module .trade-grid {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows:
+      var(--trade-heading-height)
+      auto
+      minmax(0, 1fr)
+      minmax(0, 1fr)
+      auto;
+  }
+
+  .shop-trade-module .trade-grid > .trade-flank:nth-of-type(2),
+  .shop-trade-module .trade-grid > .trade-flank:nth-of-type(5),
+  .shop-trade-module .trade-buy,
+  .shop-trade-module .trade-sell {
+    grid-column: 1;
+  }
+
+  .shop-trade-module .trade-grid > .trade-flank:nth-of-type(2) {
+    grid-row: 2;
+    flex-direction: row;
+  }
+
+  .shop-trade-module #tradingBuy,
+  .shop-trade-module #tradingSell {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .shop-trade-module .trade-sell .trade-modal__summary {
+    --trade-summary-row-end-reserve: 22px;
+  }
+
+  .shop-trade-module .trade-buy {
+    grid-row: 3;
+  }
+
+  .shop-trade-module .trade-sell {
+    grid-row: 4;
+  }
+
+  .shop-trade-module .trade-grid > .trade-flank:nth-of-type(5) {
+    grid-row: 5;
+    flex-direction: row;
+  }
+
+  .shop-trade-module .trade-modal-signboard-bg {
+    display: none;
+  }
+
+  .shop-trade-module .trade-flank--left {
+    padding-top: 0 !important;
+  }
+
+  .shop-trade-module .trade-filter-rail {
+    position: static;
+    transform: none;
+    flex-direction: row;
+    margin-bottom: var(--trade-space-1);
+  }
+}
+
+.shop-trade-module .currency-display {
+  --trade-coin-icon-width: clamp(14px, 1.05vw, 17px);
+  --trade-coin-icon-height: clamp(13px, 0.98vw, 17px);
+  --trade-coin-value-width: clamp(2.45em, 2.5vw, 2.95em);
+  min-width: max-content;
+  width: max-content;
+  max-width: 100%;
+  color: rgba(248, 236, 209, 0.96);
+}

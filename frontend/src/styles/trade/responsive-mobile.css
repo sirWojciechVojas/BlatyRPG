@@ -1,0 +1,98 @@
+﻿@media (max-width: 900px) {
+  .shop-trade-module .img-dialog-body {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-trade-module .img-dialog {
+    max-height: 92%;
+  }
+
+  .shop-trade-module .img-dialog-preview {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-trade-module .owner-dialog-body {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-trade-module .owner-dialog {
+    max-height: 92%;
+  }
+
+  .shop-trade-module .item-detail-body {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-trade-module .item-detail-dialog {
+    max-height: 92%;
+  }
+
+  .shop-trade-module .weapon-stats-dialog {
+    max-height: 92%;
+  }
+
+  .shop-trade-module .field-edit-dialog {
+    max-height: 92%;
+  }
+
+  .shop-trade-module .field-edit-weapon__body {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-trade-module .weapon-stats-dialog__body {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-trade-module .weapon-stats-dialog__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-trade-module .weapon-stats-dialog__list {
+    max-height: 220px;
+  }
+
+  .shop-trade-module .field-edit-value__suggestions {
+    max-height: 220px;
+  }
+
+  .shop-trade-module .field-edit-class-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-trade-module .field-edit-class-groups,
+  .shop-trade-module .field-edit-genre-groups {
+    max-height: 220px;
+  }
+
+  .shop-trade-module .field-edit-price-modes {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-trade-module .field-edit-price-stepper-wrap {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-trade-module .field-edit-price-presets,
+  .shop-trade-module .field-edit-charge-presets {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .shop-trade-module .field-edit-charge-hero {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
+  }
+
+  .shop-trade-module .field-edit-charge-hero__content {
+    justify-items: center;
+  }
+
+  .shop-trade-module .item-detail-preview-frame {
+    width: min(100%, 188px);
+    min-height: 188px;
+  }
+
+  .shop-trade-module .item-detail-price-row {
+    align-items: flex-start;
+  }
+}

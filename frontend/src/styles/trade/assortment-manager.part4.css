@@ -1,0 +1,85 @@
+.shop-trade-module .assortment-suggestion-actions {
+  display: grid;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+.shop-trade-module
+  .assortment-suggestion-actions
+  .shop-mode-template-actions__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+  min-width: 0;
+}
+
+.shop-trade-module .assortment-suggestion-actions .assort-label {
+  max-width: min(12rem, 42%);
+  margin: 0;
+  color: rgba(239, 222, 189, 0.84);
+  font-size: 0.74rem;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shop-trade-module .assortment-suggestion-actions .shop-editor-roll-target {
+  width: clamp(58px, 5.2vw, 76px);
+  height: var(--assort-action-height);
+  min-height: var(--assort-action-height);
+  border-radius: 7px;
+}
+
+.shop-trade-module .assortment-suggestion-actions .shop-editor-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--assort-action-height);
+  min-width: var(--assort-action-height);
+  height: var(--assort-action-height);
+  min-height: var(--assort-action-height);
+  padding: 0;
+  border-radius: 7px;
+  line-height: 1;
+}
+
+.shop-trade-module .assortment-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(0.95rem, 1vw, 1.1rem);
+  line-height: 1;
+}
+
+@media (max-width: 1500px) {
+  .shop-trade-module .shop-assortment-layout {
+    --assort-footer-height: clamp(152px, 18vh, 188px);
+    --assort-action-height: clamp(32px, 3.6vh, 38px);
+  }
+
+  .shop-trade-module .assort-filter-grid {
+    grid-template-columns: minmax(92px, 0.36fr) minmax(0, 1fr);
+  }
+
+  .shop-trade-module .assortment-actions {
+    padding: 7px;
+  }
+
+  .shop-trade-module .shop-assortment-footer-right--suggestions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "shop shop"
+      "suggestions roll";
+  }
+
+  .shop-trade-module .shop-assortment-action-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .shop-trade-module .shop-assortment-roll-row {
+    grid-template-columns: minmax(52px, 0.45fr) minmax(0, 1fr);
+  }
+}

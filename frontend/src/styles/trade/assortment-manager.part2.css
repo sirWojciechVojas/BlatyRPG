@@ -1,0 +1,249 @@
+.shop-trade-module .assort-panel-title {
+  min-width: 0;
+  color: rgba(255, 235, 194, 0.93);
+  font-size: clamp(0.72rem, 0.78vw, 0.84rem);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  line-height: 1.12;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.shop-trade-module .assort-panel-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 22px;
+  padding: 0 9px;
+  border: 1px solid rgba(230, 190, 116, 0.44);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.34);
+  color: rgba(255, 235, 196, 0.9);
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.shop-trade-module .assortment-list-panel .assort-panel-list {
+  display: grid;
+  align-content: start;
+  grid-auto-rows: var(--assort-list-row-height);
+  gap: 8px;
+  min-height: 0;
+  height: auto;
+  max-height: 100%;
+  padding-right: 4px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.shop-trade-module .assortment-list-panel .assort-card {
+  display: grid;
+  align-items: stretch;
+  min-height: var(--assort-list-row-height);
+  height: var(--assort-list-row-height);
+  max-height: var(--assort-list-row-height);
+  padding: 8px 10px;
+  border-color: rgba(220, 180, 108, 0.36);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 230, 172, 0.045), transparent 48%),
+    rgba(0, 0, 0, 0.32);
+  overflow: hidden;
+}
+
+.shop-trade-module .assortment-list-panel .assort-card--selectable:hover {
+  border-color: rgba(245, 207, 136, 0.76);
+  background:
+    linear-gradient(180deg, rgba(255, 230, 172, 0.09), transparent 50%),
+    rgba(14, 11, 8, 0.58);
+  box-shadow: 0 8px 14px rgba(0, 0, 0, 0.34);
+  transform: translateY(-1px);
+}
+
+.shop-trade-module .assortment-list-panel .assort-card.selected {
+  border-color: rgba(255, 220, 145, 0.96);
+  background:
+    linear-gradient(180deg, rgba(255, 218, 144, 0.16), transparent 56%),
+    rgba(39, 26, 14, 0.72);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 238, 195, 0.18),
+    0 0 0 1px rgba(233, 184, 98, 0.32);
+}
+
+.shop-trade-module .assortment-list-panel .assort-card-main {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  gap: 10px;
+  align-items: center;
+  min-width: 0;
+  height: 100%;
+}
+
+.shop-trade-module .assortment-list-panel .assort-card-icon,
+.shop-trade-module .assortment-list-panel .assort-card-main img {
+  width: 34px;
+  height: 34px;
+  justify-self: center;
+  object-fit: contain;
+  flex: 0 0 auto;
+}
+
+.shop-trade-module .assortment-list-panel .assort-card-info {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  align-content: center;
+}
+
+.shop-trade-module .assortment-list-panel .assort-card-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  color: rgba(255, 244, 220, 0.98);
+  font-size: clamp(0.76rem, 0.82vw, 0.88rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.13;
+  text-transform: none;
+}
+
+.shop-trade-module .assortment-list-panel .assort-card-name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shop-trade-module .assortment-list-panel .assort-card-badge {
+  flex: 0 0 auto;
+  min-width: 0;
+  max-width: 84px;
+  padding: 2px 5px;
+  border-radius: 999px;
+  color: rgba(255, 235, 194, 0.84);
+  font-size: 0.58rem;
+  letter-spacing: 0.04em;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shop-trade-module .assortment-list-panel .assort-card-desc,
+.shop-trade-module .assortment-list-panel .assort-card-stack-hint {
+  min-width: 0;
+  color: rgba(229, 211, 178, 0.68);
+  font-size: clamp(0.66rem, 0.7vw, 0.75rem);
+  letter-spacing: 0;
+  line-height: 1.15;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.shop-trade-module .assortment-list-panel .assort-card-stack-hint {
+  color: rgba(241, 200, 129, 0.82);
+}
+
+.shop-trade-module .assortment-list-panel .assort-card-qty {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  justify-self: end;
+  min-width: 42px;
+  margin: 0;
+  color: rgba(255, 235, 194, 0.9);
+  font-size: clamp(0.74rem, 0.78vw, 0.84rem);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  text-align: right;
+}
+
+.shop-trade-module .assortment-list-panel .assort-empty {
+  display: grid;
+  place-items: center;
+  min-height: 100%;
+  border: 1px dashed rgba(219, 177, 101, 0.36);
+  border-radius: 8px;
+  color: rgba(231, 214, 181, 0.72);
+  font-size: 0.82rem;
+  text-align: center;
+}
+
+.shop-trade-module .assortment-list-panel .assort-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  min-height: 30px;
+  padding-top: 7px;
+  border-top: 1px solid rgba(216, 176, 103, 0.24);
+}
+
+.shop-trade-module .assortment-list-panel .assort-selection-info {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 10px;
+  border: 1px solid rgba(225, 184, 110, 0.4);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.28);
+  color: rgba(255, 235, 196, 0.88);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.shop-trade-module .shop-assortment-layout .shop-base-layout__actions-bar {
+  align-items: stretch;
+  min-height: var(--assort-footer-height);
+  height: var(--assort-footer-height);
+  max-height: var(--assort-footer-height);
+  margin-top: var(--assort-panel-gap);
+  padding: 0 0 clamp(8px, 1vh, 12px);
+  overflow: visible;
+}
+
+.shop-trade-module .shop-assortment-layout .shop-base-layout__actions-inner,
+.shop-trade-module .shop-assortment-layout .shop-base-layout__actions-frame {
+  align-items: stretch;
+  justify-content: stretch;
+  min-height: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.shop-trade-module .shop-assortment-layout .shop-base-layout__actions-frame {
+  flex: 1 1 auto !important;
+  max-width: 100% !important;
+  width: 100% !important;
+}
+
+.shop-trade-module .shop-assortment-layout .shop-notification-slot {
+  bottom: calc(100% + 4px);
+}
+
+.shop-trade-module .shop-assortment-footer-actions {
+  display: grid;
+  align-items: stretch;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: var(--assort-footer-pad);
+  border: 1px solid rgba(220, 178, 104, 0.46);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 226, 157, 0.08), transparent 54%),
+    rgba(7, 6, 5, 0.62);
+  box-shadow:
+    0 10px 18px rgba(0, 0, 0, 0.34),
+    inset 0 1px 0 rgba(255, 239, 198, 0.08);
+}

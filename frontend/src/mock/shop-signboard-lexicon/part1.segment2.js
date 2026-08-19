@@ -1,0 +1,126 @@
+export const createRuntimePart1Segment2 = (runtime) => {
+  const makeFamily = ({
+    id,
+    patterns = runtime.PATTERNS,
+    canonicalNames = [],
+    symbolPhrases = [],
+    emblematicPairs = [],
+    numberedEmblems = [],
+    ownerRoleGenitives = [],
+    professionSurnames = [],
+    aliasPatterns = [],
+    extraRoots = [],
+  }) => ({
+    id,
+    patterns: [...patterns],
+    canonicalNames: runtime.uniq(canonicalNames),
+    symbolPhrases: runtime.uniq(symbolPhrases),
+    emblematicPairs: runtime.uniq(emblematicPairs),
+    numberedEmblems: runtime.uniq(numberedEmblems),
+    ownerRoleGenitives: runtime.uniq(ownerRoleGenitives),
+    professionSurnames: runtime.uniq(
+      professionSurnames.length ? professionSurnames : runtime.COMMON_SURNAMES,
+    ),
+    aliasPatterns: runtime.uniq(
+      aliasPatterns.length
+        ? aliasPatterns
+        : [
+            "{TYPE}",
+            "{OWNER_NAME} — {TYPE}",
+            "{TYPE} {LOCATION_ADDON}",
+            "{SIGNBOARD_CORE}",
+            "{TYPE} „{SIGNBOARD_CORE}”",
+          ],
+    ),
+    extraRoots: runtime.uniq(extraRoots),
+  });
+  Object.assign(runtime, {
+    makeFamily,
+  });
+  const FAMILY_FOOD = runtime.makeFamily({
+    id: "family_food",
+    canonicalNames: [
+      "ZwisajÄ…cy Bochen",
+      "KoĹ‚o MĹ‚yna",
+      "Trzy Miary",
+      "ZĹ‚ota Kropla",
+      "BiaĹ‚a Miseczka",
+      "DymiÄ…cy Hak",
+      "Czerwony Tasak",
+      "Sznur KieĹ‚basy",
+      "BiaĹ‚a BryĹ‚a",
+      "KwaĹ›na Beczka",
+      "Kamienna Piwnica",
+      "Garnek Owsa",
+      "ZĹ‚oty SĹ‚Ăłd",
+      "Dwa WÄ™gorze",
+      "CiepĹ‚y Napar",
+      "SĂłl i PerĹ‚a",
+      "MaĹ›lana ĹyĹĽka",
+      "ZĹ‚oty Ul",
+      "Srebrna Ĺuska",
+      "LeĹ›ny Kosz",
+    ],
+    symbolPhrases: [
+      "MÄ…cznym KÄ…tem",
+      "StrugÄ…",
+      "Spichlerzem",
+      "Lnianym WieĹ„cem",
+      "ĹagodnÄ… KrowÄ…",
+      "CzarnÄ… BelkÄ…",
+      "RzeĹşniÄ…",
+      "OkrÄ…gĹ‚Ä… PatelniÄ…",
+      "SĹ‚onÄ… ĹyĹĽkÄ…",
+      "Trzema SĹ‚ojami",
+      "PortowÄ… BramÄ…",
+      "Mokrym Pniem",
+      "SuszarniÄ…",
+      "Wilgotnym Ĺukiem",
+      "BrzÄ™czÄ…cym Dachem",
+    ],
+    emblematicPairs: [
+      "MÄ…ka i Bochen",
+      "Beczka i ĹyĹĽka",
+      "SĂłl i Miara",
+      "KieĹ‚basa i Tasak",
+      "Kufel i Chochla",
+      "Mleko i MasĹ‚o",
+      "Ryba i SieÄ‡",
+      "MiĂłd i Wosk",
+    ],
+    numberedEmblems: [
+      "Trzy Miary",
+      "Dwa WÄ™gorze",
+      "Trzy Szafrany",
+      "Dwa Dzbanki",
+      "Trzy SĹ‚oje",
+    ],
+    ownerRoleGenitives: [
+      "Piekarza",
+      "MĹ‚ynarza",
+      "Kupca",
+      "Olejarza",
+      "Mleczarza",
+      "WÄ™dzarza",
+      "RzeĹşnika",
+      "Solnika",
+    ],
+    extraRoots: [
+      "bochen",
+      "kasza",
+      "miĂłd",
+      "sĹ‚Ăłd",
+      "beczka",
+      "wÄ™dzarnia",
+      "zakwas",
+      "solanka",
+    ],
+  });
+  Object.assign(runtime, {
+    FAMILY_FOOD,
+  });
+  return {
+    makeFamily,
+    FAMILY_FOOD,
+  };
+};

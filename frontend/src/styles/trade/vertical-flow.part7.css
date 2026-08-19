@@ -1,0 +1,232 @@
+.shop-trade-module .shop-signboard-tile.shop-flank-card::after {
+  z-index: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: clamp(8px, 1.25vh, 12px);
+  border-radius: 6px 6px 0 0;
+  background:
+    linear-gradient(180deg, rgba(176, 111, 50, 0.72), rgba(82, 47, 24, 0.78)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 232, 168, 0.08) 0 1px,
+      transparent 1px 7px
+    );
+  border-bottom: 1px solid rgba(22, 13, 7, 0.58);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 238, 189, 0.12),
+    0 2px 5px rgba(0, 0, 0, 0.24);
+}
+
+.shop-trade-module .shop-signboard-tile.shop-flank-card:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow:
+    0 11px 18px rgba(0, 0, 0, 0.54),
+    0 0 16px rgba(204, 154, 71, 0.24),
+    inset 0 0 0 1px rgba(255, 232, 171, 0.22),
+    inset 0 -18px 24px rgba(0, 0, 0, 0.28);
+}
+
+.shop-trade-module .shop-signboard-tile.shop-flank-card.active,
+.shop-trade-module .shop-signboard-tile.shop-flank-card.shop-flank-card--active {
+  border-color: rgba(241, 200, 129, 0.95);
+  outline: 1px solid rgba(241, 200, 129, 0.42);
+  outline-offset: -4px;
+  transform: translateY(-2px);
+  box-shadow:
+    0 13px 22px rgba(0, 0, 0, 0.58),
+    0 0 16px rgba(241, 200, 129, 0.34),
+    inset 0 0 0 1px rgba(255, 238, 184, 0.3),
+    inset 0 10px 18px rgba(255, 214, 128, 0.06);
+  filter: saturate(1.06) brightness(1.04);
+}
+
+.shop-trade-module .shop-signboard-tile .shop-flank-card__label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  height: 100%;
+  min-height: 0;
+  align-self: stretch;
+  box-sizing: border-box;
+  padding: 6px 5px;
+  border-radius: 5px;
+  border: 1px solid rgba(90, 52, 20, 0.42);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  background:
+    linear-gradient(180deg, rgba(252, 221, 154, 0.95), rgba(192, 133, 63, 0.94));
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 245, 200, 0.22),
+    inset 0 -8px 14px rgba(70, 35, 12, 0.16),
+    0 5px 9px rgba(0, 0, 0, 0.36);
+  color: #241208;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(0.88rem, 0.98vw, 1.06rem);
+  font-weight: 900;
+  line-height: 1.02;
+  letter-spacing: 0;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+  white-space: normal;
+  text-align: center;
+  text-wrap: balance;
+  text-shadow:
+    0 1px 0 rgba(255, 238, 184, 0.42),
+    0 0 1px rgba(0, 0, 0, 0.28);
+}
+
+.shop-trade-module
+  .shop-signboard-tile
+  .shop-flank-card__label--compact {
+  font-size: clamp(0.8rem, 0.9vw, 0.98rem);
+  line-height: 1.02;
+}
+
+.shop-trade-module
+  .shop-signboard-tile
+  .shop-flank-card__label--long-word {
+  font-size: clamp(0.72rem, 0.82vw, 0.9rem);
+  line-height: 1.03;
+}
+
+.shop-trade-module .shop-signboard-tile .shop-flank-card__label--dense {
+  font-size: clamp(0.66rem, 0.76vw, 0.84rem);
+  line-height: 1.04;
+}
+
+.shop-trade-module .shop-signboard-selector--single .shop-flank-card__label {
+  padding: 9px 10px;
+  font-size: clamp(1.06rem, 1.16vw, 1.28rem);
+}
+
+.shop-trade-module .shop-signboard-selector--pair .shop-flank-card__label {
+  font-size: clamp(0.9rem, 1vw, 1.1rem);
+}
+
+.shop-trade-module
+  .shop-signboard-selector--pair
+  .shop-flank-card__label--long-word,
+.shop-trade-module
+  .shop-signboard-selector--pair
+  .shop-flank-card__label--compact {
+  font-size: clamp(0.74rem, 0.84vw, 0.92rem);
+}
+
+.shop-trade-module .shop-signboard-tile .shop-flank-card__type {
+  position: relative;
+  z-index: 1;
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: clamp(20px, 2.6vh, 26px);
+  display: grid;
+  place-items: center;
+  padding: 4px 6px;
+  border-radius: 3px;
+  color: #ffe2a0;
+  background:
+    linear-gradient(180deg, rgba(52, 30, 14, 0.88), rgba(18, 10, 6, 0.82));
+  border: 1px solid rgba(220, 174, 88, 0.22);
+  font-size: clamp(0.68rem, 0.76vw, 0.82rem);
+  font-weight: 900;
+  line-height: 1.05;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  word-break: normal;
+  hyphens: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+}
+
+.shop-trade-module .shop-signboard-selector__list {
+  width: 100%;
+  min-height: 0;
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: clamp(5px, 0.64vh, 8px);
+  padding-top: 2px;
+  overflow: hidden;
+}
+
+.shop-trade-module .shop-signboard-row {
+  appearance: none;
+  position: relative;
+  isolation: isolate;
+  width: 100%;
+  min-width: 0;
+  min-height: clamp(54px, 7.2vh, 68px);
+  display: grid;
+  grid-template-columns: clamp(30px, 3.9vh, 38px) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(7px, 0.82vh, 10px);
+  box-sizing: border-box;
+  padding: clamp(6px, 0.76vh, 9px) clamp(8px, 0.9vh, 11px);
+  border: 1px solid rgba(111, 70, 31, 0.98);
+  border-radius: 7px;
+  background:
+    linear-gradient(180deg, rgba(78, 43, 23, 0.99), rgba(34, 20, 13, 0.99)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(220, 150, 78, 0.045) 0 1px,
+      transparent 1px 8px,
+      rgba(0, 0, 0, 0.16) 8px 12px
+    );
+  box-shadow:
+    0 7px 13px rgba(0, 0, 0, 0.46),
+    inset 0 0 0 1px rgba(255, 226, 157, 0.14),
+    inset 0 -14px 20px rgba(0, 0, 0, 0.26);
+  color: #f4dfad;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    filter 0.18s ease;
+}
+
+.shop-trade-module .shop-signboard-row::before,
+.shop-trade-module .shop-signboard-row::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.shop-trade-module .shop-signboard-row::before {
+  z-index: 0;
+  inset: 4px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 214, 133, 0.12);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.18);
+}
+
+.shop-trade-module .shop-signboard-row::after {
+  z-index: 0;
+  top: 7px;
+  right: 8px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #ffe1a0, #765022 70%);
+  box-shadow:
+    0 0 0 1px rgba(25, 15, 8, 0.86),
+    0 1px 3px rgba(0, 0, 0, 0.76);
+}
+
+.shop-trade-module .shop-signboard-row:hover:not(:disabled) {
+  z-index: 2;
+  border-color: rgba(211, 162, 84, 0.82);
+  box-shadow:
+    0 9px 16px rgba(0, 0, 0, 0.5),
+    0 0 12px rgba(204, 154, 71, 0.18),
+    inset 0 0 0 1px rgba(255, 226, 157, 0.18);
+}

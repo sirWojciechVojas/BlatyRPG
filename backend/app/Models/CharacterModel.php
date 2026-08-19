@@ -17,8 +17,11 @@ class CharacterModel extends Model
         'system_id', 
         'universe_id', 
         'name', 
-        'data', 
-        'avatar_url'
+        'data',
+        'avatar_url',
+        'avatar',
+        'brass',
+        'primary_currency_code'
     ];
 
     protected $useTimestamps = true;
@@ -38,7 +41,7 @@ class CharacterModel extends Model
     protected $afterFind = ['decodeJsonData'];
 
     // 2. ZAPIS: Przed zapisem do bazy, upewnij się, że dane są spakowane do stringa (jeśli nie robi tego kontroler)
-    protected $beforeInsert = ['encodeJsonData'];
+    protected $beforeInsert = ['assignPrimaryCurrency', 'encodeJsonData'];
     protected $beforeUpdate = ['encodeJsonData'];
 
     /**
@@ -91,6 +94,21 @@ class CharacterModel extends Model
                 $data['data']['data'] = json_encode($incomingData, JSON_UNESCAPED_UNICODE);
             }
         }
+        return $data;
+    }
+
+    protected function assignPrimaryCurrency(array $data)
+    {
+        if (!empty($data['data']['primary_currency_code'])) {
+            return $data;
+        }
+        $systemId = (int) ($data['data']['system_id'] ?? 0);
+        $system = $systemId > 0
+            ? $this->db->table('rpg_systems')->select('code')->where('id', $systemId)->get()->getRowArray()
+            : null;
+        $currencies = (new \App\Services\Shop\ShopCurrencyService())
+            ->definitionsForSystem((string) ($system['code'] ?? 'generic'));
+        $data['data']['primary_currency_code'] = (string) ($currencies[0]['code'] ?? 'generic');
         return $data;
     }
     /**

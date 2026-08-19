@@ -1,0 +1,254 @@
+.shop-trade-module .active-bg-avatar__frame {
+  width: 100%;
+  max-width: 180px;
+  aspect-ratio: 3 / 4;
+  border-radius: 8px;
+  border: 2px solid rgba(216, 183, 120, 0.72);
+  background: linear-gradient(
+    160deg,
+    rgba(36, 25, 16, 0.95),
+    rgba(14, 9, 6, 0.96)
+  );
+  box-shadow:
+    0 10px 18px rgba(0, 0, 0, 0.58),
+    inset 0 0 0 1px rgba(246, 220, 163, 0.28);
+  padding: 4px;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.shop-trade-module .active-bg-avatar__frame::after {
+  content: "";
+  position: absolute;
+  inset: 2px;
+  border: 1px solid rgba(248, 223, 168, 0.32);
+  pointer-events: none;
+}
+
+.shop-trade-module .active-bg-avatar__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(110, 74, 34, 0.8);
+  filter: saturate(0.86) contrast(1.1);
+}
+
+.shop-trade-module .active-bg-avatar__badge {
+  position: absolute;
+  left: 6px;
+  bottom: 6px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background: rgba(6, 4, 3, 0.88);
+  border: 1px solid rgba(216, 183, 120, 0.62);
+  color: rgba(244, 224, 182, 0.95);
+  font-size: 0.55rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1.1;
+}
+
+.shop-trade-module .wallet-tile {
+  width: var(--trade-side-panel-width);
+  padding: 14px 12px;
+  border: none;
+  border-radius: 18px;
+  background:
+    radial-gradient(
+      120px 80px at 15% 15%,
+      rgba(240, 200, 120, 0.3),
+      transparent 60%
+    ),
+    radial-gradient(
+      140px 90px at 85% 30%,
+      rgba(120, 180, 210, 0.2),
+      transparent 60%
+    ),
+    linear-gradient(145deg, rgba(18, 12, 8, 0.95), rgba(8, 6, 5, 0.92));
+  box-shadow:
+    0 16px 34px rgba(0, 0, 0, 0.55),
+    inset 0 0 0 1px rgba(216, 183, 120, 0.25),
+    inset 0 0 24px rgba(255, 220, 140, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.shop-trade-module .wallet-tile::before {
+  content: "";
+  position: absolute;
+  inset: 6px;
+  border-radius: 16px;
+  border: 1px solid rgba(216, 183, 120, 0.2);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.shop-trade-module .wallet-title {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.7rem;
+  color: rgba(241, 200, 129, 0.85);
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.shop-trade-module .wallet-purses {
+  display: grid;
+  gap: 6px;
+  position: relative;
+  z-index: 1;
+}
+
+.shop-trade-module .wallet-purse {
+  display: grid;
+  gap: 4px;
+  padding: 6px;
+  border: 1px solid rgba(216, 183, 120, 0.14);
+  background: rgba(0, 0, 0, 0.3);
+}
+
+.shop-trade-module .wallet-purse--active {
+  border-color: rgba(216, 183, 120, 0.52);
+  background: rgba(94, 61, 24, 0.28);
+  box-shadow: inset 0 0 10px rgba(216, 183, 120, 0.08);
+}
+
+.shop-trade-module .wallet-purse__label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px;
+  color: rgba(245, 226, 190, 0.9);
+  font-size: 0.58rem;
+  line-height: 1.1;
+}
+
+.shop-trade-module .wallet-purse__label small {
+  color: rgba(216, 183, 120, 0.76);
+  font-size: 0.46rem;
+  text-align: right;
+}
+
+.shop-trade-module .wallet-purse .wallet-currency {
+  width: 100%;
+  justify-content: space-between;
+}
+
+.shop-trade-module .wallet-coins {
+  display: grid;
+  gap: 8px;
+}
+
+.shop-trade-module .wallet-row {
+  display: grid;
+  grid-template-columns: 26px 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 8px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(216, 183, 120, 0.15);
+}
+
+.shop-trade-module .wallet-icon {
+  width: 22px;
+  height: 16px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.6));
+}
+
+.shop-trade-module .wallet-amount {
+  font-size: 0.95rem;
+  color: rgba(245, 234, 210, 0.95);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
+  letter-spacing: 0.06em;
+}
+
+.shop-trade-module .encumbrance-tile {
+  width: var(--trade-side-panel-width);
+  padding: 12px 12px 10px;
+  border-radius: 18px;
+  background:
+    radial-gradient(
+      120px 80px at 85% 15%,
+      rgba(132, 184, 121, 0.26),
+      transparent 62%
+    ),
+    radial-gradient(
+      140px 90px at 15% 75%,
+      rgba(225, 172, 98, 0.18),
+      transparent 62%
+    ),
+    linear-gradient(145deg, rgba(16, 12, 9, 0.96), rgba(8, 6, 4, 0.93));
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.52),
+    inset 0 0 0 1px rgba(184, 161, 118, 0.32),
+    inset 0 0 24px rgba(122, 188, 116, 0.08);
+}
+
+.shop-trade-module .encumbrance-title {
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  font-size: 0.7rem;
+  color: rgba(196, 221, 167, 0.9);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.shop-trade-module .encumbrance-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 6px;
+  color: rgba(245, 234, 210, 0.96);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.62);
+}
+
+.shop-trade-module .encumbrance-current {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.shop-trade-module .encumbrance-separator {
+  opacity: 0.85;
+}
+
+.shop-trade-module .encumbrance-limit {
+  font-size: 0.95rem;
+  opacity: 0.95;
+}
+
+.shop-trade-module .encumbrance-unit {
+  margin-top: 2px;
+  text-align: center;
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  color: rgba(230, 212, 168, 0.86);
+  text-transform: uppercase;
+}
+
+.shop-trade-module .encumbrance-meter {
+  margin-top: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  box-shadow: inset 0 0 0 1px rgba(198, 187, 151, 0.25);
+  overflow: hidden;
+}
+
+.shop-trade-module .encumbrance-meter-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    rgba(116, 200, 121, 0.96),
+    rgba(186, 215, 102, 0.96)
+  );
+  transition: width 0.2s ease;
+}

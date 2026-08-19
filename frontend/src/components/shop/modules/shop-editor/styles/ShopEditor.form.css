@@ -1,0 +1,217 @@
+.shop-trade-module .shop-base-layout--editor-scroll,
+.shop-trade-module .shop-base-layout--editor-scroll > .trade-list-shell,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-mode-template-frame,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-mode-template-frame__body,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-layout-shell,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-layout-stack,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-content {
+  min-height: auto;
+  height: auto;
+  max-height: none;
+  overflow: visible;
+  scrollbar-gutter: auto;
+  scrollbar-width: none;
+}
+
+.shop-trade-module .shop-base-layout--editor-scroll::-webkit-scrollbar,
+.shop-trade-module .shop-base-layout--editor-scroll > .trade-list-shell::-webkit-scrollbar,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-mode-template-frame::-webkit-scrollbar,
+.shop-trade-module .shop-base-layout--editor-scroll
+  .shop-mode-template-frame__body::-webkit-scrollbar,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-layout-shell::-webkit-scrollbar,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-layout-stack::-webkit-scrollbar,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-content::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
+.shop-trade-module .shop-base-layout--editor-scroll .shop-mode-template-frame__body {
+  --bs-gutter-x: 8px;
+  --bs-gutter-y: 6px;
+}
+
+.shop-trade-module .shop-base-layout--editor-scroll .trade-form.shop-mode-template-frame {
+  padding-top: 2px;
+}
+
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-content {
+  width: 100%;
+  min-width: 0;
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px;
+  border: 1px solid rgba(216, 183, 120, 0.26);
+  background: linear-gradient(180deg, rgba(6, 5, 4, 0.74), rgba(3, 3, 3, 0.72));
+  box-shadow:
+    inset 0 0 0 1px rgba(216, 183, 120, 0.07),
+    inset 0 18px 42px rgba(0, 0, 0, 0.45);
+  padding: 4px 8px 8px;
+}
+
+.shop-trade-module .shop-editor-layout-shell {
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.shop-trade-module .shop-editor-layout-stack {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  align-items: start;
+  box-sizing: border-box;
+}
+
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-layout-stack {
+  gap: 8px;
+}
+
+.shop-trade-module .shop-editor-layout-stack * {
+  box-sizing: border-box;
+}
+
+.shop-trade-module .shop-editor-panel {
+  display: grid;
+  gap: 10px;
+  min-height: 0;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  padding: 12px 14px;
+  align-content: start;
+  box-sizing: border-box;
+}
+
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-panel {
+  gap: 8px;
+  padding: 10px 12px;
+}
+
+.shop-trade-module .shop-editor-panel * {
+  box-sizing: border-box;
+}
+
+.shop-trade-module .shop-editor-panel .trade-form-section-title {
+  margin-bottom: 0;
+  font-size: 0.69rem;
+  letter-spacing: 0.135em;
+}
+
+.shop-trade-module .shop-editor-panel .trade-input,
+.shop-trade-module .shop-editor-panel .trade-textarea,
+.shop-trade-module .shop-editor-panel .shop-editor-roll-target,
+.shop-trade-module .shop-editor-panel .shop-editor-tags-field,
+.shop-trade-module .shop-editor-panel .shop-editor-signboard-random-btn {
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.shop-trade-module .shop-editor-panel .trade-input,
+.shop-trade-module .shop-editor-panel select.trade-input,
+.shop-trade-module .shop-editor-panel input.trade-input {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  min-height: 31px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.shop-trade-module .shop-editor-panel select.trade-input {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  line-height: 1.05;
+}
+
+.shop-trade-module .shop-editor-panel .trade-textarea {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.shop-trade-module .shop-editor-block-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-width: 100%;
+  align-content: start;
+}
+
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-block-grid {
+  gap: 6px;
+}
+
+.shop-trade-module .shop-editor-field {
+  display: grid;
+  gap: 4px;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.shop-trade-module .shop-editor-field--full,
+.shop-trade-module .shop-editor-field--risk {
+  grid-column: 1 / -1;
+}
+
+.shop-trade-module .shop-editor-field--featured {
+  gap: 6px;
+}
+
+.shop-trade-module .shop-mode-template-label {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  min-height: 20px;
+}
+
+.shop-trade-module .shop-mode-template-label .trade-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  margin-bottom: 0;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.shop-trade-module .shop-mode-template-label--tight {
+  min-height: 0;
+}
+
+.shop-trade-module .shop-mode-template-label .shop-help-tooltip,
+.shop-trade-module .shop-mode-template-label .shop-help-tooltip-trigger {
+  flex: 0 0 auto;
+}
+
+.shop-trade-module .shop-editor-signboard-input--lead {
+  min-height: 34px;
+  font-size: 0.93rem;
+  letter-spacing: 0.03em;
+}
+
+.shop-trade-module .shop-editor-aliases-textarea {
+  min-height: 160px;
+  padding: 9px 10px;
+  resize: vertical;
+}
+
+.shop-trade-module .shop-editor-aliases-textarea--compact {
+  min-height: 74px;
+  padding: 6px 8px;
+}
+
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-aliases-textarea--compact {
+  min-height: 62px;
+}

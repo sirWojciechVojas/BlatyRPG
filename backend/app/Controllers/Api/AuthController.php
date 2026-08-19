@@ -2,10 +2,9 @@
 
 namespace App\Controllers\Api;
 
-use CodeIgniter\RESTful\ResourceController;
 use App\Models\UserModel;
+use CodeIgniter\RESTful\ResourceController;
 use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 
 class AuthController extends ResourceController
 {
@@ -16,9 +15,9 @@ class AuthController extends ResourceController
     {
         $rules = [
             'username' => 'required|min_length[3]|is_unique[users.username]',
-            'email'    => 'required|valid_email|is_unique[users.email]',
-            'password' => 'required|min_length[6]',
-            'confirm_password' => 'matches[password]'
+            'email' => 'required|valid_email|is_unique[users.email]',
+            'password' => 'required|min_length[5]',
+            'confirm_password' => 'matches[password]',
         ];
 
         if (!$this->validate($rules)) {
@@ -26,68 +25,118 @@ class AuthController extends ResourceController
         }
 
         $model = new UserModel();
-        
-        // Mapujemy 'password' z formularza na 'password_hash' w bazie
-        // Model sam to zahashuje dzięki callbackowi
+
         $data = [
             'username' => $this->request->getVar('username'),
-            'email'    => $this->request->getVar('email'),
+            'email' => $this->request->getVar('email'),
             'password_hash' => $this->request->getVar('password'),
-            'role'     => 'user'
+            'role' => 'user',
         ];
 
         if ($model->insert($data)) {
-            return $this->respondCreated(['message' => 'Rejestracja udana. Możesz się zalogować.']);
+            return $this->respondCreated(['message' => 'Rejestracja udana. Mozesz sie zalogowac.']);
         }
 
-        return $this->failServerError('Błąd zapisu użytkownika.');
+        return $this->failServerError('Blad zapisu uzytkownika.');
     }
 
     /**
-     * POST /api/login
+     * POST /api/auth/login
+     * Supported identifiers: email, login, username.
      */
     public function login()
     {
-        $rules = [
-            'email'    => 'required|valid_email',
-            'password' => 'required|min_length[6]'
-        ];
+        $payload = [];
+        $contentType = strtolower($this->request->getHeaderLine('Content-Type'));
+        $isJson = strpos($contentType, 'application/json') !== false;
 
-        if (!$this->validate($rules)) {
-            return $this->failValidationErrors($this->validator->getErrors());
+        if ($isJson) {
+            try {
+                $decoded = $this->request->getJSON(true);
+                if (is_array($decoded)) {
+                    $payload = $decoded;
+                }
+            } catch (\Throwable $e) {
+                return $this->failValidationErrors([
+                    'body' => 'Invalid JSON payload.',
+                ]);
+            }
+        }
+
+        $email = trim((string) ($payload['email'] ?? $this->request->getVar('email') ?? ''));
+        $login = trim((string) ($payload['login'] ?? $this->request->getVar('login') ?? ''));
+        $username = trim((string) ($payload['username'] ?? $this->request->getVar('username') ?? ''));
+        $password = (string) ($payload['password'] ?? $this->request->getVar('password') ?? '');
+
+        $identifier = $email !== '' ? $email : ($login !== '' ? $login : $username);
+
+        $errors = [];
+        if ($identifier === '') {
+            $errors['identifier'] = 'The email, login or username field is required.';
+        }
+        if ($password === '') {
+            $errors['password'] = 'The password field is required.';
+        } elseif (strlen($password) < 5) {
+            $errors['password'] = 'The password field must be at least 5 characters in length.';
+        }
+
+        if ($errors) {
+            return $this->failValidationErrors($errors);
         }
 
         $model = new UserModel();
-        $user  = $model->where('email', $this->request->getVar('email'))->first();
+        $user = $model
+            ->groupStart()
+            ->where('email', $identifier)
+            ->orWhere('username', $identifier)
+            ->groupEnd()
+            ->first();
 
-        // 1. Czy user istnieje? 2. Czy hasło pasuje do hasha?
-        if (!$user || !password_verify($this->request->getVar('password'), $user['password_hash'])) {
-            return $this->failUnauthorized('Błędny email lub hasło.');
+        if (!$user) {
+            return $this->failUnauthorized('Nieprawidlowy login lub haslo.');
         }
 
-        // Generowanie Tokena JWT
+        $storedHash = trim((string) ($user['password_hash'] ?? ''));
+        if ($storedHash === '' || !password_verify($password, $storedHash)) {
+            return $this->failUnauthorized('Nieprawidlowy login lub haslo.');
+        }
+
+        // Rehash only for supported password_hash outputs.
+        if (password_get_info($storedHash)['algo'] !== 0
+            && password_needs_rehash($storedHash, PASSWORD_DEFAULT)) {
+            $model->update((int) $user['id'], [
+                'password_hash' => password_hash($password, PASSWORD_DEFAULT),
+            ]);
+        }
+
         $key = getenv('JWT_SECRET');
-        $iat = time(); // Czas wydania
-        $exp = $iat + getenv('JWT_TIME_TO_LIVE'); // Czas wygaśnięcia
+        $iat = time();
+        $ttl = (int) getenv('JWT_TIME_TO_LIVE');
+        $exp = $iat + $ttl;
 
         $payload = [
-            'iss'  => 'BlatyRPG', // Wydawca
-            'sub'  => $user['id'], // Subject (ID usera)
-            'role' => $user['role'], // Rola
-            'iat'  => $iat,
-            'exp'  => $exp,
+            'iss' => 'BlatyRPG',
+            'sub' => $user['id'],
+            'role' => $user['role'],
+            'iat' => $iat,
+            'exp' => $exp,
         ];
 
         $token = JWT::encode($payload, $key, 'HS256');
 
         return $this->respond([
             'status' => 'success',
-            'token'  => $token,
-            'user'   => [
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'expires_in' => $ttl,
+            'user' => [
                 'id' => $user['id'],
                 'username' => $user['username'],
-                'role' => $user['role']
-            ]
+                'login' => $user['username'],
+                'email' => $user['email'],
+                'role' => $user['role'],
+            ],
         ]);
     }
+
 }

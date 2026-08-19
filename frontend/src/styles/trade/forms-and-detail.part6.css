@@ -1,0 +1,220 @@
+.shop-trade-module .item-detail-preview {
+  position: absolute;
+  z-index: 2;
+  top: 7px;
+  right: 7px;
+  width: 112px;
+  height: 112px;
+}
+
+.shop-trade-module .item-detail-preview-frame {
+  width: 112px;
+  min-height: 112px;
+  margin: 0;
+  position: relative;
+}
+
+.shop-trade-module .item-detail-preview-img {
+  width: 112px;
+  height: 112px;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.6));
+}
+
+.shop-trade-module .item-detail-charge {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(216, 183, 120, 0.5);
+  background: rgba(18, 12, 8, 0.82);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(241, 200, 129, 0.95);
+  text-shadow:
+    0 2px 6px rgba(0, 0, 0, 0.75),
+    0 0 6px rgba(241, 200, 129, 0.45);
+}
+
+.shop-trade-module .item-detail-source {
+  text-align: center;
+  font-size: 0.62rem;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  color: rgba(120, 180, 210, 0.85);
+}
+
+.shop-trade-module .item-detail-nickname {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid rgba(216, 183, 120, 0.25);
+  background: rgba(0, 0, 0, 0.35);
+}
+
+.shop-trade-module .item-detail-nickname-label {
+  flex: 0 0 auto;
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(241, 200, 129, 0.85);
+}
+
+.shop-trade-module .item-detail-nickname-row {
+  display: flex;
+  flex: 1 1 auto;
+  gap: 5px;
+  align-items: center;
+}
+
+.shop-trade-module .item-detail-nickname-input {
+  flex: 1 1 auto;
+}
+
+.shop-trade-module .item-detail-nickname-mode {
+  width: fit-content;
+  padding: 2px 6px;
+  font-size: 0.65rem;
+}
+
+.shop-trade-module .item-detail-price {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(216, 183, 120, 0.25);
+}
+
+.shop-trade-module .item-detail-price--alt {
+  border-color: rgba(120, 180, 210, 0.25);
+}
+
+.shop-trade-module .item-detail-price-title {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(241, 200, 129, 0.85);
+}
+
+.shop-trade-module .item-detail-price-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+}
+
+.shop-trade-module .item-detail-price-coins {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.shop-trade-module .item-detail-price-charge-inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(120, 180, 210, 0.35);
+  background: rgba(7, 13, 20, 0.5);
+}
+
+.shop-trade-module .item-detail-price-charge-label {
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(120, 180, 210, 0.85);
+}
+
+.shop-trade-module .item-detail-price-charge-value {
+  font-size: 0.8rem;
+  color: rgba(245, 234, 210, 0.95);
+}
+
+.shop-trade-module .item-detail-price-row .crown,
+.shop-trade-module .item-detail-price-row .shilling,
+.shop-trade-module .item-detail-price-row .brass {
+  width: 18px;
+  height: 18px;
+  display: inline-block;
+}
+
+.shop-trade-module .item-detail-price-raw {
+  font-size: 0.7rem;
+  color: rgba(245, 234, 210, 0.7);
+}
+
+.shop-trade-module .item-detail-info {
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 10px;
+  border: 1px solid rgba(216, 183, 120, 0.25);
+  padding: 7px;
+  display: block;
+  min-height: 0;
+}
+
+.shop-trade-module .item-detail-section-title {
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: rgba(241, 200, 129, 0.85);
+}
+
+.shop-trade-module .item-detail-meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  overflow: visible;
+  min-height: 0;
+  padding-right: 0;
+}
+
+.shop-trade-module .item-detail-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.shop-trade-module .item-detail-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(241, 200, 129, 0.85);
+}
+
+.shop-trade-module .item-detail-text {
+  font-size: 0.8rem;
+  color: rgba(245, 234, 210, 0.92);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.shop-trade-module .item-detail-empty {
+  text-align: center;
+  color: rgba(245, 234, 210, 0.6);
+  padding: 12px;
+}
+
+.shop-trade-module .item-detail-appraisal {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  color: rgba(245, 234, 210, 0.58);
+  font-size: 0.72rem;
+}
+
+.shop-trade-module .item-detail-appraisal .btn {
+  padding: 2px 8px;
+  font-size: 0.68rem;
+}

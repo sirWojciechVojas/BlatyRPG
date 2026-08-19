@@ -45,7 +45,7 @@ class UserModel extends Model
     // Callbacks
     protected $allowCallbacks = true;
     protected $beforeInsert   = ['hashPassword'];
-    protected $afterInsert    = ['hashPassword'];
+    protected $afterInsert    = [];
     protected $beforeUpdate   = [];
     protected $afterUpdate    = [];
     protected $beforeFind     = [];

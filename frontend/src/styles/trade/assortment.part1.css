@@ -1,0 +1,266 @@
+.shop-trade-module .assort-main {
+  display: grid;
+  gap: 12px;
+  width: 100%;
+  height: 100%;
+  flex: 1 1 auto;
+  min-height: 0;
+  align-self: stretch;
+  grid-template-rows: auto 1fr;
+  --assort-accent-border: rgba(216, 183, 120, 0.28);
+  --assort-accent-border-strong: rgba(241, 200, 129, 0.78);
+  --assort-accent-bg: rgba(216, 183, 120, 0.15);
+  --assort-accent-title: rgba(241, 200, 129, 0.9);
+}
+
+.shop-trade-module .trade-grid,
+.shop-trade-module .trade-column {
+  min-height: 0;
+}
+
+.shop-trade-module .assort-body {
+  display: grid;
+  gap: 10px;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.shop-trade-module .assort-body--left,
+.shop-trade-module .assort-body--right {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.shop-trade-module .assort-tabs--right {
+  margin-bottom: 2px;
+}
+
+.shop-trade-module .assort-body--single-panel,
+.shop-trade-module .assort-body--tools-right {
+  grid-template-rows: minmax(0, 1fr);
+}
+
+.shop-trade-module .assort-body--tools-left {
+  grid-template-rows: minmax(0, 0.95fr) minmax(0, 1.05fr);
+}
+
+.shop-trade-module .assort-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 6px;
+  border-radius: 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--assort-accent-border);
+}
+
+.shop-trade-module .assort-tab {
+  flex: 1 1 0;
+  border-radius: 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--assort-accent-border);
+  background: transparent;
+  color: rgba(252, 244, 224, 0.96);
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition:
+    transform 0.12s ease,
+    background 0.12s ease,
+    border-color 0.12s ease;
+}
+
+.shop-trade-module .assort-tab:hover {
+  transform: translateY(-1px);
+  border-color: rgba(241, 200, 129, 0.6);
+}
+
+.shop-trade-module .assort-tab.active {
+  background: var(--assort-accent-bg);
+  border-color: var(--assort-accent-border-strong);
+  color: rgba(245, 234, 210, 0.98);
+}
+
+.shop-trade-module .assort-panel--single {
+  max-height: none;
+}
+
+.shop-trade-module .assort-panel--shop-suggestions {
+  grid-template-rows: auto auto auto minmax(0, 1fr);
+}
+
+.shop-trade-module .assort-history {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.shop-trade-module .assort-history-info {
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(252, 244, 224, 0.84);
+}
+
+.shop-trade-module .assort-header {
+  display: grid;
+  gap: 8px;
+}
+
+.shop-trade-module .assort-header-row {
+  display: grid;
+  gap: 4px;
+}
+
+.shop-trade-module .assort-label {
+  font-size: 0.74rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(252, 244, 224, 0.92);
+}
+
+.shop-trade-module .assort-select {
+  width: 100%;
+  border-radius: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--assort-accent-border);
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(252, 244, 224, 0.96);
+  font-size: 0.88rem;
+  min-height: 38px;
+}
+
+.shop-trade-module .trash-zone-search {
+  margin-bottom: 6px;
+}
+
+.shop-trade-module .trash-zone-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+  gap: 6px;
+  max-height: 152px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.shop-trade-module .trash-zone-pill {
+  display: grid;
+  gap: 2px;
+  text-align: left;
+  border-radius: 10px;
+  padding: 7px 8px;
+  border: 1px solid var(--assort-accent-border);
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(245, 234, 210, 0.92);
+  transition:
+    transform 0.12s ease,
+    border-color 0.12s ease,
+    background 0.12s ease;
+}
+
+.shop-trade-module .trash-zone-pill:hover {
+  transform: translateY(-1px);
+  border-color: var(--assort-accent-border-strong);
+}
+
+.shop-trade-module .trash-zone-pill.active {
+  border-color: var(--assort-accent-border-strong);
+  background: var(--assort-accent-bg);
+  box-shadow: inset 0 0 0 1px rgba(241, 200, 129, 0.25);
+}
+
+.shop-trade-module .trash-zone-pill__label {
+  font-size: 0.68rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.shop-trade-module .trash-zone-pill__meta {
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  color: rgba(245, 234, 210, 0.72);
+}
+
+.shop-trade-module .assort-title {
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--assort-accent-title);
+}
+
+.shop-trade-module .assort-search {
+  width: 100%;
+}
+
+.shop-trade-module .assort-shop-btn {
+  border-radius: 14px;
+  padding: 10px 12px;
+  border: 1px solid var(--assort-accent-border);
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(245, 234, 210, 0.92);
+  text-align: left;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.shop-trade-module .assort-shop-btn:hover {
+  transform: translateY(-2px);
+  border-color: var(--assort-accent-border-strong);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
+}
+
+.shop-trade-module .assort-shop-btn.active {
+  border-color: var(--assort-accent-border-strong);
+  box-shadow:
+    0 0 0 2px rgba(241, 200, 129, 0.28),
+    0 14px 26px rgba(0, 0, 0, 0.5);
+}
+
+.shop-trade-module .assort-panel {
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 18px;
+  border: 1px solid var(--assort-accent-border);
+  padding: 12px;
+  display: grid;
+  gap: 10px;
+  grid-template-rows: auto 1fr auto;
+  min-height: 0;
+}
+
+.shop-trade-module .assort-panel--list .assort-panel-list {
+  min-height: 0;
+}
+
+.shop-trade-module .assort-panel--fixed-list .assort-panel-list {
+  min-height: var(--trade-list-block-size);
+  height: var(--trade-list-block-size);
+  max-height: var(--trade-list-block-size);
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.shop-trade-module .assort-panel--gm,
+.shop-trade-module .assort-panel--shop,
+.shop-trade-module .assort-panel--overview {
+  max-height: none;
+  overflow: auto;
+}
+
+.shop-trade-module .assort-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.shop-trade-module .assort-panel-title {
+  font-size: 0.82rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--assort-accent-title);
+}
+
+.shop-trade-module .assort-panel-count {
+  font-size: 0.78rem;
+  color: rgba(252, 244, 224, 0.82);
+}

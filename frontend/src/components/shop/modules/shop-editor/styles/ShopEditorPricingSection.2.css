@@ -1,0 +1,213 @@
+.shop-editor-pricing__rule-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.shop-editor-pricing__rule-panel {
+  display: grid;
+  align-content: start;
+  gap: 9px;
+  min-width: 0;
+  margin: 0;
+  padding: 10px;
+  border: 1px solid rgba(216, 183, 120, 0.14);
+  border-radius: 10px;
+}
+
+.shop-editor-pricing__rule-panel legend {
+  float: none;
+  width: auto;
+  margin: 0;
+  padding: 0 4px;
+  color: #d8b778;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.shop-editor-pricing__mode-row,
+.shop-editor-pricing__rule-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.shop-editor-pricing__suppression {
+  display: grid;
+  gap: 5px;
+  padding-top: 4px;
+}
+
+.shop-editor-pricing__suppression-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 5px 9px;
+}
+
+.shop-editor-pricing__toggle-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 5px;
+}
+
+.shop-editor-pricing__toggle {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 5px 6px;
+  border-radius: 5px;
+  border: 1px solid rgba(216, 183, 120, 0.18);
+  background: rgba(255, 248, 229, 0.03);
+}
+
+.shop-editor-pricing__toggle input {
+  margin-top: 0.15rem;
+}
+
+.shop-editor-pricing__toggle-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.shop-editor-pricing__toggle-copy strong {
+  color: #f4ead2;
+  font-size: 0.92rem;
+}
+
+.shop-editor-pricing__toggle-copy small {
+  color: rgba(240, 232, 214, 0.62);
+  line-height: 1.35;
+}
+
+.shop-editor-pricing__preview-meta {
+  height: 100%;
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 248, 229, 0.03);
+  border: 1px solid rgba(216, 183, 120, 0.14);
+  color: rgba(244, 234, 210, 0.78);
+}
+
+.shop-editor-pricing__currency-warning {
+  flex-basis: 100%;
+  color: #e9b36f;
+  font-size: 0.78rem;
+}
+
+.shop-editor-pricing__empty {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: rgba(255, 248, 229, 0.03);
+  border: 1px dashed rgba(216, 183, 120, 0.2);
+  color: rgba(240, 232, 214, 0.62);
+}
+
+.shop-editor-pricing__card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 14px;
+  border: 1px solid rgba(216, 183, 120, 0.18);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 248, 229, 0.05),
+    rgba(255, 248, 229, 0.02)
+  );
+}
+
+.shop-editor-pricing__card-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.shop-editor-pricing__card-header strong {
+  display: block;
+  color: #f4ead2;
+}
+
+.shop-editor-pricing__card-header small {
+  display: block;
+  color: rgba(240, 232, 214, 0.62);
+  line-height: 1.35;
+}
+
+.shop-editor-pricing__final {
+  white-space: nowrap;
+  color: #d8b778;
+  font-weight: 700;
+}
+
+.shop-editor-pricing__summary,
+.shop-editor-pricing__breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+}
+
+.shop-editor-pricing__summary {
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.16);
+  color: rgba(244, 234, 210, 0.78);
+}
+
+.shop-editor-pricing__breakdown-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.shop-editor-pricing__breakdown-copy span {
+  color: #f4ead2;
+}
+
+.shop-editor-pricing__breakdown-copy small {
+  color: rgba(240, 232, 214, 0.55);
+  overflow-wrap: anywhere;
+}
+
+.shop-editor-pricing__breakdown-impact {
+  white-space: nowrap;
+  color: rgba(244, 234, 210, 0.84);
+}
+
+.shop-editor-pricing__breakdown-impact--positive {
+  color: #d78e67;
+}
+
+.shop-editor-pricing__breakdown-impact--negative {
+  color: #88c98f;
+}
+
+.shop-editor-pricing__breakdown-empty {
+  color: rgba(240, 232, 214, 0.62);
+}
+
+@media (max-width: 900px) {
+  .shop-editor-pricing__rule-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .shop-editor-pricing__rule-header,
+  .shop-editor-pricing__section-header {
+    align-items: stretch;
+    flex-wrap: wrap;
+  }
+
+  .shop-editor-pricing__exchange-row {
+    grid-template-columns: 1fr;
+  }
+}

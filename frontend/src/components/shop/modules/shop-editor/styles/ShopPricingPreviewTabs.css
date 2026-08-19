@@ -1,0 +1,105 @@
+.shop-editor-pricing__simulator-controls > .shop-editor-field {
+  display: grid;
+  min-width: 0;
+  align-content: start;
+  gap: 2px;
+}
+
+.shop-editor-pricing__simulator-controls .shop-mode-template-label {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: rgba(244, 234, 210, 0.7);
+  font-size: 0.68rem;
+}
+
+.shop-editor-pricing__result-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.2rem;
+  border-bottom: 1px solid rgba(216, 183, 120, 0.2);
+  padding-bottom: 0.25rem;
+}
+
+.shop-workspace .shop-editor-pricing__result-tabs button {
+  min-height: 1.55rem;
+  border-color: transparent;
+  background: rgba(0, 0, 0, 0.14);
+  padding: 0.12rem 0.35rem;
+  font-size: 0.64rem;
+}
+
+.shop-editor-pricing__simulator-results {
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  align-content: start;
+}
+
+.shop-editor-pricing__breakdown-view {
+  display: grid;
+  min-height: 0;
+  align-content: start;
+  gap: 0.25rem;
+}
+
+.shop-editor-pricing__breakdown-view > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+}
+
+.shop-editor-pricing__breakdown-view > header > select {
+  min-width: 0;
+  max-width: 55%;
+  min-height: 1.65rem;
+  border: 1px solid rgba(216, 183, 120, 0.25);
+  border-radius: 0.25rem;
+  background: #17100c;
+  color: #eadbc1;
+  padding: 0.15rem 0.35rem;
+  font-size: 0.65rem;
+}
+
+.shop-editor-pricing__breakdown-view > header > strong {
+  color: #f0d7a9;
+  font-size: 0.7rem;
+}
+
+.shop-editor-pricing__breakdown-view > header nav {
+  display: flex;
+  gap: 0.18rem;
+}
+
+.shop-workspace .shop-editor-pricing__breakdown-view > header button {
+  min-height: 1.55rem;
+  padding: 0.12rem 0.35rem;
+  font-size: 0.61rem;
+}
+
+.shop-editor-pricing__breakdown-view .shop-editor-pricing__breakdown {
+  grid-template-columns: 1fr;
+  align-content: start;
+  margin-top: 0;
+}
+
+.shop-editor-pricing__breakdown-view .shop-editor-pricing__breakdown li {
+  min-height: 2.15rem;
+}
+
+@media (min-width: 1680px) {
+  .shop-editor-pricing__breakdown-view .shop-editor-pricing__breakdown {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 0.45rem;
+  }
+}
+
+@media (max-height: 680px) {
+  .shop-editor-pricing__simulator {
+    gap: 4px;
+    padding: 6px;
+  }
+
+  .shop-editor-pricing__result-metrics span {
+    padding-block: 2px;
+  }
+}

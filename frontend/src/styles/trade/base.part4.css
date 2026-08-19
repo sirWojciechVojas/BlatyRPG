@@ -1,0 +1,263 @@
+@keyframes shopFlankSpark {
+  0% {
+    transform: translateX(-65%) rotate(12deg);
+    opacity: 0;
+  }
+  22% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(62%) rotate(12deg);
+    opacity: 0;
+  }
+}
+
+/* Bootstrap 5: .btn-close, Bootstrap 4: .close */
+
+.shop-trade-module .modal-header .btn-close,
+.shop-trade-module .modal-header .close {
+  position: absolute !important;
+  top: 50%;
+  right: var(--trade-space-2);
+  transform: translateY(-50%);
+  width: 34px;
+  height: 34px;
+  padding: 0 !important;
+  margin: 0 !important;
+  background-color: #b65d2f !important;
+  background-image: linear-gradient(145deg, #f1d59c, #b3562d) !important;
+  color: #1b110a !important;
+  border: 1px solid rgba(216, 183, 120, 0.6);
+  border-radius: 10px;
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  display: grid;
+  place-items: center;
+  font-size: 18px;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+  appearance: none;
+  -webkit-appearance: none;
+  opacity: 1;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.shop-trade-module .modal-header .btn-close:hover,
+.shop-trade-module .modal-header .close:hover {
+  transform: translateY(-50%) translateY(-1px);
+  filter: brightness(1.08);
+  box-shadow:
+    0 12px 22px rgba(0, 0, 0, 0.5),
+    inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+}
+
+.shop-trade-module .modal-header .btn-close:active,
+.shop-trade-module .modal-header .close:active {
+  transform: translateY(-50%) translateY(1px);
+  filter: brightness(0.98);
+}
+
+.shop-trade-module .modal-header .close span {
+  line-height: 1;
+}
+
+.shop-trade-module .modal-content {
+  height: 100% !important;
+  min-height: 50%;
+  max-height: 100%;
+  border-radius: 0;
+  padding: 0 !important;
+  font-family: "EB Garamond", Garamond, "Times New Roman", serif;
+  display: grid;
+  grid-template-rows: var(--trade-header-height) minmax(0, 1fr) var(
+      --trade-footer-height
+    );
+  position: relative;
+  overflow: hidden;
+}
+
+.shop-trade-module .modal-header {
+  height: var(--trade-header-height);
+  min-height: var(--trade-header-height);
+  max-height: var(--trade-header-height);
+  box-sizing: border-box;
+}
+
+.shop-trade-module .modal-footer {
+  height: var(--trade-footer-height);
+  min-height: var(--trade-footer-height);
+  max-height: var(--trade-footer-height);
+  box-sizing: border-box;
+  border: none;
+}
+
+.shop-trade-module .modal-body {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Rozmiar modala kontrolowany WYĹÄ„CZNIE przez zmienne (bez sztywnych 1600x800 poza media) */
+
+.shop-trade-module .modal-dialog.tS {
+  width: var(--trade-modal-w) !important;
+  height: var(--trade-modal-h) !important;
+  max-width: none !important;
+  margin: 0 auto !important;
+  padding: 0 !important;
+}
+
+.shop-trade-module .input-group-text {
+  padding: 0 var(--trade-space-2) !important;
+}
+
+.shop-trade-module #tradingStats .modal-body {
+  background-image: var(--trade-gui);
+  background-repeat: no-repeat;
+  background-position: var(--trade-gui-pos-x) var(--trade-gui-pos-y);
+  background-size: var(--trade-gui-size-x) var(--trade-gui-size-y);
+  /* background-size: contain; */
+}
+
+.shop-trade-module #tradingStats {
+  background: var(--trade-bg) no-repeat;
+  background-size: cover;
+  padding: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+.shop-trade-module #tradingSell,
+.shop-trade-module #tradingBuy,
+.shop-trade-module .trade-panel-content {
+  overflow-x: hidden;
+  overflow-y: auto;
+  min-height: var(--trade-list-block-size);
+  height: var(--trade-list-block-size);
+  max-height: var(--trade-list-block-size);
+}
+
+.shop-trade-module .tradingGood {
+  width: 100%;
+  height: var(--trade-item-row-height) !important;
+  background: none !important;
+  cursor: pointer;
+  box-sizing: border-box;
+  padding: 0 var(--trade-space-1);
+  gap: var(--trade-space-1);
+  margin-bottom: var(--trade-space-1);
+}
+
+.shop-trade-module .trade-modal__row {
+  min-height: var(--trade-item-row-height) !important;
+  overflow: visible;
+}
+
+.shop-trade-module .trade-modal__row-icon-wrap,
+.shop-trade-module .trade-modal__row-main,
+.shop-trade-module .trade-modal__row-price {
+  min-height: 0;
+}
+
+.shop-trade-module .trade-modal__row-icon-wrap {
+  overflow: visible;
+}
+
+.shop-trade-module .tradingGood:last-child {
+  margin-bottom: 0;
+}
+
+.shop-trade-module .tradingGood:hover {
+  background: rgba(229, 247, 73, 0.5) !important;
+}
+
+.shop-trade-module .tradingGood.active {
+  background: rgba(229, 247, 73, 0.35) !important;
+}
+
+.shop-trade-module .tradingGood > div:nth-of-type(2) {
+  font-size: 1.5vh !important;
+}
+
+.shop-trade-module .tradingGood .inventory-item {
+  width: 5vh !important;
+  height: 5vh !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* FIX: kanaĹ‚ RGB musi byÄ‡ 0..255 */
+
+.shop-trade-module .tradingGood.act {
+  background: rgba(169, 187, 33, 0.5) !important;
+}
+
+.shop-trade-module .tradingGood.act .inventory-item {
+  outline: 3px orange solid !important;
+}
+
+.shop-trade-module .flank {
+  height: auto;
+  min-height: 0;
+  overflow-x: hidden;
+}
+
+.shop-trade-module .flank input {
+  width: 100% !important;
+}
+
+.shop-trade-module .modal-footer > .row > div {
+  height: 20px;
+}
+
+.shop-trade-module .modal-header {
+  padding: var(--trade-space-2) var(--trade-space-4);
+  margin: 0;
+  border-style: none;
+}
+
+.shop-trade-module .titleBar {
+  background: var(--trade-titlebar);
+  background-size: contain;
+  width: 100%;
+  min-height: 44px;
+  text-align: center;
+  font: bold 6vh Garamond;
+  color: #fff;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--trade-space-5);
+  line-height: 1.05;
+}
+
+.shop-trade-module .tradingBrassLine {
+  font-size: 1.25vh !important;
+  padding: 0 var(--trade-space-1);
+  gap: var(--trade-space-1);
+}
+
+.shop-trade-module .crown {
+  background: var(--trade-crown) no-repeat;
+}
+
+.shop-trade-module .shilling {
+  background: var(--trade-shilling) no-repeat;
+}
+
+.shop-trade-module .brass {
+  background: var(--trade-brass) no-repeat;
+}
+
+.shop-trade-module .crown,
+.shop-trade-module .shilling,
+.shop-trade-module .brass {
+  width: 2.2em;
+  height: 1.4em;
+  background-size: contain;
+}

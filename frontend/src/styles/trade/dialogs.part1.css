@@ -1,0 +1,254 @@
+.shop-trade-module .img-dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.shop-trade-module .img-dialog-title {
+  font-size: 1.2rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.shop-trade-module .img-dialog-body {
+  display: grid;
+  grid-template-columns: minmax(260px, 340px) 1fr;
+  gap: 16px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.shop-trade-module .owner-dialog-body {
+  display: grid;
+  grid-template-columns: minmax(240px, 300px) 1fr;
+  gap: 18px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.shop-trade-module .owner-dialog-left,
+.shop-trade-module .owner-dialog-right {
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 18px;
+  border: 1px solid rgba(120, 180, 210, 0.25);
+  padding: 14px;
+}
+
+.shop-trade-module .owner-avatar-display {
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+
+.shop-trade-module .owner-avatar {
+  position: relative;
+  border-radius: 16px;
+  padding: 12px;
+  border: 1px solid rgba(120, 180, 210, 0.3);
+  background:
+    radial-gradient(
+      120px 90px at 20% 20%,
+      rgba(120, 180, 210, 0.2),
+      transparent 60%
+    ),
+    linear-gradient(145deg, rgba(10, 12, 16, 0.95), rgba(6, 8, 12, 0.98));
+  color: rgba(245, 234, 210, 0.95);
+  min-height: 120px;
+  display: grid;
+  place-items: center;
+  gap: 6px;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.shop-trade-module .owner-avatar--selected {
+  border-color: rgba(120, 180, 210, 0.95);
+  box-shadow:
+    0 0 0 2px rgba(120, 180, 210, 0.35),
+    0 14px 26px rgba(0, 0, 0, 0.5);
+}
+
+.shop-trade-module .owner-avatar-caption {
+  text-align: center;
+  font-size: 0.75rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(120, 180, 210, 0.85);
+}
+
+.shop-trade-module .owner-avatar-badge {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(120, 180, 210, 0.7),
+    rgba(20, 26, 36, 0.95)
+  );
+  border: 1px solid rgba(120, 180, 210, 0.5);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  box-shadow:
+    inset 0 0 16px rgba(0, 0, 0, 0.6),
+    0 8px 16px rgba(0, 0, 0, 0.45);
+}
+
+.shop-trade-module .owner-avatar-title {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+
+.shop-trade-module .owner-opt-list {
+  display: grid;
+  gap: 12px;
+  max-height: 100%;
+  overflow: auto;
+  padding-right: 6px;
+}
+
+.shop-trade-module .owner-opt {
+  border-radius: 16px;
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(120, 180, 210, 0.25);
+  color: rgba(245, 234, 210, 0.92);
+  text-align: left;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.shop-trade-module .owner-opt:hover {
+  transform: translateY(-2px);
+  border-color: rgba(120, 180, 210, 0.6);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
+}
+
+.shop-trade-module .owner-opt.active {
+  border-color: rgba(120, 180, 210, 0.95);
+  box-shadow:
+    0 0 0 2px rgba(120, 180, 210, 0.35),
+    0 14px 26px rgba(0, 0, 0, 0.5);
+}
+
+.shop-trade-module .owner-opt-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.shop-trade-module .owner-opt-title {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.shop-trade-module .owner-opt-chip {
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(120, 180, 210, 0.9);
+}
+
+.shop-trade-module .owner-opt-desc {
+  font-size: 0.8rem;
+  color: rgba(245, 234, 210, 0.75);
+  line-height: 1.4;
+}
+
+.shop-trade-module .img-dialog-preview {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 18px;
+  border: 1px solid rgba(216, 183, 120, 0.25);
+}
+
+.shop-trade-module .img-preview-frame {
+  position: relative;
+  width: min(100%, 228px);
+  min-height: 228px;
+  aspect-ratio: 1 / 1;
+  margin: 0 auto;
+  border-radius: 18px;
+  background:
+    radial-gradient(
+      140px 120px at 50% 30%,
+      rgba(241, 200, 129, 0.25),
+      transparent 70%
+    ),
+    linear-gradient(145deg, rgba(30, 20, 12, 0.9), rgba(8, 6, 5, 0.95));
+  border: 1px solid rgba(216, 183, 120, 0.4);
+  box-shadow:
+    inset 0 0 24px rgba(0, 0, 0, 0.6),
+    0 12px 30px rgba(0, 0, 0, 0.5);
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.shop-trade-module .img-preview-icon {
+  width: 70%;
+  height: 70%;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.6));
+  animation: iconFloat 2.4s ease-in-out infinite;
+}
+
+.shop-trade-module .img-preview-icon.img-preview-icon--fixed {
+  width: 144px;
+  height: 144px;
+}
+
+.shop-trade-module .img-preview-glow {
+  position: absolute;
+  inset: 12%;
+  border-radius: 50%;
+  border: 2px solid rgba(241, 200, 129, 0.35);
+  box-shadow:
+    0 0 18px rgba(241, 200, 129, 0.35),
+    0 0 40px rgba(241, 200, 129, 0.15);
+  animation: glowPulse 2.8s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.shop-trade-module .img-preview-label {
+  text-align: center;
+  font-size: 0.9rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.shop-trade-module .img-meta-editor {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(216, 183, 120, 0.22);
+  background: rgba(0, 0, 0, 0.22);
+  min-height: 0;
+}
+
+.shop-trade-module .img-meta-title {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: rgba(241, 200, 129, 0.85);
+}
+
+.shop-trade-module .img-meta-textarea {
+  min-height: 62px;
+}

@@ -1,0 +1,240 @@
+.shop-trade-module .encumbrance-meta {
+  margin-top: 7px;
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  color: rgba(240, 227, 198, 0.9);
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.shop-trade-module .encumbrance-over,
+.shop-trade-module .encumbrance-warning {
+  margin-top: 6px;
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+  color: rgba(255, 188, 140, 0.96);
+}
+
+.shop-trade-module .encumbrance-tile--warn {
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.52),
+    0 0 16px rgba(214, 94, 56, 0.38),
+    inset 0 0 0 1px rgba(214, 94, 56, 0.55);
+}
+
+.shop-trade-module .encumbrance-tile--warn .encumbrance-meter-fill {
+  background: linear-gradient(
+    90deg,
+    rgba(210, 108, 74, 0.96),
+    rgba(232, 166, 84, 0.96)
+  );
+}
+
+.shop-trade-module .wallet-alert {
+  width: min(520px, 92%);
+  margin: 0 auto var(--trade-space-2);
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: linear-gradient(
+    145deg,
+    rgba(68, 16, 16, 0.92),
+    rgba(22, 8, 8, 0.95)
+  );
+  box-shadow:
+    0 10px 24px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 1px rgba(216, 183, 120, 0.2);
+  color: rgba(245, 234, 210, 0.95);
+  text-align: center;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
+.shop-trade-module .wallet-alert--footer {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 8px);
+  transform: translateX(-50%);
+  margin: 0;
+  pointer-events: none;
+  z-index: 2;
+  animation:
+    walletAlertFade 3.5s ease forwards,
+    walletAlertGlow 1.2s ease-in-out 1;
+}
+
+@keyframes walletAlertFade {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-8px);
+  }
+  10% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.9;
+    transform: translateX(-50%) translateY(-8px);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(12px);
+  }
+}
+
+@keyframes walletAlertGlow {
+  0% {
+    box-shadow:
+      0 10px 24px rgba(0, 0, 0, 0.45),
+      0 0 0 rgba(216, 183, 120, 0),
+      inset 0 0 0 1px rgba(216, 183, 120, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 10px 24px rgba(0, 0, 0, 0.45),
+      0 0 16px rgba(241, 200, 129, 0.7),
+      inset 0 0 0 1px rgba(216, 183, 120, 0.35);
+  }
+  100% {
+    box-shadow:
+      0 10px 24px rgba(0, 0, 0, 0.45),
+      0 0 0 rgba(216, 183, 120, 0),
+      inset 0 0 0 1px rgba(216, 183, 120, 0.2);
+  }
+}
+
+.shop-trade-module .trade-footer {
+  position: relative;
+}
+
+.shop-trade-module .lh-5 {
+  line-height: 5vh;
+}
+
+.shop-trade-module .ih-50 {
+  height: 50%;
+}
+
+.shop-trade-module .ih-95 {
+  height: 95%;
+}
+
+.shop-trade-module .ih-100 {
+  height: 100%;
+}
+
+.shop-trade-module .noR {
+  resize: none;
+}
+
+.shop-trade-module .shop-flank-card {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 3px;
+  text-align: center;
+  padding: 10px 8px;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.22s ease,
+    filter 0.22s ease;
+}
+
+.shop-trade-module .shop-flank-card:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow:
+    0 12px 22px rgba(0, 0, 0, 0.55),
+    0 0 18px rgba(108, 178, 216, 0.25);
+}
+
+.shop-trade-module .shop-flank-card__shine {
+  position: absolute;
+  inset: -70% -120%;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 255, 255, 0) 30%,
+    rgba(255, 255, 255, 0.22) 48%,
+    rgba(255, 255, 255, 0) 66%
+  );
+  transform: translateX(-55%) rotate(12deg);
+  pointer-events: none;
+}
+
+.shop-trade-module .shop-flank-card__badge {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: rgba(246, 234, 210, 0.96);
+  background: radial-gradient(
+    circle at 28% 28%,
+    rgba(124, 188, 220, 0.78),
+    rgba(14, 26, 34, 0.96)
+  );
+  border: 1px solid rgba(136, 198, 228, 0.55);
+  box-shadow:
+    inset 0 0 14px rgba(0, 0, 0, 0.45),
+    0 8px 12px rgba(0, 0, 0, 0.45);
+}
+
+.shop-trade-module .shop-flank-card__label {
+  width: 100%;
+  display: block;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background:
+    linear-gradient(180deg, rgba(255, 242, 207, 0.1), transparent 55%),
+    rgba(0, 0, 0, 0.28);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 230, 166, 0.14),
+    0 6px 10px rgba(0, 0, 0, 0.28);
+  color: #fff2cf;
+  font-size: 1.32rem;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  line-height: 1.08;
+  text-shadow:
+    0 2px 3px rgba(0, 0, 0, 0.95),
+    0 0 10px rgba(255, 206, 117, 0.18);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-wrap: balance;
+}
+
+.shop-trade-module .shop-flank-card__type {
+  width: 100%;
+  min-width: 0;
+  color: #ffd77f;
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: 1.18;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-shadow: 0 2px 3px rgba(0, 0, 0, 0.8);
+  white-space: normal;
+}
+
+.shop-trade-module .shop-flank-card__type-prefix {
+  color: #e8d7a8;
+  font-weight: 500;
+}
+
+.shop-trade-module .shop-flank-card__subtitle {
+  width: 100%;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  color: #dcc08b;
+}
+
+.shop-trade-module .shop-flank-card.active .shop-flank-card__shine {
+  animation: shopFlankSpark 0.95s ease-out 1;
+}

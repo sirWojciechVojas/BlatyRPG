@@ -1,0 +1,113 @@
+@media (max-width: 1500px) {
+  .shop-trade-module .gm-shop-assortment-layout {
+    --assort-workspace-footer-height: clamp(142px, 18vh, 172px);
+    --assort-workspace-list-row-height: clamp(52px, 6vh, 62px);
+  }
+
+  .shop-trade-module .gm-shop-assortment-layout--suggestions {
+    --assort-workspace-footer-height: clamp(236px, 31vh, 260px);
+  }
+
+  .shop-trade-module
+    .gm-shop-assortment-layout__operations--suggestions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "transfer shop"
+      "suggestions roll";
+  }
+
+  .shop-trade-module
+    .gm-shop-assortment-layout__operations
+    .shop-assortment-action-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .shop-trade-module
+    .gm-shop-assortment-layout__operations
+    .shop-assortment-roll-row {
+    grid-template-columns: minmax(52px, 0.45fr) minmax(0, 1fr);
+  }
+
+  .shop-trade-module
+    .gm-shop-assortment-selector-bar
+    .shop-assortment-selector-label {
+    flex-basis: clamp(104px, 32%, 150px);
+    max-width: clamp(104px, 32%, 150px);
+  }
+}
+
+@media (max-height: 760px) {
+  .shop-trade-module .gm-shop-assortment-layout {
+    --assort-workspace-gap: 6px;
+    --assort-workspace-pad: 7px;
+    --assort-workspace-modebar-height: 34px;
+    --assort-workspace-footer-height: 130px;
+    --assort-workspace-list-row-height: 50px;
+  }
+
+  .shop-trade-module .gm-shop-assortment-layout--suggestions {
+    --assort-workspace-footer-height: 228px;
+  }
+
+  .shop-trade-module .gm-shop-assortment-panel {
+    padding: 7px;
+  }
+
+  .shop-trade-module .gm-shop-assortment-layout__active-shop {
+    display: none;
+  }
+
+  .shop-trade-module .gm-shop-assortment-layout__counters span,
+  .shop-trade-module .gm-shop-assortment-transfer-meta span {
+    min-height: 22px;
+    padding-inline: 8px;
+    font-size: 0.68rem;
+  }
+
+  .shop-trade-module
+    .gm-shop-assortment-list-panel
+    .assort-card-desc {
+    display: none;
+  }
+}
+
+@media (max-width: 900px) {
+  .shop-trade-module .trade-grid.trade-grid--assortment {
+    grid-template-columns: minmax(0, 1fr) !important;
+    grid-template-rows:
+      var(--trade-heading-height)
+      auto
+      minmax(0, 1fr)
+      auto;
+  }
+
+  .shop-trade-module .trade-grid--assortment .trade-flank--left,
+  .shop-trade-module .trade-grid--assortment .trade-flank--right,
+  .shop-trade-module
+    .trade-grid--assortment
+    .trade-assortment-workspace-column {
+    grid-column: 1;
+  }
+
+  .shop-trade-module .trade-grid--assortment .trade-flank--left {
+    grid-row: 2;
+  }
+
+  .shop-trade-module
+    .trade-grid--assortment
+    .trade-assortment-workspace-column {
+    grid-row: 3;
+  }
+
+  .shop-trade-module .trade-grid--assortment .trade-flank--right {
+    grid-row: 4;
+  }
+
+  .shop-trade-module .gm-shop-assortment-layout__columns,
+  .shop-trade-module .gm-shop-assortment-layout__operations,
+  .shop-trade-module
+    .gm-shop-assortment-layout__operations--suggestions {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: none;
+  }
+}

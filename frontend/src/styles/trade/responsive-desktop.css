@@ -1,0 +1,91 @@
+﻿@media (min-width: 1600px) and (min-height: 800px) {
+  .shop-trade-module {
+    --trade-space-1: 6px;
+    --trade-space-2: 10px;
+    --trade-space-3: 14px;
+    --trade-space-4: 18px;
+    --trade-space-5: 22px;
+
+    --trade-gui-pos-x: center;
+    --trade-gui-pos-y: -98px !important;
+
+    --trade-gui-size-x: 68% !important;
+    --trade-gui-size-y: 860px !important;
+
+    /* FHD (1080p) */
+    --trade-row-height: 62.7px;
+  }
+
+  .shop-trade-module.modal.show {
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .shop-trade-module .modal-dialog.tS {
+    margin: 0;
+  }
+
+  .shop-trade-module .modal-header {
+    padding: 0;
+  }
+
+  .shop-trade-module .trade-name {
+    padding: 0;
+  }
+
+  .shop-trade-module .trade-body {
+    padding: 0;
+  }
+
+  .shop-trade-module #tradingStats .modal-body {
+    min-height: 0;
+  }
+
+  .shop-trade-module .trade-grid {
+    --bs-gutter-x: 0;
+    --bs-gutter-y: 0;
+  }
+
+  .shop-trade-module .trade-column {
+    padding: 0 12px;
+    gap: var(--trade-space-2);
+  }
+
+  .shop-trade-module .trade-flank {
+    padding: 0;
+    gap: var(--trade-space-2);
+  }
+
+  .shop-trade-module .trade-list {
+    padding: 0 8px;
+  }
+
+  .shop-trade-module .tradingGood {
+    margin-bottom: 0;
+    padding: 0 8px;
+  }
+
+  .shop-trade-module .modal-footer > .row > div {
+    height: 20px;
+  }
+
+  .shop-trade-module .trade-footer {
+    padding: 0;
+  }
+}
+
+/* QHD i większe: 2560x1440 -> 1600x800 */
+@media (min-width: 2300px) and (min-height: 1200px) {
+  .shop-trade-module {
+    --trade-modal-width: 1600px;
+    --trade-modal-height: 800px;
+
+    /* dopasowanie tła GUI dla 1600x800 (skalowanie 1200->1600, 600->800) */
+    --trade-gui-size-x: 1152px;
+    --trade-gui-size-y: 1008px;
+
+    /* QHD (1440p) */
+    --trade-row-height: 83.6px;
+  }
+}

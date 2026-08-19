@@ -1,0 +1,260 @@
+.shop-trade-module .btn-default {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.shop-trade-module .trade-form {
+  padding: var(--trade-space-2);
+}
+
+.shop-trade-module .trade-form-shell {
+  row-gap: 10px;
+}
+
+.shop-trade-module .trade-form-section {
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(216, 183, 120, 0.22);
+  background: rgba(0, 0, 0, 0.22);
+  display: grid;
+  gap: 8px;
+}
+
+.shop-trade-module .trade-form-section-title {
+  font-size: 0.66rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(241, 200, 129, 0.82);
+}
+
+.shop-trade-module .trade-label {
+  color: rgba(245, 234, 210, 0.9);
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+
+.shop-trade-module .trade-input,
+.shop-trade-module .trade-textarea {
+  background: rgba(10, 8, 6, 0.7);
+  border: 1px solid rgba(216, 183, 120, 0.4);
+  color: rgba(245, 234, 210, 0.95);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.04),
+    0 6px 16px rgba(0, 0, 0, 0.35);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    transform 0.2s ease;
+}
+
+.shop-trade-module .trade-input:focus,
+.shop-trade-module .trade-textarea:focus {
+  border-color: rgba(241, 200, 129, 0.9);
+  box-shadow:
+    0 0 0 2px rgba(241, 200, 129, 0.25),
+    0 10px 20px rgba(0, 0, 0, 0.4);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.shop-trade-module .trade-input.is-readonly {
+  opacity: 0.7;
+  filter: grayscale(0.2);
+  cursor: not-allowed;
+}
+
+.shop-trade-module .trade-input.is-invalid,
+.shop-trade-module .trade-textarea.is-invalid {
+  border-color: rgba(214, 94, 56, 0.88);
+  box-shadow:
+    0 0 0 1px rgba(214, 94, 56, 0.4),
+    inset 0 0 0 1px rgba(214, 94, 56, 0.25);
+}
+
+.shop-trade-module .trade-field-error {
+  margin-top: 4px;
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
+  color: rgba(255, 188, 140, 0.96);
+}
+
+.shop-trade-module .trade-field-trigger {
+  min-height: 30px;
+  border-radius: 10px;
+  border: 1px solid rgba(120, 180, 210, 0.45);
+  background: linear-gradient(
+    145deg,
+    rgba(20, 30, 42, 0.94),
+    rgba(9, 12, 18, 0.96)
+  );
+  color: rgba(186, 226, 255, 0.94);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow:
+    0 8px 16px rgba(0, 0, 0, 0.34),
+    inset 0 0 0 1px rgba(180, 220, 255, 0.1);
+  transition:
+    transform 0.16s ease,
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    background-color 0.16s ease;
+}
+
+.shop-trade-module .trade-field-trigger:hover {
+  transform: translateY(-1px);
+  border-color: rgba(168, 228, 255, 0.82);
+  box-shadow:
+    0 12px 18px rgba(0, 0, 0, 0.42),
+    inset 0 0 0 1px rgba(180, 220, 255, 0.22);
+}
+
+.shop-trade-module .trade-field-trigger:focus-visible {
+  outline: 2px solid rgba(168, 228, 255, 0.92);
+  outline-offset: 2px;
+}
+
+.shop-trade-module .trade-field-trigger__icon {
+  font-size: 0.92rem;
+  line-height: 1;
+  display: inline-grid;
+  place-items: center;
+}
+
+.shop-trade-module .trade-field-trigger__icon .bi {
+  font-size: 0.86rem;
+}
+
+.shop-trade-module .trade-textarea {
+  min-height: 110px;
+  resize: vertical;
+}
+
+.shop-trade-module .template-editor-workbench {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  overflow: auto;
+}
+
+.shop-trade-module .template-editor-actionbar {
+  top: 0;
+  z-index: 4;
+  padding: 6px 8px;
+  border: 1px solid rgba(216, 183, 120, 0.28);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(216, 183, 120, 0.12), transparent 28%),
+    rgba(0, 0, 0, 0.7);
+  box-shadow:
+    inset 0 -1px 0 rgba(216, 183, 120, 0.12),
+    0 10px 20px rgba(0, 0, 0, 0.24);
+  backdrop-filter: blur(6px);
+}
+
+.shop-trade-module .template-editor-heading {
+  display: grid;
+  gap: 1px;
+}
+
+.shop-trade-module .template-editor-title {
+  color: rgba(248, 236, 213, 0.98);
+  font-size: 0.9rem;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.shop-trade-module .template-editor-status {
+  color: rgba(216, 183, 120, 0.78);
+  font-size: 0.64rem;
+  letter-spacing: 0.14em;
+  line-height: 1.1;
+}
+
+.shop-trade-module .template-editor-actions .btn {
+  min-height: 28px;
+  padding: 0.18rem 0.55rem;
+  border-radius: 6px;
+  letter-spacing: 0.02em;
+}
+
+.shop-trade-module .template-record-form {
+  flex: 0 0 auto;
+  min-height: 0;
+}
+
+.shop-trade-module .template-record-panel.card {
+  container-type: inline-size;
+  height: auto;
+  min-height: 0;
+  border: 1px solid rgba(216, 183, 120, 0.22);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 44%),
+    rgba(0, 0, 0, 0.55);
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.035),
+    0 14px 30px rgba(0, 0, 0, 0.28);
+}
+
+.shop-trade-module .template-record-panel > .card-body {
+  min-height: 0;
+}
+
+.shop-trade-module .template-record-layout.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  margin-right: 0;
+  margin-left: 0;
+}
+
+.shop-trade-module .template-record-layout > .col-12 {
+  width: 100%;
+  max-width: none;
+  padding-right: 0;
+  padding-left: 0;
+}
+
+.shop-trade-module .template-record-section {
+  min-height: 0;
+  padding: 7px;
+  border: 1px solid rgba(216, 183, 120, 0.14);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.shop-trade-module .template-record-section-title {
+  min-height: 16px;
+  margin-bottom: 6px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid rgba(216, 183, 120, 0.18);
+  color: rgba(241, 200, 129, 0.84);
+  font-size: 0.64rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+
+.shop-trade-module .template-record-fields-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 188px), 1fr));
+  gap: 5px 8px;
+  align-items: start;
+}
+
+.shop-trade-module .template-record-field.row {
+  min-width: 0;
+  min-height: 32px;
+  margin-right: 0;
+  margin-left: 0;
+  padding: 2px 3px;
+  border-bottom: 1px solid rgba(216, 183, 120, 0.08);
+}

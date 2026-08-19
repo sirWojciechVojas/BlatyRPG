@@ -1,0 +1,147 @@
+{
+  "types": [
+    {
+      "key": "WEAPON",
+      "label": { "en": "Weapon", "pl": "Broń" },
+      "subtypes": [
+        { "key": "SWORDS", "label": { "en": "Swords", "pl": "Miecze" } },
+        { "key": "AXES_MACES", "label": { "en": "Axes and Maces", "pl": "Topory i obuchy" } },
+        { "key": "BOWS_CROSSBOWS", "label": { "en": "Bows and Crossbows", "pl": "Łuki i kusze" } },
+        { "key": "THROWING", "label": { "en": "Throwing", "pl": "Broń miotana" } },
+        { "key": "POLEARMS", "label": { "en": "Polearms", "pl": "Broń drzewcowa" } },
+        { "key": "FIREARMS", "label": { "en": "Firearms", "pl": "Broń palna" } }
+      ]
+    },
+    {
+      "key": "ARMOR",
+      "label": { "en": "Armor", "pl": "Pancerz" },
+      "subtypes": [
+        { "key": "LEATHER", "label": { "en": "Leather", "pl": "Skórzane" } },
+        { "key": "SCALE_MAIL", "label": { "en": "Scale and Mail", "pl": "Łuskowe i kolcze" } },
+        { "key": "PLATE", "label": { "en": "Plate", "pl": "Płytowe" } },
+        { "key": "SHIELDS", "label": { "en": "Shields", "pl": "Tarcze" } },
+        { "key": "BOOTS_GLOVES", "label": { "en": "Boots and Gloves", "pl": "Buty i rękawice" } }
+      ]
+    },
+    {
+      "key": "CLOTH",
+      "label": { "en": "Cloth", "pl": "Ubranie" },
+      "subtypes": [
+        { "key": "ROBES", "label": { "en": "Robes", "pl": "Szaty" } },
+        { "key": "CLOAKS", "label": { "en": "Cloaks", "pl": "Płaszcze" } },
+        { "key": "BELTS", "label": { "en": "Belts", "pl": "Pasy" } },
+        { "key": "BAGS", "label": { "en": "Bags", "pl": "Torby i sakwy" } }
+      ]
+    },
+    {
+      "key": "POWDER",
+      "label": { "en": "Powder", "pl": "Proch" },
+      "subtypes": [
+        { "key": "GUNPOWDER", "label": { "en": "Gunpowder", "pl": "Proch strzelniczy" } },
+        { "key": "ALCHEMICAL_DUST", "label": { "en": "Alchemical Dust", "pl": "Pył alchemiczny" } },
+        { "key": "HERBAL_POWDER", "label": { "en": "Herbal Powder", "pl": "Pył ziołowy" } }
+      ]
+    },
+    {
+      "key": "ANIMAL",
+      "label": { "en": "Animal", "pl": "Zwierzęta" },
+      "subtypes": [
+        { "key": "MOUNTS", "label": { "en": "Mounts", "pl": "Wierzchowce" } },
+        { "key": "PETS", "label": { "en": "Pets", "pl": "Towarzyszące" } },
+        { "key": "LIVESTOCK", "label": { "en": "Livestock", "pl": "Hodowlane" } },
+        { "key": "ANIMAL_PRODUCTS", "label": { "en": "Animal Products", "pl": "Produkty odzwierzęce" } }
+      ]
+    },
+    {
+      "key": "JEWELLERY",
+      "label": { "en": "Jewellery", "pl": "Biżuteria" },
+      "subtypes": [
+        { "key": "NECKLACES_AMULETS", "label": { "en": "Necklaces and Amulets", "pl": "Naszyjniki i amulety" } },
+        { "key": "RINGS", "label": { "en": "Rings", "pl": "Pierścienie" } },
+        { "key": "BRACELETS", "label": { "en": "Bracelets", "pl": "Bransolety" } },
+        { "key": "EARRINGS", "label": { "en": "Earrings", "pl": "Kolczyki" } }
+      ]
+    },
+    {
+      "key": "STATIONERY",
+      "label": { "en": "Stationery", "pl": "Piśmiennicze" },
+      "subtypes": [
+        { "key": "BOOKS", "label": { "en": "Books", "pl": "Książki" } },
+        { "key": "SCROLLS", "label": { "en": "Scrolls", "pl": "Zwoje" } },
+        { "key": "WRITING_TOOLS", "label": { "en": "Writing Tools", "pl": "Przybory do pisania" } },
+        { "key": "DOCUMENTS", "label": { "en": "Documents", "pl": "Dokumenty" } },
+        { "key": "MAPS", "label": { "en": "Maps", "pl": "Mapy" } }
+      ]
+    },
+    {
+      "key": "FORAGE",
+      "label": { "en": "Forage", "pl": "Surowce" },
+      "subtypes": [
+        { "key": "ORES_MINERALS", "label": { "en": "Ores and Minerals", "pl": "Rudy i minerały" } },
+        { "key": "HERBS_PLANTS", "label": { "en": "Herbs and Plants", "pl": "Zioła i rośliny" } },
+        { "key": "WOOD_FIBERS", "label": { "en": "Wood and Fibers", "pl": "Drewno i włókna" } },
+        { "key": "FURS_HIDES", "label": { "en": "Furs and Hides", "pl": "Futra i skóry" } }
+      ]
+    },
+    {
+      "key": "GADGET",
+      "label": { "en": "Gadget", "pl": "Gadżety" },
+      "subtypes": [
+        { "key": "TOOLS", "label": { "en": "Tools", "pl": "Narzędzia" } },
+        { "key": "DEVICES", "label": { "en": "Devices", "pl": "Urządzenia" } },
+        { "key": "LOCKPICKS", "label": { "en": "Lockpicks", "pl": "Wytrychy" } },
+        { "key": "LIGHT_SOURCES", "label": { "en": "Light Sources", "pl": "Źródła światła" } },
+        { "key": "CAMPING", "label": { "en": "Camping", "pl": "Obozowe" } }
+      ]
+    },
+    {
+      "key": "ARMAMENT",
+      "label": { "en": "Armament", "pl": "Uzbrojenie" },
+      "subtypes": [
+        { "key": "AMMUNITION", "label": { "en": "Ammunition", "pl": "Amunicja" } },
+        { "key": "TRAPS", "label": { "en": "Traps", "pl": "Pułapki" } },
+        { "key": "SIEGE", "label": { "en": "Siege Gear", "pl": "Oblężnicze" } }
+      ]
+    },
+    {
+      "key": "CUTLERY",
+      "label": { "en": "Cutlery", "pl": "Sztućce" },
+      "subtypes": [
+        { "key": "KNIVES", "label": { "en": "Knives", "pl": "Noże" } },
+        { "key": "TABLEWARE", "label": { "en": "Tableware", "pl": "Naczynia stołowe" } },
+        { "key": "KITCHEN_TOOLS", "label": { "en": "Kitchen Tools", "pl": "Przybory kuchenne" } }
+      ]
+    },
+    {
+      "key": "POTION",
+      "label": { "en": "Potion", "pl": "Mikstura" },
+      "subtypes": [
+        { "key": "HEALING", "label": { "en": "Healing", "pl": "Lecznicze" } },
+        { "key": "BUFFS", "label": { "en": "Buffs", "pl": "Wzmacniające" } },
+        { "key": "RESISTANCE", "label": { "en": "Resistance", "pl": "Odporności" } },
+        { "key": "TOXINS", "label": { "en": "Toxins", "pl": "Toksyczne" } }
+      ]
+    },
+    {
+      "key": "FOOD",
+      "label": { "en": "Food", "pl": "Jedzenie" },
+      "subtypes": [
+        { "key": "MEAT_FISH", "label": { "en": "Meat and Fish", "pl": "Mięso i ryby" } },
+        { "key": "BREAD_BAKERY", "label": { "en": "Bread and Bakery", "pl": "Pieczywo i wypieki" } },
+        { "key": "FRUIT_VEGETABLES", "label": { "en": "Fruit and Vegetables", "pl": "Owoce i warzywa" } },
+        { "key": "DRINKS", "label": { "en": "Drinks", "pl": "Napoje" } },
+        { "key": "SPICES_HERBS", "label": { "en": "Spices and Herbs", "pl": "Przyprawy i zioła" } },
+        { "key": "PREPARED_MEALS", "label": { "en": "Prepared Meals", "pl": "Dania gotowe" } }
+      ]
+    },
+    {
+      "key": "MISC",
+      "label": { "en": "Miscellaneous", "pl": "Różne" },
+      "subtypes": [
+        { "key": "QUEST", "label": { "en": "Quest Items", "pl": "Przedmioty fabularne" } },
+        { "key": "CURRENCY", "label": { "en": "Currency", "pl": "Waluta" } },
+        { "key": "OTHER", "label": { "en": "Other", "pl": "Inne" } }
+      ]
+    }
+  ]
+}

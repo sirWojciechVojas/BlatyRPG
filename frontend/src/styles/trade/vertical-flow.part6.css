@@ -1,0 +1,245 @@
+.shop-trade-module .trade-form-shell,
+.shop-trade-module .shop-mode-template-frame__body {
+  min-height: 0;
+  margin: 0;
+  row-gap: var(--trade-module-gap);
+}
+
+.shop-trade-module .trade-form-section,
+.shop-trade-module .shop-editor-panel,
+.shop-trade-module .assort-panel {
+  min-height: 0;
+  gap: var(--trade-module-gap);
+  padding: var(--trade-space-2);
+}
+
+.shop-trade-module .assort-main,
+.shop-trade-module .assort-body,
+.shop-trade-module .shop-mode-content .assort-main,
+.shop-trade-module .assort-panel {
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.shop-trade-module .assort-panel-list,
+.shop-trade-module .assort-overview-list,
+.shop-trade-module .shop-editor-suggestions,
+.shop-trade-module .shop-mode-template-list {
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: 100% !important;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.shop-trade-module .assort-card {
+  min-height: var(--assort-row-height);
+  height: var(--assort-row-height);
+  max-height: var(--assort-row-height);
+  padding: var(--trade-space-2);
+}
+
+.shop-trade-module .shop-base-layout--editor-scroll,
+.shop-trade-module .shop-base-layout--editor-scroll > .trade-list-shell {
+  min-height: 0 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  overflow: visible !important;
+}
+
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-content {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+.shop-trade-module .shop-base-layout--editor-scroll .shop-mode-template-frame,
+.shop-trade-module
+  .shop-base-layout--editor-scroll
+  .shop-mode-template-frame__body,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-layout-shell,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-layout-stack {
+  min-height: 0 !important;
+  height: auto !important;
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.shop-trade-module .shop-editor-support-row {
+  flex: 0 0 auto;
+  min-height: 0;
+  margin: 0;
+  gap: var(--trade-module-gap);
+}
+
+.shop-trade-module .shop-editor-aliases-textarea--compact {
+  min-height: clamp(50px, 7vh, 74px);
+}
+
+.shop-trade-module .shop-editor-tags-field--compact {
+  min-height: clamp(50px, 7vh, 82px);
+  padding: var(--trade-space-2);
+}
+
+.shop-trade-module .trade-flank .square,
+.shop-trade-module .square {
+  width: 100%;
+  min-height: clamp(42px, 6.5vh, 62px);
+  max-height: clamp(50px, 8vh, 70px);
+  flex: 0 1 auto;
+  padding: var(--trade-space-1) var(--trade-space-2);
+  line-height: 1.12;
+}
+
+.shop-trade-module .trade-flank--left .square {
+  width: min(100%, var(--trade-shop-card-size));
+  min-width: min(100%, var(--trade-shop-card-size));
+  max-width: min(100%, var(--trade-shop-card-size));
+  height: var(--trade-shop-card-size);
+  min-height: var(--trade-shop-card-size);
+  max-height: var(--trade-shop-card-size);
+  aspect-ratio: 1 / 1;
+  align-self: center;
+  flex: 0 0 var(--trade-shop-card-size);
+  padding: var(--trade-space-2);
+}
+
+.shop-trade-module .trade-flank--left .shop-flank-card {
+  grid-template-rows: auto minmax(0, auto) auto;
+}
+
+.shop-trade-module .trade-flank--left .shop-flank-card__label {
+  padding: 8px 9px;
+  color: #fff2cf;
+  font-size: 1.42rem;
+  font-weight: 900;
+  letter-spacing: 0.01em;
+  line-height: 1.05;
+  text-shadow:
+    0 2px 3px rgba(0, 0, 0, 0.95),
+    0 0 12px rgba(255, 206, 117, 0.22);
+}
+
+.shop-trade-module .shop-signboard-selector {
+  --shop-signboard-gap: clamp(7px, 0.86vh, 10px);
+  --shop-signboard-board-size: clamp(100px, 14vh, 116px);
+  width: 100%;
+  height: 100%;
+  max-height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: var(--shop-signboard-gap);
+  overflow: hidden;
+  padding: var(--trade-space-1) 0;
+  box-sizing: border-box;
+}
+
+.shop-trade-module .shop-signboard-selector__grid {
+  width: min(
+    100%,
+    calc(
+      var(--shop-signboard-board-size) + var(--shop-signboard-board-size) +
+        var(--shop-signboard-gap)
+    )
+  );
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  align-content: center;
+  align-self: center;
+  justify-content: center;
+  gap: var(--shop-signboard-gap);
+  flex: 0 0 auto;
+  overflow: hidden;
+}
+
+.shop-trade-module
+  .trade-flank--left
+  .shop-signboard-selector
+  .shop-signboard-tile.square {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  aspect-ratio: 1 / 1;
+  flex: 0 0 auto;
+  padding: clamp(6px, 0.8vh, 9px);
+}
+
+.shop-trade-module .shop-signboard-selector--single {
+  --shop-signboard-board-size: clamp(132px, 21vh, 156px);
+}
+
+.shop-trade-module .shop-signboard-selector--single .shop-signboard-selector__grid,
+.shop-trade-module
+  .shop-signboard-selector--page-single
+  .shop-signboard-selector__grid {
+  grid-template-columns: minmax(0, min(100%, var(--shop-signboard-board-size)));
+  width: min(100%, var(--shop-signboard-board-size));
+}
+
+.shop-trade-module .shop-signboard-selector--single .shop-signboard-tile {
+  justify-self: center;
+}
+
+.shop-trade-module .shop-signboard-selector--page-single {
+  --shop-signboard-board-size: clamp(112px, 18vh, 132px);
+}
+
+.shop-trade-module .shop-signboard-selector--page-single .shop-signboard-tile {
+  justify-self: center;
+}
+
+.shop-trade-module .shop-signboard-tile.shop-flank-card {
+  appearance: none;
+  box-sizing: border-box;
+  isolation: isolate;
+  grid-template-rows: minmax(0, 1fr) auto;
+  align-content: stretch;
+  align-items: center;
+  gap: clamp(4px, 0.56vh, 6px);
+  border-radius: 6px;
+  border: 1px solid rgba(111, 70, 31, 0.98);
+  background:
+    linear-gradient(180deg, rgba(153, 94, 45, 0.98), rgba(74, 41, 22, 0.99)),
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 220, 145, 0.08) 0 1px,
+      transparent 1px 7px,
+      rgba(0, 0, 0, 0.1) 7px 10px
+    );
+  box-shadow:
+    0 8px 13px rgba(0, 0, 0, 0.48),
+    inset 0 0 0 1px rgba(255, 226, 157, 0.16),
+    inset 0 2px 0 rgba(255, 229, 160, 0.12),
+    inset 0 -14px 20px rgba(0, 0, 0, 0.24);
+  color: #fff4cf;
+  letter-spacing: 0;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.82);
+}
+
+.shop-trade-module .shop-signboard-tile.shop-flank-card::before,
+.shop-trade-module .shop-signboard-tile.shop-flank-card::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.shop-trade-module .shop-signboard-tile.shop-flank-card::before {
+  z-index: 0;
+  inset: 6px;
+  border-radius: 5px;
+  border: 1px solid rgba(255, 214, 133, 0.16);
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.2),
+    inset 0 0 10px rgba(0, 0, 0, 0.14);
+}

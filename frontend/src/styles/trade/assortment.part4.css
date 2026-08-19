@@ -1,0 +1,139 @@
+.shop-trade-module .shop-editor-toolbar--tight {
+  margin-top: 2px;
+}
+
+.shop-trade-module .assort-tab:focus-visible,
+.shop-trade-module .assort-select:focus-visible,
+.shop-trade-module .assort-input:focus-visible,
+.shop-trade-module .shop-editor-input:focus-visible,
+.shop-trade-module .shop-editor-roll-target:focus-visible,
+.shop-trade-module .shop-editor-toolbar .btn:focus-visible,
+.shop-trade-module .shop-editor-actions .btn:focus-visible,
+.shop-trade-module .shop-editor-signboard-random-btn:focus-visible {
+  outline: 2px solid rgba(255, 214, 142, 0.96);
+  outline-offset: 2px;
+  border-color: rgba(255, 214, 142, 0.95);
+}
+
+.shop-trade-module .shop-suggestion-examples {
+  font-size: 0.68rem;
+  color: rgba(241, 200, 129, 0.92);
+}
+
+.shop-trade-module .suggestion-detail-dialog {
+  width: min(860px, 96vw);
+  max-height: min(88vh, 760px);
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 16px;
+  border: 1px solid rgba(216, 183, 120, 0.36);
+  background: linear-gradient(
+    170deg,
+    rgba(17, 14, 10, 0.97),
+    rgba(7, 7, 9, 0.98)
+  );
+  box-shadow: 0 18px 46px rgba(0, 0, 0, 0.58);
+}
+
+.shop-trade-module .suggestion-detail-body {
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  gap: 10px;
+  align-content: start;
+  padding-right: 4px;
+}
+
+.shop-trade-module .suggestion-detail-section {
+  display: grid;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(216, 183, 120, 0.25);
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.shop-trade-module .suggestion-detail-label {
+  font-size: 0.66rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: rgba(241, 200, 129, 0.92);
+}
+
+.shop-trade-module .suggestion-detail-value {
+  font-size: 0.86rem;
+  color: rgba(245, 234, 210, 0.96);
+}
+
+.shop-trade-module .suggestion-detail-muted {
+  font-size: 0.74rem;
+  color: rgba(245, 234, 210, 0.8);
+  line-height: 1.4;
+}
+
+.shop-trade-module .suggestion-detail-reasons {
+  margin: 0;
+  padding-left: 18px;
+  display: grid;
+  gap: 4px;
+  color: rgba(245, 234, 210, 0.84);
+  font-size: 0.74rem;
+}
+
+.shop-trade-module .suggestion-detail-variants {
+  display: grid;
+  gap: 8px;
+}
+
+.shop-trade-module .suggestion-variant-option {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px;
+  padding: 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(216, 183, 120, 0.25);
+  background: rgba(0, 0, 0, 0.28);
+}
+
+.shop-trade-module .suggestion-variant-main {
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+  font-size: 0.72rem;
+  color: rgba(245, 234, 210, 0.88);
+}
+
+.shop-trade-module .suggestion-variant-main strong {
+  font-size: 0.78rem;
+  color: rgba(245, 234, 210, 0.95);
+}
+
+.shop-trade-module .suggestion-variant-price {
+  font-size: 0.72rem;
+  color: rgba(241, 200, 129, 0.94);
+  white-space: nowrap;
+}
+
+.shop-trade-module .suggestion-detail-footer {
+  justify-content: flex-end;
+}
+
+@media (max-width: 768px) {
+  .shop-trade-module .suggestion-detail-dialog {
+    width: min(96vw, 96vw);
+    max-height: min(92vh, 820px);
+    padding: 10px;
+  }
+
+  .shop-trade-module .suggestion-variant-option {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .shop-trade-module .suggestion-variant-price {
+    grid-column: 2;
+    justify-self: end;
+  }
+}

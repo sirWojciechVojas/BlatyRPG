@@ -42,21 +42,30 @@
     "password": "Password",
     "repeatPassword": "Repeat Password",
     "hasAccountAlready": "Already have an account?",
-    "notAccountYet": "Don\u2019t have an account yet?"
+    "notAccountYet": "Don't have an account yet?"
   },
   "actions": {
     "view": "View",
     "edit": "Edit",
     "delete": "Delete",
+    "trash": "Throw away",
     "personalize": "Personalize",
     "clone": "Clone",
     "create": "Create",
+    "add": "Add",
     "save": "Save",
+    "apply": "Apply",
+    "confirm": "Confirm",
     "cancel": "Cancel",
     "yes": "Yes",
     "no": "No",
-    "confirm": "Confirm",
-    "refresh": "Refresh"
+    "restore": "Restore",
+    "refresh": "Refresh",
+    "buy": "Buy",
+    "sell": "Sell",
+    "move": "Move",
+    "close": "Close",
+    "remove": "Remove"
   },
   "ui": {
     "loading": "Loading",
@@ -82,6 +91,8 @@
     "createCampaign": "Create Campaign",
     "campaignsStatus": "Campaign Status",
     "campaignsDesc": "Campaign Description",
+    "campaignName": "Campaign name",
+    "campaignYear": "Year of the Campaign",
     "campaignIdFail": "No campaign found!",
     "noAccess": "No Access",
     "noAccessToCampaign": "You do not have permission to view this campaign!",
@@ -108,7 +119,42 @@
   "character": {
     "characterDesc": "Character Description",
     "heroTraits": "Hero Traits",
-    "skills&abilities": "Skills and Abilities"
+    "skills&abilities": "Skills and Abilities",
+    "newCharacter": "New character",
+    "newGroup": "New group",
+    "NPCs": "Independent Heroes",
+    "PCs": "Player Heroes",
+    "heroData": "Hero Data",
+    "basicData": "Basic data",
+    "gamerName": "Player Name",
+    "gameMaster": "Game Master",
+    "usedName": "Name used",
+    "name": "Name",
+    "appearanceAndHistory": "Appearance and History",
+    "avatar": "Avatar",
+    "breed": "Race",
+    "stats": "Statistics",
+    "combat": "Fight",
+    "weaponSkill": "Close Combat",
+    "ballisticSkill": "Shooting Skills",
+    "attack": "Attack",
+    "movement": "Speed",
+    "wounds": "Vitality Points"
+  },
+  "attributes": {
+    "attributes": "Attributes",
+    "strength": "Strength",
+    "toughness": "Resilience",
+    "agility": "Skill",
+    "intelligence": "Intelligence",
+    "willpower": "Willpower",
+    "fellowship": "Polish",
+    "additional": "Additional",
+    "magic": "Magic",
+    "strengthBonus": "Force",
+    "toughnessBonus": "Resilience",
+    "fatePoints": "Destiny Points",
+    "insanityPoints": "Insanity Points"
   },
   "profile": {
     "infoAboutCharacter": "Character Information",
@@ -393,5 +439,2403 @@
     "secondaryCta": "Go back",
     "hint": "You can also check the",
     "diceAlt": "d20 die"
+  },
+  "shopEditor": {
+    "openButton": "Shop-add/edit",
+    "profileTitle": "Shop: profile and features",
+    "suggestionsTitle": "Assortment suggestions",
+    "saveProfile": "Save profile",
+    "generateSuggestions": "Generate suggestions",
+    "addSelected": "Add selected",
+    "addAll": "Add everything",
+    "exportJson": "Export JSON"
+  },
+  "shop": {
+    "payment": {
+      "title": "Currency conversion payment",
+      "description": "Choose the purses the shop may charge.",
+      "price": "Shop price",
+      "directDebit": "From shop currency",
+      "rateAndFee": "Rate {rate}; conversion fee {fee}%",
+      "insufficient": "The selected purses do not cover the full price.",
+      "refreshing": "Recalculating…",
+      "confirm": "Confirm payment"
+    },
+    "access": {
+      "title": "Temporary shop access mode",
+      "shortTitle": "Access mode · DEV",
+      "notice": "Development tool. Production will use login and campaign/character permissions instead.",
+      "gm": "Game Master",
+      "gmDescription": "Full shop management for this campaign",
+      "activeUser": "Active user",
+      "availableCharacters": "Available characters",
+      "changeUser": "Change user",
+      "changeUserTo": "Change user to: {user}",
+      "playerNumber": "Player {number}",
+      "playerCode": "Player · {code}",
+      "loadError": "Available characters could not be loaded."
+    },
+    "tradeModal": {
+      "title": "Buying & Selling",
+      "gmLoginTitle": "Log in as Game Master",
+      "close": "@:actions.close",
+      "apiPrefix": "API",
+      "apiLoading": "API: loading",
+      "apiError": "API: error",
+      "apiReady": "API: done",
+      "apiIdle": "API: idle",
+      "loadingBuy": "Summoning the assortment...",
+      "loadingSell": "Appraising equipment...",
+      "loadError": "Could not load shop data.",
+      "retryLoad": "Retry loading",
+      "noActiveShopsTitle": "No active stores",
+      "viewSettingsTitle": "View settings"
+    },
+    "defaults": {
+      "personalPseu": {
+        "shopkeeper": "Item",
+        "suggestion": "Suggestion"
+      },
+      "shopName": {
+        "newWithId": "New store {id}",
+        "withId": "Store {id}"
+      },
+      "shopBadge": "S"
+    },
+    "dataLabels": {
+      "slots": {
+        "STOISKO": "Stand"
+      },
+      "itemPlace": {
+        "head": "GŁOWA",
+        "neck": "SZYJA",
+        "rightHand": "PRAWA RĘKA",
+        "leftHand": "LEWA RĘKA",
+        "torso": "KORPUS",
+        "belt": "PAS",
+        "backpack": "PLECAK"
+      },
+      "owners": {
+        "DEFAULT": "Default stack",
+        "TRASH": "Bin",
+        "BG1": "BG1",
+        "BG2": "BG2",
+        "BG3": "BG3"
+      }
+    },
+    "common": {
+      "allCaps": "ALL",
+      "chooseOption": "-- choose --",
+      "emptyItems": "No items.",
+      "icons": "Icons",
+      "quantity": "Quantity",
+      "qtyPrefix": "qty",
+      "scorePrefix": "score.score",
+      "classPrefix": "Class",
+      "genrePrefix": "Genre",
+      "activeHeroTitle": "Active Hero: {name}",
+      "activeHeroPortraitAlt": "Portrait of {name}",
+      "shopSettlementWallet": "payment in this shop",
+      "freePrefix": "Free",
+      "overloadPrefix": "Excess",
+      "buyLimitWarning": "The purchase will exceed the limit.",
+      "examplesPrefix": "Examples of goods",
+      "draftBadge": "DRAFT"
+    },
+    "viewSettingsDialog": {
+      "ariaLabel": "View settings",
+      "title": "View settings",
+      "optionIcons": "Icon size",
+      "close": "@:actions.close",
+      "save": "@:actions.save"
+    },
+    "tradeItemRow": {
+      "quantityPickerAria": "Quantity selection",
+      "trashTemplate": "TEMPLATE",
+      "trashItem": "ITEM"
+    },
+    "filters": {
+      "buyTypeAria": "Item type filters (purchase)",
+      "buyTypeSearchAria": "Search item classes and categories in the offer",
+      "sellTypeAria": "Item type filters (sales)",
+      "sellTypeSearchAria": "Search item classes and categories in the inventory",
+      "sellOwnerAria": "Inventory owner filter",
+      "sellOwnerLabel": "Owner",
+      "sellOwnerAll": "All owners",
+      "typeSearchPlaceholder": "Search class or category..."
+    },
+    "suggestions": {
+      "fallbackItemName": "Item",
+      "templateFallback": "Template {id}",
+      "fallbackProfileDescription": "Suggestion for the store profile",
+      "recommendationAdd": "Add",
+      "recommendationConsider": "Consider",
+      "recommendationSkip": "Skip",
+      "recommendationRating": "Rate",
+      "noReason": "No justification.",
+      "reasonDraftIntro": "No ready template was found, so a draft proposal was prepared.",
+      "reasonProfileIntro": "This entry matches the current store profile.",
+      "reasonClass": "Class: {value}.",
+      "reasonGenre": "Genre: {value}.",
+      "reasonLocation": "location: {value}",
+      "reasonLegalStatus": "legal status: {value}",
+      "reasonWealthTier": "wealth: {value}",
+      "reasonProfile": "Profile: {value}."
+    },
+    "shopEditor": {
+      "header": "Shop: add and edit profile",
+      "editedShop": "Edited store",
+      "shopType": "Store type",
+      "newShop": "New store",
+      "deleteShop": "@:actions.delete shop",
+      "manageActivation": "Manage activation",
+      "ownerCode": "Owner (code)",
+      "ownerName": "Owner (name)",
+      "signboard": "Signboard",
+      "drawSignboardName": "Randomize the name of the sign",
+      "signboardAliases": "Sign aliases",
+      "location": "Location",
+      "worldProfile": "World profile",
+      "legalStatus": "Legality",
+      "wealthTier": "Wealth",
+      "reputation": "Reputation",
+      "seasonality": "Seasonality",
+      "counterfeitRisk": "Risk of counterfeits",
+      "autoTags": "Auto tags",
+      "saveProfile": "@:actions.save profile",
+      "generateStarterSuggestions": "Generate starter suggestions",
+      "intro": "Set up the shop profile step by step. Changes immediately affect assortment suggestions and activations.",
+      "overviewTitle": "Quick profile overview",
+      "overviewDescription": "This summary refreshes automatically while you edit the profile.",
+      "emptyAutoTags": "Tags will appear after the shop profile is filled in.",
+      "tagListLabel": "Detected shop profile tags",
+      "notProvided": "Not set",
+      "noSelection": "No store selected",
+      "toolbarLabel": "Shop editor actions",
+      "counterfeitBandLabel": "Alert level: {label}",
+      "counterfeitBands": {
+        "low": "Low",
+        "medium": "Medium",
+        "high": "High"
+      },
+      "validation": {
+        "fillRequired": "To generate suggestions, fill in: {fields}.",
+        "requiredForSuggestions": "This field is required for suggestions."
+      },
+      "sections": {
+        "selectionTitle": "Store selection and quick actions",
+        "selectionDesc": "Pick a profile to edit or create a new store and immediately manage its activation.",
+        "identityTitle": "Store identity",
+        "identityDesc": "Name the store and set the owner so the profile stays readable for the GM and players.",
+        "contextTitle": "Context and operating rules",
+        "contextDesc": "These settings define where the store operates and how it is perceived in the game world.",
+        "marketTitle": "Offer profile",
+        "marketDesc": "Define wealth, reputation, and risks. The system uses them to build suggestions.",
+        "actionsTitle": "Save and suggestions",
+        "actionsDesc": "Save the profile first, then generate a starter assortment proposal."
+      },
+      "layoutSections": {
+        "basicData": "Basic data",
+        "descriptionAliases": "Description and aliases",
+        "storeParameters": "Store parameters"
+      },
+      "hints": {
+        "ownerName": "This field can override the default owner name that comes from the owner code.",
+        "signboard": "You can enter your own name or use the randomizer for a quick idea.",
+        "signboardAliases": "Enter alternate names separated with commas.",
+        "autoTags": "Tags are calculated automatically from type, location, reputation, and legality."
+      },
+      "tooltips": {
+        "selectionSection": "Start by choosing the store you want to work on. From here you can also create a new profile, remove the current one, or manage store activation.",
+        "identitySection": "This section describes who runs the store and how it should be recognized in the game.",
+        "contextSection": "Here you set the store's operating conditions. These values affect the tone and the item suggestions.",
+        "marketSection": "This section controls offer quality and risk. Automatic suggestions and profile filters rely on it.",
+        "actionsSection": "After saving the profile, you can immediately generate a starter set of shop suggestions.",
+        "editedShop": "A list of all available stores. Changing the selection switches the form to another profile.",
+        "shopType": "Store type defines the main direction of the offer and is one of the most important inputs for the suggestion generator.",
+        "newShopButton": "Creates a new empty store profile and makes it the active one for further editing.",
+        "manageActivationButton": "Opens the window that controls which stores are active and available during trade.",
+        "deleteShopButton": "Removes the currently selected store profile. This option is enabled only when the store can be safely deleted.",
+        "ownerCode": "The owner code links the store to a specific character or faction and helps filter data.",
+        "ownerName": "A custom owner name lets you show a clearer label than the raw code.",
+        "signboard": "The main name visible to players. It shapes the store's flavor and appears in suggestions.",
+        "drawSignboardButton": "Rolls a new signboard name based on the current shop profile.",
+        "signboardAliases": "Additional names are useful for short forms, regional variants, or colloquial names of the store.",
+        "location": "Location defines the store surroundings and narrows the pool of sensible goods and offer tone.",
+        "worldProfile": "The world profile adapts the store to the campaign setting and adjusts descriptions and recommendations.",
+        "legalStatus": "Legality affects how official or risky the trade is in the current place.",
+        "wealthTier": "Wealth level defines how luxurious and expensive the store's goods should feel.",
+        "reputation": "Reputation describes trust in the store and affects the tone of the suggestions and the assortment style.",
+        "seasonality": "Seasonality lets you mark whether the store works all year or only during a chosen period.",
+        "counterfeitRisk": "The slider defines the chance that suspicious or counterfeit goods may appear in the offer.",
+        "autoTags": "Profile tags are generated automatically. You do not edit them manually, but they help you quickly assess the store setup.",
+        "saveProfileButton": "Saves the current shop profile settings.",
+        "generateStarterSuggestionsButton": "Builds starter assortment suggestions from the current profile."
+      },
+      "worldProfileFallback": "World profile without additional description.",
+      "pricing": {
+        "title": "Pricing policy",
+        "description": "The engine converts currency first, then applies the base rate, market rules, and priority exceptions. Guardrails and rounding are applied last.",
+        "tabs": {
+          "label": "Pricing policy sections",
+          "basics": "Rates",
+          "presets": "Presets",
+          "currency": "Currencies",
+          "guardrails": "Guardrails",
+          "modifiers": "Market rules",
+          "exceptions": "Exceptions"
+        },
+        "help": {
+          "engine": "The backend calculates price deterministically: catalog, currency, base rate, shop type, transport, stock and demand, season, wealth, legality, reputation, policy, exceptions, GM adjustment and guardrails. The interface does not duplicate calculations. Every step is visible in the breakdown tab.",
+          "basics": "Base rates start retail and buyback, while value thresholds classify goods for later rules. They do not replace shop type, demand or condition. Typical retail is 100–140% and buyback 35–70% of catalog.",
+          "saleRate": "Base player price is applied after currency conversion and before market rules. It does not alter catalog price. Typical range is 100–140%; current {value}%. A catalog value of 100 at 120% gives a base of 120.",
+          "buybackRate": "Base buyback rate sets the shop's starting payout before condition, demand and capital limits. It does not affect retail. Typical range is 35–70%; current {value}%.",
+          "minimumPrice": "Minimum price runs last and protects against a zero or negative result. It does not raise prices already above the floor. Zero to five smallest units is typical; current {value}.",
+          "roundingStep": "Rounding step aligns the final result to convenient denominations. It does not change earlier multipliers. One, five or ten is typical; current {value}. A step of 5 moves 137 to 135 or 140 depending on direction.",
+          "roundingMode": "Direction decides whether the engine uses the nearest, always higher or always lower step. It does not affect availability. Current: {value}.",
+          "priceBand": "The “{label}” threshold classifies an item by its converted price. It affects wealth rules and exceptions but does not itself change price. Current threshold: {value}. Thresholds should increase in order.",
+          "presets": "A preset applies a coherent set of rates, guardrails and enabled rules. It does not alter the world profile or stock. Manual changes create a custom policy that can be saved under a new name.",
+          "currency": "Settlement currency and rates run before margin. A fee applies only when currencies differ. A price already stored in the shop currency is not converted again.",
+          "settlementCurrency": "Settlement currency defines the final price unit and matching purse. It does not change value without a rate. Current: {value}. For example, silver prices are converted to the shop's pennies first.",
+          "buyFee": "Purchase fee is added only when item and shop currencies differ. It does not apply to buyback. Typical range is 0–10%; current {value}%.",
+          "sellFee": "Buyback fee is deducted only when exchanging foreign currency. It does not affect the buyer's price. Typical range is 0–10%; current {value}%.",
+          "exchangeRate": "The rate says how many smallest units of “{target}” equal one unit of “{source}”. It contains no margin or fee. It must be positive; current {value}. A rate of 2 converts 10 to 20 before later rules.",
+          "guardrails": "Guardrails constrain extreme results after modifiers and prevent buyback above retail. They do not replace sound configuration. A GM exception can bypass them only when explicitly enabled.",
+          "guardrailsEnabled": "The switch activates every configured limit. Disabling it preserves values but permits arbitrarily extreme prices. Current: {value}. Guardrails should normally remain active.",
+          "guardrail": "“{label}” constrains a calculated result only when it crosses the bound. It does not alter a price inside the range. Current: {value}. Detail: {hint}",
+          "modifiers": "Market rules enable only factors meaningful for a given item. Disabling one removes its price impact and breakdown step but does not change profile data.",
+          "modifier": "Rule “{label}”: {description} Its impact depends on the item and can be skipped when irrelevant. Current: {value}. The simulator shows a concrete application or skip.",
+          "exceptions": "A GM exception applies only when every non-empty criterion matches. It can multiply, add a fixed amount or set a fixed price. Other goods remain unchanged; higher priority runs first.",
+          "exceptionPicker": "The list selects one exception for editing so the form stays compact. It does not change rule order or behavior. Calculation order still follows priority.",
+          "exceptionActive": "A disabled rule keeps its configuration but is skipped during calculation. It does not affect other exceptions. Use this for temporary variant testing.",
+          "exceptionPriority": "Higher priority runs first. It is not a price multiplier. −100 to 100 is typical; current {value}. Ties keep a stable rule order.",
+          "exceptionModes": "Modes decide whether the exception applies to retail, buyback or both. They do not alter other operations. At least one mode must remain active.",
+          "exceptionCriterion": "Criterion “{field}” currently has “{value}”. Empty or “any” adds no restriction. Every configured criterion must match together; other goods remain unchanged.",
+          "exceptionEffect": "Effect type chooses a percentage multiplier, fixed surcharge or discount, or fixed price. It runs only after criteria match. Fixed price replaces the result; other effects adjust it.",
+          "exceptionEffectValue": "The value sets the selected effect's strength; current {value}. For a multiplier, 100 means unchanged; for an adjustment, 0 changes nothing. Guardrails still apply unless explicitly bypassed.",
+          "exceptionStop": "After this rule matches, the engine can skip lower-priority exceptions. It does not stop earlier market stages or final guardrails.",
+          "exceptionIgnoreGuardrails": "Allows this rule to bypass global price bounds. It does not disable invalid or negative number validation. Use only for an intentional narrative price.",
+          "exceptionSuppress": "Selected general rules are skipped only when this exception matches. They remain active for other goods. An official price might suppress demand and reputation.",
+          "quickTest": "Representative test calculates several selected goods together to reveal effects across categories. It saves nothing and does not alter stock.",
+          "previewTemplate": "The item supplies catalog data, currency, category, legality and current stock for the test. It is not added to the offer and no price is saved. The current choice is visible in the field; test both ordinary and luxury goods.",
+          "previewMode": "Mode selects retail to a player or buyback from a player because they use different rates, stock rules and limits. It does not change the saved policy.",
+          "previewQuantity": "Quantity calculates batch value and can trigger the buyback budget limit. It does not multiply unit price before modifiers. Preview range is 1–9999 and the choice is only a test.",
+          "previewCondition": "Physical condition changes valuation, especially during buyback. It does not alter catalog price or category availability. Good is neutral; ruined usually cuts value sharply.",
+          "previewReputation": "Relationship simulates terms for a particular buyer or seller. It does not alter base shop reputation. Neutral is the baseline and an individual relationship may override it.",
+          "previewTemporary": "Temporary GM adjustment runs after policy and exceptions but before guardrails and rounding. It is not saved to the profile. −20 to +20% is a typical test; the guardrail sets the limit."
+        },
+        "presets": {
+          "title": "Policy assignment",
+          "description": "Choose a ready-made policy for this shop. Manual policy changes create a custom policy; no assignment means the general rules apply.",
+          "general": {
+            "label": "General rules",
+            "description": "No policy is assigned to this shop. The world's safe general rules are applied."
+          },
+          "balanced": {
+            "label": "Balanced",
+            "description": "Default trade with 60% buyback and arbitrage protection."
+          },
+          "friendly": {
+            "label": "Player-friendly",
+            "description": "Lower retail prices and a more favorable buyback rate."
+          },
+          "premium": {
+            "label": "Premium",
+            "description": "Higher margins, cautious buyback, and wider price bounds."
+          },
+          "unrestricted": {
+            "label": "Free market",
+            "description": "No global bounds; GM rules have full control."
+          },
+          "custom": {
+            "label": "Custom policy",
+            "description": "These settings were adjusted manually for this particular shop."
+          },
+          "customName": "Custom policy name",
+          "saveCustom": "Save preset"
+        },
+        "assignment": {
+          "selected": "Currently applied",
+          "active": "Selected",
+          "shop": "Assigned to shop: {shop}"
+        },
+        "basics": {
+          "title": "Base rates and value scale",
+          "description": "Values are system-neutral and work with pennies, dollars, credits, or any other canonical currency unit.",
+          "saleRate": "Base player price (%)",
+          "saleRateHint": "100% means the catalog price before market rules.",
+          "buybackRate": "Base buyback rate (%)",
+          "buybackRateHint": "Catalog price percentage paid before further adjustments.",
+          "minimumPrice": "Minimum price",
+          "minimumPriceHint": "Use 0 if free items are allowed.",
+          "roundingStep": "Rounding step",
+          "roundingStepHint": "For example, 5 rounds to multiples of five canonical units.",
+          "roundingMode": "Rounding direction",
+          "roundingModes": {
+            "nearest": "Nearest",
+            "up": "Always up",
+            "down": "Always down"
+          },
+          "priceBands": {
+            "cheapMax": "Cheap threshold",
+            "midMax": "Standard threshold",
+            "highMax": "Expensive threshold"
+          },
+          "priceBandHints": {
+            "cheapMax": "Items below this amount are in the cheapest value band.",
+            "midMax": "Upper bound for ordinary items in settlement currency.",
+            "highMax": "Items above this amount are treated as luxury goods."
+          }
+        },
+        "currency": {
+          "title": "Currencies and exchange",
+          "description": "Each source price is converted into one settlement currency before margins are applied. This safely combines regional coinage or currencies from different settings.",
+          "settlement": "Shop settlement currency",
+          "settlementHint": "The shop displays prices and settles the matching hero purse in this currency. The change takes effect after saving the shop profile.",
+          "buyFee": "Purchase exchange fee (%)",
+          "buyFeeHint": "Added when the item currency differs from the settlement currency.",
+          "sellFee": "Buyback exchange fee (%)",
+          "sellFeeHint": "Deducted from payouts involving foreign currency.",
+          "paymentExchangeFee": "Payment conversion fee (%)",
+          "paymentExchangeFeeHint": "Added to the amount charged from the hero's foreign-currency purse.",
+          "rates": "Exchange rates",
+          "acceptCurrency": "Shop accepts currency: {currency}",
+          "ratesHint": "A rate is the number of smallest settlement units per one smallest source-currency unit.",
+          "rateUnit": "1 unit of {source} = rate × one unit of {target}",
+          "missingRate": "No saved rate exists for this item's currency. The preview temporarily assumes 1:1; set a rate before opening the shop."
+        },
+        "guardrails": {
+          "title": "Economic guardrails",
+          "description": "They constrain extreme results from stacked rules and prevent immediate buy-and-resell profit by default.",
+          "enabled": "Enable guardrails",
+          "fields": {
+            "buyMinMultiplier": "Minimum player price (%)",
+            "buyMaxMultiplier": "Maximum player price (%)",
+            "sellMinMultiplier": "Minimum buyback (%)",
+            "sellMaxMultiplier": "Maximum buyback (%)",
+            "maxBuybackRatio": "Buyback vs. retail price (%)",
+            "maxTemporaryPercent": "Max temporary adjustment (%)",
+            "minimumAvailabilityChance": "Min availability (%)",
+            "maximumAvailabilityChance": "Max availability (%)"
+          },
+          "hints": {
+            "buyMinMultiplier": "Lower bound relative to the catalog price after currency conversion.",
+            "buyMaxMultiplier": "Upper bound relative to the catalog price after currency conversion.",
+            "sellMinMultiplier": "Lowest payout allowed relative to the catalog price.",
+            "sellMaxMultiplier": "Highest payout allowed relative to the catalog price.",
+            "maxBuybackRatio": "Prevents buyback from exceeding the same item's retail price.",
+            "maxTemporaryPercent": "Limits an accidentally extreme temporary adjustment.",
+            "minimumAvailabilityChance": "Lower bound for the calculated item availability chance.",
+            "maximumAvailabilityChance": "Upper bound for the calculated item availability chance."
+          }
+        },
+        "modifiersTitle": "General market rules",
+        "modifiersDescription": "Disable a rule globally here, or suppress it only inside a matching exception.",
+        "exceptions": {
+          "title": "Exceptions and special rules",
+          "description": "Higher priority runs first. Every non-empty criterion must match; values inside one criterion are alternatives.",
+          "add": "Add exception",
+          "empty": "No exceptions. The shop uses general market rules only.",
+          "defaultName": "Exception {number}",
+          "choose": "Edited exception",
+          "active": "Active",
+          "name": "Rule name",
+          "priority": "Priority",
+          "remove": "Remove",
+          "when": "When the rule matches",
+          "then": "Then apply",
+          "any": "Any",
+          "item": "Specific item",
+          "itemClass": "Item class",
+          "itemGenre": "Genre/category",
+          "currency": "Source currency",
+          "priceTier": "Value band",
+          "legality": "Item legality",
+          "availability": "Shop availability",
+          "effect": "Adjustment type",
+          "stop": "Stop processing later exceptions",
+          "ignoreGuardrails": "Allow this rule to bypass guardrails",
+          "disableModifiers": "Suppress general rules for this exception",
+          "disableModifiersHint": "Selected modifiers are skipped whenever this exception matches.",
+          "effects": {
+            "multiplier": "Percentage of price",
+            "additive": "Surcharge or discount",
+            "fixed": "Fixed price"
+          },
+          "effectValues": {
+            "multiplier": "Target percentage (100 = unchanged)",
+            "additive": "Change in currency units",
+            "fixed": "Price in settlement currency"
+          },
+          "modes": { "buy": "Retail to player", "sell": "Buyback from player" },
+          "priceTiers": {
+            "cheap": "Cheap",
+            "mid": "Standard",
+            "high": "Expensive",
+            "luxury": "Luxury"
+          },
+          "legalities": {
+            "legal": "Legal",
+            "grey": "Grey market",
+            "illegal": "Illegal"
+          },
+          "availabilityBands": {
+            "none": "None",
+            "scarce": "Last unit",
+            "low": "Low",
+            "medium": "Medium",
+            "high": "High"
+          }
+        },
+        "previewTemplate": "Preview item",
+        "previewTemplateTooltip": "Choose a template to inspect the sale and buyback price calculation.",
+        "stockedInShop": "in assortment",
+        "emptyPreview": "Add or choose an item template to see the calculation.",
+        "basePrice": "Converted base price",
+        "stockQuantity": "Available quantity",
+        "simulator": {
+          "title": "Price simulator",
+          "description": "The backend compares the saved and draft profile.",
+          "quickTest": "Representative test",
+          "mode": "Mode",
+          "playerBuys": "Player buys",
+          "shopBuys": "Shop buys",
+          "quantity": "Units",
+          "condition": "Condition",
+          "conditions": {
+            "ruined": "Ruined",
+            "poor": "Poor",
+            "worn": "Worn",
+            "good": "Good",
+            "excellent": "Excellent"
+          },
+          "reputation": "Relationship",
+          "temporary": "Temporary adjustment %",
+          "calculating": "Calculating…",
+          "error": "Calculation failed",
+          "catalog": "Catalog",
+          "converted": "Converted",
+          "preModifiers": "Base rate",
+          "savedPrice": "Before change / unit",
+          "draftUnitPrice": "After change / unit",
+          "total": "Batch",
+          "availability": "Availability",
+          "resultTabs": "Simulator result view",
+          "breakdownItem": "Item analyzed in the breakdown",
+          "breakdownStages": "Calculation stage range",
+          "views": {
+            "summary": "Result",
+            "breakdown": "Calculation breakdown"
+          },
+          "breakdown": "Full breakdown",
+          "skipped": "skipped"
+        },
+        "reasonCodes": {
+          "catalog_price": "Source catalog price.",
+          "currency_conversion": "Converted to settlement currency.",
+          "currency_rate_missing": "No rate; emergency 1:1 rate used.",
+          "sale_base": "Applied the base retail rate.",
+          "buyback_base": "Applied the base buyback rate.",
+          "ordinary_legal_good_unaffected": "An ordinary legal good needs no risk premium.",
+          "season_not_relevant_for_category": "The season does not affect this category.",
+          "no_active_market_event_for_item": "No active event matches this item.",
+          "normal_demand": "Demand is neutral.",
+          "standard_condition": "Good condition needs no adjustment.",
+          "no_temporary_modifier": "No temporary adjustment was entered.",
+          "no_manual_adjustment": "No manual GM price.",
+          "disabled": "The rule is disabled.",
+          "guardrail_not_needed": "The price is within the safe range.",
+          "wealth_limit_not_reached": "The shop has enough buyback capital.",
+          "rounding_not_needed": "The price already matches the rounding step.",
+          "minimum_not_needed": "The price exceeds the configured minimum.",
+          "pricing_policy_selected": "The policy was selected; this step does not change the price yet.",
+          "shop_type_buy": "Shop specialization changes the retail margin for this category.",
+          "shop_type_sell": "Shop specialization changes the buyback offer for this category.",
+          "no_type": "The profile has no assigned shop type yet.",
+          "availability_buy": "Retail price reacts to current stock.",
+          "availability_sell": "The buyback offer accounts for current stock.",
+          "demand_buy": "Demand changes the buyer's price.",
+          "demand_sell": "Demand changes the buyback amount.",
+          "condition_buy": "Condition changes the retail value of this unit.",
+          "condition_sell": "Condition changes the unit's buyback valuation.",
+          "wealth_buy": "Shop wealth affects the margin for this price tier.",
+          "wealth_sell": "Shop capital affects buyback in this price tier.",
+          "legality_buy": "Legality or risk cost was added to the price.",
+          "legality_sell": "Legality changes the shop's willingness to buy.",
+          "reputation_buy": "The buyer's relationship with the shop changes the price.",
+          "reputation_sell": "The seller's relationship changes the buyback offer.",
+          "location_buy": "Location, transport and provenance change the price.",
+          "location_sell": "Location and local supply change the buyback offer.",
+          "seasonality_buy": "The season applies to this category and changes retail price.",
+          "seasonality_sell": "The season applies to this category and changes buyback.",
+          "active_market_events": "An active event matches the date and item scope.",
+          "world_profile_buy": "World conditions affect this category at retail.",
+          "world_profile_sell": "World conditions affect this category at buyback.",
+          "no_world_profile": "No world-profile data is available for this rule.",
+          "counterfeit_risk_not_material": "This good is not materially sensitive to forgery.",
+          "counterfeit_buy": "Provenance risk changes the buyer's price.",
+          "counterfeit_sell": "Provenance risk changes the buyback offer.",
+          "deterministic_counterfeit_suspected": "The deterministic check indicates a suspiciously cheap fake.",
+          "temporary_gm_modifier": "A temporary GM adjustment was applied.",
+          "manual_adjustment_fixed": "The GM set a manual price for this entry.",
+          "policy_rule_fixed": "A GM exception set a fixed price.",
+          "policy_rule_additive": "A GM exception added a fixed amount.",
+          "policy_rule_multiplier": "A GM exception applied a multiplier.",
+          "invalid_or_negative_price": "An invalid or negative price was replaced with a safe value.",
+          "guardrail_range": "The price was constrained to the configured range.",
+          "wealth_buyback_limit": "Buyback budget or unit limit constrained the offer.",
+          "rounding": "The price was aligned to the configured step.",
+          "minimum_price": "The minimum permitted price was applied.",
+          "guardrail_buyback_ratio": "Buyback was capped against retail to prevent arbitrage."
+        },
+        "noActiveModifiers": "No active modifiers beyond the base rate.",
+        "breakdown": {
+          "buybackBase": "Base buyback rate",
+          "saleBase": "Base retail rate",
+          "currencyConversion": "Currency conversion and fee",
+          "guardrailRange": "Price bound",
+          "guardrailBuybackRatio": "Arbitrage protection",
+          "rounding": "Rounding",
+          "minimumPrice": "Minimum price",
+          "policyRule": "Special rule"
+        },
+        "cards": {
+          "buy": {
+            "title": "Store sale price",
+            "description": "The amount the player pays when buying from the store."
+          },
+          "sell": {
+            "title": "Store buyback price",
+            "description": "The amount the store pays when the player sells the item back."
+          }
+        },
+        "toggles": {
+          "shopType": "Include store type",
+          "availability": "Include item availability",
+          "wealth": "Include wealth",
+          "legality": "Include legality",
+          "reputation": "Include reputation",
+          "location": "Include location",
+          "seasonality": "Include seasonality",
+          "worldProfile": "Include world profile",
+          "counterfeitRisk": "Include counterfeit risk",
+          "demand": "Include demand",
+          "condition": "Include condition",
+          "marketEvents": "Include market events"
+        },
+        "toggleDescriptions": {
+          "shopType": "Rewards goods that fit the store specialization and increases prices outside its profile.",
+          "availability": "Reacts to the number of copies of this item currently available in the store.",
+          "wealth": "Adjusts margin and buyback rules by store wealth and item tier.",
+          "legality": "Distinguishes legal, border, and illegal goods and matches them to store status.",
+          "reputation": "Raises or dampens prices based on the store's renown and trustworthiness.",
+          "location": "Includes local trade conditions and how well the store type matches its location.",
+          "seasonality": "Applies seasonal increases or discounts for selected item classes and genres.",
+          "worldProfile": "Adds modifiers that come from the campaign profile and the game world.",
+          "counterfeitRisk": "Corrects prices for goods that are sensitive to forgeries and uncertain provenance.",
+          "demand": "Reacts to demand for this item, especially during buyback.",
+          "condition": "Adjusts valuation to the physical condition of the item.",
+          "marketEvents": "Applies only active events whose scope matches the item."
+        }
+      },
+      "options": {
+        "locationType": {
+          "metropolia": "Metropolis",
+          "miasto": "City",
+          "miasteczko": "Town",
+          "wies": "Village",
+          "jarmark": "Fair",
+          "port": "Port",
+          "port_morski": "Sea port",
+          "port_rzeczny": "River port",
+          "forteca": "Fortress",
+          "przy_trakcie": "By the route",
+          "obrzeza": "Outskirts",
+          "dzielnica_bogata": "Rich district",
+          "dzielnica_biedna": "Poor district",
+          "strefa_swiatynna": "Temple district",
+          "strefa_cechowa": "Guild district"
+        },
+        "legalStatus": {
+          "legal": "Legal",
+          "licensed": "Licensed",
+          "grey": "Grey market",
+          "illegal": "Illegal",
+          "mixed": "Mixed"
+        },
+        "wealthTier": {
+          "nedzny": "Destitute",
+          "biedny": "Poor",
+          "standard": "Standard",
+          "bogaty": "Wealthy",
+          "elitarny": "Elite",
+          "luksusowy": "Luxury"
+        },
+        "reputation": {
+          "fatalna": "Terrible",
+          "zla": "Bad",
+          "podejrzana": "Suspicious",
+          "neutralna": "Neutral",
+          "dobra": "Good",
+          "znakomita": "Excellent"
+        },
+        "seasonality": {
+          "caloroczny": "Year-round",
+          "sezonowy": "Seasonal",
+          "wiosna": "Spring",
+          "lato": "Summer",
+          "jesien": "Autumn",
+          "zima": "Winter",
+          "zniwa": "Harvest",
+          "jarmark": "Fair",
+          "swieta": "Holidays"
+        }
+      }
+    },
+    "activationDialog": {
+      "ariaLabel": "Activation of stores",
+      "title": "Active player stores",
+      "subtitle": "Click on the shop tab to enable or hide it for players.",
+      "activeCount": "Active: {active}/{total}",
+      "statusActive": "Active",
+      "statusInactive": "Inactive",
+      "currentShop": "Current store",
+      "close": "@:actions.close"
+    },
+    "assortment": {
+      "sourceLabel": "Source (Stack/Basket)",
+      "searchPlaceholder": "Search by name or description...",
+      "historyPrefix": "History",
+      "undo": "Undo",
+      "selectedPrefix": "Selected",
+      "moveToShop": "@:actions.move ->",
+      "targetShop": "Target store",
+      "shopAssortmentTab": "Store assortment",
+      "suggestionsTab": "Suggestions and draw",
+      "moveToStack": "<- @:actions.move",
+      "suggestionsHeader": "Suggestions and selection of assortments",
+      "generateSuggestions": "Generate suggestions",
+      "addSelected": "Add selected",
+      "addAll": "Add everything",
+      "rollInstancesLabel": "Random instance:",
+      "rollStarter": "Random start",
+      "visibleItems": "Visible items: {count}. Total number of pieces: {units}.",
+      "loadedRange": "Loaded suggestions: {shown} out of {total}. Total pieces: {units}.",
+      "loadMoreSuggestions": "Show next {count}",
+      "noMoreSuggestions": "No more suggestions to load.",
+      "noSuggestionsSetProfile": "No suggestions. Set up your store profile and click \"Generate Suggestions\".",
+      "starterHeader": "Starter stock suggestions",
+      "refreshSuggestions": "@:actions.refresh suggestions",
+      "addDraftTemplates": "Add DRAFT to templates",
+      "addSelectedInstances": "Add selected instances",
+      "addAllInstances": "Add all instances",
+      "rollStarterBatch": "Randomly select a dozen or so starters",
+      "noSuggestionsSaveProfile": "No suggestions. Save your store profile and click \"Generate Startup Suggestions\".",
+      "draftMissingTemplateBadge": "DRAFT no template",
+      "stackCandidateLabel": "Possible stack: {count}x",
+      "remainingRecommendations": "Recommendations for other templates: {shown} with {total}.",
+      "allRecommendationsShown": "All rated templates are included in the suggestion list.",
+      "mergeSimilarButton": "Merge similar",
+      "rollPreview": "Dry run",
+      "applyPreviewResult": "@:actions.apply this result",
+      "previewSummary": "Change plan: {unique} items / {instances} pieces (target: {target}).",
+      "previewDelta": "Change vs. current store: items {deltaUnique}, pieces {deltaInstances}."
+    },
+    "quickTransfer": {
+      "title": "Assortment tools",
+      "gmTransferTitle": "GM: quick transfer",
+      "itemLabel": "Item",
+      "moveToLabel": "@:actions.move to",
+      "moveButton": "@:actions.move",
+      "containersOverview": "Containers and contents",
+      "emptyShort": "Lack",
+      "actionsPreview": "Quick actions and previews",
+      "shopPurchaseTitle": "Purchase from store",
+      "shopLabel": "Store",
+      "goodsLabel": "Commodity",
+      "buyerLabel": "Buys",
+      "buyButton": "@:actions.buy",
+      "noGoodsInShop": "Out of stock in the store.",
+      "quantityLabel": "Quantity",
+      "gmQuantityHint": "Maximum available: {max}"
+    },
+    "iconDialog": {
+      "ariaLabel": "Select an item icon",
+      "title": "Icon selection",
+      "close": "@:actions.close",
+      "metadataTitle": "Icon metadata",
+      "iconClassPlaceholder": "Number vNNNN",
+      "addIconPlaceholder": "Add vNNNN",
+      "namePlaceholder": "Icon name",
+      "descriptionPlaceholder": "Icon description",
+      "specialMarksPlaceholder": "Special signs",
+      "autoTagsPlaceholder": "Automatic tags",
+      "typesMulti": "Types (many)",
+      "subtypesMulti": "Subtypes (many)",
+      "applyMetadata": "@:actions.apply metadata",
+      "collectionTitle": "Icons collection",
+      "searchPlaceholder": "Search by ID, name, description, tags...",
+      "allTypes": "All types",
+      "allSubtypes": "All subtypes",
+      "sortAsc": "Sorting: ascending",
+      "sortDesc": "Sorting: descending",
+      "emptyFiltered": "There are no icons for the selected filters.",
+      "addIcon": "Add",
+      "deleteIcon": "Delete",
+      "errors": {
+        "invalidClass": "Enter an icon number in the v0001-v1375 format.",
+        "classTaken": "{iconClass} is already visible in the catalog. Use drag and drop to swap slots.",
+        "classVisible": "{iconClass} is already visible in the catalog.",
+        "chooseIconFirst": "Select an icon first."
+      },
+      "cancel": "@:actions.cancel",
+      "saveSelection": "@:actions.save selection"
+    },
+    "ownerDialog": {
+      "ariaLabel": "Select an owner",
+      "title": "Owner's choice",
+      "close": "@:actions.close",
+      "currentSelection": "Current selection",
+      "selectionDescription": "Description of the selection",
+      "ownerChip": "Owner",
+      "noDescription": "No description.",
+      "optionDescriptions": {
+        "DEFAULT": "Default stack. The item goes to the DEFAULT container.",
+        "TRASH": "The item goes to trash and waits for restore or deletion.",
+        "BG1": "Owner: Main Hero 1. Equipment assigned to this character.",
+        "BG2": "Owner: Main Hero 2. Equipment assigned to this character.",
+        "BG3": "Owner: Main Hero 3. Equipment assigned to this character."
+      },
+      "cancel": "@:actions.cancel",
+      "saveSelection": "@:actions.save selection"
+    },
+    "fieldEditDialog": {
+      "ariaLabel": "Field editor",
+      "title": "{field} ({context})",
+      "defaultField": "Field",
+      "searchPlaceholder": "Filter suggestions...",
+      "valuePlaceholder": "Enter value for: {field}",
+      "editField": "Edit field {field}",
+      "noSuggestions": "No suggestions.",
+      "targets": {
+        "default": "form",
+        "template": "template",
+        "newTemplate": "new template",
+        "inventory": "item"
+      },
+      "fields": {
+        "ITEM_CLASS": "ITEM_CLASS",
+        "ITEM_ID": "ITEM_ID",
+        "IMG_CLASS": "IMG_CLASS",
+        "OWNER_OPT": "OWNER_OPT",
+        "ITEM_PLACE": "ITEM_PLACE",
+        "ITEM_GENRE": "ITEM_GENRE",
+        "PRIZE": "PRIZE",
+        "CHARGE": "CHARGE"
+      },
+      "validation": {
+        "required": "This field is required.",
+        "invalidNumber": "Enter a valid number.",
+        "nonNegative": "Value must be >= 0."
+      }
+    },
+    "weaponStatsDialog": {
+      "ariaLabel": "Weapon stats",
+      "title": "Weapon stats",
+      "close": "@:actions.close",
+      "topBarTitle": "Weapon stats {context}",
+      "sourceTemplate": "Template",
+      "sourceItem": "Item",
+      "selectLabel": "Select weapon (ITEM_ID)",
+      "emptySelection": "Select weapon from the list",
+      "noOptions": "No weapon definitions found.",
+      "fieldsTitle": "Legacy params (w_bron)",
+      "name": "Name",
+      "type": "Type",
+      "handed": "Handedness",
+      "category": "Category",
+      "dice": "Dice",
+      "modifier": "Modifier",
+      "damage": "Damage",
+      "range": "Range",
+      "reload": "Reload",
+      "qualities": "Qualities",
+      "load": "Load",
+      "featuresId": "Feature IDs",
+      "occuChance": "Occurrence chance",
+      "featureSelectHint": "Select a quality to view details.",
+      "add": "@:actions.add",
+      "remove": "@:actions.delete",
+      "features": {
+        "heavy": {
+          "name": "Heavy",
+          "description": "Massive weapon that is difficult to handle in close quarters.",
+          "mechanics": "Often adds penalties to precision or initiative, but gives stronger impact."
+        },
+        "crushing": {
+          "name": "Crushing",
+          "description": "Transfers force through armor and hard surfaces.",
+          "mechanics": "Usually improves effectiveness against armor or increases stun/knockdown pressure."
+        },
+        "stunning": {
+          "name": "Stunning",
+          "description": "Designed to disorient or incapacitate the target.",
+          "mechanics": "Can impose temporary control penalties or trigger stun tests."
+        },
+        "fast": {
+          "name": "Fast",
+          "description": "Balanced for quick follow-up attacks and reactive fencing.",
+          "mechanics": "Commonly grants attack speed bonuses or easier follow-up actions."
+        },
+        "precise": {
+          "name": "Precise",
+          "description": "Fine control over blade/edge alignment and strike placement.",
+          "mechanics": "Usually improves hit chance, called shots, or critical reliability."
+        },
+        "balanced": {
+          "name": "Balanced",
+          "description": "Weight distribution supports stable offense and defense.",
+          "mechanics": "Often reduces handling penalties and helps with parry/defense checks."
+        }
+      },
+      "cancel": "@:actions.cancel",
+      "save": "@:actions.save"
+    },
+    "itemDetailDialog": {
+      "ariaLabel": "Item details",
+      "title": "Item details",
+      "close": "@:actions.close",
+      "fallbackItemName": "Item",
+      "sourcePrefix": "Source",
+      "nicknameLabel": "Pseudonym",
+      "nicknamePlaceholder": "Enter nickname...",
+      "nicknameModeReplace": "Nickname: replace",
+      "nicknameModeAppend": "Nickname: append",
+      "sources": {
+        "shop": "Store",
+        "inventory": "Inventory",
+        "trash": "Trash"
+      },
+      "save": "@:actions.save",
+      "priceWeightSingle": "Price and weight (1 pc.)",
+      "chargeLabel": "Weight",
+      "rawPrice": "Base value: {value} / pc.",
+      "appraise": "Appraise",
+      "valueHidden": "Hidden",
+      "fullData": "Full details",
+      "noData": "No data to display.",
+      "noDataShort": "No data",
+      "sections": {
+        "overview": "Description and source",
+        "commerce": "Trade",
+        "mechanics": "Mechanics",
+        "advanced": "Advanced data"
+      },
+      "availability": {
+        "available": "Available",
+        "availableQuantity": "Available: {quantity}",
+        "unavailable": "Unavailable"
+      },
+      "metaLabels": {
+        "name": "Name",
+        "description": "Description",
+        "shortDescription": "Short description",
+        "fullDescription": "Full description",
+        "class": "Class",
+        "category": "Category",
+        "price": "Price",
+        "value": "Value",
+        "currency": "Currency",
+        "quantity": "Quantity",
+        "availability": "Availability",
+        "owner": "Owner",
+        "shop": "Shop / handler",
+        "stats": "Stats",
+        "special": "Special traits",
+        "requirements": "Requirements",
+        "tags": "Tags",
+        "technical": "Technical",
+        "weight": "Weight"
+      }
+    },
+    "suggestionDialog": {
+      "ariaLabel": "Suggestion details",
+      "title": "Suggestion details",
+      "close": "@:actions.close",
+      "suggestionLabel": "Suggestion",
+      "whySuggestion": "Why this suggestion",
+      "templateVsPersonalizedTitle": "Template vs personalized item",
+      "templateVsPersonalizedBody": "The template defines the pattern (NAME, ITEM_CLASS, ITEM_GENRE, PRIZE, CHARGE). A personalized item is a specific item in the store (PERSONAL_PSEU, PERSONAL_DESC, PERSONAL_COST).",
+      "personalizedVariant": "A variant of a personalized item",
+      "variantPrice": "{value} brass",
+      "cancel": "@:actions.cancel",
+      "createTemplateOnly": "@:actions.create template only",
+      "createTemplateAndItem": "@:actions.create template and add an item",
+      "addItem": "Add an item"
+    },
+    "shopView": {
+      "identifiersSection": "Identifiers",
+      "personalizationSection": "Personalization",
+      "classificationOwnershipSection": "Classification and ownership",
+      "ownerField": "OWNER",
+      "economySection": "Economy",
+      "emptyGoods": "Out of stock.",
+      "summaryCost": "Cost"
+    },
+    "templateEditor": {
+      "editTemplate": "Editing a template",
+      "deleteToTrash": "@:actions.delete -> trash",
+      "newTemplate": "New template",
+      "descriptionSection": "Description",
+      "classificationSection": "Classification",
+      "economySection": "Economy",
+      "clearForm": "Clear",
+      "summaryPrice": "Price"
+    },
+    "trashView": {
+      "trashZone": "Basket zone",
+      "slotsPrefix": "Places",
+      "zoneFilterPlaceholder": "Zone filter (e.g. BG12)",
+      "noZonesForFilter": "No zones for: {value}",
+      "generalZone": "General basket",
+      "discardZoneSuffix": "Discard zone",
+      "ownerZone": "{ownerLabel} - {suffix}"
+    },
+    "assortmentMerge": {
+      "ariaLabel": "Combining similar items",
+      "title": "Merge similar items",
+      "close": "@:actions.close",
+      "instructions": "For each field, select the window from which the final value is to be downloaded.",
+      "leftTitle": "Position A",
+      "rightTitle": "Position B",
+      "cancel": "@:actions.cancel",
+      "confirm": "@:actions.confirm",
+      "fields": {
+        "name": "Name",
+        "slot": "Slot",
+        "itemPlace": "Item place",
+        "personalPseu": "Pseudonym",
+        "personalDesc": "Personal description",
+        "personalCost": "Personnel cost",
+        "description": "Description",
+        "imgClass": "Class icons",
+        "prize": "Base price",
+        "charge": "Weight"
+      }
+    },
+    "modules": {
+      "shop": "Store: {name}",
+      "shopTitle": "BG's equipment",
+      "characterInventoryTitle": "Inventory: {name}",
+      "signboard": "Signboard",
+      "signboardTitle": "Active store",
+      "templates": "Add/edit templates",
+      "templatesTitle": "Add/edit",
+      "defaultStack": "ITEMS - PERSONALIZE",
+      "defaultStackTitle": "Stack (Default)",
+      "trash": "Reject Abyss (Basket)",
+      "trashTitle": "Bin",
+      "shopEditor": "Shop-add/edit",
+      "shopEditorTitle": "Store profile",
+      "assortment": "Shop - determine the assortment",
+      "assortmentTitle": "Assortment and suggestions",
+      "quickTransfer": "Shop - quick transfer/preview",
+      "quickTransferTitle": "Transfer and preview",
+      "transactionLedger": "Transaction ledger",
+      "walletStatus": "BG purses",
+      "encumbranceStatus": "BG encumbrance",
+      "bgEquipmentTrash": "BG + Trash equipment",
+      "futureTitle": "Development module",
+      "other": "Templates",
+      "otherTitle": "List"
+    },
+    "containers": {
+      "unknownContainer": "Unknown container",
+      "generalTrash": "Recoil Abyss (general)",
+      "playerTrash": "{ownerLabel} - {suffix}",
+      "genericContainer": "Container",
+      "containerFallback": "Container {id}"
+    },
+    "alerts": {
+      "shopCreateFailed": "Failed to create store.",
+      "shopCreated": "A new store has been added.",
+      "shopMinOne": "At least one store must remain.",
+      "shopDeleteFailed": "The store could not be deleted.",
+      "shopDeleted": "Store deleted.",
+      "shopActivationFailed": "Failed to change store activation.",
+      "shopActivated": "Store activated: {name}.",
+      "shopDeactivated": "Store hidden: {name}.",
+      "signboardGenerateFailed": "Failed to generate sign name.",
+      "signboardGenerated": "The sign drawn was: {name}.",
+      "noActiveShop": "No active store.",
+      "shopProfileSaved": "Store profile saved.",
+      "shopProfileSaveFailed": "Failed to save the store profile.",
+      "noSuggestionsForConfig": "No suggestions for the selected configuration.",
+      "suggestionsGenerated": "{count} product suggestion generated.",
+      "noSelectedSuggestions": "No suggestions marked.",
+      "suggestionsApplied": "Added {count} suggested items.",
+      "noSuggestionsToAdd": "No suggestions to add.",
+      "suggestionsAllApplied": "Added {count} items from the suggestion list.",
+      "noDraftSuggestions": "There are no DRAFT items to add to templates.",
+      "draftTemplatesCreated": "Added {count} items to templates.",
+      "rollPreviewEmpty": "No suggestions for drawing preview.",
+      "rollPreviewReady": "Preview ready: {unique} items / {instances} pieces (target: {target}).",
+      "rollPreviewApplied": "The result used was: {unique} items / {instances} pieces.",
+      "noSuggestionsForRoll": "There are no suggestions for drawing the assortment.",
+      "rollApplied": "{unique} items and {instances} items in total were drawn.",
+      "chooseIconFirst": "First select an icon.",
+      "chooseOptionFirst": "First, select your options.",
+      "trashGeneralFull": "The general basket is full.",
+      "trashOwnerFull": "The basket of {ownerLabel} is full ({used}/{limit}).",
+      "restoredFromTrash": "Item restored from trash.",
+      "templateCreated": "Template saved to the database.",
+      "templateCreateFailed": "Failed to save the new template.",
+      "templateSaved": "Template updated in the database.",
+      "templateSaveFailed": "Failed to save the template.",
+      "inventorySaveFailed": "Failed to save the item customization.",
+      "templateMovedToTrash": "Template moved to trash.",
+      "overweight": "Too hard: {current}/{limit} {unit}.",
+      "encumbranceExceeded": "The transaction would exceed the character's carrying capacity.",
+      "walletInsufficient": "There are not enough funds in your purse.",
+      "paymentQuoteStale": "The price, rate, or balance changed. Review the refreshed quote.",
+      "paymentConversionRequired": "This payment requires currency conversion confirmation.",
+      "shopInactive": "This store is inactive.",
+      "missingExchangeRate": "The shop has no exchange rate for this item's currency. Ask the GM to complete the pricing policy.",
+      "tradeInvalidPayload": "Could not prepare the transaction data.",
+      "tradeUnauthorized": "Missing permissions or API token for this transaction.",
+      "tradeFailed": "The transaction could not be completed.",
+      "templateIdExists": "Template ID already exists.",
+      "trashDeletedPermanent": "The item has been permanently deleted from the trash.",
+      "inventoryMovedToTrash": "The item has been moved to the trash.",
+      "noContainersToEdit": "No containers to edit.",
+      "noShopContainersToEdit": "No store containers to edit.",
+      "selectTwoSimilarForMerge": "Select exactly two similar items.",
+      "mergePrepareFailed": "It was not possible to prepare a comparison.",
+      "mergeItemsMissing": "No items found to combine.",
+      "mergeReadFailed": "Failed to read connection data.",
+      "mergeSuccess": "Similar items have been combined.",
+      "selectContainers": "Select containers.",
+      "selectDifferentContainers": "Choose different containers.",
+      "sourceMustBeStackOrTrash": "The source can only be Stack or Trash.",
+      "selectTargetShop": "Select your target store.",
+      "sourceMustBeShop": "The source must be a store.",
+      "targetMustBeStackOrTrash": "The target can only be Stack or Trash.",
+      "unknownTransferDirection": "Transfer direction unknown.",
+      "noItemsSelected": "No items selected.",
+      "selectItem": "Select an item.",
+      "selectTargetContainer": "Select the target container.",
+      "itemAlreadyInContainer": "The item is already in this container.",
+      "selectShopAndReceiver": "Select a store and a recipient.",
+      "selectGoods": "Select goods.",
+      "noAvailableQuantity": "No quantity available."
+    },
+    "validation": {
+      "common": {
+        "invalidForm": "The form contains errors."
+      },
+      "template": {
+        "id": "ID must be a number greater than 0.",
+        "name": "The NAME field is required.",
+        "description": "The DESCRIPTION field is required.",
+        "itemClass": "The ITEM_CLASS field is required.",
+        "itemIdWeapon": "The ITEM_ID field is required for WEAPON.",
+        "prize": "The PRIZE field must be number >= 0.",
+        "charge": "The CHARGE field must be number >= 0."
+      },
+      "inventory": {
+        "id": "The ID field is invalid.",
+        "invId": "The INV_ID field must be a valid number.",
+        "personalCost": "The PERSONAL_COST field must be number >= 0.",
+        "quantity": "The QUANTITY field must be number >= 0.",
+        "prize": "The PRIZE field must be number >= 0.",
+        "charge": "The CHARGE field must be number >= 0."
+      }
+    },
+    "workspace": {
+      "title": "Shop — GM workspace",
+      "navigation": "Shop primary navigation",
+      "shop": "Shop",
+      "createShop": {
+        "action": "Add shop",
+        "eyebrow": "New place of trade",
+        "title": "Add shop",
+        "description": "Choose a business type, set the signboard and create a separate shop. The system will persist its profile and leave the offer empty.",
+        "help": "Adds a separate shop, not another profile for the current shop. The new shop gets its own profile, status and stock. It does not copy the current offer.",
+        "type": "Business type",
+        "chooseType": "Choose a craft or kind of trade…",
+        "typeHelp": "The business type is saved in the new shop profile and controls word selection when rolling a signboard. It does not force a name — you can still enter your own.",
+        "typeRequired": "Choose a business type.",
+        "otherTypes": "Other businesses",
+        "name": "Shop name / signboard",
+        "nameHint": "The name shown in the shop list and profile.",
+        "nameHelp": "The name identifies this particular shop in the campaign. It does not set the business type or pricing policy. Two to six words are typical, for example “Under the Black Hammer”.",
+        "nameRequired": "Shop name is required.",
+        "rollName": "Roll name",
+        "rollNameHelp": "Rolls a non-repeating signboard suited to the selected craft and owner. A new shop starts with the default urban setting; after changing it you can roll more precisely in the profile. The result remains editable.",
+        "rollNameError": "A name could not be rolled for the selected shop type.",
+        "owner": "Purse owner",
+        "ownerHelp": "The owner selects the character or entity that settles the shop's transactions. It is not the shop profile and does not set its type. Choose npc for an independent merchant.",
+        "ownerName": "Owner name",
+        "ownerNameHint": "Optional narrative merchant name.",
+        "ownerNameHelp": "The owner name is narrative text. It does not alter balances, prices or permissions. Example: “Master Ortwin”.",
+        "independentOwner": "independent merchant",
+        "resultHint": "The new shop profile opens after creation.",
+        "submit": "Create shop",
+        "creating": "Creating…",
+        "close": "Close form",
+        "createError": "The shop could not be created. Check the connection and try again."
+      },
+      "active": "Active",
+      "inactive": "Inactive",
+      "moreActions": "More operations",
+      "shopSections": "Shop sections",
+      "advanced": "Advanced",
+      "technical": "Technical data — read only",
+      "offer": "Offer",
+      "catalog": "Catalog",
+      "warehouse": "Warehouse",
+      "history": "History",
+      "items": "Items",
+      "catalogModes": {
+        "navigation": "Catalog workspace mode",
+        "templates": "Templates",
+        "instances": "Item instances",
+        "dictionaries": "PL/EN dictionaries",
+        "templatesTitle": "Item template catalog",
+        "templatesDescription": "A template is a reusable data pattern for offers and concrete item instances.",
+        "instancesTitle": "Create a concrete item instance",
+        "instancesDescription": "Select a template, set individual values and choose the container for the new physical item.",
+        "dictionariesTitle": "Item domain dictionaries",
+        "dictionariesDescription": "Canonical mapping of technical codes to readable Polish and English labels.",
+        "newTemplate": "New template",
+        "templateEditor": "Template editor",
+        "templateHint": "Changes affect the template, not instances that already exist.",
+        "instanceEditor": "New instance",
+        "basedOn": "Based on template",
+        "selectTemplate": "Select a template from the list on the left.",
+        "createInstance": "Create instance"
+      },
+      "dictionaries": {
+        "navigation": "Dictionary groups",
+        "iconCategories": "Icon categories",
+        "iconCategoriesDescription": "Editable Polish and English names of the main groups describing artwork appearance.",
+        "iconSubcategories": "Icon subcategories",
+        "iconSubcategoriesDescription": "More precise artwork types with an editable parent category, item class, and item type.",
+        "classes": "Item classes",
+        "classesDescription": "Broad item-data domains used by ITEM_CLASS and automatic icon matching.",
+        "genres": "Item types",
+        "genresDescription": "More precise item uses applied by ITEM_GENRE and automatic icon matching.",
+        "attributes": "Attributes",
+        "attributesDescription": "Additional mechanical item properties independent of artwork classification.",
+        "code": "Technical code",
+        "appliesTo": "Applies to",
+        "relationship": "Relationship",
+        "parentCategory": "Parent category",
+        "allClasses": "All classes",
+        "add": "Add entry",
+        "addTitle": "New entry: {group}",
+        "addDescription": "PL/EN labels and relationships will immediately be available in the icon editor.",
+        "labelPl": "Polish label",
+        "labelEn": "English label",
+        "selectParentCategory": "Select a parent category",
+        "defaultClass": "Related class",
+        "defaultGenre": "Related item type",
+        "inheritClass": "Inherit class from category",
+        "inheritGenre": "Inherit item type from category",
+        "canonicalValue": "Use canonical relationship",
+        "relationsHint": "Comma-separated codes",
+        "noRestrictions": "No restrictions — all",
+        "unlockCode": "Unlock technical-code editing",
+        "cancelCodeChange": "Cancel code change",
+        "codeUnlocked": "Code unlocked — saving will change the identifier.",
+        "invalidCode": "The code must start with a letter and contain at least 2 characters: A–Z, 0–9, or _.",
+        "requiredLabels": "Enter both Polish and English labels.",
+        "parentRequired": "Select a parent category.",
+        "saveError": "The entry could not be saved. Check whether the code is already in use.",
+        "archiveQuestion": "Disable this dictionary entry?",
+        "newCode": "New entry technical code",
+        "newLabelPl": "Polish label",
+        "newLabelEn": "English label"
+      },
+      "mechanics": {
+        "title": "Usage mechanics",
+        "description": "Actions exposed later in character inventory: tests, costs, and effects.",
+        "inheritanceMode": "Inheritance",
+        "modes": {
+          "INHERIT": "Class and type only",
+          "EXTEND": "Inherit and extend",
+          "REPLACE": "This template only"
+        },
+        "add": "Add mechanic",
+        "empty": "No mechanics at this level.",
+        "code": "Mechanic code",
+        "labelPl": "Polish label",
+        "labelEn": "English label",
+        "trigger": "Activation moment",
+        "handler": "Execution method",
+        "actionLabel": "Button label",
+        "actionPlaceholder": "e.g. Attack, Drink, Eat",
+        "mechanicDescription": "Player and GM description",
+        "test": "Requires a test / roll",
+        "formula": "Roll formula",
+        "targetKey": "Attribute / threshold",
+        "difficulty": "Modifier",
+        "cost": "Usage cost",
+        "quantityCost": "Consume items",
+        "chargeCost": "Consume charges",
+        "resourceCost": "Other resource",
+        "effects": "Mechanic effects",
+        "addEffect": "Add effect",
+        "condition": "Condition",
+        "effectType": "Effect type",
+        "effectTarget": "Effect target",
+        "effectValue": "Value",
+        "effectDescription": "Effect description",
+        "valuePlaceholder": "e.g. 1d10 + SB, 2, POISONED",
+        "noEffects": "No effects. Add damage, healing, status, modifier, or a custom effect.",
+        "extension": "Dedicated integration / advanced parameters",
+        "handlerKey": "Handler key",
+        "parameters": "JSON parameters",
+        "invalidParameters": "Parameters must be a valid JSON object.",
+        "remove": "Remove mechanic",
+        "selectOrAdd": "Select a mechanic on the left or add a new one.",
+        "futureHint": "This definition will drive future character-inventory action buttons without coupling the GUI to one game system.",
+        "overrideHere": "Override at template level",
+        "newMechanic": "New mechanic",
+        "dictionaryTitle": "Mechanics: {entry}",
+        "dictionaryHint": "This configuration will be inherited by every matching template.",
+        "shortLabel": "Mechanics ({count})",
+        "weaponContext": "Weapon combat parameters",
+        "weaponContextHint": "Values available to attack mechanics and future combat rolls.",
+        "weaponTypeHint": "e.g. crossbow, sword, firearm",
+        "rangeHint": "e.g. 30 m / close",
+        "triggers": {
+          "USE": "Use",
+          "ATTACK": "Attack",
+          "CONSUME": "Consume",
+          "EQUIP": "Equip",
+          "PASSIVE": "Passive effect",
+          "CUSTOM": "Custom moment"
+        },
+        "handlers": {
+          "GENERIC": "Generic action",
+          "DICE_TEST": "Dice test",
+          "ATTACK": "Attack and damage",
+          "CONSUME": "Consume item",
+          "APPLY_EFFECTS": "Apply effects",
+          "CUSTOM": "Dedicated handler"
+        },
+        "conditions": {
+          "ALWAYS": "Always",
+          "SUCCESS": "On success",
+          "FAILURE": "On failure"
+        },
+        "effectTypes": {
+          "DAMAGE": "Damage",
+          "HEAL": "Healing",
+          "STATUS": "Status",
+          "MODIFIER": "Modifier",
+          "RESOURCE": "Resource",
+          "CUSTOM": "Custom effect"
+        },
+        "targets": {
+          "SELF": "User",
+          "TARGET": "Selected target",
+          "AREA": "Area"
+        },
+        "sources": {
+          "CLASS": "Class",
+          "GENRE": "Type",
+          "TEMPLATE": "Template"
+        }
+      },
+      "encumbrance": {
+        "preset": "Typical encumbrance",
+        "custom": "Custom value",
+        "customValue": "Encumbrance value"
+      },
+      "instanceStack": {
+        "title": "Item instance stack",
+        "editorTitle": "Advanced instance personalization",
+        "expandedAttributes": "Instance attributes",
+        "expandedAttributesHint": "Select every trait that belongs to this particular item.",
+        "filters": "Filter instances by location",
+        "defaultTarget": "Stack (Default)",
+        "unassigned": "Unassigned",
+        "all": "All",
+        "characters": "Characters",
+        "shops": "Shops",
+        "trash": "Archive",
+        "noOwner": "No owner",
+        "kinds": {
+          "unassigned": "Unassigned",
+          "character": "Character",
+          "shop": "Shop",
+          "trash": "Archive",
+          "system": "System container"
+        }
+      },
+      "cart": {
+        "walletAfter": "Wallet after trade",
+        "lastTrade": "Last trade"
+      },
+      "archive": "Archive",
+      "archivedItems": "Items",
+      "archivedTemplates": "Templates",
+      "archiveSelected": "Archive ({count})",
+      "bulkQuantity": "Quantity for selected",
+      "setQuantity": "Set quantity",
+      "moveTarget": "Target container",
+      "moveSelected": "Move",
+      "quickTransfer": "Quick transfer",
+      "archiveQuestion": "Move this template to the archive?",
+      "empty": "No items match the criteria.",
+      "allTypes": "All types",
+      "suggestions": "Suggestions",
+      "offerInstances": "Concrete items in the shop",
+      "instanceCount": "{count} items · {groups} aggregated rows",
+      "classification": "Class · type",
+      "selectAll": "Select all",
+      "deselectAll": "Deselect all",
+      "moveToTrash": "Move to trash ({count})",
+      "movingToTrash": "Moving…",
+      "emptyOfferInstances": "This shop does not contain any concrete item instances yet.",
+      "unnamedItem": "Unnamed item",
+      "suggestionPanel": {
+        "title": "Suggestions to add",
+        "hint": "A suggestion is not stock until you add a concrete item.",
+        "empty": "No suggestions have been generated for this shop profile.",
+        "generate": "Generate suggestions",
+        "addAll": "Add all",
+        "addingAll": "Adding all…",
+        "saveTemplate": "Save template",
+        "creatingTemplate": "Saving…",
+        "templateReady": "Template ready",
+        "addOne": "Add 1 item",
+        "adding": "Adding…",
+        "defaultReason": "Matches the shop profile."
+      },
+      "transfer": {
+        "title": "Transfer concrete items",
+        "from": "From",
+        "to": "To",
+        "selectSource": "Select source container",
+        "selectTarget": "Select target container",
+        "swap": "Swap source and target containers",
+        "searchSource": "Search the source container",
+        "selected": "Selected: {count}",
+        "clear": "Clear",
+        "saving": "Moving…",
+        "apply": "Apply transfer ({count})",
+        "sourceItems": "Source items",
+        "targetItems": "Target items",
+        "sourceHint": "Available concrete items: {count}",
+        "targetHint": "Container state: {before} → {after}",
+        "previewTitle": "Operation preview",
+        "previewHint": "Each row represents one concrete item instance.",
+        "emptySource": "The selected source container is empty.",
+        "emptyTarget": "The target container is empty.",
+        "emptyPreview": "Select items on the left to prepare an atomic transfer.",
+        "removeFromPreview": "Remove item from preview"
+      },
+      "stockPreview": "Restock preview",
+      "previewItems": "Change preview: {count} items",
+      "diff": {
+        "added": "Added",
+        "changed": "Changed",
+        "removed": "Removed"
+      },
+      "pricePolicy": "Pricing policy",
+      "pricingSummary": "Base buy rate {buy}%, sell rate {sell}%. Enabled modifiers are applied in table order.",
+      "editPolicy": "Expand modifier table",
+      "modifier": "Modifier",
+      "enabled": "Enabled",
+      "duplicate": "Duplicate",
+      "duplicateProfile": "Duplicate profile",
+      "duplicateWithOffer": "Duplicate profile and offer",
+      "duplicateProfileQuestion": "Create an inactive copy of this shop profile?",
+      "duplicateOfferQuestion": "Create an inactive copy of the profile and current offer?",
+      "exportJson": "Export JSON",
+      "deleteShop": "Delete shop",
+      "deleteShopQuestion": "The shop will be soft-deleted. Use this operation carefully.",
+      "unsavedQuestion": "You have unsaved changes. Leave the editor?",
+      "details": "Details",
+      "noDescription": "No description.",
+      "id": "ID",
+      "date": "Date",
+      "shopLabel": "Shop",
+      "actor": "Actor",
+      "type": "Type",
+      "seller": "Seller",
+      "buyer": "Buyer",
+      "quantity": "Quantity",
+      "total": "Total",
+      "currency": "Currency",
+      "status": "Status",
+      "ledgerStatus": {
+        "executed": "Executed",
+        "failed": "Failed",
+        "reversed": "Reversed",
+        "redone": "Redone",
+        "corrected": "Corrected"
+      },
+      "ledgerDrawer": {
+        "title": "Transaction details",
+        "close": "Close details",
+        "value": "Transaction value",
+        "lines": "Line items",
+        "items": "Items",
+        "item": "Item",
+        "noItemName": "Unnamed item",
+        "unitPrice": "Unit price",
+        "lineTotal": "Line total",
+        "parties": "Transaction parties",
+        "pricing": "Settlement",
+        "basePrice": "Base price",
+        "finalPrice": "Final price",
+        "difference": "Difference",
+        "history": "Operation history",
+        "audit": "Audit data",
+        "updated": "Last updated",
+        "performedBy": "Performed by",
+        "parent": "Source transaction",
+        "correction": "Correction reason",
+        "note": "GM note",
+        "technical": "Full technical data",
+        "modifiers": "Price modifiers",
+        "conditions": "Transaction conditions",
+        "before": "Before snapshot",
+        "after": "After snapshot"
+      },
+      "tabs": {
+        "shops": "Shops",
+        "catalog": "Catalog",
+        "warehouse": "Warehouse",
+        "history": "History"
+      },
+      "subtabs": { "profile": "Profile", "offer": "Offer", "prices": "Prices" },
+      "density": { "compact": "Compact", "comfortable": "Comfortable" },
+      "sort": {
+        "name": "Name",
+        "price": "Price",
+        "availability": "Availability"
+      },
+      "formStatus": {
+        "clean": "Saved",
+        "dirty": "Unsaved changes",
+        "saving": "Saving",
+        "error": "Save error"
+      },
+      "fields": {
+        "name": "Name / signboard",
+        "type": "Shop type",
+        "owner": "Owner",
+        "activity": "Activity",
+        "autoTags": "Automatic tags",
+        "worldProfile": "World profile",
+        "location": "Location",
+        "legality": "Legality",
+        "wealth": "Wealth",
+        "reputation": "Reputation",
+        "seasonality": "Seasonality",
+        "counterfeitRisk": "Counterfeit risk",
+        "aliases": "Signboard aliases"
+      },
+      "profile": {
+        "eyebrow": "Merchant workshop · late Middle Ages",
+        "title": "Shop profile",
+        "description": "Build a believable place of trade: from its signboard and keeper to market law, clientele and the risk of counterfeit coin.",
+        "discard": "Discard changes",
+        "discardQuestion": "Discard all unsaved changes in this profile?",
+        "chooseType": "Choose a craft or kind of trade…",
+        "resetSection": "Restore suggested",
+        "randomName": {
+          "action": "Roll name",
+          "help": "Rolls a new signboard from the current business type and profile setting. It does not change the type, prices or offer and does not save the form. Repeated rolls avoid duplicates within the craft."
+        },
+        "tabs": {
+          "label": "Shop profile sections",
+          "previewLabel": "Shop profile preview",
+          "identity": "Identity",
+          "setting": "Setting",
+          "economy": "Market",
+          "events": "Events",
+          "archetype": "Archetype",
+          "tools": "Tools",
+          "simulator": "Simulator",
+          "summary": "Summary"
+        },
+        "help": {
+          "signboardName": "The signboard is the main name shown to players and in operation history. It does not change price or availability. A short name of 2–6 words is typical. Example: “Under the Brass Key”.",
+          "typeId": "Shop type controls preferred categories, margin, buyback and availability. It does not change every good. Current: {value}. An armourer values armour more naturally than food.",
+          "ownerCode": "The owner selects the character or entity that owns the shop and its purse. It does not set customer reputation. The current choice is used for saving and settlement. An independent trader can use the npc owner.",
+          "ownerName": "The owner name is narrative text shown instead of a technical code. It does not alter prices, budget or access rights. A name and byname such as “Master Ortwin” is typical.",
+          "activity": "An active shop can be used for trade and offer generation. Disabling it does not delete the profile or history and does not recalculate prices. A seasonal stall can be disabled after a fair.",
+          "aliases": "Aliases are alternative signboard names separated by commas. They help search and narration but do not affect the economy. Zero to three regional or colloquial variants are typical.",
+          "worldProfileId": "World profile sets purchasing power and availability with category-aware adjustments. Current: {value}. Standard is the typical baseline.",
+          "locationType": "Location describes transport, local supply and imports. It is not a flat markup. Current: {value}. Ports aid imports; villages constrain luxuries.",
+          "legalStatus": "Legality controls lawful, restricted and illegal goods plus risk premium. It does not change ordinary bread. Current: {value}.",
+          "wealthTier": "Wealth defines shop capital, buyback limits and expensive stock share. It only modestly affects margin and does not make everything dearer. Current: {value}.",
+          "reputation": "Base reputation is used when an actor has no individual relationship. It affects retail and buyback, not catalog price. Current: {value}.",
+          "seasonality": "Seasonality affects matching categories only, not the whole offer. Current: {value}. Winter matters more for clothing and tools.",
+          "counterfeitRisk": "Counterfeit risk is the chance of suspicious pricing for forgery-sensitive goods. It barely affects simple goods. Range 0–100%, current {value}%.",
+          "demandLevel": "Demand changes a particular valuation, especially buyback. It does not replace stock. Current: {value}; normal is typical.",
+          "availabilityBias": "Availability chance adjustment in percentage points. It does not directly change price. Typical range: −15 to +15; current {value} pp.",
+          "buybackBudget": "Capital for the whole buyback batch. Empty uses wealth and does not increase retail price. Current: {value}.",
+          "maxBuybackItemValue": "Maximum valuation of one buyback unit. Empty uses the wealth limit and does not cap retail. Current: {value}.",
+          "expensiveStockLimit": "Limit for expensive generated stock. Empty derives it from wealth and does not remove manual goods. Current: {value}.",
+          "localCategories": "Nearby goods cost less to transport and appear more often. Other categories are unaffected. Current: {value}.",
+          "importedCategories": "Distant goods are easier at ports and gain transport premium off-route. Other goods are unaffected. Current: {value}.",
+          "actorReputation": "A hero or party relationship overrides base reputation only for that actor and affects retail and buyback. Configured relationships: {count}.",
+          "autoTags": "Tags are derived from shop type, place, law and other profile settings. They affect search and suggestion matching but do not change price themselves. The current set is shown beside this help and updates automatically.",
+          "marketEvents": "A market event applies only within its dates, transaction modes and goods scope. It can change price and availability but not catalog price. A multiplier of 80–150% is typical. A closed route can raise import costs.",
+          "eventEnabled": "This switch enables the rule without deleting its settings. A disabled event changes neither price nor availability. It is useful for preparing an event before a session.",
+          "eventName": "The name helps the GM recognize the rule in the breakdown and history. It does not alter calculation. A cause such as “city siege” is typical.",
+          "eventType": "The kind gives the event narrative meaning and starting values that can be refined. The type alone does not apply it to every good. Crop failure should usually target food.",
+          "eventDates": "The dates define an inclusive start and end period. The rule is skipped outside it. The end date cannot precede the start date.",
+          "eventPrice": "Price percentage is a multiplier for matching goods: 100% changes nothing and 120% raises price by 20%. It does not alter availability. The form allows a safe 10–500% range.",
+          "eventAvailability": "Availability adds or removes percentage points for matching goods. It does not change price. −30 to +30 pp is typical; guardrails constrain the final result.",
+          "eventModes": "Transaction mode decides whether the event applies to player purchases, shop buyback or both. It does not affect other operations. A shortage may raise both retail and buyback.",
+          "eventClasses": "Classes limit the event to major item families. Empty means any class. Separate several values with commas. Example: weapons and armour during war.",
+          "eventGenres": "Categories narrow the rule more precisely than class. Empty adds no restriction. Separate several values with commas. Example: grain during crop failure.",
+          "eventLocations": "Locations make the rule apply only in a matching place. Empty means every location. A closed route may target a roadside shop.",
+          "eventItems": "Identifiers restrict the event to specific templates. Empty does not restrict goods. This is a precise exception, such as one rationed medicine.",
+          "profileTools": "These tools manage reusable settings, a profile copy, a portable file and history. They do not execute transactions or alter the offer without an explicit action.",
+          "profilePresets": "A custom preset stores profile settings for reuse. It contains no campaign data or transaction history. For example, save a “poor winter stall” variant.",
+          "profileOperations": "Duplication creates a separate profile, export prepares portable json, and import validates and saves settings through the api. Campaign-bound data is not copied.",
+          "profileHistory": "History contains saved profile and policy revisions. Choosing one only loads its values into the form; the database changes after an explicit save."
+        },
+        "market": {
+          "demand": "Base demand",
+          "availabilityBias": "Availability ± pp",
+          "buybackBudget": "Buyback budget",
+          "maxBuybackItemValue": "Buyback unit limit",
+          "expensiveStockLimit": "Expensive stock limit",
+          "localCategories": "Local goods",
+          "importedCategories": "Imported goods",
+          "categoryPlaceholder": "e.g. FOOD, GRAIN",
+          "actorReputation": "Actor relationships",
+          "useBaseReputation": "Base reputation",
+          "auto": "auto",
+          "demandLevels": {
+            "very_low": "Very low",
+            "low": "Low",
+            "normal": "Normal",
+            "high": "High",
+            "extreme": "Extreme"
+          }
+        },
+        "events": {
+          "title": "Temporary market events",
+          "description": "Dates and scope decide which goods the event affects.",
+          "add": "Add event",
+          "choose": "Choose an event to edit",
+          "empty": "No active or scheduled events.",
+          "active": "Active",
+          "enabledHint": "The rule participates in calculations",
+          "name": "Event name",
+          "kind": "Event kind",
+          "startsAt": "Starts",
+          "endsAt": "Ends",
+          "price": "Price %",
+          "availability": "Availability ± pp",
+          "modes": "Transaction mode",
+          "classes": "Item classes",
+          "genres": "Goods categories",
+          "locations": "Locations",
+          "items": "Item IDs",
+          "types": {
+            "war": "War",
+            "plague": "Plague",
+            "siege": "Siege",
+            "festival": "Festival",
+            "crop_failure": "Crop failure",
+            "closed_route": "Closed route",
+            "custom": "Custom"
+          }
+        },
+        "tools": {
+          "title": "Presets, exchange and history",
+          "description": "Operations use the real profile; import and revisions go through the API.",
+          "presets": "Custom profile presets",
+          "presetName": "Preset name",
+          "operations": "Operations",
+          "duplicate": "Duplicate profile",
+          "copyPrefix": "Copy —",
+          "export": "Export JSON",
+          "import": "Import JSON",
+          "history": "Change history",
+          "chooseRevision": "Choose a saved revision",
+          "useRevision": "Use these values as draft",
+          "imported": "Profile imported and saved.",
+          "importFailed": "This file is not a valid profile export."
+        },
+        "validation": {
+          "required": "This field is required to save a complete profile."
+        },
+        "typeAdvisor": {
+          "title": "Suggested kinds of business",
+          "hint": "Suggestions react to location, legal status and shop wealth.",
+          "otherCategory": "Other businesses"
+        },
+        "archetypes": {
+          "title": "Starting point",
+          "hint": "An archetype sets a suggested trade and context while preserving the name and owner.",
+          "guildWorkshop": {
+            "name": "Guild workshop",
+            "description": "A licensed craftsperson in the guild quarter"
+          },
+          "marketStall": {
+            "name": "Market stall",
+            "description": "Humble trade supervised by the market reeve"
+          },
+          "merchantHouse": {
+            "name": "Merchant house",
+            "description": "A wealthy storehouse in the patrician quarter"
+          },
+          "courtSupplier": {
+            "name": "Court goldsmith",
+            "description": "Jewellery and insignia made for the powerful"
+          },
+          "itinerantTrader": {
+            "name": "Itinerant trader",
+            "description": "Seasonal trade between road and fair"
+          },
+          "fence": {
+            "name": "Fence",
+            "description": "Discreet business at the edge of the law"
+          },
+          "apothecary": {
+            "name": "Town apothecary",
+            "description": "Licensed remedies, salves and medicinal ingredients"
+          },
+          "roadsideInn": {
+            "name": "Roadside inn",
+            "description": "Lodging, stabling and provisions for travellers"
+          },
+          "portWarehouse": {
+            "name": "Port warehouse",
+            "description": "Imports, barrels and goods passing through customs"
+          },
+          "monasticScriptorium": {
+            "name": "Monastic scriptorium",
+            "description": "Book copies, documents and writing materials"
+          },
+          "armourer": {
+            "name": "Armourer's workshop",
+            "description": "Guild production and repair of armour"
+          },
+          "clothMerchant": {
+            "name": "Cloth merchant's store",
+            "description": "Broadcloth, fabric bolts and long-distance trade"
+          },
+          "saltMerchant": {
+            "name": "Salt warehouse",
+            "description": "Regulated trade in salt and preserved food"
+          },
+          "moneyChanger": {
+            "name": "Merchant exchange",
+            "description": "Coin exchange, bullion appraisal and bills of exchange"
+          },
+          "printHouse": {
+            "name": "Printing house",
+            "description": "Late 15th century: notices, pamphlets and inexpensive books"
+          }
+        },
+        "identity": {
+          "title": "Identity and custody",
+          "description": "Define what customers see and who is responsible for the shop.",
+          "nameHint": "The name on the signboard, e.g. “Under the Three Keys”.",
+          "typeHint": "Type drives stock suggestions and should describe the primary craft.",
+          "ownerHint": "The character or entity that owns the shop and its containers.",
+          "ownerName": "Owner / keeper name",
+          "ownerNameHint": "Narrative name: guild master, merchant widow or factor.",
+          "activityHint": "An inactive shop remains in the campaign but is unavailable for trade.",
+          "aliasesHint": "Separate common names with commas; they improve search and suggestions.",
+          "independentNpc": "independent non-player character"
+        },
+        "setting": {
+          "title": "Place and order of trade",
+          "description": "Set the shop within municipal law, district wealth and the rhythm of the year.",
+          "worldHint": "Campaign rules that influence prices, availability and the economy."
+        },
+        "economy": {
+          "title": "Coin and trust",
+          "description": "Counterfeit risk helps define payment safety and the nature of the clientele.",
+          "riskHint": "0% means strict coin inspection; 100% means almost no verification.",
+          "riskLow": "Controlled circulation",
+          "riskHigh": "Rampant counterfeiting",
+          "recommended": "Use the value suggested by this profile: {value}%",
+          "tagsHint": "Generated from type, world profile and location; they feed stock suggestions."
+        },
+        "preview": {
+          "signboard": "Shop signboard",
+          "unnamed": "Unnamed shop",
+          "noType": "No kind of trade selected",
+          "title": "Profile coherence",
+          "completionHint": "Completion of the foundations required by shop mechanics.",
+          "logicCheck": "Setting check",
+          "consistent": "These settings form a coherent trading profile.",
+          "saveAndSuggest": "Save and prepare stock",
+          "saveHint": "The second action saves the profile, then creates stock suggestions.",
+          "marketImpact": "Draft settings impact",
+          "buybackLimited": "buyback limited by capital"
+        },
+        "locations": {
+          "dzielnica_kupiecka": {
+            "label": "Merchant quarter",
+            "description": "Storehouses, exchanges and patrician houses."
+          },
+          "dzielnica_rzemieslnicza": {
+            "label": "Craft quarter",
+            "description": "Workshops gathered under guild oversight."
+          },
+          "rynek": {
+            "label": "Town market",
+            "description": "Permanent stalls and trade watched by officials."
+          },
+          "miasto": {
+            "label": "Town — another district",
+            "description": "A general location within the walls."
+          },
+          "przedmiescie": {
+            "label": "Suburb",
+            "description": "Lower rents, weaker oversight and poorer repute."
+          },
+          "port": {
+            "label": "Port / quayside",
+            "description": "Imported goods, customs and a shifting clientele."
+          },
+          "zamek": {
+            "label": "Castle / borough",
+            "description": "Court, garrison and commissioned supply."
+          },
+          "klasztor": {
+            "label": "Monastery / church holding",
+            "description": "Trade under the protection of a religious institution."
+          },
+          "wies": {
+            "label": "Village",
+            "description": "Essential goods and limited purchasing power."
+          },
+          "trakt": {
+            "label": "Road / inn",
+            "description": "Travellers, passing merchants and irregular supply."
+          },
+          "jarmark": {
+            "label": "Periodic fair",
+            "description": "Temporary trade tied to the fair calendar."
+          }
+        },
+        "guidance": {
+          "locationType": {
+            "dzielnica_kupiecka": "A strong fit for wholesale stores, factors and imported goods.",
+            "dzielnica_rzemieslnicza": "The most credible location for a guild-regulated craft.",
+            "rynek": "Heavy footfall, market dues and frequent inspection of measures.",
+            "miasto": "A neutral location that does not impose a particular clientele.",
+            "przedmiescie": "Cheaper premises and more freedom at the cost of safety and reputation.",
+            "port": "Favours imports, contraband and rapid changes in availability.",
+            "zamek": "Wealthy clients, but permits or patronage may be required.",
+            "klasztor": "A good fit for scriptoria, herbs, food and services to pilgrims.",
+            "wies": "Little demand for luxuries; daily needs and repairs dominate.",
+            "trakt": "Supply is irregular and the clientele changes constantly.",
+            "jarmark": "This profile should usually use fair or seasonal availability."
+          },
+          "legalStatus": {
+            "legal": "The shop obeys market law without holding a special privilege.",
+            "licensed": "A privilege, licence or guild membership limits competition.",
+            "mixed": "A lawful counter conceals some untaxed, unguilded or unproven goods.",
+            "grey": "Authorities tolerate the trade while dues are paid and complaints stay quiet.",
+            "illegal": "Goods and transactions require intermediaries, passwords or protection."
+          },
+          "wealthTier": {
+            "nedzny": "Salvaged goods, minimal stock and customers guarding every penny.",
+            "biedny": "A narrow range, simple workmanship and frequent barter.",
+            "standard": "The usual means of a town craftsperson or permanent stall.",
+            "bogaty": "Good stock, imported goods and access to merchant credit.",
+            "elitarny": "High quality, special commissions and access by recommendation.",
+            "luksusowy": "The rarest goods for courts, patricians and great temples."
+          },
+          "reputation": {
+            "fatalna": "Known for fraud, violence or broken oaths.",
+            "zla": "Customers buy here chiefly for lack of an alternative.",
+            "podejrzana": "Rumours speak of dubious supply and dishonest measures.",
+            "neutralna": "A familiar place without special authority.",
+            "dobra": "Honest measures, sound goods and customers by referral.",
+            "znakomita": "Its fame reaches beyond the district and draws influential buyers."
+          },
+          "seasonality": {
+            "caloroczny": "Permanent premises and regular supply through most of the year.",
+            "sezonowy": "Open only when weather, raw material or traveller traffic allows.",
+            "wiosna": "Supply and demand peak when trade resumes in spring.",
+            "lato": "Travel, construction, herb gathering and campaigns drive the peak.",
+            "jesien": "A profile tied to harvests, provisioning and post-harvest trade.",
+            "zima": "Goods and services especially needed during the cold season.",
+            "jarmark": "The shop opens with a recurring fair or feast."
+          }
+        },
+        "warnings": {
+          "missingType": "Choose the main kind of trade; without it, stock suggestions will be arbitrary.",
+          "wealthLocation": "A very wealthy shop here needs a narrative reason: patronage, monopoly or a hidden clientele.",
+          "lowRiskIllegal": "Illegal or grey-market trade usually carries a greater risk of counterfeit coin.",
+          "reputableIllegal": "A reputable illegal shop should be renowned within a specific closed community.",
+          "fairLocation": "Fair-based seasonality outside a fair, market or road needs an explanation.",
+          "riskMismatch": "The chosen risk differs sharply from the law, location and reputation. You can use the suggested value.",
+          "extremeAvailability": "An extreme availability adjustment may dominate shop type, location and events.",
+          "buybackLimits": "The per-unit limit exceeds the whole buyback budget, so the lower budget will effectively apply.",
+          "localImportConflict": "The same category is marked as local and imported. Remove it from one list.",
+          "extremeMarketEvent": "An active event has an extreme price multiplier. Check its dates and scope."
+        }
+      },
+      "options": {
+        "legalStatus": {
+          "legal": "Legal",
+          "licensed": "Licensed",
+          "mixed": "Mixed",
+          "grey": "Grey market",
+          "illegal": "Illegal"
+        },
+        "wealth": {
+          "nedzny": "Destitute",
+          "biedny": "Poor",
+          "standard": "Standard",
+          "bogaty": "Wealthy",
+          "elitarny": "Elite",
+          "luksusowy": "Luxury"
+        },
+        "reputation": {
+          "fatalna": "Terrible",
+          "zla": "Bad",
+          "podejrzana": "Suspicious",
+          "neutralna": "Neutral",
+          "dobra": "Good",
+          "znakomita": "Excellent"
+        },
+        "seasonality": {
+          "caloroczny": "Year-round",
+          "sezonowy": "Seasonal",
+          "wiosna": "Spring",
+          "lato": "Summer",
+          "jesien": "Autumn",
+          "zima": "Winter",
+          "jarmark": "Market fair"
+        }
+      },
+      "item": {
+        "name": "Name",
+        "class": "Class",
+        "genre": "Genre",
+        "price": "Price",
+        "charge": "Encumbrance",
+        "icon": "Icon",
+        "description": "Description",
+        "details": "Details",
+        "weaponType": "Weapon type",
+        "damage": "Damage",
+        "range": "Range",
+        "source": "Source",
+        "attributes": "Attributes",
+        "selectAttribute": "Select an attribute…",
+        "removeAttribute": "Remove attribute",
+        "chooseIcon": "Choose",
+        "targetContainer": "Target container"
+      },
+      "currency": {
+        "currency": "Currency / region",
+        "editPrice": "Edit price and currency",
+        "canonicalHint": "Base value used for calculations and exchange"
+      },
+      "iconPicker": {
+        "title": "Choose item icon",
+        "description": "Choose an image from the inventory icon collection.",
+        "editTitle": "Edit icon library",
+        "editDescription": "Edit metadata or replace files for the selected icon. This does not change the item's assignment.",
+        "search": "Search by code, name or category…",
+        "category": "Icon category",
+        "subtype": "Icon subcategory",
+        "source": "Icon source name",
+        "allCategories": "All categories",
+        "allSubtypes": "All subcategories",
+        "allSources": "All sources",
+        "quickFilters": "Quick icon category filters",
+        "modeLabel": "Icon workflow mode",
+        "selectMode": "1. Choose for template / item",
+        "selectModeHint": "Change assignment: current icon → new icon",
+        "editMode": "2. Edit icon",
+        "editModeHint": "Change metadata or artwork files for the same code",
+        "results": "Results: {count}",
+        "useIcon": "Use this icon",
+        "currentIcon": "Current icon",
+        "newIcon": "New icon",
+        "iconSelected": "This icon is selected",
+        "selectionInstruction": "Click another icon in the grid, review the change above, and confirm. Double-click selects it immediately.",
+        "editingIcon": "Editing icon",
+        "addIcon": "+ Add icon",
+        "addIconTitle": "Add a new icon",
+        "replaceFiles": "Replace artwork",
+        "replaceThisIcon": "Replace artwork for icon {code}",
+        "replaceFilesTitle": "Replace files for icon {code}",
+        "currentArtwork": "Current artwork",
+        "newArtwork": "New artwork",
+        "chooseFile": "Choose file",
+        "twoFilesHint": "Two square files of the same artwork are required: 42×42 and 144×144 px.",
+        "saveFiles": "Save both files",
+        "uploading": "Uploading…",
+        "deleteIcon": "Delete icon",
+        "invalidUpload": "Choose a PNG, JPEG or WebP file up to 4 MB.",
+        "invalidDimensions": "The file must be a PNG, JPEG or WebP image sized exactly {size}×{size} px (max. 4 MB).",
+        "uploadError": "Could not add the icon.",
+        "editMetadata": "Edit metadata for icon {code}",
+        "identitySection": "Icon identity",
+        "identitySectionHint": "The name and description of this exact artwork",
+        "identitySectionHelp": "Identity describes the icon file itself: how the artwork is named, what it depicts, and which source file it came from. It does not decide which items should receive this icon automatically.",
+        "classificationSection": "Icon classification",
+        "classificationSectionHint": "What the artwork depicts and where to find it",
+        "classificationSectionHelp": "Classification organizes the library by what is visible in the artwork. Category is the main level and subcategory is the more precise description. These fields drive the icon-library filters.",
+        "matchingSection": "Item matching",
+        "matchingSectionHint": "Which item data may receive this icon",
+        "matchingSectionHelp": "Matching does not describe the icon's place in the library. It defines the item classes and item types for which the automatic resolver may suggest this artwork. For example, a bottle can be classified as Potion and matched to the Alchemy class and Healing type.",
+        "name": "Icon name",
+        "nameHelp": "A readable Polish name shown in the icon library. It does not rename items that use this icon.",
+        "sourceFile": "Source file name",
+        "sourceFileHelp": "The original artwork file name. This read-only value identifies the source and can be searched.",
+        "metadataDescription": "Meaning description",
+        "descriptionHelp": "A short description of what the artwork depicts and the visual context in which it should be used.",
+        "keywords": "Matching keywords",
+        "keywordsHelp": "Polish words and phrases separated with commas. The resolver compares them with an item's name and description when suggesting this icon.",
+        "itemClasses": "Item class",
+        "itemClassHelp": "The broad item-data domain, such as Weapon, Alchemy, or Tool. It corresponds to the template's ITEM_CLASS field and is used for automatic suggestions.",
+        "itemGenres": "Item type",
+        "itemGenreHelp": "A more precise use within the item class, such as Healing, Shield, Melee, or Utility. It corresponds to ITEM_GENRE.",
+        "categories": "Icon category",
+        "categoryHelp": "The main group describing what is visible in the artwork. The list always shows every category. Changing it narrows subcategories and allowed matching values.",
+        "subcategories": "Icon subcategory",
+        "subcategoryHelp": "A more precise artwork type within the selected category. The list depends only on the category, for example Clothing → Cloaks, Robes, Belts, or Bags.",
+        "metadataFields": {
+          "typeKey": "Icon category",
+          "subtypeKey": "Icon subcategory",
+          "itemClass": "Item class",
+          "itemGenre": "Item type"
+        },
+        "relationsAdjusted": "Related fields were adjusted: {changes}.",
+        "legacyMultipleValues": "This legacy record has multiple values. The editor shows the primary values and the next save will normalize every field to one value.",
+        "listHint": "e.g. shield, buckler, guard",
+        "codesHint": "comma-separated codes",
+        "restoreDefaults": "Restore defaults",
+        "saving": "Saving…",
+        "saveError": "Could not save icon metadata.",
+        "loadError": "Could not load icon metadata.",
+        "previous": "Previous",
+        "next": "Next",
+        "pagination": "Icon pagination",
+        "firstPage": "First page",
+        "lastPage": "Last page",
+        "visibleRange": "Icons {from}–{to} of {total}"
+      }
+    }
+  },
+  "common": {
+    "actions": {
+      "save": "@:actions.save",
+      "cancel": "@:actions.cancel",
+      "close": "@:actions.close",
+      "delete": "@:actions.delete",
+      "add": "@:actions.add",
+      "edit": "@:actions.edit",
+      "confirm": "@:actions.confirm",
+      "create": "@:actions.create"
+    },
+    "validation": {
+      "required": "This field is required.",
+      "invalidNumber": "Enter a valid number.",
+      "nonNegative": "Value must be greater than or equal to 0.",
+      "nonNegativeInteger": "Value must be an integer >= 0."
+    }
+  },
+  "modals": {
+    "tradeMain": {
+      "title": "@:shop.tradeModal.title"
+    },
+    "iconClass": {
+      "ariaLabel": "@:shop.iconDialog.ariaLabel",
+      "title": "@:shop.iconDialog.title",
+      "purpose": "Choose an icon and fill its metadata to improve filtering and searching items.",
+      "metadataTitle": "@:shop.iconDialog.metadataTitle",
+      "iconClassPlaceholder": "@:shop.iconDialog.iconClassPlaceholder",
+      "addIconPlaceholder": "@:shop.iconDialog.addIconPlaceholder",
+      "namePlaceholder": "@:shop.iconDialog.namePlaceholder",
+      "descriptionPlaceholder": "@:shop.iconDialog.descriptionPlaceholder",
+      "specialMarksPlaceholder": "@:shop.iconDialog.specialMarksPlaceholder",
+      "autoTagsPlaceholder": "@:shop.iconDialog.autoTagsPlaceholder",
+      "typesMulti": "@:shop.iconDialog.typesMulti",
+      "subtypesMulti": "@:shop.iconDialog.subtypesMulti",
+      "applyMetadata": "@:shop.iconDialog.applyMetadata",
+      "collectionTitle": "@:shop.iconDialog.collectionTitle",
+      "searchPlaceholder": "@:shop.iconDialog.searchPlaceholder",
+      "allTypes": "@:shop.iconDialog.allTypes",
+      "allSubtypes": "@:shop.iconDialog.allSubtypes",
+      "sortAsc": "@:shop.iconDialog.sortAsc",
+      "sortDesc": "@:shop.iconDialog.sortDesc",
+      "emptyFiltered": "@:shop.iconDialog.emptyFiltered",
+      "addIcon": "@:shop.iconDialog.addIcon",
+      "deleteIcon": "@:shop.iconDialog.deleteIcon",
+      "errors": {
+        "invalidClass": "@:shop.iconDialog.errors.invalidClass",
+        "classTaken": "@:shop.iconDialog.errors.classTaken",
+        "classVisible": "@:shop.iconDialog.errors.classVisible",
+        "chooseIconFirst": "@:shop.iconDialog.errors.chooseIconFirst"
+      }
+    },
+    "ownerOption": {
+      "ariaLabel": "@:shop.ownerDialog.ariaLabel",
+      "title": "@:shop.ownerDialog.title",
+      "purpose": "Select item owner. It defines the target container and further item handling logic.",
+      "currentSelection": "@:shop.ownerDialog.currentSelection",
+      "selectionDescription": "@:shop.ownerDialog.selectionDescription",
+      "ownerChip": "@:shop.ownerDialog.ownerChip",
+      "noDescription": "@:shop.ownerDialog.noDescription",
+      "optionDescriptions": {
+        "DEFAULT": "@:shop.ownerDialog.optionDescriptions.DEFAULT",
+        "TRASH": "@:shop.ownerDialog.optionDescriptions.TRASH",
+        "BG1": "@:shop.ownerDialog.optionDescriptions.BG1",
+        "BG2": "@:shop.ownerDialog.optionDescriptions.BG2",
+        "BG3": "@:shop.ownerDialog.optionDescriptions.BG3"
+      }
+    },
+    "weaponStats": {
+      "ariaLabel": "@:shop.weaponStatsDialog.ariaLabel",
+      "title": "@:shop.weaponStatsDialog.title",
+      "purpose": "Configure weapon ID and legacy weapon stats in one place without leaving field edit.",
+      "topBarTitle": "@:shop.weaponStatsDialog.topBarTitle",
+      "sourceTemplate": "@:shop.weaponStatsDialog.sourceTemplate",
+      "sourceItem": "@:shop.weaponStatsDialog.sourceItem",
+      "selectLabel": "@:shop.weaponStatsDialog.selectLabel",
+      "emptySelection": "@:shop.weaponStatsDialog.emptySelection",
+      "noOptions": "@:shop.weaponStatsDialog.noOptions",
+      "fieldsTitle": "@:shop.weaponStatsDialog.fieldsTitle",
+      "featureSelectHint": "@:shop.weaponStatsDialog.featureSelectHint",
+      "fields": {
+        "name": "@:shop.weaponStatsDialog.name",
+        "type": "@:shop.weaponStatsDialog.type",
+        "handed": "@:shop.weaponStatsDialog.handed",
+        "category": "@:shop.weaponStatsDialog.category",
+        "dice": "@:shop.weaponStatsDialog.dice",
+        "modifier": "@:shop.weaponStatsDialog.modifier",
+        "damage": "@:shop.weaponStatsDialog.damage",
+        "range": "@:shop.weaponStatsDialog.range",
+        "reload": "@:shop.weaponStatsDialog.reload",
+        "qualities": "@:shop.weaponStatsDialog.qualities",
+        "load": "@:shop.weaponStatsDialog.load",
+        "featuresId": "@:shop.weaponStatsDialog.featuresId",
+        "occuChance": "@:shop.weaponStatsDialog.occuChance"
+      },
+      "features": {
+        "heavy": {
+          "name": "@:shop.weaponStatsDialog.features.heavy.name",
+          "description": "@:shop.weaponStatsDialog.features.heavy.description",
+          "mechanics": "@:shop.weaponStatsDialog.features.heavy.mechanics"
+        },
+        "crushing": {
+          "name": "@:shop.weaponStatsDialog.features.crushing.name",
+          "description": "@:shop.weaponStatsDialog.features.crushing.description",
+          "mechanics": "@:shop.weaponStatsDialog.features.crushing.mechanics"
+        },
+        "stunning": {
+          "name": "@:shop.weaponStatsDialog.features.stunning.name",
+          "description": "@:shop.weaponStatsDialog.features.stunning.description",
+          "mechanics": "@:shop.weaponStatsDialog.features.stunning.mechanics"
+        },
+        "fast": {
+          "name": "@:shop.weaponStatsDialog.features.fast.name",
+          "description": "@:shop.weaponStatsDialog.features.fast.description",
+          "mechanics": "@:shop.weaponStatsDialog.features.fast.mechanics"
+        },
+        "precise": {
+          "name": "@:shop.weaponStatsDialog.features.precise.name",
+          "description": "@:shop.weaponStatsDialog.features.precise.description",
+          "mechanics": "@:shop.weaponStatsDialog.features.precise.mechanics"
+        },
+        "balanced": {
+          "name": "@:shop.weaponStatsDialog.features.balanced.name",
+          "description": "@:shop.weaponStatsDialog.features.balanced.description",
+          "mechanics": "@:shop.weaponStatsDialog.features.balanced.mechanics"
+        }
+      }
+    },
+    "fieldEdit": {
+      "ariaLabel": "@:shop.fieldEditDialog.ariaLabel",
+      "title": "Edit: {field} ({context})",
+      "purpose": "This dialog is used to safely edit the selected field with contextual suggestions.",
+      "defaultField": "@:shop.fieldEditDialog.defaultField",
+      "searchPlaceholder": "@:shop.fieldEditDialog.searchPlaceholder",
+      "valuePlaceholder": "@:shop.fieldEditDialog.valuePlaceholder",
+      "noSuggestions": "@:shop.fieldEditDialog.noSuggestions",
+      "actions": {
+        "editField": "@:shop.fieldEditDialog.editField"
+      },
+      "common": {
+        "emptyValue": "-",
+        "stepUp": "Increase value",
+        "stepDown": "Decrease value"
+      },
+      "targets": {
+        "default": "@:shop.fieldEditDialog.targets.default",
+        "template": "@:shop.fieldEditDialog.targets.template",
+        "newTemplate": "@:shop.fieldEditDialog.targets.newTemplate",
+        "inventory": "@:shop.fieldEditDialog.targets.inventory"
+      },
+      "fields": {
+        "labels": {
+          "ITEM_CLASS": "Item class",
+          "ITEM_ID": "Item ID",
+          "IMG_CLASS": "Item icon",
+          "OWNER_OPT": "Owner",
+          "ITEM_PLACE": "Item slot",
+          "ITEM_GENRE": "Item genre",
+          "PRIZE": "Price",
+          "CHARGE": "Weight"
+        },
+        "itemClass": {
+          "selected": "Selected class: {label} ({code})",
+          "searchPlaceholder": "Search class by code, label or description...",
+          "groups": {
+            "equipment": "Equipment",
+            "consumables": "Consumables",
+            "treasures": "Treasures",
+            "other": "Other"
+          },
+          "options": {
+            "WEAPON": {
+              "label": "Weapon",
+              "description": "Items used for melee and ranged combat."
+            },
+            "ARMOR": {
+              "label": "Armor",
+              "description": "Body protection and defensive gear."
+            },
+            "CLOTH": {
+              "label": "Clothing",
+              "description": "Wearables and outfit elements."
+            },
+            "ARMAMENT": {
+              "label": "Armament",
+              "description": "Combat and military equipment."
+            },
+            "TOOL": {
+              "label": "Tool",
+              "description": "Utility and craft instruments."
+            },
+            "CUTLERY": {
+              "label": "Cutlery",
+              "description": "Knives, spoons and small utensils."
+            },
+            "POTION": {
+              "label": "Potion",
+              "description": "Liquids and elixirs with special effects."
+            },
+            "FOOD": {
+              "label": "Food",
+              "description": "Food and consumable products."
+            },
+            "ALCHEMY": {
+              "label": "Alchemy",
+              "description": "Ingredients and alchemical products."
+            },
+            "POWDER": {
+              "label": "Powder",
+              "description": "Powder charges and granular materials."
+            },
+            "JEWELLERY": {
+              "label": "Jewellery",
+              "description": "Valuables and ornaments."
+            },
+            "MAGIC": {
+              "label": "Magic",
+              "description": "Items of magical origin."
+            },
+            "GADGET": {
+              "label": "Gadget",
+              "description": "Unusual devices and mechanisms."
+            },
+            "STATIONERY": {
+              "label": "Stationery",
+              "description": "Books, notes and writing supplies."
+            },
+            "FORAGE": {
+              "label": "Forage",
+              "description": "Natural materials and gathered resources."
+            },
+            "ANIMAL": {
+              "label": "Animal",
+              "description": "Goods related to animals."
+            }
+          }
+        },
+        "itemGenre": {
+          "selected": "Class: {classCode} | Genre: {value}",
+          "selectClassFirst": "Select item class first.",
+          "inputPlaceholder": "Type or select genre...",
+          "searchPlaceholder": "Filter available genres...",
+          "noResults": "No matching genres."
+        },
+        "prize": {
+          "crown": "Crowns",
+          "shilling": "Shillings",
+          "penny": "Pennies",
+          "total": "Total: {total} (C:{crown}, S:{shilling}, P:{penny})",
+          "modeLabel": "Coin mode",
+          "modes": {
+            "crown": "Crowns",
+            "shilling": "Shillings",
+            "penny": "Pennies"
+          },
+          "totalPennyModeLabel": "Total pennies",
+          "totalPennyHint": "Click the active icon to switch to total-pennies mode.",
+          "totalPennyCapHint": "In total-pennies mode, the maximum value is 1000 pennies.",
+          "stepLabel": "Step: {step}",
+          "stepValue": "{value} {unit}",
+          "increaseByStep": "Increase price by active step",
+          "decreaseByStep": "Decrease price by active step",
+          "presetValue": "{value} {unit}",
+          "selectPresetAria": "Set price step: {value}",
+          "units": {
+            "crownShort": "gc",
+            "shillingShort": "s",
+            "pennyShort": "p"
+          }
+        },
+        "charge": {
+          "heroTitle": "Weight profile",
+          "currentValue": "{value} {unit}",
+          "unit": "KP",
+          "value": "Item weight",
+          "stepLabel": "Step: {step}",
+          "stepValue": "{value} {unit}",
+          "increaseByStep": "Increase weight by active step",
+          "decreaseByStep": "Decrease weight by active step",
+          "presetLabel": "{value} {unit}",
+          "selectPresetAria": "Set weight step: {value} {unit}",
+          "tiers": {
+            "light": "Light",
+            "medium": "Moderate",
+            "heavy": "Heavy",
+            "veryHeavy": "Very heavy"
+          },
+          "tiersDesc": {
+            "light": "Light equipment, hardly affects mobility.",
+            "medium": "Typical traveller load, still practical in motion.",
+            "heavy": "Significant load, limits pace and comfort.",
+            "veryHeavy": "Extreme load, requires extra caution."
+          }
+        }
+      },
+      "icon": {
+        "metadataTitle": "@:modals.iconClass.metadataTitle",
+        "namePlaceholder": "@:modals.iconClass.namePlaceholder",
+        "descriptionPlaceholder": "@:modals.iconClass.descriptionPlaceholder",
+        "specialMarksPlaceholder": "@:modals.iconClass.specialMarksPlaceholder",
+        "autoTagsPlaceholder": "@:modals.iconClass.autoTagsPlaceholder",
+        "typesMulti": "@:modals.iconClass.typesMulti",
+        "subtypesMulti": "@:modals.iconClass.subtypesMulti",
+        "applyMetadata": "@:modals.iconClass.applyMetadata",
+        "collectionTitle": "@:modals.iconClass.collectionTitle",
+        "searchPlaceholder": "@:modals.iconClass.searchPlaceholder",
+        "allTypes": "@:modals.iconClass.allTypes",
+        "allSubtypes": "@:modals.iconClass.allSubtypes",
+        "sortAsc": "@:modals.iconClass.sortAsc",
+        "sortDesc": "@:modals.iconClass.sortDesc",
+        "emptyFiltered": "@:modals.iconClass.emptyFiltered"
+      },
+      "owner": {
+        "currentSelection": "@:modals.ownerOption.currentSelection",
+        "selectionDescription": "@:modals.ownerOption.selectionDescription",
+        "ownerChip": "@:modals.ownerOption.ownerChip"
+      },
+      "weapon": {
+        "selectLabel": "@:modals.weaponStats.selectLabel",
+        "fieldsTitle": "@:modals.weaponStats.fieldsTitle",
+        "name": "@:modals.weaponStats.fields.name",
+        "type": "@:modals.weaponStats.fields.type",
+        "handed": "@:modals.weaponStats.fields.handed",
+        "category": "@:modals.weaponStats.fields.category",
+        "damage": "@:modals.weaponStats.fields.damage",
+        "dice": "@:modals.weaponStats.fields.dice",
+        "modifier": "@:modals.weaponStats.fields.modifier",
+        "load": "@:modals.weaponStats.fields.load",
+        "range": "@:modals.weaponStats.fields.range",
+        "reload": "@:modals.weaponStats.fields.reload",
+        "featuresId": "@:modals.weaponStats.fields.featuresId",
+        "occuChance": "@:modals.weaponStats.fields.occuChance",
+        "qualities": "@:modals.weaponStats.fields.qualities"
+      }
+    },
+    "itemDetail": {
+      "ariaLabel": "@:shop.itemDetailDialog.ariaLabel",
+      "title": "@:shop.itemDetailDialog.title",
+      "purpose": "Preview and quickly personalize the selected item with full metadata context.",
+      "fallbackItemName": "@:shop.itemDetailDialog.fallbackItemName",
+      "sourcePrefix": "@:shop.itemDetailDialog.sourcePrefix",
+      "nicknameLabel": "@:shop.itemDetailDialog.nicknameLabel",
+      "nicknamePlaceholder": "@:shop.itemDetailDialog.nicknamePlaceholder",
+      "priceWeightSingle": "@:shop.itemDetailDialog.priceWeightSingle",
+      "chargeLabel": "@:shop.itemDetailDialog.chargeLabel",
+      "rawPrice": "@:shop.itemDetailDialog.rawPrice",
+      "appraise": "@:shop.itemDetailDialog.appraise",
+      "valueHidden": "@:shop.itemDetailDialog.valueHidden",
+      "fullData": "@:shop.itemDetailDialog.fullData",
+      "noData": "@:shop.itemDetailDialog.noData"
+    },
+    "suggestionDetail": {
+      "ariaLabel": "@:shop.suggestionDialog.ariaLabel",
+      "title": "@:shop.suggestionDialog.title",
+      "purpose": "Review why the suggestion appeared and choose how to add it to the shop.",
+      "suggestionLabel": "@:shop.suggestionDialog.suggestionLabel",
+      "whySuggestion": "@:shop.suggestionDialog.whySuggestion",
+      "templateVsPersonalizedTitle": "@:shop.suggestionDialog.templateVsPersonalizedTitle",
+      "templateVsPersonalizedBody": "@:shop.suggestionDialog.templateVsPersonalizedBody",
+      "personalizedVariant": "@:shop.suggestionDialog.personalizedVariant",
+      "variantPrice": "@:shop.suggestionDialog.variantPrice",
+      "createTemplateOnly": "@:shop.suggestionDialog.createTemplateOnly",
+      "createTemplateAndItem": "@:shop.suggestionDialog.createTemplateAndItem",
+      "addItem": "@:shop.suggestionDialog.addItem"
+    },
+    "assortmentMerge": {
+      "ariaLabel": "@:shop.assortmentMerge.ariaLabel",
+      "title": "@:shop.assortmentMerge.title",
+      "purpose": "Compare two similar entries and choose which source should provide final field values.",
+      "instructions": "@:shop.assortmentMerge.instructions",
+      "leftTitle": "@:shop.assortmentMerge.leftTitle",
+      "rightTitle": "@:shop.assortmentMerge.rightTitle",
+      "fields": {
+        "name": "@:shop.assortmentMerge.fields.name",
+        "itemPlace": "@:shop.assortmentMerge.fields.itemPlace",
+        "personalPseu": "@:shop.assortmentMerge.fields.personalPseu",
+        "personalDesc": "@:shop.assortmentMerge.fields.personalDesc",
+        "personalCost": "@:shop.assortmentMerge.fields.personalCost",
+        "description": "@:shop.assortmentMerge.fields.description",
+        "imgClass": "@:shop.assortmentMerge.fields.imgClass",
+        "prize": "@:shop.assortmentMerge.fields.prize",
+        "charge": "@:shop.assortmentMerge.fields.charge"
+      }
+    },
+    "viewSettings": {
+      "ariaLabel": "@:shop.viewSettingsDialog.ariaLabel",
+      "title": "@:shop.viewSettingsDialog.title",
+      "purpose": "Adjust trade view parameters so the interface stays readable on your screen.",
+      "fields": {
+        "iconSize": "@:shop.viewSettingsDialog.optionIcons",
+        "icons": "@:shop.common.icons"
+      }
+    },
+    "shopActivation": {
+      "ariaLabel": "@:shop.activationDialog.ariaLabel",
+      "title": "@:shop.activationDialog.title",
+      "purpose": "Manage which shops are visible to players without changing data structure.",
+      "subtitle": "@:shop.activationDialog.subtitle",
+      "activeCount": "@:shop.activationDialog.activeCount",
+      "statusActive": "@:shop.activationDialog.statusActive",
+      "statusInactive": "@:shop.activationDialog.statusInactive",
+      "currentShop": "@:shop.activationDialog.currentShop"
+    }
   }
 }

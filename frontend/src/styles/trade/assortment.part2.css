@@ -1,0 +1,264 @@
+.shop-trade-module .assort-panel-list {
+  display: grid;
+  align-content: start;
+  grid-auto-rows: max-content;
+  gap: 8px;
+  max-height: 100%;
+  overflow: auto;
+  min-height: 0;
+}
+
+.shop-trade-module .assort-card {
+  border-radius: 14px;
+  padding: 12px;
+  border: 1px solid var(--assort-accent-border);
+  background: rgba(0, 0, 0, 0.35);
+  display: grid;
+  gap: 8px;
+  color: rgba(252, 244, 224, 0.95);
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+  height: var(--assort-row-height, 66px);
+}
+
+.shop-trade-module .assort-card--selectable {
+  cursor: pointer;
+}
+
+.shop-trade-module .assort-card--readonly {
+  cursor: default;
+}
+
+.shop-trade-module .assort-card--selectable:hover {
+  transform: translateY(-1px);
+  border-color: var(--assort-accent-border-strong);
+  box-shadow: 0 10px 16px rgba(0, 0, 0, 0.4);
+}
+
+.shop-trade-module .assort-card.selected {
+  border-color: var(--assort-accent-border-strong);
+  box-shadow:
+    0 0 0 2px rgba(241, 200, 129, 0.26),
+    0 12px 18px rgba(0, 0, 0, 0.5);
+}
+
+.shop-trade-module .assort-card-main {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  height: 100%;
+}
+
+.shop-trade-module .assort-card-icon {
+  width: 36px;
+  height: 36px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.shop-trade-module .assort-card-badge {
+  min-width: 64px;
+  padding: 4px 6px;
+  border-radius: 10px;
+  background: var(--assort-accent-bg);
+  border: 1px solid var(--assort-accent-border);
+  text-align: center;
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.shop-trade-module .assort-card-qty {
+  margin-left: auto;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  color: rgba(245, 234, 210, 0.75);
+}
+
+.shop-trade-module .assort-card-main img {
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+}
+
+.shop-trade-module .assort-card-info {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.shop-trade-module .assort-card-title {
+  font-size: 0.84rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shop-trade-module .assort-card-desc {
+  font-size: 0.76rem;
+  color: rgba(252, 244, 224, 0.84);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shop-trade-module .assort-card-stack-hint {
+  font-size: 0.62rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(241, 200, 129, 0.88);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.shop-trade-module .assort-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+
+.shop-trade-module .assort-form {
+  display: grid;
+  gap: 10px;
+}
+
+.shop-trade-module .assort-field {
+  display: grid;
+  gap: 4px;
+}
+
+.shop-trade-module .assort-input {
+  width: 100%;
+  border-radius: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--assort-accent-border);
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(252, 244, 224, 0.96);
+  font-size: 0.88rem;
+  min-height: 38px;
+}
+
+.shop-trade-module .assort-selection-info {
+  font-size: 0.76rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(252, 244, 224, 0.84);
+}
+
+.shop-trade-module .assort-overview-list {
+  display: grid;
+  align-content: start;
+  grid-auto-rows: max-content;
+  gap: 10px;
+  min-height: 0;
+  overflow: auto;
+  padding-right: 4px;
+}
+
+.shop-trade-module .assort-overview-item {
+  display: grid;
+  gap: 6px;
+}
+
+.shop-trade-module .assort-overview-title {
+  font-size: 0.7rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(241, 200, 129, 0.86);
+}
+
+.shop-trade-module .assort-overview-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.shop-trade-module .assort-overview-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--assort-accent-border);
+  font-size: 0.65rem;
+  color: rgba(245, 234, 210, 0.8);
+}
+
+.shop-trade-module .assort-chip-icon {
+  width: 18px;
+  height: 18px;
+  object-fit: contain;
+}
+
+.shop-trade-module .assort-overview-empty {
+  font-size: 0.65rem;
+  color: rgba(245, 234, 210, 0.6);
+}
+
+.shop-trade-module .assort-empty {
+  text-align: center;
+  color: rgba(245, 234, 210, 0.6);
+  padding: 10px;
+}
+
+.shop-trade-module .shop-editor-pane {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+  width: 100%;
+  min-height: var(--trade-list-block-size);
+  height: var(--trade-list-block-size);
+  max-height: var(--trade-list-block-size);
+  overflow: auto;
+  padding-right: 4px;
+}
+
+/* When rendered inside BaseShopLayout shop frame, internal panes fill the shared fixed-height box. */
+
+.shop-trade-module .shop-mode-content .assort-main,
+.shop-trade-module .shop-mode-content .shop-editor-pane {
+  min-height: 0;
+  height: 100%;
+  max-height: none;
+  overflow: auto;
+}
+
+.shop-trade-module .shop-mode-content .assort-panel--fixed-list .assort-panel-list,
+.shop-trade-module .shop-mode-content .shop-editor-suggestions {
+  min-height: 0;
+  height: auto;
+  max-height: none;
+}
+
+.shop-trade-module .shop-editor-header {
+  font-size: 0.86rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: var(--assort-accent-title);
+}
+
+.shop-trade-module .shop-editor-form {
+  display: grid;
+  gap: 8px;
+  min-height: 0;
+  overflow: auto;
+  padding: 10px;
+  border-radius: 14px;
+  border: 1px solid var(--assort-accent-border);
+  background: rgba(0, 0, 0, 0.34);
+  scrollbar-width: thin;
+  scrollbar-color: rgba(205, 163, 94, 0.9) rgba(0, 0, 0, 0.32);
+}
+
+.shop-trade-module .shop-editor-form--compact {
+  grid-auto-rows: min-content;
+  gap: 6px;
+  padding: 8px;
+}

@@ -9,6 +9,7 @@
 /certs/
 *.pem
 /docker-entrypoint-initdb.db/*.sql
+AGENTS.md
 
 # --- Backend (CodeIgniter) ---
 /backend/vendor/

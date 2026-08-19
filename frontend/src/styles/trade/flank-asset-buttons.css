@@ -1,0 +1,116 @@
+.shop-trade-module {
+  --shop-flank-asset-width: 200px;
+  --shop-flank-asset-height: 100px;
+}
+
+.shop-trade-module .trade-flank .square.shop-flank-asset-button,
+.shop-trade-module .square.shop-flank-asset-button,
+.shop-trade-module .trade-flank--left .square.shop-flank-asset-button {
+  appearance: none;
+  position: relative;
+  display: block;
+  width: min(100%, var(--shop-flank-asset-width));
+  min-width: 0;
+  max-width: var(--shop-flank-asset-width);
+  height: var(--shop-flank-asset-height);
+  min-height: var(--shop-flank-asset-height);
+  max-height: var(--shop-flank-asset-height);
+  aspect-ratio: 2 / 1;
+  flex: 0 0 var(--shop-flank-asset-height);
+  align-self: center;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0.4rem;
+  background-color: #17100b;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  box-shadow: 0 7px 13px rgba(0, 0, 0, 0.58);
+  color: transparent;
+  font-size: 0;
+  text-shadow: none;
+  transform-origin: center;
+  transition:
+    filter 0.16s ease,
+    transform 0.16s ease;
+}
+
+.shop-trade-module .shop-flank-asset-button--button01 {
+  background-image: url("../../assets/app-ui/gfx/buttons/button01.png");
+}
+
+.shop-trade-module .shop-flank-asset-button--button02 {
+  background-image: url("../../assets/app-ui/gfx/buttons/button02.png");
+}
+
+.shop-trade-module .shop-flank-asset-button--button03 {
+  background-image: url("../../assets/app-ui/gfx/buttons/button03.png");
+}
+
+.shop-trade-module .shop-flank-asset-button--button04 {
+  background-image: url("../../assets/app-ui/gfx/buttons/button04.png");
+}
+
+.shop-trade-module .shop-flank-asset-button--button05 {
+  background-image: url("../../assets/app-ui/gfx/buttons/button05.png");
+}
+
+.shop-trade-module .shop-flank-asset-button--button06 {
+  background-image: url("../../assets/app-ui/gfx/buttons/button06.png");
+}
+
+.shop-trade-module .shop-flank-asset-button--button07 {
+  background-image: url("../../assets/app-ui/gfx/buttons/button07.png");
+}
+
+.shop-trade-module
+  .trade-flank
+  .square.shop-flank-asset-button:hover:not(:disabled),
+.shop-trade-module .square.shop-flank-asset-button:hover:not(:disabled) {
+  filter: brightness(1.14) saturate(1.08);
+  transform: translateY(-1px) scale(1.015);
+}
+
+.shop-trade-module
+  .trade-flank
+  .square.shop-flank-asset-button:active:not(:disabled),
+.shop-trade-module .square.shop-flank-asset-button:active:not(:disabled) {
+  filter: brightness(0.9);
+  transform: translateY(1px) scale(0.99);
+}
+
+.shop-trade-module .trade-flank .square.shop-flank-asset-button.active,
+.shop-trade-module .square.shop-flank-asset-button.active {
+  filter: brightness(1.18) saturate(1.16);
+  box-shadow:
+    0 0 0 2px #e5bd6f,
+    0 0 16px rgba(231, 180, 87, 0.58),
+    0 7px 13px rgba(0, 0, 0, 0.58);
+}
+
+.shop-trade-module .trade-flank .square.shop-flank-asset-button:focus-visible,
+.shop-trade-module .square.shop-flank-asset-button:focus-visible {
+  outline: 3px solid #f3cf87;
+  outline-offset: 2px;
+}
+
+.shop-trade-module .trade-flank .square.shop-flank-asset-button:disabled,
+.shop-trade-module .square.shop-flank-asset-button:disabled {
+  opacity: 0.56;
+  filter: grayscale(0.55);
+  cursor: not-allowed;
+}
+
+@media (max-height: 760px) {
+  .shop-trade-module {
+    --shop-flank-asset-height: 82px;
+  }
+}
+
+@media (max-width: 900px) {
+  .shop-trade-module {
+    --shop-flank-asset-width: 150px;
+    --shop-flank-asset-height: 75px;
+  }
+}

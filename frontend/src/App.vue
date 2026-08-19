@@ -1,5 +1,5 @@
 <template>
-  <nav v-if="!isHomeRoute" :class="{ 'nav-dice': isDiceRoute }">
+  <nav v-if="!isHomeRoute" :class="{ 'nav-dice': usesOverlayNav }">
     <router-link to="/">{{ $t("nav.home") }}</router-link>
     <span class="nav-sep">|</span>
     <router-link to="/about">{{ $t("nav.about") }}</router-link>
@@ -9,28 +9,38 @@
     <label class="locale-switch">
       <span>{{ $t("nav.language") }}</span>
       <select v-model="currentLocale" aria-label="Language">
-        <option v-for="locale in locales" :key="locale.code" :value="locale.code">
+        <option
+          v-for="locale in locales"
+          :key="locale.code"
+          :value="locale.code"
+        >
           {{ locale.label }}
         </option>
       </select>
     </label>
   </nav>
   <router-view />
+  <ShopAccessModeSelector />
 </template>
 
 <script>
-  import { availableLocales, setLocale } from "@/i18n";
-  export default {
-    name: 'Home',
-    
-    data() {
-      return {
-        localization: {},
-        locales: availableLocales,
-        // Nazwa aplikacji (fallback do tytułu zakładki)
-        appTitle: (typeof process !== 'undefined' && process.env && process.env.VUE_APP_TITLE)
-        ? process.env.VUE_APP_TITLE
-        : 'BlatyRPG',
+import { availableLocales, setLocale } from "@/i18n";
+import ShopAccessModeSelector from "@/components/shop/ShopAccessModeSelector.vue";
+export default {
+  name: "AppRoot",
+  components: { ShopAccessModeSelector },
+
+  data() {
+    return {
+      localization: {},
+      locales: availableLocales,
+      // Nazwa aplikacji (fallback do tytułu zakładki)
+      appTitle:
+        typeof process !== "undefined" &&
+        process.env &&
+        process.env.VUE_APP_TITLE
+          ? process.env.VUE_APP_TITLE
+          : "BlatyRPG",
     };
   },
   watch: {
@@ -39,7 +49,9 @@
       immediate: true,
       handler(to) {
         const pageTitle = to?.meta?.title;
-        document.title = pageTitle ? `${pageTitle} — ${this.appTitle}` : this.appTitle;
+        document.title = pageTitle
+          ? `${pageTitle} — ${this.appTitle}`
+          : this.appTitle;
       },
     },
   },
@@ -54,8 +66,8 @@
         setLocale(locale);
       },
     },
-    isDiceRoute() {
-      return this.$route?.path === "/dice";
+    usesOverlayNav() {
+      return this.$route?.path === "/dice" || this.$route?.name === "shop-gm";
     },
     isHomeRoute() {
       return this.$route?.path === "/";

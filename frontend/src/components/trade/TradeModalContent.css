@@ -1,0 +1,52 @@
+.player-mobile-tabs {
+  display: none;
+}
+.player-trade-receipt {
+  border-top: 1px solid rgba(214, 180, 116, 0.25);
+  background: #1a1712;
+  color: #ddccb0;
+  padding: 0.25rem 0.6rem;
+  font-size: 0.74rem;
+}
+.player-trade-receipt summary {
+  cursor: pointer;
+}
+.player-trade-receipt__history {
+  display: grid;
+  max-height: 5.5rem;
+  gap: 0.1rem;
+  overflow-y: auto;
+  padding-top: 0.3rem;
+}
+@media (max-width: 600px) {
+  .trade-heading {
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .trade-name {
+    width: 100%;
+    text-align: center;
+  }
+  .player-mobile-tabs {
+    display: grid;
+    width: 100%;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.25rem;
+    padding: 0 0.35rem;
+  }
+  .player-mobile-tabs button {
+    border: 1px solid rgba(218, 181, 112, 0.35);
+    background: #171512;
+    color: #d4c4a7;
+    padding: 0.3rem;
+  }
+  .player-mobile-tabs button.active {
+    border-color: #d1a55e;
+    background: #4b3820;
+    color: #fff0d0;
+  }
+  .trade-grid--player-buy :deep(.trade-sell),
+  .trade-grid--player-sell :deep(.trade-buy) {
+    display: none !important;
+  }
+}

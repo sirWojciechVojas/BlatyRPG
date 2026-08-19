@@ -1,0 +1,291 @@
+.shop-trade-module .trade-heading {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  height: var(--trade-heading-height);
+  min-height: var(--trade-heading-height);
+  max-height: var(--trade-heading-height);
+  margin: 0;
+  align-items: center;
+}
+
+.shop-trade-module .trade-name {
+  max-width: 100%;
+  padding: 0;
+  font-size: clamp(0.78rem, 1.55vh, 0.95rem);
+  line-height: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shop-trade-module .trade-grid > .trade-flank:nth-of-type(2) {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.shop-trade-module .trade-buy {
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.shop-trade-module .trade-sell {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.shop-trade-module .trade-grid > .trade-flank:nth-of-type(5) {
+  grid-column: 4;
+  grid-row: 2;
+}
+
+.shop-trade-module .trade-column,
+.shop-trade-module .trade-flank {
+  min-height: 0 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  gap: var(--trade-module-gap);
+  overflow: visible !important;
+}
+
+.shop-trade-module .trade-column {
+  align-items: stretch !important;
+}
+
+.shop-trade-module .trade-flank {
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  width: 100%;
+  padding-left: var(--trade-flank-padding-x) !important;
+  padding-right: var(--trade-flank-padding-x) !important;
+  box-sizing: border-box;
+}
+
+.shop-trade-module .trade-flank--left {
+  padding-top: calc(
+    var(--trade-signboard-size) - var(--trade-heading-height) +
+      var(--trade-module-gap)
+  ) !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+.shop-trade-module .trade-flank--left:has(.shop-signboard-selector) {
+  overflow-y: hidden !important;
+}
+
+.shop-trade-module .trade-flank > * {
+  width: 100%;
+  max-width: 100%;
+}
+
+.shop-trade-module .shop-base-layout {
+  position: relative;
+  min-height: 0 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  gap: var(--trade-module-gap);
+  overflow: hidden !important;
+}
+
+.shop-trade-module .shop-base-layout--with-filters {
+  overflow: visible !important;
+}
+
+.shop-trade-module .shop-base-layout--with-summary {
+  display: grid !important;
+  grid-template-rows:
+    var(--trade-control-height)
+    minmax(0, 1fr)
+    var(--trade-summary-height)
+    minmax(var(--trade-action-height), auto);
+}
+
+.shop-trade-module .shop-base-layout > .input-group {
+  position: relative;
+  grid-row: 1;
+  flex: 0 0 var(--trade-control-height);
+  min-height: var(--trade-control-height);
+  height: var(--trade-control-height);
+  max-height: var(--trade-control-height);
+  margin: 0;
+  overflow: visible;
+}
+
+.shop-trade-module .shop-base-layout__header-trigger {
+  cursor: pointer;
+}
+
+.shop-trade-module .shop-base-layout__header-trigger:focus-visible {
+  outline: 2px solid rgba(255, 217, 138, 0.82);
+  outline-offset: 2px;
+}
+
+.shop-trade-module .shop-base-layout__toolbar-chevron {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  right: var(--trade-space-2);
+  display: grid;
+  width: 1.15rem;
+  height: 1.15rem;
+  place-items: center;
+  border-radius: 50%;
+  background: rgba(18, 12, 8, 0.78);
+  color: #e7c98e;
+  font-size: 0.8rem;
+  line-height: 1;
+  pointer-events: none;
+  transform: translateY(-50%);
+}
+
+.shop-trade-module .shop-base-layout > .input-group > .input-group,
+.shop-trade-module .shop-base-layout > .input-group .form-control,
+.shop-trade-module .shop-base-layout > .input-group .form-select {
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+}
+
+.shop-trade-module .trade-list-shell,
+.shop-trade-module .shop-mode-shell {
+  grid-row: 2;
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  position: relative;
+}
+
+.shop-trade-module
+  .shop-base-layout--with-summary:not(.shop-base-layout--with-toolbar)
+  > .trade-list-shell {
+  gap: 0 !important;
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+.shop-trade-module
+  .shop-base-layout--with-summary:not(.shop-base-layout--with-toolbar)
+  > .trade-list-shell
+  > #tradingBuy,
+.shop-trade-module
+  .shop-base-layout--with-summary:not(.shop-base-layout--with-toolbar)
+  > .trade-list-shell
+  > #tradingSell {
+  margin-top: 0 !important;
+}
+
+.shop-trade-module .shop-base-layout__toolbar {
+  position: absolute;
+  z-index: 30;
+  top: 0;
+  left: 0;
+  flex: 0 0 var(--trade-control-height);
+  width: 100%;
+  min-height: var(--trade-control-height);
+  height: var(--trade-control-height);
+  max-height: var(--trade-control-height);
+  align-items: stretch;
+  gap: var(--trade-space-2);
+  margin: 0;
+  border: 1px solid rgba(218, 181, 112, 0.52);
+  border-radius: 0.35rem;
+  background: rgba(17, 12, 8, 0.98);
+  box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.62);
+  padding: var(--trade-space-1);
+  overflow: visible;
+}
+
+.shop-trade-module .trade-category-toolbar,
+.shop-trade-module .trade-category-search {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.shop-trade-module .trade-category-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(128px, 0.8fr);
+  gap: var(--trade-space-2);
+  align-items: stretch;
+}
+
+.shop-trade-module .trade-category-search {
+  display: flex;
+  align-items: stretch;
+}
+
+.shop-trade-module .trade-category-toolbar .zone-picker-toolbar,
+.shop-trade-module .trade-category-toolbar .zone-picker-hub,
+.shop-trade-module .trade-category-search__input {
+  width: 100%;
+  min-width: 0;
+}
+
+.shop-trade-module .trade-category-search .trade-input,
+.shop-trade-module .trade-category-search__input {
+  height: var(--trade-control-height);
+  min-height: var(--trade-control-height);
+  max-height: var(--trade-control-height);
+}
+
+.shop-trade-module #tradingBuy,
+.shop-trade-module #tradingSell,
+.shop-trade-module .trade-panel-content,
+.shop-trade-module .shop-mode-content,
+.shop-trade-module .shop-editor-content {
+  flex: 1 1 0 !important;
+  min-height: 0 !important;
+  height: 100% !important;
+  max-height: 100% !important;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  overscroll-behavior: contain;
+  scrollbar-gutter: auto;
+}
+
+/* TradeItemList owns the scroll viewport. Keeping the parent scrollable creates
+   a second, one-row-high scrollbar because the virtual spacer is a grid item. */
+
+.shop-trade-module #tradingBuy.trade-list--virtualized,
+.shop-trade-module #tradingSell.trade-list--virtualized {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden !important;
+}
+
+.shop-trade-module #tradingStats .modal-body {
+  background-position: center
+    calc(var(--trade-heading-height) + var(--trade-module-gap)) !important;
+  background-size: min(
+      72%,
+      calc(
+        100% - var(--trade-flank-column-width) -
+          var(--trade-flank-column-width) - var(--trade-column-gap) -
+          var(--trade-column-gap) - 24px
+      )
+    )
+    calc(
+      100% - var(--trade-heading-height) - var(--trade-footer-height) -
+        var(--trade-module-gap) - var(--trade-module-gap) -
+        var(--trade-module-gap)
+    ) !important;
+  background-repeat: no-repeat;
+}
+
+.shop-trade-module #tradingBuy,
+.shop-trade-module #tradingSell {
+  align-self: stretch;
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(6, 5, 4, 0.78), rgba(3, 3, 3, 0.76)),
+    rgba(0, 0, 0, 0.38) !important;
+  background-clip: padding-box;
+}
+
+.shop-trade-module .trade-list {
+  padding: 0 !important;
+}

@@ -1,0 +1,328 @@
+.item-mechanics-editor {
+  color-scheme: dark;
+  display: grid;
+  min-width: 0;
+  min-height: 18rem;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  overflow: hidden;
+  border: 1px solid rgba(184, 132, 66, 0.52);
+  border-radius: 0.35rem;
+  background:
+    radial-gradient(circle at 15% 0, rgba(172, 112, 42, 0.1), transparent 35%),
+    rgba(18, 10, 6, 0.82);
+}
+.item-mechanics-editor__header {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.65rem;
+  border-bottom: 1px solid rgba(184, 132, 66, 0.36);
+  background: rgba(54, 32, 17, 0.78);
+  padding: 0.38rem 0.5rem;
+}
+.item-mechanics-editor__header h3,
+.item-mechanics-editor__header p {
+  margin: 0;
+}
+.item-mechanics-editor__header h3 {
+  color: #edc77e;
+  font:
+    700 0.85rem/1.2 Georgia,
+    serif;
+}
+.item-mechanics-editor__header p {
+  color: #bca47e;
+  font-size: 0.67rem;
+}
+.item-mechanics-editor__header-actions {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: end;
+  gap: 0.35rem;
+}
+.item-mechanics-editor__header-actions label {
+  display: grid;
+  gap: 0.1rem;
+  margin: 0;
+}
+.item-mechanics-editor__header-actions label span {
+  color: #c6ad84;
+  font-size: 0.62rem;
+}
+.item-mechanics-editor button,
+.item-mechanics-editor input,
+.item-mechanics-editor select,
+.item-mechanics-editor textarea {
+  min-height: 1.85rem;
+  border: 1px solid rgba(178, 127, 63, 0.52);
+  border-radius: 0.22rem;
+  background: #180e08;
+  color: #f2dfbf;
+  padding: 0.25rem 0.42rem;
+  font-size: 0.72rem;
+  line-height: 1.15;
+}
+.item-mechanics-editor select {
+  color-scheme: dark;
+}
+.item-mechanics-editor select option {
+  background: #180e08;
+  color: #f2dfbf;
+}
+.item-mechanics-editor select option:checked {
+  background: #75471d;
+  color: #fff1d1;
+}
+.item-mechanics-editor select option:disabled {
+  background: #100906;
+  color: #87745a;
+}
+.item-mechanics-editor input:focus,
+.item-mechanics-editor select:focus,
+.item-mechanics-editor textarea:focus {
+  border-color: #dfad5e;
+  outline: 0;
+  box-shadow: 0 0 0 0.1rem rgba(223, 173, 94, 0.15);
+}
+.item-mechanics-editor button {
+  background: linear-gradient(180deg, #3c2515, #24150c);
+}
+.item-mechanics-editor button.primary {
+  border-color: #c8954c;
+  background: linear-gradient(180deg, #69431f, #3b2411);
+  color: #ffe0a2;
+}
+.item-mechanics-editor button.danger {
+  border-color: rgba(176, 79, 62, 0.66);
+  color: #f1a395;
+}
+.item-mechanics-editor__context {
+  border-bottom: 1px solid rgba(184, 132, 66, 0.28);
+  background: rgba(63, 38, 20, 0.26);
+  padding: 0.32rem 0.45rem;
+}
+.item-mechanics-editor__body {
+  display: grid;
+  min-width: 0;
+  min-height: 0;
+  grid-template-columns: minmax(10rem, 0.25fr) minmax(0, 0.75fr);
+}
+.item-mechanics-editor__list {
+  min-width: 0;
+  overflow: auto;
+  border-right: 1px solid rgba(184, 132, 66, 0.34);
+  background: rgba(20, 12, 7, 0.7);
+  padding: 0.3rem;
+}
+.item-mechanics-editor__list > button {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem;
+  margin-bottom: 0.2rem;
+  text-align: left;
+}
+.item-mechanics-editor__list > button.active {
+  border-color: #d5a052;
+  background: linear-gradient(90deg, #593719, #2b190e);
+}
+.item-mechanics-editor__list > button span {
+  display: grid;
+  min-width: 0;
+}
+.item-mechanics-editor__list strong,
+.item-mechanics-editor__list small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.item-mechanics-editor__list strong {
+  color: #efd39e;
+  font-size: 0.72rem;
+}
+.item-mechanics-editor__list small {
+  color: #a99473;
+  font-size: 0.6rem;
+}
+.item-mechanics-editor__list em,
+.item-mechanics-preview > span {
+  flex: 0 0 auto;
+  border: 1px solid rgba(185, 133, 70, 0.38);
+  border-radius: 999px;
+  padding: 0.08rem 0.28rem;
+  color: #cbb18a;
+  font-size: 0.5rem;
+  font-style: normal;
+  text-transform: uppercase;
+}
+.item-mechanics-editor__list .source-class {
+  border-color: rgba(72, 149, 170, 0.6);
+  color: #9dd6e4;
+}
+.item-mechanics-editor__list .source-genre {
+  border-color: rgba(133, 106, 176, 0.65);
+  color: #cfbced;
+}
+.item-mechanics-editor__list > p,
+.item-mechanics-editor__effects > p {
+  margin: 0;
+  color: #998469;
+  font-size: 0.62rem;
+}
+.item-mechanics-editor__form {
+  min-width: 0;
+  overflow: auto;
+  padding: 0.38rem;
+}
+.item-mechanics-editor__identity {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.34rem;
+}
+.item-mechanics-editor__form label {
+  display: grid;
+  min-width: 0;
+  gap: 0.1rem;
+  margin: 0;
+}
+.item-mechanics-editor__form label > span,
+.item-mechanics-editor__extension label > span {
+  color: #c8af86;
+  font-size: 0.62rem;
+}
+.item-mechanics-editor__description {
+  margin-top: 0.28rem !important;
+}
+.item-mechanics-editor__rules {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.3rem;
+  margin-top: 0.3rem;
+}
+.item-mechanics-editor fieldset {
+  min-width: 0;
+  margin: 0;
+  border: 1px solid rgba(183, 132, 66, 0.3);
+  border-radius: 0.25rem;
+  padding: 0.25rem;
+}
+.item-mechanics-editor legend {
+  width: auto;
+  margin: 0;
+  padding: 0 0.18rem;
+  color: #ddbc7e;
+  font-size: 0.65rem;
+}
+.item-mechanics-editor legend label {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+.item-mechanics-editor legend input {
+  width: 0.82rem;
+  min-height: auto;
+  height: 0.82rem;
+  accent-color: #bd8135;
+}
+.item-mechanics-editor fieldset > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.25rem;
+}
+.item-mechanics-editor__effects {
+  margin-top: 0.3rem;
+  border-top: 1px solid rgba(183, 132, 66, 0.25);
+  padding-top: 0.28rem;
+}
+.item-mechanics-editor__effects > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.22rem;
+}
+.item-mechanics-editor__effects > header strong {
+  color: #dfbe81;
+  font-size: 0.62rem;
+}
+.item-mechanics-editor__effect {
+  display: grid;
+  grid-template-columns:
+    minmax(6rem, 0.8fr) minmax(6rem, 0.8fr) minmax(5rem, 0.7fr)
+    minmax(6rem, 0.8fr) minmax(8rem, 1.4fr) auto;
+  gap: 0.2rem;
+  margin-bottom: 0.2rem;
+}
+.item-mechanics-editor__extension {
+  margin-top: 0.28rem;
+  border-top: 1px solid rgba(183, 132, 66, 0.25);
+  padding-top: 0.22rem;
+}
+.item-mechanics-editor__extension summary {
+  color: #bba47f;
+  font-size: 0.6rem;
+  cursor: pointer;
+}
+.item-mechanics-editor__extension > div {
+  display: grid;
+  grid-template-columns: minmax(10rem, 0.3fr) minmax(0, 0.7fr);
+  gap: 0.3rem;
+  margin-top: 0.25rem;
+}
+.item-mechanics-editor__extension p {
+  margin: 0.2rem 0 0;
+  color: #ef9987;
+  font-size: 0.6rem;
+}
+.item-mechanics-editor__form > footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.28rem;
+}
+.item-mechanics-preview,
+.item-mechanics-editor__placeholder {
+  align-self: start;
+  margin: 0.5rem;
+  border: 1px solid rgba(183, 132, 66, 0.3);
+  border-radius: 0.3rem;
+  background: rgba(47, 28, 15, 0.32);
+  padding: 0.55rem;
+}
+.item-mechanics-preview h4,
+.item-mechanics-preview p,
+.item-mechanics-editor__placeholder p {
+  margin: 0.2rem 0 0;
+}
+.item-mechanics-preview h4,
+.item-mechanics-editor__placeholder strong {
+  color: #e9c67f;
+}
+.item-mechanics-preview p,
+.item-mechanics-editor__placeholder p {
+  color: #b6a07d;
+  font-size: 0.65rem;
+}
+.item-mechanics-preview dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.16rem 0.45rem;
+  margin: 0.45rem 0;
+  font-size: 0.63rem;
+}
+.item-mechanics-preview dt {
+  color: #9e896a;
+}
+.item-mechanics-preview dd {
+  margin: 0;
+  color: #dfc79f;
+}
+@media (max-width: 1100px) {
+  .item-mechanics-editor__identity {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .item-mechanics-editor__effect {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}

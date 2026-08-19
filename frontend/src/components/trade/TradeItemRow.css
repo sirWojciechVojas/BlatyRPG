@@ -1,0 +1,10 @@
+.trade-modal__row {
+  grid-template-columns:
+    var(--trade-row-icon-col-width)
+    minmax(0, 1fr)
+    var(--trade-price-col-width) !important;
+}
+.trade-modal__row:focus-visible {
+  outline: 2px solid #d4aa62 !important;
+  outline-offset: -2px;
+}

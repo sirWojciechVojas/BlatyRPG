@@ -1,0 +1,148 @@
+.pricing-editor-workspace {
+  width: calc(100% - 0.7rem);
+  height: calc(100% - 0.7rem);
+  min-height: 0;
+  margin: 0.35rem auto;
+  overflow: hidden;
+}
+
+.pricing-editor-workspace .shop-editor-panel {
+  height: 100%;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.35rem;
+  padding: 0.5rem;
+  overflow: hidden;
+}
+
+.shop-editor-pricing {
+  display: grid;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0.35rem;
+  overflow: hidden;
+}
+
+.shop-editor-pricing__intro {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  font-size: 0.7rem;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.shop-editor-pricing__workspace {
+  min-height: 0;
+  height: 100%;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.shop-editor-pricing__controls {
+  display: grid;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 0;
+  overflow: hidden;
+}
+
+.shop-editor-pricing__tabs {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 0.18rem;
+  border: 1px solid rgba(216, 183, 120, 0.24);
+  border-bottom: 0;
+  border-radius: 0.38rem 0.38rem 0 0;
+  background: rgba(14, 10, 7, 0.72);
+  padding: 0.2rem;
+}
+
+.shop-workspace .shop-editor-pricing__tabs button {
+  display: inline-flex;
+  min-width: 0;
+  min-height: 1.65rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  border-color: transparent;
+  background: transparent;
+  padding: 0.14rem 0.25rem;
+  overflow: hidden;
+  font-size: 0.63rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shop-editor-pricing__tabs button > span {
+  min-width: 1rem;
+  border-radius: 999px;
+  background: rgba(216, 183, 120, 0.17);
+  color: #efc879;
+  font-size: 0.56rem;
+}
+
+.shop-editor-pricing__tab-panel {
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.shop-editor-pricing__tab-panel > .shop-editor-pricing__policy-block {
+  height: 100%;
+  align-content: start;
+  border-radius: 0 0 0.4rem 0.4rem;
+  padding: 0.5rem;
+  overflow: hidden;
+}
+
+.shop-editor-pricing__section-header strong,
+.shop-editor-pricing__field > span,
+.shop-editor-pricing__toggle-copy > strong,
+.shop-editor-pricing__suppression > strong,
+.shop-editor-pricing__rule-picker > span,
+.shop-editor-pricing__priority > span {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.shop-editor-pricing__rule-picker {
+  display: grid;
+  grid-template-columns: auto minmax(10rem, 1fr);
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.3rem;
+  color: #cdb991;
+  font-size: 0.68rem;
+}
+
+.shop-editor-pricing__simulator {
+  position: static;
+  top: auto;
+  min-height: 0;
+  height: 100%;
+  align-content: start;
+  overflow: hidden;
+}
+
+@media (max-height: 680px) {
+  .shop-editor-pricing__intro,
+  .shop-editor-pricing__section-header small,
+  .shop-editor-pricing__field > small,
+  .shop-editor-pricing__toggle-copy small {
+    display: none;
+  }
+
+  .shop-editor-pricing__policy-block {
+    gap: 4px;
+  }
+
+  .shop-editor-pricing__field-grid,
+  .shop-editor-pricing__criteria-grid {
+    gap: 3px;
+  }
+}

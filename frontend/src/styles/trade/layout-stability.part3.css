@@ -1,0 +1,250 @@
+.shop-trade-module .assort-panel--fixed-list .assort-panel-list,
+.shop-trade-module .assort-panel-list,
+.shop-trade-module .assort-overview-list,
+.shop-trade-module .shop-editor-suggestions,
+.shop-trade-module .shop-mode-template-list {
+  min-height: 0;
+  height: auto;
+  max-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.shop-trade-module .assort-card {
+  min-height: var(--assort-row-height);
+  height: var(--assort-row-height);
+  max-height: var(--assort-row-height);
+  padding: var(--trade-space-2);
+  gap: var(--trade-space-1);
+  border-radius: 11px;
+}
+
+.shop-trade-module .assort-card-main {
+  gap: var(--trade-space-2);
+}
+
+.shop-trade-module .assort-card-icon,
+.shop-trade-module .assort-card-main img {
+  width: var(--trade-icon-size);
+  height: var(--trade-icon-size);
+}
+
+.shop-trade-module .shop-mode-template-frame {
+  min-height: 0;
+  padding: var(--trade-space-2);
+}
+
+.shop-trade-module .shop-mode-template-frame__titlebar {
+  flex: 0 0 auto;
+  margin-bottom: var(--trade-module-gap);
+  gap: var(--trade-module-gap);
+}
+
+.shop-trade-module .shop-mode-template-frame__body {
+  --bs-gutter-x: var(--trade-space-2);
+  --bs-gutter-y: var(--trade-module-gap);
+  min-height: 0;
+}
+
+.shop-trade-module .shop-mode-template-actions,
+.shop-trade-module .shop-mode-template-actions__row {
+  gap: var(--trade-module-gap);
+}
+
+.shop-trade-module .shop-mode-template-actions,
+.shop-trade-module .shop-mode-template-actions > div,
+.shop-trade-module .assortment-suggestion-actions {
+  width: 100%;
+  min-width: 0;
+}
+
+.shop-trade-module .shop-mode-template-actions__row {
+  margin: 0;
+}
+
+.shop-trade-module .shop-mode-template-actions__row .shop-editor-icon-btn {
+  margin-inline: 0;
+}
+
+.shop-trade-module .assortment-suggestion-actions {
+  display: grid;
+  gap: var(--trade-module-gap);
+}
+
+.shop-trade-module .assortment-suggestion-actions .shop-mode-template-actions__row {
+  flex-wrap: nowrap;
+}
+
+.shop-trade-module
+  .assortment-suggestion-actions
+  .shop-mode-template-actions__row:last-child {
+  justify-content: center;
+}
+
+.shop-trade-module .assortment-suggestion-actions .assort-label {
+  max-width: 11rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shop-trade-module .shop-mode-template-actions__row .btn,
+.shop-trade-module .shop-editor-actions .btn,
+.shop-trade-module .shop-editor-toolbar .btn {
+  min-height: var(--trade-action-height);
+  padding: 0 var(--trade-space-3);
+  line-height: 1;
+}
+
+.shop-trade-module .shop-editor-icon-btn,
+.shop-trade-module .shop-editor-signboard-random-btn {
+  width: var(--trade-icon-button-size);
+  min-width: var(--trade-icon-button-size);
+  height: var(--trade-icon-button-size);
+  min-height: var(--trade-icon-button-size);
+  padding: 0;
+}
+
+.shop-trade-module .shop-base-layout--editor-scroll,
+.shop-trade-module .shop-base-layout--editor-scroll > .trade-list-shell {
+  min-height: 0;
+  height: 100%;
+  max-height: 100%;
+  overflow: visible;
+}
+
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-content {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto;
+  max-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.shop-trade-module .shop-base-layout--editor-scroll .shop-mode-template-frame,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-mode-template-frame__body,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-layout-shell,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-layout-stack {
+  min-height: 0;
+  height: auto;
+  max-height: none;
+  overflow: visible;
+}
+
+.shop-trade-module .shop-editor-layout-stack,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-layout-stack {
+  gap: var(--trade-module-gap);
+}
+
+.shop-trade-module .shop-editor-panel,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-panel {
+  gap: var(--trade-module-gap);
+  padding: var(--trade-space-2);
+}
+
+.shop-trade-module .shop-editor-block-grid,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-block-grid {
+  gap: var(--trade-module-gap);
+}
+
+.shop-trade-module .shop-editor-aliases-textarea {
+  min-height: clamp(72px, 12vh, 130px);
+}
+
+.shop-trade-module .shop-editor-aliases-textarea--compact,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-aliases-textarea--compact {
+  min-height: clamp(54px, 8vh, 74px);
+}
+
+.shop-trade-module .shop-editor-tags-field,
+.shop-trade-module .shop-base-layout--editor-scroll .shop-editor-tags-field--compact {
+  min-height: clamp(58px, 9vh, 88px);
+  padding: var(--trade-space-2);
+}
+
+.shop-trade-module .shop-editor-pricing {
+  gap: var(--trade-module-gap);
+}
+
+.shop-trade-module .shop-editor-pricing__toggle-list {
+  gap: var(--trade-module-gap);
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+}
+
+.shop-trade-module .shop-editor-pricing__toggle,
+.shop-trade-module .shop-editor-pricing__card,
+.shop-trade-module .shop-editor-pricing__preview-meta,
+.shop-trade-module .shop-editor-pricing__empty {
+  padding: var(--trade-space-2);
+  border-radius: 10px;
+}
+
+@media (max-height: 760px) {
+  .shop-trade-module {
+    --trade-header-height: 44px;
+    --trade-footer-height: 22px;
+    --trade-purpose-height: 18px;
+    --trade-heading-height: 24px;
+    --trade-control-height: 30px;
+    --trade-summary-height: 24px;
+    --trade-action-height: 34px;
+    --trade-icon-button-size: 30px;
+    --trade-icon-size: 30px;
+    --trade-item-row-height: 50px;
+    --trade-module-gap: 5px;
+    --trade-column-gap: 8px;
+  }
+
+  .shop-trade-module .titleBar {
+    font-size: 1.18rem;
+  }
+
+  .shop-trade-module .active-bg-avatar__badge {
+    font-size: 0.5rem;
+  }
+
+  .shop-trade-module .trade-modal__row-desc {
+    -webkit-line-clamp: 1;
+    max-height: 1.2em;
+  }
+}
+
+@media (min-height: 1000px) {
+  .shop-trade-module {
+    --trade-modal-height: 840px;
+    --trade-item-row-height: 62px;
+  }
+}
+
+@media (min-width: 2300px) and (min-height: 1200px) {
+  .shop-trade-module {
+    --trade-modal-height: 840px;
+    --trade-modal-width: 1600px;
+  }
+}
+
+@media (max-width: 1320px) {
+  .shop-trade-module {
+    --trade-column-gap: 8px;
+    --trade-price-col-width: 142px;
+    --trade-side-panel-width: min(124px, 100%);
+    --trade-filter-rail-offset: 34px;
+  }
+
+  .shop-trade-module .trade-grid {
+    grid-template-columns:
+      minmax(100px, 0.62fr)
+      minmax(0, 2.1fr)
+      minmax(0, 2.1fr)
+      minmax(100px, 0.62fr);
+  }
+
+  .shop-trade-module .trade-modal__summary .input-group-text {
+    max-width: 52%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}

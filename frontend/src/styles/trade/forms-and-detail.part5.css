@@ -1,0 +1,278 @@
+.shop-trade-module .field-edit-value__suggestions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  overflow: auto;
+  align-content: flex-start;
+  max-height: 48vh;
+  padding-right: 2px;
+}
+
+.shop-trade-module .weapon-stats-dialog__titlebar {
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.shop-trade-module .weapon-stats-dialog__topbar {
+  position: relative;
+  margin-top: 0;
+  margin-bottom: 10px;
+  padding-right: 48px;
+}
+
+.shop-trade-module .weapon-stats-dialog__close-x {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.4);
+  color: rgba(255, 255, 255, 0.92);
+  font-size: 1.1rem;
+  line-height: 1;
+  display: grid;
+  place-items: center;
+  transition:
+    transform 0.16s ease,
+    background-color 0.16s ease,
+    box-shadow 0.16s ease;
+}
+
+.shop-trade-module .weapon-stats-dialog__close-x:hover {
+  background: rgba(180, 70, 50, 0.82);
+  box-shadow: 0 0 0 1px rgba(255, 210, 190, 0.35);
+  transform: translateY(-50%) scale(1.04);
+}
+
+.shop-trade-module .weapon-stats-dialog__close-x:focus-visible {
+  outline: 2px solid rgba(241, 200, 129, 0.8);
+  outline-offset: 2px;
+}
+
+.shop-trade-module .weapon-stats-dialog__titlebar .item-detail-title-text {
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  color: rgba(120, 180, 210, 0.92);
+}
+
+.shop-trade-module .weapon-stats-dialog__topbar .item-detail-title-text {
+  font-size: 0.92rem;
+  letter-spacing: 0.12em;
+}
+
+.shop-trade-module .weapon-stats-dialog__body {
+  display: grid;
+  grid-template-columns: minmax(230px, 280px) 1fr;
+  gap: 14px;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.shop-trade-module .weapon-stats-dialog__selector,
+.shop-trade-module .weapon-stats-dialog__fields {
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 16px;
+  border: 1px solid rgba(120, 180, 210, 0.24);
+  padding: 12px;
+}
+
+.shop-trade-module .weapon-stats-dialog__selector {
+  display: grid;
+  gap: 8px;
+  align-content: start;
+  grid-template-rows: auto minmax(0, 1fr);
+  min-height: 0;
+}
+
+.shop-trade-module .weapon-stats-dialog__fields {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  gap: 10px;
+  min-height: 0;
+}
+
+.shop-trade-module .weapon-stats-dialog__hint {
+  font-size: 0.68rem;
+  color: rgba(245, 234, 210, 0.72);
+}
+
+.shop-trade-module .weapon-stats-dialog__list {
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  gap: 8px;
+  padding-right: 4px;
+  align-content: start;
+}
+
+.shop-trade-module .weapon-stats-dialog__weapon-btn {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  text-align: left;
+  padding: 10px;
+  border-radius: 12px;
+  border: 1px solid rgba(120, 180, 210, 0.24);
+  background: rgba(0, 0, 0, 0.32);
+  color: rgba(245, 234, 210, 0.94);
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.shop-trade-module .weapon-stats-dialog__weapon-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(241, 200, 129, 0.6);
+  box-shadow: 0 10px 16px rgba(0, 0, 0, 0.35);
+}
+
+.shop-trade-module .weapon-stats-dialog__weapon-btn.active {
+  border-color: rgba(241, 200, 129, 0.92);
+  box-shadow:
+    0 0 0 2px rgba(241, 200, 129, 0.32),
+    0 12px 20px rgba(0, 0, 0, 0.45);
+}
+
+.shop-trade-module .weapon-stats-dialog__weapon-name {
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.shop-trade-module .weapon-stats-dialog__weapon-subtitle {
+  font-size: 0.64rem;
+  letter-spacing: 0.1em;
+  color: rgba(120, 180, 210, 0.9);
+}
+
+.shop-trade-module .weapon-stats-dialog__grid {
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding-right: 4px;
+}
+
+.shop-trade-module .weapon-stats-dialog__field {
+  display: grid;
+  gap: 5px;
+}
+
+.shop-trade-module .weapon-stats-dialog__field .trade-input,
+.shop-trade-module .weapon-stats-dialog__field .trade-textarea {
+  width: 100%;
+}
+
+.shop-trade-module .weapon-stats-dialog__field--wide {
+  grid-column: 1 / -1;
+}
+
+.shop-trade-module .weapon-stats-dialog__qualities {
+  min-height: 84px;
+}
+
+.shop-trade-module .weapon-stats-dialog__feature-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.shop-trade-module .weapon-stats-dialog__feature-chip {
+  border: 1px solid rgba(120, 180, 210, 0.35);
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.35);
+  color: rgba(245, 234, 210, 0.95);
+  font-size: 0.66rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 4px 9px;
+  transition:
+    border-color 0.16s ease,
+    box-shadow 0.16s ease,
+    transform 0.16s ease;
+}
+
+.shop-trade-module .weapon-stats-dialog__feature-chip:hover {
+  border-color: rgba(241, 200, 129, 0.75);
+  transform: translateY(-1px);
+}
+
+.shop-trade-module .weapon-stats-dialog__feature-chip.active {
+  border-color: rgba(241, 200, 129, 0.92);
+  box-shadow: 0 0 0 1px rgba(241, 200, 129, 0.3);
+}
+
+.shop-trade-module .weapon-stats-dialog__feature-details {
+  margin-top: 8px;
+  border-radius: 10px;
+  border: 1px solid rgba(120, 180, 210, 0.26);
+  background: rgba(0, 0, 0, 0.28);
+  padding: 8px 10px;
+  display: grid;
+  gap: 5px;
+}
+
+.shop-trade-module .weapon-stats-dialog__feature-title {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(241, 200, 129, 0.94);
+}
+
+.shop-trade-module .weapon-stats-dialog__feature-desc,
+.shop-trade-module .weapon-stats-dialog__feature-mechanics {
+  font-size: 0.73rem;
+  line-height: 1.35;
+  color: rgba(245, 234, 210, 0.9);
+}
+
+.shop-trade-module .weapon-stats-dialog__feature-mechanics {
+  color: rgba(120, 180, 210, 0.94);
+}
+
+.shop-trade-module .item-detail-titlebar {
+  background: var(--trade-titlebar);
+  background-size: 100% 100%;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 86px;
+  margin: -10px -10px 8px;
+  border-radius: 13px 13px 0 0;
+  text-align: center;
+  position: relative;
+}
+
+.shop-trade-module .item-detail-title-text {
+  width: 100%;
+  overflow: hidden;
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #fff;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shop-trade-module .item-detail-close {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  padding: 2px 8px;
+  font-size: 0.68rem;
+}
+
+.shop-trade-module .item-detail-body {
+  display: block;
+  flex: 1 1 auto;
+  min-height: 0;
+  position: relative;
+}
