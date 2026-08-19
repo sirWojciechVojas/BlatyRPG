@@ -2,69 +2,59 @@
 
 namespace App\Models;
 
+use App\Services\Auth\UserRole;
 use CodeIgniter\Model;
 
 class UserModel extends Model
 {
-    protected $table            = 'users';
-    protected $primaryKey       = 'id';
+    protected $table = 'users';
+    protected $primaryKey = 'id';
     protected $useAutoIncrement = true;
-    protected $returnType       = 'array';
-    protected $useSoftDeletes   = false;
-    protected $protectFields    = true;
-    protected $allowedFields    = [
-        'username', 'email', 'password_hash', 'role', 'avatar_url'
+    protected $returnType = 'array';
+    protected $useSoftDeletes = true;
+    protected $protectFields = true;
+    protected $allowedFields = [
+        'username', 'email', 'password_hash', 'role', 'avatar_url',
     ];
-
     protected bool $allowEmptyInserts = false;
-
-    // Dates
     protected $useTimestamps = true;
-    protected $dateFormat    = 'datetime';
-    protected $createdField  = 'created_at';
-    protected $updatedField  = 'updated_at';
-    protected $deletedField  = 'deleted_at';
-
-    // Validation
-    protected $validationRules      = [
-        'username'      => 'required|min_length[3]|is_unique[users.username]',
-        'email'         => 'required|valid_email|is_unique[users.email]',
-        'password_hash' => 'required|min_length[6]',
+    protected $dateFormat = 'datetime';
+    protected $createdField = 'created_at';
+    protected $updatedField = 'updated_at';
+    protected $deletedField = 'deleted_at';
+    protected $validationRules = [
+        'username' => 'required|min_length[3]|max_length[100]|is_unique[users.username]',
+        'email' => 'required|max_length[255]|valid_email|is_unique[users.email]',
+        'password_hash' => 'required|min_length[12]|max_length[255]',
+        'role' => 'permit_empty|in_list[user,player,gm,admin]',
     ];
-    protected $validationMessages   = [
-        'email' => [
-            'is_unique' => 'Ten adres email jest już zajęty.',
-        ],
-        'username' => [
-            'is_unique' => 'Ta nazwa użytkownika jest już zajęta.',
-        ]
+    protected $validationMessages = [
+        'email' => ['is_unique' => 'Ten adres email jest już zajęty.'],
+        'username' => ['is_unique' => 'Ta nazwa użytkownika jest już zajęta.'],
     ];
-    protected $skipValidation       = false;
+    protected $skipValidation = false;
     protected $cleanValidationRules = true;
-
-    // Callbacks
     protected $allowCallbacks = true;
-    protected $beforeInsert   = ['hashPassword'];
-    protected $afterInsert    = [];
-    protected $beforeUpdate   = [];
-    protected $afterUpdate    = [];
-    protected $beforeFind     = [];
-    protected $afterFind      = [];
-    protected $beforeDelete   = [];
-    protected $afterDelete    = [];
+    protected $beforeInsert = ['normalizeRole', 'hashPassword'];
+    protected $beforeUpdate = ['normalizeRole', 'hashPassword'];
 
-     /**
-     * Automatycznie hashuje hasło przed zapisem do bazy
-     */
-    protected function hashPassword(array $data)
+    protected function hashPassword(array $data): array
     {
-        if (! isset($data['data']['password_hash'])) {
+        if (!isset($data['data']['password_hash'])) {
             return $data;
         }
+        $password = (string) $data['data']['password_hash'];
+        if ((password_get_info($password)['algo'] ?? 0) === 0) {
+            $data['data']['password_hash'] = password_hash($password, PASSWORD_DEFAULT);
+        }
+        return $data;
+    }
 
-        // Szyfrowanie algorytmem domyślnym (zazwyczaj Bcrypt/Argon2)
-        $data['data']['password_hash'] = password_hash($data['data']['password_hash'], PASSWORD_DEFAULT);
-
+    protected function normalizeRole(array $data): array
+    {
+        if (isset($data['data']['role'])) {
+            $data['data']['role'] = UserRole::normalize($data['data']['role']);
+        }
         return $data;
     }
 }

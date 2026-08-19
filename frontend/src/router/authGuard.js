@@ -27,7 +27,11 @@ export const createAuthGuard =
     try {
       const allowed = await campaignAuthorization(to, current);
       return allowed === true ? true : { name: "forbidden" };
-    } catch (_error) {
+    } catch (error) {
+      if (error?.status === 401) {
+        session.clear?.("unauthorized");
+        return { name: "home", query: { redirect: to.fullPath } };
+      }
       return { name: "forbidden" };
     }
   };

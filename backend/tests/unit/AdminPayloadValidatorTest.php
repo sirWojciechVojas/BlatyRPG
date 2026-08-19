@@ -10,7 +10,7 @@ final class AdminPayloadValidatorTest extends CIUnitTestCase
         $result = (new AdminPayloadValidator())->validateCreateUser([
             'username' => ' GameMaster ',
             'email' => ' GM@Example.COM ',
-            'password' => 'long-safe-password',
+            'password' => 'LongSafePassword123',
             'role' => 'GM',
         ]);
 
@@ -41,10 +41,15 @@ final class AdminPayloadValidatorTest extends CIUnitTestCase
     {
         $validator = new AdminPayloadValidator();
         $valid = $validator->validateRole(['role' => 'ADMIN']);
+        $player = $validator->validateRole(['role' => 'PLAYER']);
+        $legacy = $validator->validateRole(['role' => 'user']);
         $invalid = $validator->validateRole(['role' => 'owner', 'user_id' => 1]);
 
         $this->assertTrue($valid['valid']);
         $this->assertSame('admin', $valid['data']['role']);
+        $this->assertTrue($player['valid']);
+        $this->assertSame('player', $player['data']['role']);
+        $this->assertFalse($legacy['valid']);
         $this->assertFalse($invalid['valid']);
         $this->assertArrayHasKey('user_id', $invalid['errors']);
     }

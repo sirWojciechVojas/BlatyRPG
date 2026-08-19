@@ -8,6 +8,18 @@ export const ACCESS_TOKEN_KEYS = Object.freeze([
   "jwt",
 ]);
 
+let unauthorizedHandler = null;
+
+export const registerJsonApiUnauthorizedHandler = (handler) => {
+  if (handler !== null && typeof handler !== "function") {
+    throw new TypeError("unauthorized_handler_must_be_a_function");
+  }
+  unauthorizedHandler = handler;
+  return () => {
+    if (unauthorizedHandler === handler) unauthorizedHandler = null;
+  };
+};
+
 const errorCode = (payload, fallback) => {
   for (const candidate of [
     payload?.code,
@@ -107,10 +119,18 @@ export const createJsonApiClient = (options = {}) => {
       }
       if (!response.ok) {
         const fallback = `http_${response.status}`;
-        throw new JsonApiError(errorCode(payload, fallback), {
+        const error = new JsonApiError(errorCode(payload, fallback), {
           status: response.status,
           payload,
         });
+        if (response.status === 401 && token) {
+          try {
+            (options.onUnauthorized || unauthorizedHandler)?.(error);
+          } catch (_error) {
+            // Session cleanup must not replace the original API error.
+          }
+        }
+        throw error;
       }
       return payload;
     },

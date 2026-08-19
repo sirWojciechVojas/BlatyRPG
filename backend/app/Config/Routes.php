@@ -41,6 +41,8 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
     $routes->group('auth', static function (RouteCollection $routes) {
         $routes->post('login', 'AuthController::login');
         $routes->post('register', 'AuthController::register');
+        $routes->post('password-reset/request', 'AuthController::requestPasswordReset');
+        $routes->post('password-reset/confirm', 'AuthController::resetPassword');
     });
 
     // $routes->post('login', 'AuthController::login');
@@ -54,6 +56,9 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         // Canonical: /api/auth/me
         // Legacy alias: /api/me
         $routes->get('auth/me', 'AuthSessionController::me');
+        $routes->post('auth/logout', 'AuthSessionController::logout');
+        $routes->patch('auth/profile', 'AuthSessionController::updateProfile');
+        $routes->post('auth/change-password', 'AuthSessionController::changePassword');
         $routes->get('me', 'AuthSessionController::me');
 
         // ----------------------------------------

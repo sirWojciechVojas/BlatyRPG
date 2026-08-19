@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   ACCESS_TOKEN_KEY,
   AUTH_SESSION_KEY,
@@ -16,6 +16,7 @@ const createStorage = () => {
 };
 
 describe("authSession", () => {
+  afterEach(() => vi.useRealTimers());
   it("stores only the canonical token and durable user metadata", () => {
     const storage = createStorage();
     const session = createAuthSession({ storage, now: () => 1_000 });
@@ -50,19 +51,16 @@ describe("authSession", () => {
     expect(storage.getItem(AUTH_SESSION_KEY)).toBeNull();
   });
 
-  it("migrates a legacy token alias into the canonical session", () => {
+  it("rejects a legacy token without a verifiable expiry", () => {
     const storage = createStorage();
     storage.setItem("blatyrpg.jwt", "legacy-token");
 
     const result = createAuthSession({ storage }).read();
 
-    expect(result).toMatchObject({ token: "legacy-token", user: null });
-    expect(storage.getItem(ACCESS_TOKEN_KEY)).toBe("legacy-token");
+    expect(result).toBeNull();
+    expect(storage.getItem(ACCESS_TOKEN_KEY)).toBeNull();
     expect(storage.getItem("blatyrpg.jwt")).toBeNull();
-    expect(JSON.parse(storage.getItem(AUTH_SESSION_KEY))).toEqual({
-      expiresAt: null,
-      user: null,
-    });
+    expect(storage.getItem(AUTH_SESSION_KEY)).toBeNull();
   });
 
   it("invalidates an expired session", () => {
@@ -76,5 +74,40 @@ describe("authSession", () => {
 
     expect(session.read()).toBeNull();
     expect(storage.getItem(ACCESS_TOKEN_KEY)).toBeNull();
+  });
+
+  it("accepts expires_at and normalizes epoch seconds", () => {
+    const storage = createStorage();
+    const session = createAuthSession({ storage, now: () => 1_000 });
+
+    expect(
+      session.save({
+        token: "signed-token",
+        expires_at: 61,
+        user: { id: 1, role: "user" },
+      }),
+    ).toMatchObject({ expiresAt: 61_000, user: { role: "player" } });
+  });
+
+  it("expires proactively and notifies subscribers", () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(1_000);
+    const storage = createStorage();
+    const session = createAuthSession({ storage });
+    const listener = vi.fn();
+    session.subscribe(listener);
+    session.save({ token: "token", expiresIn: 1, user: { id: 1 } });
+
+    vi.advanceTimersByTime(1_000);
+
+    expect(session.read()).toBeNull();
+    expect(listener).toHaveBeenLastCalledWith(null, "expired");
+  });
+
+  it("requires a reliable expiry when saving", () => {
+    const storage = createStorage();
+    expect(() =>
+      createAuthSession({ storage }).save({ token: "opaque-token" }),
+    ).toThrow("session_expiry_required");
   });
 });

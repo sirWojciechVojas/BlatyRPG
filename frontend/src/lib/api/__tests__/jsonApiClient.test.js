@@ -61,4 +61,20 @@ describe("jsonApiClient", () => {
     expect(error.code).toBe("forbidden");
     expect(isJsonApiAuthorizationError(error)).toBe(true);
   });
+
+  it("notifies the session handler on an authenticated 401", async () => {
+    const onUnauthorized = vi.fn();
+    const client = createJsonApiClient({
+      fetchImpl: vi
+        .fn()
+        .mockResolvedValue(response(401, '{"code":"session_expired"}')),
+      tokenResolver: () => "expired-token",
+      onUnauthorized,
+    });
+
+    const error = await client.request("/campaigns").catch((reason) => reason);
+
+    expect(onUnauthorized).toHaveBeenCalledWith(error);
+    expect(error).toMatchObject({ status: 401, code: "session_expired" });
+  });
 });

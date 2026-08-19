@@ -11,7 +11,7 @@ class AuthUserPresenter
             'username' => (string) $user['username'],
             'login' => (string) $user['username'],
             'email' => (string) $user['email'],
-            'role' => strtolower((string) $user['role']),
+            'role' => UserRole::normalize($user['role'] ?? ''),
             'avatar_url' => $user['avatar_url'] ?? null,
         ];
     }

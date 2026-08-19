@@ -1,8 +1,10 @@
-import { ACCESS_TOKEN_KEYS } from "@/lib/api/jsonApiClient";
+import {
+  ACCESS_TOKEN_KEYS,
+  registerJsonApiUnauthorizedHandler,
+} from "@/lib/api/jsonApiClient";
 
 export const ACCESS_TOKEN_KEY = "access_token";
 export const AUTH_SESSION_KEY = "blatyrpg.auth.session";
-
 export const TOKEN_ALIASES = ACCESS_TOKEN_KEYS;
 
 const storageOrDefault = (storage) => {
@@ -31,83 +33,189 @@ const jwtExpiry = (token) => {
   }
 };
 
+const absoluteExpiry = (value, secondsAllowed = false) => {
+  if (value === null || value === undefined || value === "") return null;
+  const numeric = Number(value);
+  if (Number.isFinite(numeric) && numeric > 0) {
+    return secondsAllowed && numeric < 1e12 ? numeric * 1000 : numeric;
+  }
+  const parsed = Date.parse(String(value));
+  return Number.isFinite(parsed) ? parsed : null;
+};
+
 const normalizeUser = (user) => {
   if (!user || typeof user !== "object") return null;
+  const role = String(user.role || "player").toLowerCase();
   return {
     id: Number(user.id) || user.id || null,
     username: String(user.username || user.login || ""),
     email: String(user.email || ""),
-    role: String(user.role || "user").toLowerCase(),
+    role: role === "user" ? "player" : role,
     avatarUrl: user.avatarUrl || user.avatar_url || null,
   };
 };
 
+const browserEventTarget = () =>
+  typeof window === "undefined" ? null : window;
+
 export const createAuthSession = (options = {}) => {
   const storage = storageOrDefault(options.storage);
   const now = options.now || Date.now;
+  const timers = {
+    set: options.setTimeout || setTimeout,
+    clear: options.clearTimeout || clearTimeout,
+  };
+  const eventTarget = options.eventTarget ?? browserEventTarget();
+  const listeners = new Set();
+  let expiryTimer = null;
+  let listeningToStorage = false;
 
-  const clear = () => {
+  const cancelExpiryTimer = () => {
+    if (expiryTimer !== null && timers.clear) timers.clear(expiryTimer);
+    expiryTimer = null;
+  };
+
+  const removeStoredSession = () => {
     if (!storage) return;
     try {
       TOKEN_ALIASES.forEach((key) => storage.removeItem(key));
       storage.removeItem(AUTH_SESSION_KEY);
     } catch (_error) {
-      // A blocked storage must behave like an anonymous session.
+      // A blocked storage behaves like an anonymous session.
     }
   };
 
-  const read = () => {
+  const emit = (session, reason) => {
+    listeners.forEach((listener) => listener(session, reason));
+  };
+
+  const findToken = () =>
+    TOKEN_ALIASES.map((key) => ({
+      key,
+      token: String(storage?.getItem(key) || "").trim(),
+    })).find((entry) => entry.token);
+
+  let read;
+  const scheduleExpiry = (expiresAt) => {
+    cancelExpiryTimer();
+    if (!timers.set || !expiresAt) return;
+    const remaining = expiresAt - now();
+    if (remaining <= 0) return;
+    expiryTimer = timers.set(
+      () => {
+        expiryTimer = null;
+        const session = read();
+        if (session) scheduleExpiry(session.expiresAt);
+        else emit(null, "expired");
+      },
+      Math.min(remaining, 2_147_483_647),
+    );
+  };
+
+  read = () => {
     if (!storage) return null;
     try {
-      const tokenEntry = TOKEN_ALIASES.map((key) => ({
-        key,
-        token: String(storage.getItem(key) || "").trim(),
-      })).find((entry) => entry.token);
-      if (!tokenEntry) return null;
+      const tokenEntry = findToken();
+      if (!tokenEntry) {
+        cancelExpiryTimer();
+        return null;
+      }
       const token = tokenEntry.token;
       const metadata = parseJson(storage.getItem(AUTH_SESSION_KEY)) || {};
-      const expiresAt = Number(metadata.expiresAt) || jwtExpiry(token);
-      if (expiresAt && expiresAt <= now()) {
-        clear();
+      const expiresAt =
+        absoluteExpiry(metadata.expiresAt) ||
+        absoluteExpiry(metadata.expires_at, true) ||
+        jwtExpiry(token);
+      if (!expiresAt || expiresAt <= now()) {
+        cancelExpiryTimer();
+        removeStoredSession();
         return null;
       }
       const user = normalizeUser(metadata.user);
-      if (tokenEntry.key !== ACCESS_TOKEN_KEY || !metadata.expiresAt) {
+      if (
+        tokenEntry.key !== ACCESS_TOKEN_KEY ||
+        metadata.expiresAt !== expiresAt ||
+        metadata.expires_at !== undefined
+      ) {
         TOKEN_ALIASES.forEach((key) => storage.removeItem(key));
         storage.setItem(ACCESS_TOKEN_KEY, token);
         storage.setItem(AUTH_SESSION_KEY, JSON.stringify({ expiresAt, user }));
       }
+      scheduleExpiry(expiresAt);
       return { token, expiresAt, user };
     } catch (_error) {
+      cancelExpiryTimer();
       return null;
     }
   };
 
-  const save = ({ token, user, expiresIn, expiresAt }) => {
+  const clear = (reason = "cleared") => {
+    cancelExpiryTimer();
+    removeStoredSession();
+    emit(null, reason);
+  };
+
+  const save = ({
+    token,
+    user,
+    expiresIn,
+    expiresAt,
+    expires_at: snakeExpiry,
+  }) => {
     const normalizedToken = String(token || "").trim();
     if (!storage || !normalizedToken) throw new TypeError("token_required");
     const calculatedExpiry =
-      Number(expiresAt) ||
+      absoluteExpiry(expiresAt) ||
+      absoluteExpiry(snakeExpiry, true) ||
       (Number(expiresIn) > 0 ? now() + Number(expiresIn) * 1000 : null) ||
       jwtExpiry(normalizedToken);
-    const session = {
-      user: normalizeUser(user),
-      expiresAt: calculatedExpiry,
-    };
-    clear();
+    if (!calculatedExpiry) throw new TypeError("session_expiry_required");
+    if (calculatedExpiry <= now()) throw new TypeError("session_expired");
+
+    const session = { user: normalizeUser(user), expiresAt: calculatedExpiry };
+    removeStoredSession();
     storage.setItem(ACCESS_TOKEN_KEY, normalizedToken);
     storage.setItem(AUTH_SESSION_KEY, JSON.stringify(session));
-    return { ...session, token: normalizedToken };
+    const result = { ...session, token: normalizedToken };
+    scheduleExpiry(calculatedExpiry);
+    emit(result, "saved");
+    return result;
   };
 
   const updateUser = (user) => {
     const current = read();
     if (!current) return null;
-    return save({
-      token: current.token,
-      expiresAt: current.expiresAt,
-      user,
-    });
+    return save({ ...current, user });
+  };
+
+  const onStorage = (event) => {
+    if (event?.storageArea && event.storageArea !== storage) return;
+    if (
+      event?.key &&
+      event.key !== AUTH_SESSION_KEY &&
+      !TOKEN_ALIASES.includes(event.key)
+    ) {
+      return;
+    }
+    emit(read(), "storage");
+  };
+
+  const subscribe = (listener, subscribeOptions = {}) => {
+    if (typeof listener !== "function")
+      throw new TypeError("listener_required");
+    listeners.add(listener);
+    if (!listeningToStorage && eventTarget?.addEventListener) {
+      eventTarget.addEventListener("storage", onStorage);
+      listeningToStorage = true;
+    }
+    if (subscribeOptions.immediate !== false) listener(read(), "initial");
+    return () => {
+      listeners.delete(listener);
+      if (!listeners.size && listeningToStorage) {
+        eventTarget?.removeEventListener?.("storage", onStorage);
+        listeningToStorage = false;
+      }
+    };
   };
 
   return {
@@ -115,8 +223,11 @@ export const createAuthSession = (options = {}) => {
     isAuthenticated: () => Boolean(read()),
     read,
     save,
+    subscribe,
     updateUser,
   };
 };
 
 export const authSession = createAuthSession();
+
+registerJsonApiUnauthorizedHandler(() => authSession.clear("unauthorized"));

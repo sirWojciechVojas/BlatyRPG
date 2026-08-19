@@ -2,9 +2,11 @@
 
 namespace App\Services\Admin;
 
+use App\Services\Auth\PasswordPolicy;
+
 class AdminPayloadValidator
 {
-    private const ROLES = ['user', 'gm', 'admin'];
+    private const ROLES = ['player', 'gm', 'admin'];
 
     public function validateCreateUser(array $payload): array
     {
@@ -20,10 +22,10 @@ class AdminPayloadValidator
             $errors['email'] = 'A valid email address is required.';
         }
         $password = is_string($payload['password'] ?? null) ? $payload['password'] : '';
-        if (strlen($password) < 12 || strlen($password) > 200) {
-            $errors['password'] = 'Password must contain between 12 and 200 characters.';
+        if (!PasswordPolicy::isStrong($password)) {
+            $errors['password'] = PasswordPolicy::MESSAGE;
         }
-        $role = strtolower(trim((string) ($payload['role'] ?? 'user')));
+        $role = strtolower(trim((string) ($payload['role'] ?? 'player')));
         if (!in_array($role, self::ROLES, true)) {
             $errors['role'] = 'Unsupported user role.';
         }
