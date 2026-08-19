@@ -61,6 +61,15 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         // ----------------------------------------
         $routes->get('campaigns', 'CampaignController::index');
         $routes->post('campaigns', 'CampaignController::create');
+        $routes->get('campaigns/(:num)/chat/messages', 'CampaignChatController::index/$1');
+        $routes->post('campaigns/(:num)/chat/messages', 'CampaignChatController::create/$1');
+
+        // ----------------------------------------
+        // ADMINISTRATION
+        // ----------------------------------------
+        $routes->get('admin/overview', 'AdminController::overview');
+        $routes->post('admin/users', 'AdminController::createUser');
+        $routes->patch('admin/users/(:num)/role', 'AdminController::changeUserRole/$1');
 
         // ----------------------------------------
         // CHARACTERS
