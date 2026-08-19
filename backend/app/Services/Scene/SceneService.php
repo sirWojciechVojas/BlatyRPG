@@ -13,6 +13,7 @@ class SceneService
     private $scenes;
     private $state;
     private $access;
+    private $resourceAccess;
     private $validator;
 
     public function __construct(
@@ -20,23 +21,36 @@ class SceneService
         ?SceneModel $scenes = null,
         ?CampaignSceneStateModel $state = null,
         ?CampaignAccessService $access = null,
-        ?ScenePayloadValidator $validator = null
+        ?ScenePayloadValidator $validator = null,
+        ?SceneResourceAccessService $resourceAccess = null
     ) {
         $this->db = $db ?: \Config\Database::connect();
         $this->scenes = $scenes ?: new SceneModel();
         $this->state = $state ?: new CampaignSceneStateModel();
         $this->access = $access ?: new CampaignAccessService();
         $this->validator = $validator ?: new ScenePayloadValidator();
+        $this->resourceAccess = $resourceAccess ?: new SceneResourceAccessService();
     }
 
     public function listScenes(int $campaignId, array $auth): array
     {
         $capabilities = $this->authorize($campaignId, $auth, false);
         $query = $this->scenes->where('campaign_id', $campaignId);
-        if (!$capabilities['canViewHidden']) {
-            $query->where('is_visible', 1);
-        }
         $items = $query->orderBy('sort_order', 'ASC')->orderBy('id', 'ASC')->findAll();
+        if (!$capabilities['canViewHidden']) {
+            $items = array_values(array_filter($items, function (array $scene) use (
+                $auth,
+                $campaignId,
+                $capabilities
+            ): bool {
+                return $this->resourceAccess->canView(
+                    $auth,
+                    $campaignId,
+                    $scene,
+                    $capabilities
+                );
+            }));
+        }
         $state = $this->state->find($campaignId);
         $activeSceneId = $state && $state['active_scene_id'] !== null
             ? (int) $state['active_scene_id']
@@ -52,7 +66,12 @@ class SceneService
     {
         $capabilities = $this->authorize($campaignId, $auth, false);
         $scene = $this->findScene($campaignId, $sceneId);
-        if (!$scene || (!$scene['is_visible'] && !$capabilities['canViewHidden'])) {
+        if (!$scene || !$this->resourceAccess->canView(
+            $auth,
+            $campaignId,
+            $scene,
+            $capabilities
+        )) {
             throw new SceneException('scene_not_found', 'Scene was not found.', 404);
         }
         return ['scene' => $scene, 'capabilities' => $capabilities];
@@ -73,7 +92,8 @@ class SceneService
 
     public function updateScene(int $campaignId, int $sceneId, array $auth, array $payload): array
     {
-        $capabilities = $this->authorize($campaignId, $auth, true);
+        $capabilities = $this->authorize($campaignId, $auth, false);
+        $this->assertSceneManager($campaignId, $sceneId, $auth, $capabilities);
         $validated = $this->validator->validateUpdate($payload);
         $this->assertValid($validated);
         $data = array_merge($validated['data'], ['updated_at' => date('Y-m-d H:i:s')]);
@@ -104,7 +124,8 @@ class SceneService
 
     public function deleteScene(int $campaignId, int $sceneId, array $auth, array $payload): array
     {
-        $capabilities = $this->authorize($campaignId, $auth, true);
+        $capabilities = $this->authorize($campaignId, $auth, false);
+        $this->assertSceneManager($campaignId, $sceneId, $auth, $capabilities);
         $validated = $this->validator->validateRevision($payload);
         $this->assertValid($validated);
         $now = date('Y-m-d H:i:s');
@@ -199,6 +220,20 @@ class SceneService
     private function findScene(int $campaignId, int $sceneId): ?array
     {
         return $this->scenes->where('campaign_id', $campaignId)->where('id', $sceneId)->first();
+    }
+
+    private function assertSceneManager(
+        int $campaignId,
+        int $sceneId,
+        array $auth,
+        array $capabilities
+    ): void {
+        if (!$this->findScene($campaignId, $sceneId)) {
+            throw new SceneException('scene_not_found', 'Scene was not found.', 404);
+        }
+        if (!$this->resourceAccess->canManage($auth, $campaignId, $sceneId, $capabilities)) {
+            throw new SceneException('forbidden', 'You cannot modify this scene.', 403);
+        }
     }
 
     private function assertValid(array $validated): void

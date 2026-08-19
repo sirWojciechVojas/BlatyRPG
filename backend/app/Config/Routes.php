@@ -94,11 +94,21 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         // ----------------------------------------
         $routes->get('character-asset-sets/available', 'CharacterController::availableAssetSets');
         $routes->post('character-asset-sets', 'CharacterController::createAssetSet');
+        $routes->get('campaigns/(:num)/characters', 'CharacterController::index/$1');
+        $routes->get('campaigns/(:num)/resources/(:segment)/(:num)/permissions', 'ResourcePermissionController::index/$1/$2/$3');
+        $routes->put('campaigns/(:num)/resources/(:segment)/(:num)/permissions/(:num)', 'ResourcePermissionController::update/$1/$2/$3/$4');
+        $routes->patch('campaigns/(:num)/resources/(:segment)/(:num)/permissions/(:num)', 'ResourcePermissionController::update/$1/$2/$3/$4');
+        $routes->delete('campaigns/(:num)/resources/(:segment)/(:num)/permissions/(:num)', 'ResourcePermissionController::delete/$1/$2/$3/$4');
+        $routes->patch('campaigns/(:num)/characters/(:num)/visibility', 'ResourcePermissionController::characterVisibility/$1/$2');
+        $routes->post('campaigns/(:num)/characters/(:num)/owners', 'ResourcePermissionController::assignCharacterOwner/$1/$2');
         $routes->get('characters/(:num)/assets', 'CharacterController::assets/$1');
         $routes->put('characters/(:num)/asset-set', 'CharacterController::assignAssetSet/$1');
-        $routes->resource('characters', [
-            'controller' => 'CharacterController',
-        ]);
+        $routes->get('characters', 'CharacterController::index');
+        $routes->post('characters', 'CharacterController::create');
+        $routes->get('characters/(:num)', 'CharacterController::show/$1');
+        $routes->put('characters/(:num)', 'CharacterController::update/$1');
+        $routes->patch('characters/(:num)', 'CharacterController::update/$1');
+        $routes->delete('characters/(:num)', 'CharacterController::delete/$1');
 
         // ----------------------------------------
         // GAMES
