@@ -27,12 +27,6 @@ $routes->get('/', 'Api\StatusController::app');
 // Everything under /api
 // ========================================
 $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (RouteCollection $routes) {
-    $meHandler = static function () {
-        return service('response')->setJSON([
-            'message' => 'Token dziala!',
-        ]);
-    };
-
     // ----------------------------------------
     // STATUS / HEALTH
     // ----------------------------------------
@@ -55,12 +49,18 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
     // ----------------------------------------
     // PRIVATE ENDPOINTS
     // ----------------------------------------
-    $routes->group('', ['filter' => 'auth', 'namespace' => 'App\Controllers\Api'], static function (RouteCollection $routes) use ($meHandler) {
+    $routes->group('', ['filter' => 'auth', 'namespace' => 'App\Controllers\Api'], static function (RouteCollection $routes) {
         // AUTH (PRIVATE)
         // Canonical: /api/auth/me
         // Legacy alias: /api/me
-        $routes->get('auth/me', $meHandler);
-        $routes->get('me', $meHandler);
+        $routes->get('auth/me', 'AuthSessionController::me');
+        $routes->get('me', 'AuthSessionController::me');
+
+        // ----------------------------------------
+        // CAMPAIGNS
+        // ----------------------------------------
+        $routes->get('campaigns', 'CampaignController::index');
+        $routes->post('campaigns', 'CampaignController::create');
 
         // ----------------------------------------
         // CHARACTERS

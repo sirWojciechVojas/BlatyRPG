@@ -11,11 +11,61 @@ class ShopAuthorizationService
     private $ownerClaimModel;
     private $campaignModel;
 
-    public function __construct()
+    public function __construct(
+        ?AuthContextService $authContextService = null,
+        ?ShopOwnerClaimModel $ownerClaimModel = null,
+        ?CampaignModel $campaignModel = null
+    ) {
+        $this->authContextService = $authContextService ?: new AuthContextService();
+        $this->ownerClaimModel = $ownerClaimModel ?: new ShopOwnerClaimModel();
+        $this->campaignModel = $campaignModel ?: new CampaignModel();
+    }
+
+    /** Resolves dashboard shop access in one query instead of one per campaign. */
+    public function campaignAccessMap(array $authContext, array $campaigns): array
     {
-        $this->authContextService = new AuthContextService();
-        $this->ownerClaimModel = new ShopOwnerClaimModel();
-        $this->campaignModel = new CampaignModel();
+        $campaignIds = [];
+        $owners = [];
+        foreach ($campaigns as $campaign) {
+            $campaignId = (int) ($campaign['id'] ?? 0);
+            if ($campaignId < 1) {
+                continue;
+            }
+            $campaignIds[$campaignId] = $campaignId;
+            $owners[$campaignId] = (int) ($campaign['game_master_id'] ?? 0);
+        }
+        $access = array_fill_keys(array_values($campaignIds), false);
+        if (!$access) {
+            return [];
+        }
+
+        $role = strtolower((string) ($authContext['role'] ?? ''));
+        if ($role === 'admin' || !empty($authContext['development_access'])) {
+            return array_fill_keys(array_keys($access), true);
+        }
+        $userId = (int) ($authContext['user_id'] ?? 0);
+        if ($userId < 1) {
+            return $access;
+        }
+        if ($role === 'gm') {
+            foreach ($owners as $campaignId => $ownerId) {
+                $access[$campaignId] = $ownerId === $userId;
+            }
+            return $access;
+        }
+
+        $claims = $this->ownerClaimModel
+            ->select('campaign_id')
+            ->where('user_id', $userId)
+            ->whereIn('campaign_id', array_keys($access))
+            ->findAll();
+        foreach ($claims as $claim) {
+            $campaignId = (int) ($claim['campaign_id'] ?? 0);
+            if (array_key_exists($campaignId, $access)) {
+                $access[$campaignId] = true;
+            }
+        }
+        return $access;
     }
 
     public function assertCampaignAccess(array $authContext, int $campaignId): array
@@ -119,7 +169,10 @@ class ShopAuthorizationService
             ->where('user_id', $userId)
             ->orderBy('owner_code', 'ASC')
             ->findAll();
-        $ownerCodes = array_map(static fn (array $claim): string => strtoupper((string) $claim['owner_code']), $claims);
+        $ownerCodes = array_map(
+            static fn (array $claim): string => strtoupper((string) $claim['owner_code']),
+            $claims
+        );
         if ($requested && in_array($requested, $ownerCodes, true)) {
             return $requested;
         }
