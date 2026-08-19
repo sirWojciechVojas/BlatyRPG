@@ -1,13 +1,35 @@
 {
   "campaignLobby": {
     "loading": "Loading campaign…",
-    "settings": { "title": "Campaign settings" },
+    "settings": {
+      "title": "Table settings",
+      "kicker": "Campaign configuration",
+      "table": "Table rules",
+      "allowDrawing": "Players may draw",
+      "allowMovement": "Players may move tokens",
+      "autoScene": "Open the last scene",
+      "showCursors": "Show player cursors"
+    },
     "members": { "title": "Members and invitations" },
     "fields": {
       "name": "Name",
       "description": "Description",
       "banner": "Banner",
-      "status": "Status"
+      "status": "Status",
+      "system": "RPG system",
+      "world": "World / setting",
+      "visibility": "Table access",
+      "diceVisibility": "Roll visibility",
+      "gridSize": "Default grid size"
+    },
+    "visibility": {
+      "inviteOnly": "Invited members only",
+      "private": "Private"
+    },
+    "dice": {
+      "public": "All members",
+      "gm": "Game Master only",
+      "private": "Roller only"
     },
     "status": {
       "active": "Active",

@@ -46,6 +46,7 @@
         <template v-if="canManage">
           <CampaignSettingsPanel
             :campaign="campaign"
+            :games="games"
             :busy="busy"
             @save="updateSettings"
           />

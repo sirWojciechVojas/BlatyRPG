@@ -3,6 +3,7 @@ import CampaignMembersPanel from "@/components/campaign/CampaignMembersPanel.vue
 import CharacterAssignmentsPanel from "@/components/campaign/CharacterAssignmentsPanel.vue";
 import OnlinePresencePanel from "@/components/campaign/OnlinePresencePanel.vue";
 import { ensureCampaignRouteSession } from "@/router/campaignSessionGuard";
+import { gameCatalogApiClient } from "@/lib/catalog/gameCatalogApiClient";
 
 export default {
   name: "CampaignLobbyView",
@@ -12,7 +13,11 @@ export default {
     CharacterAssignmentsPanel,
     OnlinePresencePanel,
   },
-  data: () => ({ localError: "", initialized: false }),
+  data: () => ({
+    localError: "",
+    initialized: false,
+    games: [],
+  }),
   computed: {
     context() {
       return this.$store.state.campaignContext || {};
@@ -49,6 +54,9 @@ export default {
       this.localError = "";
       try {
         await ensureCampaignRouteSession(this.$store, route);
+        if (!this.games.length) {
+          this.games = await gameCatalogApiClient.listGames();
+        }
         this.initialized = true;
       } catch (error) {
         this.localError = this.message(error);

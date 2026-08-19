@@ -1,13 +1,35 @@
 {
   "campaignLobby": {
     "loading": "Wczytywanie kampanii…",
-    "settings": { "title": "Ustawienia kampanii" },
+    "settings": {
+      "title": "Ustawienia Stołu",
+      "kicker": "Konfiguracja kampanii",
+      "table": "Zasady Stołu",
+      "allowDrawing": "Gracze mogą rysować",
+      "allowMovement": "Gracze mogą przesuwać tokeny",
+      "autoScene": "Otwieraj ostatnią scenę",
+      "showCursors": "Pokazuj kursory graczy"
+    },
     "members": { "title": "Uczestnicy i zaproszenia" },
     "fields": {
       "name": "Nazwa",
       "description": "Opis",
       "banner": "Banner",
-      "status": "Status"
+      "status": "Status",
+      "system": "System RPG",
+      "world": "Świat / setting",
+      "visibility": "Dostęp do Stołu",
+      "diceVisibility": "Widoczność rzutów",
+      "gridSize": "Domyślny rozmiar siatki"
+    },
+    "visibility": {
+      "inviteOnly": "Tylko zaproszeni",
+      "private": "Prywatny"
+    },
+    "dice": {
+      "public": "Wszyscy uczestnicy",
+      "gm": "Tylko MG",
+      "private": "Tylko rzucający"
     },
     "status": {
       "active": "Aktywna",
