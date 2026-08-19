@@ -32,6 +32,9 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
     // ----------------------------------------
     $routes->get('/', 'StatusController::index');
     $routes->get('health', 'StatusController::health');
+    $routes->get('public/subscription-plans', 'SubscriptionPlanController::index');
+    $routes->post('internal/realtime/campaigns/(:num)/chat/sync', 'InternalRealtimeChatController::sync/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/chat/send', 'InternalRealtimeChatController::send/$1');
 
     // ----------------------------------------
     // AUTH (PUBLIC)
