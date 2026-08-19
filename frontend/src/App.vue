@@ -1,5 +1,12 @@
 <template>
-  <nav v-if="!isHomeRoute" :class="{ 'nav-dice': usesOverlayNav }">
+  <nav
+    v-if="!isHomeRoute"
+    class="app-navigation"
+    :class="{
+      'app-navigation--overlay': usesOverlayNav,
+      'app-navigation--workspace': isSceneWorkspace,
+    }"
+  >
     <router-link to="/">{{ $t("nav.home") }}</router-link>
     <span class="nav-sep">|</span>
     <router-link to="/about">{{ $t("nav.about") }}</router-link>
@@ -73,10 +80,10 @@ export default {
       },
     },
     usesOverlayNav() {
-      return (
-        this.$route?.path === "/dice" ||
-        ["shop-gm", "scene-workspace"].includes(this.$route?.name)
-      );
+      return this.$route?.path === "/dice" || this.$route?.name === "shop-gm";
+    },
+    isSceneWorkspace() {
+      return this.$route?.name === "scene-workspace";
     },
     isHomeRoute() {
       return this.$route?.path === "/";
@@ -97,25 +104,25 @@ export default {
   color: #2c3e50;
 }
 
-nav {
+.app-navigation {
   padding: 30px;
 }
 
-nav a {
+.app-navigation a {
   font-weight: bold;
   color: #2c3e50;
 }
 
-nav a.router-link-exact-active {
+.app-navigation a.router-link-exact-active {
   color: #42b983;
 }
 
-nav .nav-sep {
+.app-navigation .nav-sep {
   margin: 0 8px;
   color: inherit;
 }
 
-nav .locale-switch {
+.app-navigation .locale-switch {
   display: inline-flex;
   align-items: center;
   gap: 6px;
@@ -123,7 +130,7 @@ nav .locale-switch {
   color: inherit;
 }
 
-nav .locale-switch select {
+.app-navigation .locale-switch select {
   border-radius: 6px;
   border: 1px solid rgba(44, 62, 80, 0.3);
   padding: 4px 8px;
@@ -131,7 +138,7 @@ nav .locale-switch select {
   color: #2c3e50;
 }
 
-nav.nav-dice {
+.app-navigation--overlay {
   position: fixed;
   top: 12px;
   right: 12px;
@@ -143,17 +150,44 @@ nav.nav-dice {
   z-index: 20;
 }
 
-nav.nav-dice a {
+.app-navigation--overlay a,
+.app-navigation--workspace a {
   color: #ffffff;
 }
 
-nav.nav-dice a.router-link-exact-active {
+.app-navigation--overlay a.router-link-exact-active,
+.app-navigation--workspace a.router-link-exact-active {
   color: #ffd166;
 }
 
-nav.nav-dice .locale-switch select {
+.app-navigation--overlay .locale-switch select,
+.app-navigation--workspace .locale-switch select {
   border-color: rgba(255, 255, 255, 0.35);
   background: rgba(0, 0, 0, 0.6);
   color: #ffffff;
+}
+
+.app-navigation--workspace {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  min-height: 64px;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 10px 16px;
+  overflow-x: auto;
+  color: #edf0f5;
+  white-space: nowrap;
+  background: #141922;
+  border-bottom: 1px solid #303746;
+}
+
+@media (max-width: 760px) {
+  .app-navigation--workspace {
+    justify-content: flex-start;
+  }
 }
 </style>
