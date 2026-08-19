@@ -59,7 +59,7 @@ body.ui-system-active {
 }
 
 .ui-system-active :where(a:hover) {
-  color: #9bc2f8;
+  color: color-mix(in srgb, var(--ui-color-accent) 72%, var(--ui-color-text));
 }
 
 .ui-system-active :where(:focus-visible) {

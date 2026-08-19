@@ -3,3 +3,8 @@
 @import "./primitives.css";
 @import "./tooltip.css";
 @import "./navigation.css";
+@import "./compat-dashboard-auth.css";
+@import "./compat-campaign-admin.css";
+@import "./compat-characters.css";
+@import "./compat-shop.css";
+@import "./compat-modals.css";

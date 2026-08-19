@@ -1,0 +1,248 @@
+body.ui-system-active .dashboard-page {
+  --ink: var(--ui-color-text);
+  --muted: var(--ui-color-text-muted);
+  --gold: var(--ui-color-accent);
+  --panel: var(--ui-color-surface);
+  --border: var(--ui-color-border);
+  min-height: 100%;
+  background: var(--ui-color-canvas);
+  color: var(--ui-color-text);
+  font-family: var(--ui-font-sans);
+}
+
+body.ui-system-active .dashboard-topbar {
+  min-height: 3.25rem;
+  gap: var(--ui-space-4);
+  padding: var(--ui-space-2) clamp(0.75rem, 3vw, 2rem);
+  border-color: var(--ui-color-border);
+  background: color-mix(in srgb, var(--ui-color-surface) 96%, transparent);
+  backdrop-filter: blur(10px);
+}
+
+body.ui-system-active .dashboard-brand,
+body.ui-system-active .dashboard-topbar-actions {
+  gap: var(--ui-space-3);
+}
+
+body.ui-system-active .dashboard-brand {
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active .dashboard-brand img {
+  width: 2rem;
+  height: 2rem;
+}
+
+body.ui-system-active .dashboard-brand strong {
+  font-size: var(--ui-font-size-sm);
+  letter-spacing: 0.1em;
+}
+
+body.ui-system-active .dashboard-brand small,
+body.ui-system-active .panel-copy,
+body.ui-system-active .campaign-description,
+body.ui-system-active .user-chip,
+body.ui-system-active .dashboard-footer {
+  color: var(--ui-color-text-muted);
+}
+
+body.ui-system-active .dashboard-main {
+  width: min(88rem, calc(100% - 1.5rem));
+  min-height: 0;
+  padding: var(--ui-space-5) 0;
+}
+
+body.ui-system-active .dashboard-intro {
+  gap: var(--ui-space-4);
+  margin-bottom: var(--ui-space-5);
+}
+
+body.ui-system-active .dashboard-intro h1 {
+  margin: var(--ui-space-1) 0;
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+}
+
+body.ui-system-active .dashboard-intro p {
+  font-size: var(--ui-font-size-md);
+}
+
+body.ui-system-active .dashboard-page .eyebrow {
+  color: var(--ui-color-accent) !important;
+  font-size: var(--ui-font-size-xs) !important;
+  letter-spacing: 0.12em;
+}
+
+body.ui-system-active :where(.dashboard-panel, .campaign-card) {
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-md);
+  background: var(--ui-color-surface);
+  box-shadow: var(--ui-shadow-sm);
+}
+
+body.ui-system-active .dashboard-panel {
+  padding: var(--ui-space-4);
+}
+
+body.ui-system-active .login-panel {
+  margin: 2vh auto;
+}
+
+body.ui-system-active .panel-copy {
+  line-height: var(--ui-line-height);
+}
+
+body.ui-system-active .dashboard-form {
+  gap: var(--ui-space-3);
+  margin-top: var(--ui-space-4);
+}
+
+body.ui-system-active .dashboard-form label {
+  gap: var(--ui-space-1);
+  color: var(--ui-color-text-muted);
+}
+
+body.ui-system-active
+  :where(
+    .dashboard-form input,
+    .dashboard-form textarea,
+    .dashboard-locale select
+  ) {
+  min-height: var(--ui-control-height);
+  padding: var(--ui-space-1) var(--ui-space-3);
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-subtle);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active
+  :where(.dashboard-form input, .dashboard-form textarea):focus {
+  border-color: var(--ui-color-accent);
+  outline: 2px solid var(--ui-color-accent-soft);
+  outline-offset: 0;
+}
+
+body.ui-system-active :where(.primary-action, .secondary-action, .text-action) {
+  min-height: var(--ui-control-height);
+  padding: var(--ui-space-1) var(--ui-space-4);
+  border-radius: var(--ui-radius-sm);
+  font-family: var(--ui-font-sans);
+}
+
+body.ui-system-active .primary-action {
+  border: 1px solid var(--ui-color-accent-strong);
+  background: var(--ui-color-accent-strong);
+  color: #ffffff;
+}
+
+body.ui-system-active .secondary-action {
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface-raised);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active .text-action {
+  color: var(--ui-color-accent);
+}
+
+body.ui-system-active .section-heading {
+  margin-bottom: var(--ui-space-4);
+}
+
+body.ui-system-active .campaign-count {
+  min-width: 2rem;
+  padding: var(--ui-space-1) var(--ui-space-3);
+  border-color: var(--ui-color-border);
+}
+
+body.ui-system-active .campaign-grid {
+  gap: var(--ui-space-3);
+}
+
+body.ui-system-active .campaign-card {
+  min-height: 11rem;
+  padding: var(--ui-space-4);
+}
+
+body.ui-system-active .campaign-card h3 {
+  font-size: 1.125rem;
+}
+
+body.ui-system-active
+  :where(.campaign-role, .campaign-status, .campaign-system) {
+  color: var(--ui-color-accent);
+}
+
+body.ui-system-active .campaign-actions {
+  gap: var(--ui-space-2);
+}
+
+body.ui-system-active .create-panel {
+  margin-top: var(--ui-space-5);
+}
+
+body.ui-system-active .dashboard-alert {
+  padding: var(--ui-space-3);
+  border-color: var(--ui-color-danger);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-danger-soft);
+  color: #ffd7da;
+}
+
+body.ui-system-active .dashboard-footer {
+  padding: var(--ui-space-4);
+  border-color: var(--ui-color-border);
+}
+
+body.ui-system-active .auth-page {
+  min-height: 100%;
+  padding: var(--ui-space-4);
+  background: var(--ui-color-canvas);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active .auth-panel {
+  width: min(100%, 32rem);
+  padding: var(--ui-space-4);
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-md);
+  background: var(--ui-color-surface);
+  box-shadow: var(--ui-shadow-sm);
+}
+
+body.ui-system-active :where(.auth-panel form, .auth-panel label) {
+  gap: var(--ui-space-2);
+}
+
+body.ui-system-active .auth-panel form {
+  margin: var(--ui-space-4) 0;
+}
+
+body.ui-system-active :where(.auth-panel input, .auth-panel button) {
+  min-height: var(--ui-control-height);
+  padding: var(--ui-space-1) var(--ui-space-3);
+}
+
+body.ui-system-active .auth-panel button {
+  border-color: var(--ui-color-accent-strong);
+  background: var(--ui-color-accent-strong);
+  color: #ffffff;
+}
+
+body.ui-system-active .auth-panel :where(h1, h2) {
+  margin-bottom: var(--ui-space-3);
+  font-size: 1.125rem;
+}
+
+body.ui-system-active .auth-panel p {
+  color: var(--ui-color-text-muted);
+}
+
+body.ui-system-active .auth-panel .auth-error {
+  color: var(--ui-color-danger);
+}
+
+body.ui-system-active .auth-entry-main {
+  min-height: 0;
+  padding-block: var(--ui-space-4);
+}

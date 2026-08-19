@@ -1,0 +1,253 @@
+body.ui-system-active .campaign-lobby {
+  min-height: 100%;
+  padding: var(--ui-space-4);
+  background: var(--ui-color-canvas);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active :where(.campaign-lobby-header, .campaign-panel) {
+  padding: var(--ui-space-4);
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-md);
+  background: var(--ui-color-surface);
+  box-shadow: var(--ui-shadow-sm);
+}
+
+body.ui-system-active .campaign-lobby-header {
+  gap: var(--ui-space-4);
+}
+
+body.ui-system-active .campaign-lobby-header img {
+  width: 8rem;
+  max-height: 5rem;
+  border-radius: var(--ui-radius-sm);
+}
+
+body.ui-system-active .campaign-lobby-grid {
+  gap: var(--ui-space-3);
+  margin-top: var(--ui-space-3);
+}
+
+body.ui-system-active
+  :where(.campaign-panel-form, .campaign-invite-form, .campaign-panel label) {
+  gap: var(--ui-space-2);
+}
+
+body.ui-system-active .campaign-panel-form {
+  gap: var(--ui-space-3);
+}
+
+body.ui-system-active .campaign-panel-heading {
+  gap: var(--ui-space-3);
+}
+
+body.ui-system-active .campaign-panel-kicker {
+  color: var(--ui-color-accent);
+}
+
+body.ui-system-active .campaign-status-chip {
+  padding: var(--ui-space-1) var(--ui-space-3);
+  border-color: var(--ui-color-border);
+  color: var(--ui-color-text-muted);
+}
+
+body.ui-system-active
+  :where(.campaign-settings-grid, .campaign-table-settings) {
+  gap: var(--ui-space-3);
+}
+
+body.ui-system-active .campaign-table-settings {
+  padding: var(--ui-space-3);
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+}
+
+body.ui-system-active .campaign-table-settings legend {
+  color: var(--ui-color-accent);
+}
+
+body.ui-system-active .campaign-toggle-grid {
+  gap: var(--ui-space-2) var(--ui-space-4);
+}
+
+body.ui-system-active .campaign-toggle {
+  gap: var(--ui-space-2);
+}
+
+body.ui-system-active
+  :where(
+    .campaign-panel input,
+    .campaign-panel textarea,
+    .campaign-panel select,
+    .campaign-panel button
+  ) {
+  min-height: var(--ui-control-height);
+  padding: var(--ui-space-1) var(--ui-space-3);
+}
+
+body.ui-system-active .campaign-list li {
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-2) 0;
+  border-color: var(--ui-color-border);
+}
+
+body.ui-system-active .presence-dot {
+  background: var(--ui-color-text-faint);
+}
+
+body.ui-system-active .presence-dot.online {
+  background: var(--ui-color-success);
+}
+
+body.ui-system-active .campaign-lobby-error {
+  padding: var(--ui-space-3);
+  border: 1px solid var(--ui-color-danger);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-danger-soft);
+  color: #ffd7da;
+}
+
+body.ui-system-active .admin-page {
+  min-height: 100%;
+  background: var(--ui-color-canvas);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active .admin-header {
+  gap: var(--ui-space-4);
+  padding: var(--ui-space-4) clamp(0.75rem, 3vw, 2rem);
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface);
+}
+
+body.ui-system-active .admin-header p {
+  margin-bottom: var(--ui-space-1);
+  color: var(--ui-color-accent);
+}
+
+body.ui-system-active .admin-header h1 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+}
+
+body.ui-system-active .admin-header span,
+body.ui-system-active .admin-panel p,
+body.ui-system-active .admin-metrics span {
+  color: var(--ui-color-text-muted);
+}
+
+body.ui-system-active .admin-main {
+  width: min(88rem, calc(100% - 1.5rem));
+  padding: var(--ui-space-5) 0;
+}
+
+body.ui-system-active .admin-metrics {
+  gap: var(--ui-space-3);
+  margin-bottom: var(--ui-space-4);
+}
+
+body.ui-system-active :where(.admin-metrics article, .admin-panel) {
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-md);
+  background: var(--ui-color-surface);
+  box-shadow: var(--ui-shadow-sm);
+}
+
+body.ui-system-active .admin-metrics article {
+  padding: var(--ui-space-4);
+}
+
+body.ui-system-active .admin-metrics strong {
+  color: var(--ui-color-accent);
+  font-size: 1.5rem;
+}
+
+body.ui-system-active .admin-panel {
+  margin-top: var(--ui-space-4);
+  padding: var(--ui-space-4);
+}
+
+body.ui-system-active .admin-section-heading {
+  gap: var(--ui-space-3);
+  margin-bottom: var(--ui-space-3);
+}
+
+body.ui-system-active .admin-table {
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-sm);
+}
+
+body.ui-system-active :where(.admin-table th, .admin-table td) {
+  padding: var(--ui-space-2) var(--ui-space-3);
+  border-color: var(--ui-color-border);
+}
+
+body.ui-system-active .admin-table th {
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-xs);
+}
+
+body.ui-system-active :where(.admin-table a, .admin-table small) {
+  color: var(--ui-color-accent);
+}
+
+body.ui-system-active
+  :where(
+    .admin-table select,
+    .admin-create-form input,
+    .admin-create-form select
+  ) {
+  min-height: var(--ui-control-height);
+  padding: var(--ui-space-1) var(--ui-space-3);
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-subtle);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active .admin-form-grid {
+  gap: var(--ui-space-3);
+}
+
+body.ui-system-active .admin-create-form label span {
+  margin-bottom: var(--ui-space-1);
+  color: var(--ui-color-text-muted);
+}
+
+body.ui-system-active
+  :where(.admin-primary, .admin-secondary, .admin-alert button) {
+  min-height: var(--ui-control-height);
+  padding: var(--ui-space-1) var(--ui-space-4);
+  border-color: var(--ui-color-accent-strong);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-accent-strong);
+  color: #ffffff;
+}
+
+body.ui-system-active .admin-primary {
+  margin-top: var(--ui-space-3);
+}
+
+body.ui-system-active .admin-secondary {
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface-raised);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active .admin-alert {
+  padding: var(--ui-space-3);
+  border-radius: var(--ui-radius-sm);
+}
+
+body.ui-system-active .admin-alert.error {
+  border-color: var(--ui-color-danger);
+  background: var(--ui-color-danger-soft);
+  color: #ffd7da;
+}
+
+body.ui-system-active .admin-status {
+  color: var(--ui-color-success);
+}
+
+body.ui-system-active .admin-status.inactive {
+  color: var(--ui-color-danger);
+}

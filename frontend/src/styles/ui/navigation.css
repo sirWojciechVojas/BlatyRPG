@@ -14,7 +14,7 @@
   overflow: hidden;
   border: 0;
   border-bottom: var(--ui-border);
-  background: rgba(18, 24, 33, 0.97);
+  background: color-mix(in srgb, var(--ui-color-surface) 97%, transparent);
   color: var(--ui-color-text-muted);
   box-shadow: none;
   font-size: var(--ui-font-size-sm);
@@ -76,11 +76,11 @@
 }
 
 #app.ui-system-active .app-navigation--workspace {
-  background: rgba(11, 15, 21, 0.98);
+  background: color-mix(in srgb, var(--ui-color-canvas) 98%, transparent);
 }
 
 #app.ui-system-active .app-navigation--public {
-  background: rgba(18, 24, 33, 0.92);
+  background: color-mix(in srgb, var(--ui-color-surface) 92%, transparent);
   backdrop-filter: blur(12px);
 }
 
@@ -95,7 +95,7 @@
   padding: var(--ui-space-1) var(--ui-space-2);
   border: var(--ui-border);
   border-radius: var(--ui-radius-md);
-  background: rgba(11, 15, 21, 0.9);
+  background: color-mix(in srgb, var(--ui-color-canvas) 90%, transparent);
   box-shadow: var(--ui-shadow-sm);
   backdrop-filter: blur(10px);
 }

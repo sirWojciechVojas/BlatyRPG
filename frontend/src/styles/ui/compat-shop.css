@@ -1,0 +1,261 @@
+body.ui-system-active .shop-workspace {
+  --shop-bg: var(--ui-color-canvas);
+  --shop-panel: var(--ui-color-surface);
+  --shop-border: var(--ui-color-border);
+  --shop-input: var(--ui-color-surface-subtle);
+  --shop-text: var(--ui-color-text);
+  --shop-muted: var(--ui-color-text-muted);
+  --shop-focus: var(--ui-color-accent);
+  --ui-shop-header-height: 4.625rem;
+  background: var(--ui-color-canvas);
+  color: var(--ui-color-text);
+  font: var(--ui-font-size-md) / var(--ui-line-height) var(--ui-font-sans);
+}
+
+body.ui-system-active .shop-workspace__loading {
+  background: var(--ui-color-canvas);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active .shop-workspace__loading button {
+  min-height: var(--ui-control-height);
+  padding: var(--ui-space-1) var(--ui-space-4);
+  border-color: var(--ui-color-accent-strong);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-accent-strong);
+  color: #ffffff;
+}
+
+body.ui-system-active :where(.shop-workspace button, .shop-workspace select) {
+  min-height: var(--ui-control-height);
+  padding: var(--ui-space-1) var(--ui-space-3);
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-raised);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active .shop-workspace button:hover {
+  border-color: var(--ui-color-border-strong);
+  background: color-mix(
+    in srgb,
+    var(--ui-color-surface-raised) 82%,
+    var(--ui-color-accent)
+  );
+}
+
+body.ui-system-active
+  :where(.shop-workspace button.active, .shop-workspace button.primary) {
+  border-color: var(--ui-color-accent);
+  background: var(--ui-color-accent-soft);
+  color: var(--ui-color-accent);
+}
+
+body.ui-system-active .shop-workspace button.danger {
+  border-color: var(--ui-color-danger);
+  color: var(--ui-color-danger);
+}
+
+body.ui-system-active
+  :where(.shop-workspace select, .shop-workspace select option) {
+  background-color: var(--ui-color-surface-subtle);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active .shop-workspace__header {
+  height: var(--ui-shop-header-height);
+  grid-template-rows: 2.25rem 2rem;
+  gap: var(--ui-space-2);
+  padding: 0 var(--ui-space-3);
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface);
+  box-shadow: var(--ui-shadow-sm);
+}
+
+body.ui-system-active .shop-workspace__brand {
+  border-color: var(--ui-color-border);
+  color: var(--ui-color-accent);
+}
+
+body.ui-system-active .shop-workspace__header h1 {
+  color: var(--ui-color-text);
+  font-family: var(--ui-font-sans);
+}
+
+body.ui-system-active .shop-workspace__header nav {
+  gap: var(--ui-space-1);
+}
+
+body.ui-system-active .shop-workspace__header nav button {
+  border-color: transparent;
+  background: transparent;
+  font-size: var(--ui-font-size-xs);
+}
+
+body.ui-system-active .shop-workspace__body,
+body.ui-system-active .shop-workspace__body--full {
+  height: calc(100dvh - var(--ui-shop-header-height));
+}
+
+body.ui-system-active .shop-workspace .compact-toolbar {
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface);
+}
+
+body.ui-system-active .shop-workspace .status-chip {
+  background: var(--ui-color-surface-subtle);
+  color: var(--ui-color-text-muted);
+}
+
+body.ui-system-active .shop-workspace__menu > div {
+  z-index: var(--ui-z-popover);
+  padding: var(--ui-space-2);
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface-raised);
+  box-shadow: var(--ui-shadow-lg);
+}
+
+body.ui-system-active
+  .shop-workspace
+  :where(
+    .workspace-list-panel,
+    .profile-compact-panel,
+    .transfer-panel,
+    .history-panel,
+    .suggestion-panel,
+    .dictionary-workspace article,
+    .shop-editor-panel,
+    .shop-editor-pricing__policy-block,
+    .shop-editor-pricing__card
+  ) {
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface);
+  color: var(--ui-color-text);
+  box-shadow: none;
+}
+
+body.ui-system-active .shop-workspace .item-list {
+  background: var(--ui-color-canvas);
+}
+
+body.ui-system-active .shop-workspace .item-list__row {
+  border-color: var(--ui-color-border);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active .shop-workspace .item-list__row:hover {
+  background: var(--ui-color-accent-soft);
+}
+
+body.ui-system-active .shop-workspace .item-list__row--selected {
+  background: var(--ui-color-accent-soft);
+  box-shadow: inset 2px 0 var(--ui-color-accent);
+}
+
+body.ui-system-active
+  .shop-workspace
+  :where(input:not([type="checkbox"]):not([type="radio"]), textarea, select) {
+  min-height: var(--ui-control-height);
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-subtle);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active .shop-workspace :where(input, textarea, select):focus {
+  border-color: var(--ui-color-accent);
+  box-shadow: 0 0 0 2px var(--ui-color-accent-soft);
+  outline: 0;
+}
+
+body.ui-system-active
+  .shop-workspace
+  :where(
+    small,
+    .panel-help,
+    .workspace-empty,
+    .suggestion-panel__empty,
+    .dictionary-workspace article > header p
+  ) {
+  color: var(--ui-color-text-muted);
+}
+
+body.ui-system-active .shop-workspace .dictionary-workspace table {
+  border-color: var(--ui-color-border);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active
+  .shop-workspace
+  :where(.dictionary-workspace th, .dictionary-workspace td) {
+  padding: var(--ui-space-2) var(--ui-space-3);
+  border-color: var(--ui-color-border);
+  background: transparent;
+}
+
+body.ui-system-active .shop-workspace .dictionary-workspace th {
+  color: var(--ui-color-text-muted);
+}
+
+body.ui-system-active .shop-workspace .dictionary-workspace tbody tr:hover {
+  background: var(--ui-color-accent-soft);
+}
+
+body.ui-system-active .shop-trade-module {
+  --trade-space-1: var(--ui-space-1);
+  --trade-space-2: var(--ui-space-2);
+  --trade-space-3: var(--ui-space-3);
+  --trade-space-4: var(--ui-space-4);
+  --trade-space-5: var(--ui-space-5);
+  --trade-control-height: var(--ui-control-height);
+  --trade-module-gap: var(--ui-space-2);
+  --trade-column-gap: var(--ui-space-3);
+  --trade-list-gap: var(--ui-space-1);
+  --trade-list-padding-y: var(--ui-space-1);
+  --trade-panel-bg: var(--ui-color-surface);
+  --trade-panel-border: var(--ui-color-border);
+  --trade-panel-edge: var(--ui-color-border-strong);
+  color: var(--ui-color-text);
+  font-family: var(--ui-font-sans);
+}
+
+body.ui-system-active .shop-trade-module .modal-content {
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-md);
+  background: var(--ui-color-surface);
+  color: var(--ui-color-text);
+  box-shadow: var(--ui-shadow-lg);
+}
+
+body.ui-system-active
+  .shop-trade-module
+  :where(
+    .trade-form-section,
+    .trade-list,
+    .assort-panel,
+    .shop-editor-panel,
+    .trade-modal__summary,
+    .player-trade-receipt
+  ) {
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface-subtle);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active
+  .shop-trade-module
+  :where(.trade-input, .form-control, .form-select, textarea) {
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-canvas);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active .shop-trade-module .trade-modal__row {
+  border-color: var(--ui-color-border);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active .shop-trade-module .trade-modal__row:focus-visible {
+  outline-color: var(--ui-color-accent) !important;
+}

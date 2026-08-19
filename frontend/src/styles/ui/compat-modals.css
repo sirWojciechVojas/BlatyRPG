@@ -1,0 +1,244 @@
+body.ui-system-active.ui-shell
+  :where(
+    .character-dialog-backdrop,
+    .shop-create-dialog,
+    .icon-picker-backdrop,
+    .img-dialog-backdrop,
+    .confirm-dialog,
+    .payment-conversion,
+    .ledger-drawer-backdrop
+  ) {
+  z-index: var(--ui-z-modal-backdrop);
+  background: var(--ui-color-backdrop);
+  backdrop-filter: blur(4px);
+}
+
+body.ui-system-active.ui-shell
+  :where(.icon-picker-backdrop, .img-dialog-backdrop) {
+  z-index: calc(var(--ui-z-modal) + 20);
+}
+
+body.ui-system-active.ui-shell
+  :where(
+    .character-create-dialog,
+    .shop-create-dialog__panel,
+    .icon-picker-dialog,
+    .confirm-dialog__panel,
+    .payment-conversion__panel,
+    .field-edit-dialog,
+    .weapon-stats-dialog,
+    .view-settings-dialog,
+    .suggestion-detail-dialog,
+    .shop-activation-dialog,
+    .assort-merge-dialog,
+    .item-detail-dialog,
+    .img-dialog,
+    .ledger-drawer,
+    .shop-access-dialog
+  ) {
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-md);
+  background: var(--ui-color-surface-raised);
+  color: var(--ui-color-text);
+  box-shadow: var(--ui-shadow-lg);
+  font-family: var(--ui-font-sans);
+}
+
+body.ui-system-active.ui-shell
+  :where(
+    .character-create-dialog header,
+    .shop-create-dialog__panel > header,
+    .icon-picker-dialog header,
+    .payment-conversion__panel > header,
+    .img-dialog-header,
+    .field-edit-dialog__header,
+    .item-detail-titlebar,
+    .ledger-drawer__header
+  ) {
+  min-height: 2.25rem;
+  padding: var(--ui-space-2) var(--ui-space-4);
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active.ui-shell
+  :where(
+    .character-create-dialog > p,
+    .confirm-dialog__panel p,
+    .shop-create-dialog__panel small,
+    .payment-conversion__panel small,
+    .img-dialog-purpose,
+    .suggestion-detail-muted,
+    .ledger-drawer small,
+    .shop-access-dialog p
+  ) {
+  color: var(--ui-color-text-muted);
+}
+
+body.ui-system-active.ui-shell
+  :where(
+    .character-create-dialog form,
+    .shop-create-dialog__fields,
+    .view-settings-dialog__body,
+    .suggestion-detail-body,
+    .field-edit-value,
+    .weapon-stats-dialog__body,
+    .img-dialog-body,
+    .item-detail-body,
+    .payment-conversion__wallets,
+    .ledger-drawer__body
+  ) {
+  gap: var(--ui-space-3);
+  padding: var(--ui-space-4);
+}
+
+body.ui-system-active.ui-shell
+  :where(
+    .character-create-dialog footer,
+    .shop-create-dialog__panel > footer,
+    .confirm-dialog__actions,
+    .img-dialog-footer,
+    .payment-conversion__actions
+  ) {
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-3) var(--ui-space-4);
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface);
+}
+
+body.ui-system-active.ui-shell
+  :where(
+    .character-create-dialog input,
+    .character-create-dialog select,
+    .shop-create-dialog__panel input,
+    .shop-create-dialog__panel select,
+    .icon-picker-dialog input,
+    .icon-picker-dialog select,
+    .payment-conversion__panel input,
+    .img-dialog-backdrop input,
+    .img-dialog-backdrop select,
+    .img-dialog-backdrop textarea
+  ) {
+  min-height: var(--ui-control-height);
+  padding: var(--ui-space-1) var(--ui-space-3);
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-subtle);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active.ui-shell
+  :where(
+    .character-create-dialog button,
+    .shop-create-dialog__panel button,
+    .icon-picker-dialog button,
+    .confirm-dialog__actions button,
+    .payment-conversion__panel button,
+    .img-dialog-backdrop button,
+    .shop-access-dialog button
+  ) {
+  min-height: var(--ui-control-height);
+  padding: var(--ui-space-1) var(--ui-space-4);
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-raised);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active.ui-shell
+  .character-dialog-backdrop
+  .character-create-dialog {
+  width: min(30rem, 100%);
+  padding: var(--ui-space-4);
+}
+
+body.ui-system-active.ui-shell
+  .character-create-dialog
+  .character-primary-action {
+  border-color: var(--ui-color-accent-strong);
+  background: var(--ui-color-accent-strong);
+  color: #ffffff;
+}
+
+body.ui-system-active.ui-shell .shop-create-dialog__panel {
+  padding: var(--ui-space-4);
+  background: var(--ui-color-surface-raised);
+}
+
+body.ui-system-active.ui-shell .shop-create-dialog__error {
+  border-color: var(--ui-color-danger);
+  background: var(--ui-color-danger-soft);
+  color: var(--ui-color-danger);
+}
+
+body.ui-system-active.ui-shell .icon-picker-dialog {
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface-raised);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active.ui-shell
+  :where(
+    .icon-picker-dialog header,
+    .icon-picker-toolbar,
+    .icon-picker-dialog footer,
+    .icon-picker-purpose-tabs
+  ) {
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface);
+}
+
+body.ui-system-active.ui-shell .icon-picker-purpose-tabs button.active {
+  border-color: var(--ui-color-accent);
+  background: var(--ui-color-accent-soft);
+  color: var(--ui-color-accent);
+  box-shadow: inset 0 -2px var(--ui-color-accent);
+}
+
+body.ui-system-active.ui-shell
+  .confirm-dialog__actions
+  .confirm-dialog__confirm {
+  border-color: var(--ui-color-danger) !important;
+  background: var(--ui-color-danger-soft) !important;
+  color: #ffd7da;
+}
+
+body.ui-system-active.ui-shell .img-dialog-purpose {
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface-subtle);
+}
+
+body.ui-system-active.ui-shell
+  :where(
+    .suggestion-detail-section,
+    .assort-merge-panel,
+    .weapon-stats-dialog__selector,
+    .weapon-stats-dialog__fields,
+    .item-detail-section,
+    .payment-conversion__summary,
+    .ledger-drawer__section
+  ) {
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-subtle);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active.ui-shell .shop-access-dialog {
+  z-index: var(--ui-z-popover);
+  padding: var(--ui-space-3);
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface-raised);
+}
+
+body.ui-system-active.ui-shell .shop-access-tab {
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface-raised);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active.ui-shell .ledger-drawer {
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface-raised);
+}

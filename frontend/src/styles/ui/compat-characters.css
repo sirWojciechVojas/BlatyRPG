@@ -1,0 +1,239 @@
+body.ui-system-active .character-workspace {
+  min-height: 100%;
+  background: var(--ui-color-canvas);
+  color: var(--ui-color-text);
+  font-family: var(--ui-font-sans);
+}
+
+body.ui-system-active .character-workspace-topbar {
+  min-height: 3.5rem;
+  gap: var(--ui-space-4);
+  padding: var(--ui-space-2) clamp(0.75rem, 3vw, 2rem);
+  border-color: var(--ui-color-border);
+  background: var(--ui-color-surface);
+}
+
+body.ui-system-active .character-workspace-topbar h1 {
+  font-size: 1.125rem;
+}
+
+body.ui-system-active .character-eyebrow,
+body.ui-system-active .character-edit-indicator {
+  color: var(--ui-color-accent);
+}
+
+body.ui-system-active .character-back-link {
+  color: var(--ui-color-text-muted);
+}
+
+body.ui-system-active .character-workspace-actions {
+  gap: var(--ui-space-2);
+}
+
+body.ui-system-active
+  :where(
+    .character-workspace-actions button,
+    .character-workspace-error button
+  ) {
+  min-height: var(--ui-control-height);
+  padding: var(--ui-space-1) var(--ui-space-4);
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-raised);
+  color: var(--ui-color-text);
+  font-family: var(--ui-font-sans);
+}
+
+body.ui-system-active .character-workspace-grid {
+  width: min(90rem, calc(100% - 1.5rem));
+  gap: var(--ui-space-4);
+  padding: var(--ui-space-4) 0;
+}
+
+body.ui-system-active
+  :where(.character-list, .character-sheet, .character-sheet-placeholder) {
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-md);
+  background: var(--ui-color-surface);
+  box-shadow: var(--ui-shadow-sm);
+}
+
+body.ui-system-active .character-list {
+  max-height: calc(100dvh - 7rem);
+  padding: var(--ui-space-3);
+  top: var(--ui-space-3);
+}
+
+body.ui-system-active .character-list-heading {
+  padding: var(--ui-space-2) var(--ui-space-1) var(--ui-space-3);
+}
+
+body.ui-system-active .character-list-heading > span {
+  min-width: 2rem;
+  padding: var(--ui-space-1);
+  border-color: var(--ui-color-border);
+  color: var(--ui-color-accent);
+}
+
+body.ui-system-active .character-list-item {
+  grid-template-columns: 2.25rem minmax(0, 1fr) auto;
+  gap: var(--ui-space-2);
+  margin: var(--ui-space-1) 0;
+  padding: var(--ui-space-2);
+  border-radius: var(--ui-radius-sm);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active .character-list-item img {
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: var(--ui-radius-sm);
+}
+
+body.ui-system-active .character-list-item:hover {
+  background: var(--ui-color-accent-soft);
+}
+
+body.ui-system-active .character-list-item.selected {
+  border-color: var(--ui-color-accent);
+  background: var(--ui-color-accent-soft);
+}
+
+body.ui-system-active
+  :where(
+    .character-list-item small,
+    .character-list-state,
+    .character-sheet-placeholder,
+    .character-muted,
+    .character-text-columns small,
+    .character-json-editor p
+  ) {
+  color: var(--ui-color-text-muted);
+}
+
+body.ui-system-active
+  :where(.character-workspace-error, .character-workspace-notice) {
+  width: min(90rem, calc(100% - 1.5rem));
+  margin-top: var(--ui-space-3);
+  padding: var(--ui-space-2) var(--ui-space-3);
+  border-radius: var(--ui-radius-sm);
+}
+
+body.ui-system-active .character-workspace-error {
+  border-color: var(--ui-color-danger);
+  background: var(--ui-color-danger-soft);
+  color: #ffd7da;
+}
+
+body.ui-system-active .character-workspace-notice {
+  border-color: var(--ui-color-success);
+  background: rgba(111, 207, 151, 0.12);
+  color: #d9f4e4;
+}
+
+body.ui-system-active .character-sheet-header {
+  gap: var(--ui-space-4);
+  padding: var(--ui-space-4);
+  border-color: var(--ui-color-border);
+}
+
+body.ui-system-active .character-sheet-header > img {
+  width: 6rem;
+  height: 7rem;
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-md);
+}
+
+body.ui-system-active .character-sheet-title > input {
+  border-color: var(--ui-color-border);
+  color: var(--ui-color-text);
+  font: 700 1.5rem/1.2 var(--ui-font-sans);
+}
+
+body.ui-system-active .character-sheet-badges {
+  gap: var(--ui-space-2);
+  margin-top: var(--ui-space-3);
+}
+
+body.ui-system-active .character-sheet-badges span {
+  padding: var(--ui-space-1) var(--ui-space-2);
+  border-color: var(--ui-color-border);
+  color: var(--ui-color-text-muted);
+}
+
+body.ui-system-active .character-sheet-form {
+  gap: var(--ui-space-4);
+  padding: var(--ui-space-4);
+}
+
+body.ui-system-active .character-sheet fieldset {
+  padding: var(--ui-space-4);
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-md);
+}
+
+body.ui-system-active .character-sheet legend,
+body.ui-system-active .character-json-editor summary {
+  color: var(--ui-color-accent);
+}
+
+body.ui-system-active :where(.character-field-grid, .character-attribute-grid) {
+  gap: var(--ui-space-3);
+}
+
+body.ui-system-active
+  :where(.character-field-grid label, .character-attribute-grid label) {
+  gap: var(--ui-space-1);
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-sm);
+}
+
+body.ui-system-active
+  :where(.character-sheet input, .character-sheet textarea) {
+  min-height: var(--ui-control-height);
+  padding: var(--ui-space-1) var(--ui-space-3);
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-subtle);
+  color: var(--ui-color-text);
+}
+
+body.ui-system-active
+  :where(.character-sheet input, .character-sheet textarea):focus {
+  border-color: var(--ui-color-accent);
+  outline: 2px solid var(--ui-color-accent-soft);
+  outline-offset: 0;
+}
+
+body.ui-system-active .character-json-editor {
+  padding: var(--ui-space-3);
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+}
+
+body.ui-system-active
+  :where(.character-inline-actions, .character-sheet-actions) {
+  gap: var(--ui-space-2);
+  margin-top: var(--ui-space-3);
+}
+
+body.ui-system-active .character-sheet button {
+  min-height: var(--ui-control-height);
+  padding: var(--ui-space-1) var(--ui-space-4);
+  border-color: var(--ui-color-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-raised);
+  color: var(--ui-color-text);
+  font-family: var(--ui-font-sans);
+}
+
+body.ui-system-active .character-sheet .character-primary-action {
+  border-color: var(--ui-color-accent-strong);
+  background: var(--ui-color-accent-strong);
+  color: #ffffff;
+}
+
+body.ui-system-active .character-sheet .character-danger-action {
+  border-color: var(--ui-color-danger);
+  color: var(--ui-color-danger);
+}
