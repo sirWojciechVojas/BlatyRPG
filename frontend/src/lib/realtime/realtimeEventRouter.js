@@ -16,9 +16,15 @@ export const createRealtimeEventRouter = (options) => {
 
   const acceptSequence = (event, authoritative = false) => {
     const last = options.sequence.get();
+    if (authoritative) {
+      options.sequence.set(
+        Math.max(event.sequence, Number(event.payload.latestSequence) || 0),
+      );
+      return true;
+    }
     if (event.sequence <= 0) return true;
-    if (!authoritative && event.sequence <= last) return false;
-    if (!authoritative && last > 0 && event.sequence > last + 1) {
+    if (event.sequence <= last) return false;
+    if (last > 0 && event.sequence > last + 1) {
       safeCallback(options.onSequenceGap, {
         campaignId: options.getCampaignId(),
         expected: last + 1,
@@ -27,11 +33,7 @@ export const createRealtimeEventRouter = (options) => {
       options.requestSync();
       return false;
     }
-    options.sequence.set(
-      authoritative
-        ? Math.max(event.sequence, Number(event.payload.latestSequence) || 0)
-        : event.sequence,
-    );
+    options.sequence.set(event.sequence);
     return true;
   };
 

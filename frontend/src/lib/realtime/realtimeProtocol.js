@@ -30,6 +30,32 @@ export const leaveMessage = (requestId) => ({
   ...(requestId ? { requestId: String(requestId) } : {}),
 });
 
+export const chatSendMessage = ({ requestId, clientNonce, body }) => ({
+  v: REALTIME_VERSION,
+  type: "chat.send",
+  requestId: String(requestId),
+  clientNonce: String(clientNonce),
+  body: String(body),
+});
+
+export const chatSyncMessage = ({
+  requestId,
+  afterRevision,
+  beforeRevision,
+  limit = 20,
+}) => ({
+  v: REALTIME_VERSION,
+  type: "chat.sync",
+  requestId: String(requestId),
+  ...(Number(afterRevision) > 0
+    ? { afterRevision: Number(afterRevision) }
+    : {}),
+  ...(Number(beforeRevision) > 0
+    ? { beforeRevision: Number(beforeRevision) }
+    : {}),
+  limit: Number(limit),
+});
+
 export const parseServerEvent = (raw) => {
   let value;
   try {

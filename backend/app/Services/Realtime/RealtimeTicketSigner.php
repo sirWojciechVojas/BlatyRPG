@@ -29,6 +29,10 @@ final class RealtimeTicketSigner
         if ($accessExpiry <= $now) {
             throw new CampaignException('unauthorized', 'Authentication has expired.', 401);
         }
+        $authSessionId = (int) ($auth['session_id'] ?? 0);
+        if ($authSessionId < 1) {
+            throw new CampaignException('unauthorized', 'Authentication session is invalid.', 401);
+        }
         $expiresAt = min($now + self::MAX_TTL, $accessExpiry);
         $payload = [
             'iss' => $this->claimValue('REALTIME_TICKET_ISSUER', self::ISSUER),
@@ -39,6 +43,7 @@ final class RealtimeTicketSigner
             'nbf' => $now - 1,
             'exp' => $expiresAt,
             'campaign_id' => (int) $context['campaign']['id'],
+            'auth_session_id' => $authSessionId,
             'client_instance_id' => $clientInstanceId,
             'display_name' => (string) ($context['user']['username'] ?? ''),
             'avatar_url' => $context['user']['avatar_url'] ?? null,

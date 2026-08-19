@@ -30,7 +30,7 @@ final class RealtimeTicketSignerTest extends CIUnitTestCase
     public function testTicketIsBoundToUserCampaignAndShortExpiry(): void
     {
         $result = (new RealtimeTicketSigner())->issue([
-            'auth' => ['user_id' => 7, 'expires_at' => time() + 3600],
+            'auth' => ['user_id' => 7, 'session_id' => 19, 'expires_at' => time() + 3600],
             'user' => ['username' => 'alice', 'avatar_url' => null],
             'campaign' => ['id' => 31],
             'accessRole' => 'player',
@@ -40,6 +40,7 @@ final class RealtimeTicketSignerTest extends CIUnitTestCase
 
         $this->assertSame('7', $decoded->sub);
         $this->assertSame(31, $decoded->campaign_id);
+        $this->assertSame(19, $decoded->auth_session_id);
         $this->assertSame('client_instance_123456', $decoded->client_instance_id);
         $this->assertSame('blatyrpg-realtime', $decoded->aud);
         $this->assertLessThanOrEqual(60, $result['expiresIn']);

@@ -1,7 +1,10 @@
 <template>
   <aside
     class="campaign-chat"
-    :class="{ 'campaign-chat--collapsed': collapsed }"
+    :class="{
+      'campaign-chat--collapsed': collapsed,
+      'campaign-chat--embedded': embedded,
+    }"
   >
     <header class="campaign-chat__header">
       <div>
@@ -14,12 +17,13 @@
           type="button"
           :title="text('refresh')"
           :aria-label="text('refresh')"
-          :disabled="loading || polling"
+          :disabled="loading || syncing"
           @click="refresh"
         >
           ↻
         </button>
         <button
+          v-if="!embedded"
           type="button"
           :title="text(collapsed ? 'expand' : 'collapse')"
           :aria-label="text(collapsed ? 'expand' : 'collapse')"

@@ -1,23 +1,40 @@
 .campaign-chat {
   position: fixed;
-  right: 1rem;
-  bottom: 1rem;
-  z-index: 40;
+  right: var(--ui-space-4);
+  bottom: var(--ui-space-4);
+  z-index: var(--ui-z-popover);
   display: flex;
-  width: min(370px, calc(100vw - 2rem));
-  height: min(610px, calc(100vh - 96px));
+  width: min(20rem, calc(100vw - 1.5rem));
+  height: min(32rem, calc(100vh - var(--ui-navigation-height) - 1.5rem));
   flex-direction: column;
   overflow: hidden;
-  color: #eef1f6;
-  background: rgb(20 24 32 / 97%);
-  border: 1px solid #475164;
-  border-radius: 0.75rem;
-  box-shadow: 0 18px 48px rgb(0 0 0 / 55%);
+  color: var(--ui-color-text);
+  background: var(--ui-color-surface);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-md);
+  box-shadow: var(--ui-shadow-lg);
+  font-size: var(--ui-font-size-md);
 }
 
 .campaign-chat--collapsed {
   width: auto;
   height: auto;
+}
+
+.campaign-chat--embedded {
+  position: static;
+  inset: auto;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.campaign-chat--embedded.campaign-chat--collapsed {
+  width: auto;
+  height: auto;
+  align-self: flex-end;
 }
 
 .campaign-chat__header,
@@ -27,43 +44,43 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.65rem;
+  gap: var(--ui-space-2);
 }
 
 .campaign-chat__header {
-  min-height: 58px;
-  padding: 0.7rem 0.85rem;
-  background: #252c39;
-  border-bottom: 1px solid #3c4657;
+  min-height: var(--ui-navigation-height);
+  padding: var(--ui-space-2) var(--ui-space-3);
+  background: var(--ui-color-surface-raised);
+  border-bottom: var(--ui-border);
 }
 
 .campaign-chat__header h2 {
   margin: 0;
-  font-size: 1rem;
+  font-size: var(--ui-font-size-lg);
 }
 
 .campaign-chat__header small {
-  color: #aeb8c8;
-  font-size: 0.7rem;
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-xs);
 }
 
 .campaign-chat button {
-  min-height: 2rem;
-  padding: 0.35rem 0.65rem;
+  min-height: var(--ui-control-height-sm);
+  padding: var(--ui-space-1) var(--ui-space-3);
   color: inherit;
-  background: #333d4d;
-  border: 1px solid #536078;
-  border-radius: 0.4rem;
+  background: var(--ui-color-surface-raised);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
   cursor: pointer;
 }
 
 .campaign-chat button:hover:not(:disabled) {
-  background: #445169;
+  border-color: var(--ui-color-border-strong);
 }
 
 .campaign-chat button:focus-visible,
 .campaign-chat textarea:focus-visible {
-  outline: 2px solid #e2a650;
+  outline: 2px solid var(--ui-color-accent);
   outline-offset: 2px;
 }
 
@@ -75,104 +92,106 @@
 .campaign-chat__error,
 .campaign-chat__readonly {
   margin: 0;
-  padding: 0.65rem 0.8rem;
-  color: #ffd2d7;
-  font-size: 0.82rem;
-  background: #50232b;
-  border-bottom: 1px solid #7b3541;
+  padding: var(--ui-space-2) var(--ui-space-3);
+  color: var(--ui-color-danger);
+  font-size: var(--ui-font-size-sm);
+  background: var(--ui-color-danger-soft);
+  border-bottom: var(--ui-border);
 }
 
 .campaign-chat__messages {
   flex: 1;
   min-height: 0;
-  padding: 0.75rem;
+  padding: var(--ui-space-3);
   overflow-y: auto;
   overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ui-color-border-strong) transparent;
 }
 
 .campaign-chat__older {
   display: block;
-  margin: 0 auto 0.75rem;
-  font-size: 0.78rem;
+  margin: 0 auto var(--ui-space-3);
+  font-size: var(--ui-font-size-xs);
 }
 
 .campaign-chat__state {
   display: grid;
   min-height: 100%;
   margin: 0;
-  color: #aeb8c8;
-  font-size: 0.85rem;
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-sm);
   text-align: center;
   place-content: center;
 }
 
 .campaign-chat__message {
   max-width: 88%;
-  margin: 0 0 0.65rem;
-  padding: 0.55rem 0.7rem;
-  background: #2b3442;
-  border: 1px solid #3c485b;
-  border-radius: 0.55rem;
+  margin: 0 0 var(--ui-space-2);
+  padding: var(--ui-space-2) var(--ui-space-3);
+  background: var(--ui-color-surface-subtle);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
 }
 
 .campaign-chat__message--own {
   margin-left: auto;
-  background: #4b3822;
-  border-color: #725431;
+  background: var(--ui-color-accent-soft);
+  border-color: var(--ui-color-accent-strong);
 }
 
 .campaign-chat__message header {
-  color: #b8c2d1;
-  font-size: 0.72rem;
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-xs);
 }
 
 .campaign-chat__message strong {
   overflow: hidden;
-  color: #f0b662;
+  color: var(--ui-color-accent);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .campaign-chat__message p {
-  margin: 0.3rem 0 0;
+  margin: var(--ui-space-1) 0 0;
   overflow-wrap: anywhere;
-  font-size: 0.9rem;
-  line-height: 1.35;
+  font-size: var(--ui-font-size-md);
+  line-height: var(--ui-line-height);
   white-space: pre-wrap;
 }
 
 .campaign-chat__composer {
-  padding: 0.75rem;
-  background: #202631;
-  border-top: 1px solid #3c4657;
+  padding: var(--ui-space-3);
+  background: var(--ui-color-surface);
+  border-top: var(--ui-border);
 }
 
 .campaign-chat__composer textarea {
   display: block;
   width: 100%;
-  min-height: 4.2rem;
+  min-height: 3rem;
   box-sizing: border-box;
-  resize: vertical;
-  padding: 0.55rem;
+  resize: none;
+  padding: var(--ui-space-2);
   color: inherit;
-  background: #11161e;
-  border: 1px solid #4b576c;
-  border-radius: 0.4rem;
+  background: var(--ui-color-surface-subtle);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
 }
 
 .campaign-chat__composer-footer {
-  margin-top: 0.5rem;
+  margin-top: var(--ui-space-2);
 }
 
 .campaign-chat__composer-footer small {
-  color: #9da8ba;
+  color: var(--ui-color-text-faint);
 }
 
 .campaign-chat__composer-footer button {
-  color: #1c1409;
+  color: var(--ui-color-text);
   font-weight: 700;
-  background: #d99b4a;
-  border-color: #e9b875;
+  background: var(--ui-color-accent-strong);
+  border-color: var(--ui-color-accent-strong);
 }
 
 @media (max-width: 600px) {
@@ -186,5 +205,12 @@
   .campaign-chat--collapsed {
     width: auto;
     height: auto;
+  }
+
+  .campaign-chat--embedded {
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    height: 100%;
   }
 }

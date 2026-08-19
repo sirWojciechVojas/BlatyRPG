@@ -44,6 +44,22 @@ const origins = (value) => {
   return Object.freeze([...new Set(entries.map(normalizedOrigin))]);
 };
 
+const internalUrl = (value) => {
+  let parsed;
+  try {
+    parsed = new URL(String(value || ""));
+  } catch {
+    throw new Error("WS_BACKEND_INTERNAL_URL must be an absolute HTTP(S) URL");
+  }
+  if (!["http:", "https:"].includes(parsed.protocol) || parsed.username || parsed.password) {
+    throw new Error("WS_BACKEND_INTERNAL_URL is invalid");
+  }
+  if (parsed.search || parsed.hash || parsed.pathname === "/") {
+    throw new Error("WS_BACKEND_INTERNAL_URL must include an API path");
+  }
+  return parsed.toString().replace(/\/$/, "");
+};
+
 export const createConfig = (env = process.env) => {
   const ticketSecret = String(env.WS_TICKET_SECRET || "");
   if (Buffer.byteLength(ticketSecret, "utf8") < 32) {
@@ -57,6 +73,15 @@ export const createConfig = (env = process.env) => {
     healthPath: pathValue(env.WS_HEALTH_PATH, "/health", "WS_HEALTH_PATH"),
     allowedOrigins: origins(env.WS_ALLOWED_ORIGINS),
     allowMissingOrigin: boolean(env.WS_ALLOW_MISSING_ORIGIN, false),
+    backendInternalUrl: internalUrl(env.WS_BACKEND_INTERNAL_URL),
+    backendTimeoutMs: integer(
+      env.WS_BACKEND_TIMEOUT_MS,
+      5000,
+      "WS_BACKEND_TIMEOUT_MS",
+      500,
+      30000,
+    ),
+    chatPageLimit: integer(env.WS_CHAT_PAGE_LIMIT, 20, "WS_CHAT_PAGE_LIMIT", 1, 25),
     ticketSecret,
     ticketIssuer: String(env.WS_TICKET_ISSUER || "BlatyRPG"),
     ticketAudience: String(env.WS_TICKET_AUDIENCE || "blatyrpg-realtime"),

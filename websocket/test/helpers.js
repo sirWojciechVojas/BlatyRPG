@@ -12,6 +12,9 @@ export const testConfig = (overrides = {}) => ({
   healthPath: "/health",
   allowedOrigins: [TEST_ORIGIN],
   allowMissingOrigin: false,
+  backendInternalUrl: "http://backend.internal/api/internal/realtime",
+  backendTimeoutMs: 1000,
+  chatPageLimit: 20,
   ticketSecret: TEST_SECRET,
   ticketIssuer: "BlatyRPG",
   ticketAudience: "blatyrpg-realtime",
@@ -41,6 +44,7 @@ export const signTicket = (overrides = {}, options = {}) => {
     jti: randomUUID(),
     sub: 1,
     campaign_id: 7,
+    auth_session_id: 101,
     client_instance_id: "client-instance-0001",
     display_name: "Alice",
     campaign_role: "player",
@@ -122,8 +126,8 @@ export class TestClient {
   }
 }
 
-export const startTestServer = async (overrides = {}) => {
-  const server = createRealtimeServer(testConfig(overrides));
+export const startTestServer = async (overrides = {}, dependencies = {}) => {
+  const server = createRealtimeServer(testConfig(overrides), dependencies);
   const address = await server.start();
   return {
     server,

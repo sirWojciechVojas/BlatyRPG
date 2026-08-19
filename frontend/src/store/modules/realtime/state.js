@@ -1,3 +1,5 @@
+import { createRealtimeChatState } from "./chatState";
+
 export const createRealtimeState = () => ({
   campaignId: null,
   status: "idle",
@@ -7,4 +9,5 @@ export const createRealtimeState = () => ({
   presenceByUser: {},
   lastSequence: 0,
   error: null,
+  chat: createRealtimeChatState(),
 });

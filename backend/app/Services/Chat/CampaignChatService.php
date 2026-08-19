@@ -20,6 +20,7 @@ class CampaignChatService
     private $pagination;
     private $presenter;
     private $rateLimiter;
+    private $writeLock;
 
     public function __construct(
         ?BaseConnection $db = null,
@@ -31,7 +32,8 @@ class CampaignChatService
         ?CampaignChatMessageValidator $validator = null,
         ?CampaignChatPagination $pagination = null,
         ?CampaignChatMessagePresenter $presenter = null,
-        ?CampaignChatRateLimiter $rateLimiter = null
+        ?CampaignChatRateLimiter $rateLimiter = null,
+        ?CampaignChatWriteLock $writeLock = null
     ) {
         $this->db = $db ?: \Config\Database::connect();
         $this->messages = $messages ?: new CampaignChatMessageModel($this->db);
@@ -43,6 +45,7 @@ class CampaignChatService
         $this->pagination = $pagination ?: new CampaignChatPagination();
         $this->presenter = $presenter ?: new CampaignChatMessagePresenter();
         $this->rateLimiter = $rateLimiter ?: new CampaignChatRateLimiter($this->db);
+        $this->writeLock = $writeLock ?: new CampaignChatWriteLock($this->db);
     }
 
     public function list(int $campaignId, array $auth, array $query): array
@@ -70,10 +73,12 @@ class CampaignChatService
             $rows = array_reverse($rows);
         }
 
-        $viewerId = (int) $access['auth']['user_id'];
-        $items = array_map(function (array $row) use ($viewerId): array {
-            return $this->presenter->present($row, $viewerId);
+        $items = array_map(function (array $row): array {
+            return $this->presenter->present($row);
         }, $rows);
+        $deliveredRevision = $items
+            ? (int) $items[count($items) - 1]['revision']
+            : ($mode === 'after' ? (int) $page['afterId'] : 0);
 
         return [
             'items' => $items,
@@ -85,7 +90,10 @@ class CampaignChatService
                 'hasMoreAfter' => $mode === 'after' && $hasExtra,
             ],
             'capabilities' => $access['capabilities'],
-            'sync' => ['transport' => 'polling', 'recommendedIntervalMs' => 4000],
+            'sync' => [
+                'transport' => 'websocket',
+                'latestRevision' => $deliveredRevision,
+            ],
         ];
     }
 
@@ -107,6 +115,7 @@ class CampaignChatService
         $data = $validated['data'];
         $this->db->transBegin();
         try {
+            $this->writeLock->lockCampaign($campaignId);
             $this->rateLimiter->lockSender($userId);
             // Membership and the current database role may have changed after preflight.
             $access = $this->authorize($campaignId, $auth, 'canSend');
@@ -115,7 +124,6 @@ class CampaignChatService
                 $result = $this->duplicateResult(
                     $existing,
                     $data['body'],
-                    $userId,
                     $access['capabilities']
                 );
             } else {
@@ -168,7 +176,7 @@ class CampaignChatService
         }
 
         return [
-            'message' => $this->presenter->present($message, $userId),
+            'message' => $this->presenter->present($message),
             'capabilities' => $capabilities,
             'duplicate' => false,
         ];
@@ -213,7 +221,6 @@ class CampaignChatService
     private function duplicateResult(
         array $existing,
         string $body,
-        int $userId,
         array $capabilities
     ): array {
         if ((string) $existing['body'] !== $body) {
@@ -224,7 +231,7 @@ class CampaignChatService
             );
         }
         return [
-            'message' => $this->presenter->present($existing, $userId),
+            'message' => $this->presenter->present($existing),
             'capabilities' => $capabilities,
             'duplicate' => true,
         ];

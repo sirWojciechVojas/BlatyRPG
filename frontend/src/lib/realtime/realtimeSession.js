@@ -1,4 +1,5 @@
 import { getClientInstanceId } from "./clientInstanceId";
+import { createRealtimeChatTransport } from "./realtimeChatTransport";
 import { createAuthExpiryScheduler } from "./authExpiryScheduler";
 import {
   authMessage,
@@ -74,6 +75,7 @@ export const createRealtimeSession = (options = {}) => {
     socket.send(JSON.stringify(message));
     return true;
   };
+  const chat = createRealtimeChatTransport(() => authenticated, send);
   const requestSync = () => {
     if (!authenticated || syncPending) return false;
     syncPending = true;
@@ -284,6 +286,8 @@ export const createRealtimeSession = (options = {}) => {
     disconnect,
     requestSync,
     retry,
+    sendChat: chat.sendMessage,
+    syncChat: chat.sync,
     snapshot: () => ({
       campaignId,
       status,

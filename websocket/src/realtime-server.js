@@ -1,5 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { WebSocket } from "ws";
+import { BackendChatClient } from "./backend-chat-client.js";
+import { createChatHandler } from "./chat-handler.js";
 import { createHttpTransport } from "./http-transport.js";
 import { PresenceRegistry } from "./presence-registry.js";
 import {
@@ -74,6 +76,13 @@ export const createRealtimeServer = (config, dependencies = {}) => {
     }
   };
 
+  const chat = createChatHandler({
+    backend: dependencies.chatBackend || new BackendChatClient(config),
+    rooms,
+    onAuthenticationFailure: (session) =>
+      closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized"),
+  });
+
   const sessionEvent = (session, type, payload = {}) =>
     createServerEvent({
       type,
@@ -108,7 +117,10 @@ export const createRealtimeServer = (config, dependencies = {}) => {
     const identity = ticketVerifier.verify(auth.ticket, {
       clientInstanceId: auth.clientInstanceId,
     });
-    Object.assign(session, identity, { authenticated: true });
+    Object.assign(session, identity, {
+      authenticated: true,
+      realtimeTicket: auth.ticket,
+    });
     clearTimeout(session.authTimer);
     session.authTimer = null;
 
@@ -153,6 +165,10 @@ export const createRealtimeServer = (config, dependencies = {}) => {
 
   const handleAuthenticatedMessage = (session, message) => {
     const parsed = parseAuthenticatedMessage(message);
+    if (parsed.type === "chat.send" || parsed.type === "chat.sync") {
+      chat.handle(session, parsed);
+      return;
+    }
     if (parsed.type === "sync.request") {
       sendPresenceSnapshot(session, parsed.lastSequence, parsed.requestId, "sync.snapshot");
       return;

@@ -138,6 +138,10 @@ export class TicketVerifier {
     const jti = safeIdentifier(payload.jti, "ticket_jti_invalid");
     const userId = positiveId(payload.sub, "ticket_subject_invalid");
     const campaignId = positiveId(payload.campaign_id, "ticket_campaign_invalid");
+    const authSessionId = positiveId(
+      payload.auth_session_id,
+      "ticket_auth_session_invalid",
+    );
     const normalizedInstance = clientIdentifier(clientInstanceId, "client_instance_invalid");
     const ticketInstance = clientIdentifier(
       payload.client_instance_id,
@@ -157,6 +161,7 @@ export class TicketVerifier {
       jti,
       userId,
       campaignId,
+      authSessionId,
       clientInstanceId: normalizedInstance,
       displayName: optionalText(payload.display_name, 100),
       campaignRole: optionalText(payload.campaign_role, 32),

@@ -32,6 +32,7 @@ test("accepts a valid short-lived HS256 ticket and normalizes authoritative iden
 
   assert.equal(identity.userId, 42);
   assert.equal(identity.campaignId, 9);
+  assert.equal(identity.authSessionId, 101);
   assert.equal(identity.clientInstanceId, "browser-instance-42");
   assert.equal(identity.expiresAt, (NOW + 30) * 1000);
 });
@@ -135,5 +136,19 @@ test("rejects expired, future and overlong tickets", () => {
         clientInstanceId: "browser-instance-01",
       }),
     "ticket_lifetime_invalid",
+  );
+});
+
+test("rejects a missing login session binding", () => {
+  rejects(
+    () =>
+      verifier().verify(
+        signTicket(
+          { auth_session_id: undefined, iat: NOW, exp: NOW + 30 },
+          { now: NOW },
+        ),
+        { clientInstanceId: "client-instance-0001" },
+      ),
+    "ticket_auth_session_invalid",
   );
 });

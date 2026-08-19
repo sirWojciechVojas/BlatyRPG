@@ -37,6 +37,38 @@ const sequence = (value) => {
   return value;
 };
 
+const positiveRevision = (value, code) => {
+  if (value === undefined || value === null) return null;
+  if (!Number.isSafeInteger(value) || value < 1) throw new ProtocolError(code);
+  return value;
+};
+
+const requiredRequestId = (value) => {
+  const normalized = requestId(value);
+  if (!normalized) throw new ProtocolError("request_id_required");
+  return normalized;
+};
+
+const chatBody = (value) => {
+  if (typeof value !== "string") throw new ProtocolError("chat_body_invalid");
+  const normalized = value.replace(/\r\n?/g, "\n").trim();
+  if (!normalized || Array.from(normalized).length > 2000) {
+    throw new ProtocolError("chat_body_invalid");
+  }
+  if (/[\u0000-\u0008\u000b\u000c\u000e-\u001f\u007f]/u.test(normalized)) {
+    throw new ProtocolError("chat_body_invalid");
+  }
+  return normalized;
+};
+
+const chatNonce = (value) => {
+  const normalized = String(value || "").toLowerCase();
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(normalized)) {
+    throw new ProtocolError("chat_nonce_invalid");
+  }
+  return normalized;
+};
+
 const exactKeys = (value, allowed) => {
   for (const key of Object.keys(value)) {
     if (!allowed.includes(key)) throw new ProtocolError("unexpected_field", key);
@@ -82,6 +114,41 @@ export const parseAuthMessage = (message) => {
 };
 
 export const parseAuthenticatedMessage = (message) => {
+  if (message.type === "chat.send") {
+    exactKeys(message, ["v", "type", "requestId", "clientNonce", "body"]);
+    return {
+      type: message.type,
+      requestId: requiredRequestId(message.requestId),
+      clientNonce: chatNonce(message.clientNonce),
+      body: chatBody(message.body),
+    };
+  }
+  if (message.type === "chat.sync") {
+    exactKeys(message, [
+      "v",
+      "type",
+      "requestId",
+      "afterRevision",
+      "beforeRevision",
+      "limit",
+    ]);
+    const afterRevision = positiveRevision(message.afterRevision, "chat_revision_invalid");
+    const beforeRevision = positiveRevision(message.beforeRevision, "chat_revision_invalid");
+    if (afterRevision !== null && beforeRevision !== null) {
+      throw new ProtocolError("chat_cursor_ambiguous");
+    }
+    const limit = message.limit === undefined ? null : message.limit;
+    if (limit !== null && (!Number.isSafeInteger(limit) || limit < 1 || limit > 25)) {
+      throw new ProtocolError("chat_limit_invalid");
+    }
+    return {
+      type: message.type,
+      requestId: requiredRequestId(message.requestId),
+      afterRevision,
+      beforeRevision,
+      limit,
+    };
+  }
   if (message.type === "sync.request") {
     exactKeys(message, ["v", "type", "lastSequence", "requestId"]);
     return {

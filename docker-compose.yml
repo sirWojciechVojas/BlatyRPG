@@ -140,6 +140,9 @@ services:
       WS_ALLOWED_ORIGINS: ${REALTIME_ALLOWED_ORIGINS:?REALTIME_ALLOWED_ORIGINS is required}
       WS_TICKET_ISSUER: ${REALTIME_TICKET_ISSUER:-BlatyRPG}
       WS_TICKET_AUDIENCE: ${REALTIME_TICKET_AUDIENCE:-blatyrpg-realtime}
+      WS_BACKEND_INTERNAL_URL: ${REALTIME_INTERNAL_URL:-http://nginx:8083/api/internal/realtime}
+      WS_BACKEND_TIMEOUT_MS: ${REALTIME_INTERNAL_TIMEOUT_MS:-5000}
+      WS_CHAT_PAGE_LIMIT: ${REALTIME_CHAT_PAGE_LIMIT:-20}
     depends_on:
       php:
         condition: service_healthy

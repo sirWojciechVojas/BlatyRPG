@@ -19,10 +19,11 @@ final class CampaignChatMessagePresenterTest extends CIUnitTestCase
             'metadata_json' => null,
             'created_at' => '2026-08-19 12:00:00',
             'password_hash' => 'must-not-leak',
-        ], 8);
+        ]);
 
         $this->assertSame(12, $message['id']);
-        $this->assertTrue($message['author']['isCurrentUser']);
+        $this->assertSame(12, $message['revision']);
+        $this->assertArrayNotHasKey('isCurrentUser', $message['author']);
         $this->assertSame('<img src=x onerror=alert(1)>', $message['body']);
         $this->assertArrayNotHasKey('password_hash', $message);
     }

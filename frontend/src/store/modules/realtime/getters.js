@@ -1,4 +1,8 @@
 export const realtimeGetters = {
+  chatMessages: (state) => state.chat.messages,
+  chatCapabilities: (state) => state.chat.capabilities,
+  chatReady: (state) => state.chat.initialized,
+  chatSending: (state) => state.chat.sending,
   onlineUsers: (state) =>
     Object.values(state.presenceByUser)
       .filter((item) => item.online)

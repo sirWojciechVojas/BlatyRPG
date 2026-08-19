@@ -1,3 +1,9 @@
+import {
+  createRealtimeChatActions,
+  restoreRealtimeChat,
+  routeRealtimeChatEvent,
+} from "./chatActions";
+
 const defaultRestore = async (context, details) => {
   if (!details.reconnected) return;
   if (context.rootState.campaignContext) {
@@ -21,18 +27,25 @@ export const createRealtimeActions = (
       onPresenceSnapshot: (items) =>
         context.commit("SET_PRESENCE_SNAPSHOT", items),
       onPresenceChange: (item) => context.commit("APPLY_PRESENCE_CHANGE", item),
-      onEvent: (event) => context.commit("SET_LAST_SEQUENCE", event.sequence),
+      onEvent: (event) => {
+        if (event.sequence > 0) {
+          context.commit("SET_LAST_SEQUENCE", event.sequence);
+        }
+        routeRealtimeChatEvent(context, ensureSession(context), event);
+      },
       onSequenceGap: ({ expected }) =>
         context.commit("SET_LAST_SEQUENCE", expected - 1),
       onRestore: async (details) => {
         context.commit("SET_LAST_SEQUENCE", details.lastSequence);
         await restore(context, details);
+        restoreRealtimeChat(context, ensureSession(context));
       },
     });
     return session;
   };
 
   return {
+    ...createRealtimeChatActions(ensureSession),
     connect(context, campaignId) {
       const id = Number(campaignId);
       if (context.state.campaignId !== id) {
@@ -49,7 +62,9 @@ export const createRealtimeActions = (
       return ensureSession(context).retry();
     },
     requestSync(context) {
-      return ensureSession(context).requestSync();
+      const presence = ensureSession(context).requestSync();
+      context.dispatch("syncChat");
+      return presence;
     },
   };
 };

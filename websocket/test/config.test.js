@@ -16,9 +16,14 @@ test("configuration normalizes an exact origin allowlist", () => {
   const config = createConfig({
     WS_TICKET_SECRET: TEST_SECRET,
     WS_ALLOWED_ORIGINS: "https://example.test/path, http://localhost:8080",
+    WS_BACKEND_INTERNAL_URL: "http://nginx:8083/api/internal/realtime/",
     WS_PORT: "0",
   });
   assert.deepEqual(config.allowedOrigins, ["https://example.test", "http://localhost:8080"]);
   assert.equal(config.port, 0);
   assert.equal(config.path, "/realtime");
+  assert.equal(
+    config.backendInternalUrl,
+    "http://nginx:8083/api/internal/realtime",
+  );
 });

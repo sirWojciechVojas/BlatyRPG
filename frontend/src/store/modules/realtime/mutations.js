@@ -1,11 +1,14 @@
+import { realtimeChatMutations } from "./chatMutations";
 import { normalizePresence } from "./presence";
 
 export const realtimeMutations = {
+  ...realtimeChatMutations,
   SET_CAMPAIGN(state, campaignId) {
     state.campaignId = Number(campaignId) || null;
     state.presenceByUser = {};
     state.lastSequence = 0;
     state.error = null;
+    realtimeChatMutations.RESET_CHAT(state);
   },
   SET_STATUS(state, details) {
     state.status = details.status;
