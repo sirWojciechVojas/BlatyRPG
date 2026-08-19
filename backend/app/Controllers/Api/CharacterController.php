@@ -2,270 +2,279 @@
 
 namespace App\Controllers\Api;
 
-use CodeIgniter\RESTful\ResourceController;
-use CodeIgniter\API\ResponseTrait;
-use App\Models\CharacterModel;
+use App\Controllers\BaseController;
+use App\Services\Auth\AuthContextService;
+use App\Services\Character\CharacterDirectoryService;
+use App\Services\Character\CharacterException;
+use App\Services\Character\CharacterLegacyListService;
 use App\Services\CharacterAssetService;
 use App\Services\CharacterService;
-use App\Services\Shop\AuthContextService;
-use Exception;
+use CodeIgniter\API\ResponseTrait;
 
-class CharacterController extends ResourceController
+class CharacterController extends BaseController
 {
     use ResponseTrait;
 
-    protected $modelName = CharacterModel::class;
-    protected $format    = 'json';
-    protected $characterService;
-    protected $characterAssetService;
-    protected $authContextService;
+    private $authContext;
+    private $characters;
+    private $legacyCharacters;
+    private $development;
+    private $assets;
 
     public function __construct()
     {
-        // Stworzenie instancji serwisu postaci
-        $this->characterService = new CharacterService();
-        $this->characterAssetService = new CharacterAssetService();
-        $this->authContextService = new AuthContextService();
+        $this->authContext = new AuthContextService();
+        $this->characters = new CharacterDirectoryService();
+        $this->legacyCharacters = new CharacterLegacyListService($this->characters);
+        $this->development = new CharacterService();
+        $this->assets = new CharacterAssetService();
     }
-    
-    /**
-     * GET /api/characters
-     * Zwraca listę postaci.
-     * Opcjonalnie filtruje po user_id (np. ?user_id=1)
-     */
-    public function index()
+
+    /** GET /api/characters?campaignId=1 */
+    public function index($campaignId = null)
     {
-        // Pobierz parametry filtrowania z URL
-        $filters = [
-            'user_id'   => $this->request->getGet('user_id'),
-            'system_id' => $this->request->getGet('system_id'),
-        ];
-
-        // Użycie Scope z Modelu (Clean Code)
-        $data = $this->model
-            ->filterBy($filters)
-            ->orderBy('created_at', 'DESC')
-            ->findAll();
-        $data = $this->characterAssetService->hydrateCharacters($data);
-
-        return $this->respond([
-            'count' => count($data),
-            'items' => $data
-        ]);
+        return $this->execute(function () use ($campaignId): array {
+            $scope = $campaignId === null
+                ? $this->campaignId()
+                : $this->positiveId($campaignId);
+            $auth = $this->auth();
+            $filters = $this->characterFilters();
+            return $scope === null
+                ? $this->legacyCharacters->list($auth, $filters)
+                : $this->characters->list($auth, $scope, $filters);
+        });
     }
 
-    /**
-     * GET /api/characters/{id}
-     * Szczegóły postaci
-     */
+    /** GET /api/characters/{id}?campaignId=1 */
     public function show($id = null)
     {
-        $character = $this->model->find($id);
-
-        if (!$character) {
-            return $this->failNotFound("Postać o ID $id nie została znaleziona.");
-        }
-
-        return $this->respond($this->characterAssetService->hydrateCharacters([$character])[0]);
+        return $this->execute(function () use ($id): array {
+            return $this->characters->show($this->auth(), $this->positiveId($id), $this->campaignId());
+        });
     }
 
-    /**
-     * POST /api/characters
-     * Tworzenie nowej postaci
-     * Body: { "name": "Geralt", "system_id": 1, "universe_id": 1, "data": { ... } }
-     */
+    /** POST /api/characters */
     public function create()
     {
-        $input = (array) $this->request->getJSON(true); // true = jako tablica asocjacyjna
-        $assetSetId = (int) ($input['asset_set_id'] ?? $input['assetSetId'] ?? 0);
-        unset($input['asset_set_id'], $input['assetSetId']);
-
-        $auth = $this->authContextService->resolveFromRequest($this->request);
-        if (!$this->authContextService->isGmOrAdmin($auth) && !empty($auth['user_id'])) {
-            $input['user_id'] = (int) $auth['user_id'];
-        }
-
-        // Tutaj można dodać logikę pobierania ID zalogowanego usera
-        // np. $input['user_id'] = auth()->id();
-        // Na razie zakładamy, że przychodzi w requeście lub jest NULL
-
-        $db = \Config\Database::connect();
-        $db->transBegin();
-        if (!$this->model->insert($input)) {
-            $db->transRollback();
-            return $this->failValidationErrors($this->model->errors());
-        }
-
-        $newId = $this->model->getInsertID();
-        if ($assetSetId > 0) {
-            $assignment = $this->characterAssetService->assignSetToCharacter(
-                (int) $newId,
-                $assetSetId,
-                false
-            );
-            if (!$assignment['ok']) {
-                $db->transRollback();
-                return $this->fail(
-                    ['code' => $assignment['code']],
-                    (int) $assignment['status']
-                );
-            }
-        }
-        if ($db->transStatus() === false) {
-            $db->transRollback();
-            return $this->failServerError('Nie udało się utworzyć postaci.');
-        }
-        $db->transCommit();
-        $character = $this->characterAssetService->hydrateCharacters([
-            $this->model->find($newId),
-        ])[0];
-
-        return $this->respondCreated([
-            'message' => 'Postać została utworzona.',
-            'character' => $character
-        ]);
+        return $this->execute(function (): array {
+            return $this->characters->create($this->auth(), $this->jsonPayload());
+        }, 201);
     }
 
-    /**
-     * PUT/PATCH /api/characters/{id}
-     * Edycja postaci
-     */
+    /** PUT/PATCH /api/characters/{id}?campaignId=1 */
     public function update($id = null)
     {
-        $input = (array) $this->request->getJSON(true);
-        // Assignment is intentionally handled by the dedicated endpoint so the
-        // set status and one-character invariant always change atomically.
-        unset($input['asset_set_id'], $input['assetSetId']);
-
-        // Sprawdź czy postać istnieje
-        if (!$this->model->find($id)) {
-            return $this->failNotFound("Postać o ID $id nie istnieje.");
-        }
-
-        if (!$this->model->update($id, $input)) {
-            return $this->failValidationErrors($this->model->errors());
-        }
-
-        return $this->respond([
-            'message' => 'Postać zaktualizowana pomyślnie.',
-            'id' => $id
-        ]);
+        return $this->execute(function () use ($id): array {
+            return $this->characters->update(
+                $this->auth(),
+                $this->positiveId($id),
+                $this->campaignId(),
+                $this->jsonPayload()
+            );
+        });
     }
 
-    /**
-     * DELETE /api/characters/{id}
-     * Usuwanie postaci
-     */
+    /** DELETE /api/characters/{id}?campaignId=1 */
     public function delete($id = null)
     {
-        if (!$this->model->find($id)) {
-            return $this->failNotFound("Postać o ID $id nie istnieje.");
-        }
-
-        $db = \Config\Database::connect();
-        $db->transBegin();
-        $this->characterAssetService->releaseCharacterSet((int) $id, false);
-        if ($this->model->delete($id)) {
-            $db->transCommit();
-            return $this->respondDeleted(['message' => "Postać o ID $id została usunięta."]);
-        }
-
-        $db->transRollback();
-
-        return $this->failServerError('Nie udało się usunąć postaci.');
+        return $this->execute(function () use ($id): array {
+            $characterId = $this->positiveId($id);
+            $this->characters->delete($this->auth(), $characterId, $this->campaignId());
+            return ['id' => $characterId, 'message' => 'Character was deleted.'];
+        });
     }
 
-    /**
-     * POST /api/characters/{id}/purchase
-     * Specjalna metoda do kupowania umiejętności i zdolności z walidacją zasad.
-     * Body: { "definition_id": 55 }
-     */
+    /** POST /api/characters/{id}/purchase */
     public function purchase($id = null)
     {
-        $input = $this->request->getJSON(true);
-        $defId = $input['definition_id'] ?? null;
-
-        if(!$defId) {
-            return $this->fail('Wymagane pole definition_id.', 400);
-        }
-
-        try {
-            // Przekazanie sterowania do Serwisu (Logika Biznesowa)
-            $result = $this->characterService->purchaseDefinition($id, $defId);
-
-            return $this->respond($result);
-        } catch (Exception $e) {
-            // Obsługa błędów biznesowych (brak XP, zła walidacja itp.)
-            $code = $e->getCode();
-            // Upewnienie czy kod HTTP jest poprawny (400-599), inaczej 400
-            $httpCode = ($code >= 400 && $code < 600) ? $code : 400;
-
-            return $this->fail($e->getMessage(), $httpCode);
-        }
+        return $this->execute(function () use ($id): array {
+            $characterId = $this->positiveId($id);
+            $this->characters->assertEditable($this->auth(), $characterId, $this->campaignId());
+            $input = $this->jsonPayload();
+            $definitionId = filter_var(
+                $input['definitionId'] ?? $input['definition_id'] ?? null,
+                FILTER_VALIDATE_INT,
+                ['options' => ['min_range' => 1]]
+            );
+            if ($definitionId === false) {
+                throw new CharacterException(
+                    'validation_failed',
+                    'Definition id must be a positive integer.',
+                    422,
+                    ['definitionId' => 'A valid definition is required.']
+                );
+            }
+            return $this->development->purchaseDefinition($characterId, (int) $definitionId);
+        });
     }
 
     /** GET /api/characters/{id}/assets */
     public function assets($id = null)
     {
-        $payload = $this->characterAssetService->assetsForCharacter((int) $id);
-        if ($payload === null) {
-            return $this->failNotFound('Postać nie została znaleziona.');
-        }
-        return $this->respond($payload);
+        return $this->execute(function () use ($id): array {
+            $characterId = $this->positiveId($id);
+            $this->characters->show($this->auth(), $characterId, $this->campaignId());
+            $payload = $this->assets->assetsForCharacter($characterId);
+            if ($payload === null) {
+                throw new CharacterException('character_not_found', 'Character was not found.', 404);
+            }
+            return $payload;
+        });
     }
 
     /** GET /api/character-asset-sets/available */
     public function availableAssetSets()
     {
-        $sets = $this->characterAssetService->availableSets();
-        return $this->respond(['count' => count($sets), 'items' => $sets]);
+        return $this->execute(function (): array {
+            $this->characters->assertAssetSetManager($this->auth());
+            $sets = $this->assets->availableSets();
+            return ['count' => count($sets), 'items' => $sets];
+        });
     }
 
-    /** POST /api/character-asset-sets (GM/admin preparation endpoint). */
+    /** POST /api/character-asset-sets */
     public function createAssetSet()
     {
-        $auth = $this->authContextService->resolveFromRequest($this->request);
-        if (!$this->authContextService->isGmOrAdmin($auth)) {
-            return $this->failForbidden('Tylko GM może przygotowywać zestawy grafik.');
-        }
-        $input = (array) $this->request->getJSON(true);
-        try {
-            $set = $this->characterAssetService->createAvailableSet(
-                (string) ($input['name'] ?? ''),
-                (array) ($input['publicIds'] ?? $input['public_ids'] ?? [])
-            );
-            return $this->respondCreated(['assetSet' => $set]);
-        } catch (\InvalidArgumentException $error) {
-            return $this->failValidationErrors(['assetSet' => $error->getMessage()]);
-        }
+        return $this->execute(function (): array {
+            $this->characters->assertAssetSetManager($this->auth());
+            $input = $this->jsonPayload();
+            try {
+                $set = $this->assets->createAvailableSet(
+                    (string) ($input['name'] ?? ''),
+                    (array) ($input['publicIds'] ?? $input['public_ids'] ?? [])
+                );
+            } catch (\InvalidArgumentException $exception) {
+                throw new CharacterException(
+                    'validation_failed',
+                    $exception->getMessage(),
+                    422,
+                    ['assetSet' => $exception->getMessage()]
+                );
+            }
+            return ['assetSet' => $set];
+        }, 201);
     }
 
     /** PUT /api/characters/{id}/asset-set */
     public function assignAssetSet($id = null)
     {
-        $character = $this->model->find($id);
-        if (!$character) {
-            return $this->failNotFound('Postać nie została znaleziona.');
-        }
-        if (!$this->canManageCharacter($character)) {
-            return $this->failForbidden('Nie masz uprawnień do zmiany grafik tej postaci.');
-        }
-        $input = (array) $this->request->getJSON(true);
-        $assetSetId = (int) ($input['assetSetId'] ?? $input['asset_set_id'] ?? 0);
-        $result = $this->characterAssetService->assignSetToCharacter((int) $id, $assetSetId);
-        if (!$result['ok']) {
-            return $this->fail(['code' => $result['code']], (int) $result['status']);
-        }
-        return $this->respond($result);
+        return $this->execute(function () use ($id): array {
+            $characterId = $this->positiveId($id);
+            $this->characters->assertEditable($this->auth(), $characterId, $this->campaignId());
+            $input = $this->jsonPayload();
+            $assetSetId = filter_var(
+                $input['assetSetId'] ?? $input['asset_set_id'] ?? null,
+                FILTER_VALIDATE_INT,
+                ['options' => ['min_range' => 1]]
+            );
+            if ($assetSetId === false) {
+                throw new CharacterException('validation_failed', 'Asset set id is invalid.', 422);
+            }
+            $result = $this->assets->assignSetToCharacter($characterId, (int) $assetSetId);
+            if (!$result['ok']) {
+                throw new CharacterException(
+                    (string) $result['code'],
+                    'Asset set could not be assigned.',
+                    (int) $result['status']
+                );
+            }
+            return $result;
+        });
     }
 
-    private function canManageCharacter(array $character): bool
+    private function auth(): array
     {
-        $auth = $this->authContextService->resolveFromRequest($this->request);
-        if ($this->authContextService->isGmOrAdmin($auth)) {
-            return true;
+        return $this->authContext->resolveFromRequest($this->request);
+    }
+
+    private function characterFilters(): array
+    {
+        $filters = [];
+        foreach ([
+            'user_id' => 'userId',
+            'system_id' => 'systemId',
+        ] as $legacy => $canonical) {
+            $legacyValue = $this->request->getGet($legacy);
+            $canonicalValue = $this->request->getGet($canonical);
+            if ($legacyValue === null && $canonicalValue === null) {
+                continue;
+            }
+            $legacyId = $legacyValue === null
+                ? null : $this->queryId($legacyValue, $legacy);
+            $canonicalId = $canonicalValue === null
+                ? null : $this->queryId($canonicalValue, $canonical);
+            if ($legacyId !== null && $canonicalId !== null && $legacyId !== $canonicalId) {
+                throw new CharacterException(
+                    'validation_failed',
+                    'Conflicting character filters were provided.',
+                    422,
+                    [$canonical => 'Conflicting aliases were provided.']
+                );
+            }
+            $filters[$legacy] = $canonicalId ?? $legacyId;
         }
-        return !empty($auth['user_id'])
-            && (int) ($character['user_id'] ?? 0) === (int) $auth['user_id'];
+        return $filters;
+    }
+
+    private function queryId($value, string $field): int
+    {
+        $id = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        if ($id === false) {
+            throw new CharacterException(
+                'validation_failed',
+                'Character filter is invalid.',
+                422,
+                [$field => 'A positive integer is required.']
+            );
+        }
+        return (int) $id;
+    }
+
+    private function campaignId(bool $required = false): ?int
+    {
+        $raw = $this->request->getGet('campaignId') ?? $this->request->getGet('campaign_id');
+        if (($raw === null || $raw === '') && !$required) {
+            return null;
+        }
+        $value = filter_var($raw, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        if ($value === false) {
+            throw new CharacterException('campaign_required', 'A valid campaign id is required.', 422);
+        }
+        return (int) $value;
+    }
+
+    private function positiveId($id): int
+    {
+        $value = filter_var($id, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
+        if ($value === false) {
+            throw new CharacterException('character_not_found', 'Character was not found.', 404);
+        }
+        return (int) $value;
+    }
+
+    private function jsonPayload(): array
+    {
+        try {
+            $payload = $this->request->getJSON(true);
+        } catch (\Throwable $exception) {
+            throw new CharacterException('invalid_json', 'Request body must contain valid JSON.', 400);
+        }
+        if (!is_array($payload)) {
+            throw new CharacterException('invalid_json', 'Request body must be a JSON object.', 400);
+        }
+        return $payload;
+    }
+
+    private function execute(callable $operation, int $successStatus = 200)
+    {
+        try {
+            return $this->respond($operation(), $successStatus);
+        } catch (CharacterException $exception) {
+            $payload = ['code' => $exception->errorCode(), 'message' => $exception->getMessage()];
+            if ($exception->errors()) {
+                $payload['errors'] = $exception->errors();
+            }
+            return $this->response->setStatusCode($exception->status())->setJSON($payload);
+        }
     }
 }

@@ -14,6 +14,7 @@ class CharacterModel extends Model
     protected $allowedFields    = [
         'user_id', 
         'campaign_id', 
+        'visibility_level',
         'system_id', 
         'universe_id', 
         'name', 
@@ -21,7 +22,8 @@ class CharacterModel extends Model
         'avatar_url',
         'avatar',
         'brass',
-        'primary_currency_code'
+        'primary_currency_code',
+        'revision'
     ];
 
     protected $useTimestamps = true;
