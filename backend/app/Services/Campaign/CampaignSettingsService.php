@@ -9,15 +9,19 @@ class CampaignSettingsService
     private $campaigns;
     private $guard;
     private $validator;
+    private $catalogSelection;
 
     public function __construct(
         ?CampaignModel $campaigns = null,
         ?CampaignGuardService $guard = null,
-        ?CampaignSettingsValidator $validator = null
+        ?CampaignSettingsValidator $validator = null,
+        ?CampaignCatalogSelectionService $catalogSelection = null
     ) {
         $this->campaigns = $campaigns ?: new CampaignModel();
         $this->guard = $guard ?: new CampaignGuardService();
         $this->validator = $validator ?: new CampaignSettingsValidator();
+        $this->catalogSelection = $catalogSelection
+            ?: new CampaignCatalogSelectionService();
     }
 
     public function show(array $auth, int $campaignId): array
@@ -38,7 +42,8 @@ class CampaignSettingsService
                 $validated['errors']
             );
         }
-        if (!$this->campaigns->update($campaignId, $validated['data'])) {
+        $data = $this->catalogSelection->forUpdate($validated['data']);
+        if (!$this->campaigns->update($campaignId, $data)) {
             throw new CampaignException(
                 'validation_failed',
                 'Campaign could not be updated.',

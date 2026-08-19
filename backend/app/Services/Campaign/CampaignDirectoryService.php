@@ -18,6 +18,8 @@ class CampaignDirectoryService
     private $policy;
     private $validator;
     private $shopAuthorization;
+    private $catalogSelection;
+    private $creationPolicy;
 
     public function __construct(
         ?BaseConnection $db = null,
@@ -26,7 +28,9 @@ class CampaignDirectoryService
         ?CampaignAccessPolicy $policy = null,
         ?CampaignPayloadValidator $validator = null,
         ?ShopAuthorizationService $shopAuthorization = null,
-        ?UserModel $users = null
+        ?UserModel $users = null,
+        ?CampaignCatalogSelectionService $catalogSelection = null,
+        ?CampaignCreationPolicy $creationPolicy = null
     ) {
         $this->db = $db ?: \Config\Database::connect();
         $this->campaigns = $campaigns ?: new CampaignModel($this->db);
@@ -34,6 +38,11 @@ class CampaignDirectoryService
         $this->users = $users ?: new UserModel($this->db);
         $this->policy = $policy ?: new CampaignAccessPolicy();
         $this->validator = $validator ?: new CampaignPayloadValidator();
+        $this->catalogSelection = $catalogSelection
+            ?: new CampaignCatalogSelectionService(
+                new DatabaseCampaignGameCatalog($this->db)
+            );
+        $this->creationPolicy = $creationPolicy ?: new CampaignCreationPolicy();
         $this->shopAuthorization = $shopAuthorization ?: new ShopAuthorizationService(
             null,
             new ShopOwnerClaimModel($this->db),
@@ -97,7 +106,7 @@ class CampaignDirectoryService
         if (!$this->canCreate($auth)) {
             throw new CampaignException(
                 'forbidden',
-                'Only a game master or administrator can create campaigns.',
+                'This account cannot create campaigns.',
                 403
             );
         }
@@ -112,7 +121,7 @@ class CampaignDirectoryService
         }
 
         $userId = (int) $auth['user_id'];
-        $campaignData = $validated['data'];
+        $campaignData = $this->catalogSelection->forCreate($validated['data']);
         $campaignData['status'] = !empty($campaignData['is_active']) ? 'active' : 'paused';
         $this->db->transBegin();
         try {
@@ -197,7 +206,7 @@ class CampaignDirectoryService
 
     private function canCreate(array $auth): bool
     {
-        return in_array(strtolower((string) ($auth['role'] ?? '')), ['gm', 'admin'], true);
+        return $this->creationPolicy->allows($auth);
     }
 
     private function membershipFromRow(array $row): ?array
@@ -228,6 +237,10 @@ class CampaignDirectoryService
             'description' => $row['description'] ?? null,
             'banner_url' => $row['banner_url'] ?? null,
             'system_type' => (string) $row['system_type'],
+            'system_id' => isset($row['rpg_system_id'])
+                ? (int) $row['rpg_system_id'] : null,
+            'universe_id' => isset($row['rpg_universe_id'])
+                ? (int) $row['rpg_universe_id'] : null,
             'is_active' => (bool) $row['is_active'],
             'status' => (string) ($row['status'] ?? (!empty($row['is_active']) ? 'active' : 'paused')),
             'settings' => is_array($row['settings_json'] ?? null) ? $row['settings_json'] : [],
@@ -236,6 +249,7 @@ class CampaignDirectoryService
                 ? 'admin'
                 : ($isOwner ? 'gm' : (string) ($membership['role'] ?? 'player')),
             'capabilities' => [
+                'canAccess' => (bool) $capabilities['canAccess'],
                 'canManage' => (bool) $capabilities['canManage'],
                 'canViewHidden' => (bool) $capabilities['canViewHidden'],
                 'canOpenShop' => $canOpenShop,

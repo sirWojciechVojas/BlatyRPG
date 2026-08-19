@@ -7,9 +7,22 @@ final class CampaignSettingsValidator
     private const STATUSES = ['active', 'paused', 'archived'];
     private const MAX_SETTINGS_BYTES = 65536;
 
+    private $catalogPayload;
+    private $tableSettings;
+
+    public function __construct(
+        ?CampaignCatalogPayloadValidator $catalogPayload = null,
+        ?CampaignTableSettingsValidator $tableSettings = null
+    ) {
+        $this->catalogPayload = $catalogPayload ?: new CampaignCatalogPayloadValidator();
+        $this->tableSettings = $tableSettings ?: new CampaignTableSettingsValidator();
+    }
+
     public function validate(array $payload): array
     {
-        $allowed = ['name', 'description', 'bannerUrl', 'banner_url', 'status', 'settings'];
+        $allowed = array_merge([
+            'name', 'description', 'bannerUrl', 'banner_url', 'status', 'settings',
+        ], CampaignCatalogPayloadValidator::FIELDS);
         $unknown = array_diff(array_keys($payload), $allowed);
         $errors = $unknown
             ? ['payload' => 'Unsupported fields: ' . implode(', ', $unknown) . '.']
@@ -33,9 +46,16 @@ final class CampaignSettingsValidator
             } elseif (strlen((string) json_encode($payload['settings'])) > self::MAX_SETTINGS_BYTES) {
                 $errors['settings'] = 'Settings exceed the 64 KiB limit.';
             } else {
-                $data['settings_json'] = $payload['settings'];
+                $settings = $this->tableSettings->validate($payload['settings']);
+                $errors += $settings['errors'];
+                if ($settings['valid']) {
+                    $data['settings_json'] = $settings['data'];
+                }
             }
         }
+        $catalog = $this->catalogPayload->validate($payload);
+        $data += $catalog['data'];
+        $errors += $catalog['errors'];
         if (!$data && !$errors) {
             $errors['payload'] = 'At least one editable field is required.';
         }

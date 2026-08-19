@@ -19,6 +19,8 @@ class CampaignModel extends BaseJsonModel
         'description',
         'banner_url',
         'system_type',
+        'rpg_system_id',
+        'rpg_universe_id',
         'settings_json',
         'is_active',
         'status',

@@ -35,6 +35,30 @@ final class CampaignPayloadValidatorTest extends CIUnitTestCase
         $this->assertSame(0, $result['data']['is_active']);
     }
 
+    public function testNormalizesManagedSystemAndWorldIds(): void
+    {
+        $result = (new CampaignPayloadValidator())->validateCreate([
+            'name' => 'Morrslieb',
+            'systemId' => '2',
+            'universeId' => 5,
+        ]);
+
+        $this->assertTrue($result['valid']);
+        $this->assertSame(2, $result['data']['rpg_system_id']);
+        $this->assertSame(5, $result['data']['rpg_universe_id']);
+    }
+
+    public function testRejectsPartialManagedCatalogSelection(): void
+    {
+        $result = (new CampaignPayloadValidator())->validateCreate([
+            'name' => 'Incomplete',
+            'systemId' => 2,
+        ]);
+
+        $this->assertFalse($result['valid']);
+        $this->assertArrayHasKey('universeId', $result['errors']);
+    }
+
     public function testUsesSafeDefaults(): void
     {
         $result = (new CampaignPayloadValidator())->validateCreate(['name' => 'New campaign']);

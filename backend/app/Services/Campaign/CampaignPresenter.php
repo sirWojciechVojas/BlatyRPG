@@ -12,6 +12,10 @@ final class CampaignPresenter
             'description' => $campaign['description'] ?? null,
             'bannerUrl' => $campaign['banner_url'] ?? null,
             'systemType' => (string) ($campaign['system_type'] ?? ''),
+            'systemId' => isset($campaign['rpg_system_id'])
+                ? (int) $campaign['rpg_system_id'] : null,
+            'universeId' => isset($campaign['rpg_universe_id'])
+                ? (int) $campaign['rpg_universe_id'] : null,
             'status' => (string) ($campaign['status'] ?? (
                 !empty($campaign['is_active']) ? 'active' : 'paused'
             )),

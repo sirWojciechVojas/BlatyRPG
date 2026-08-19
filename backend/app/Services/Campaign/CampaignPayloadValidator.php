@@ -11,7 +11,18 @@ class CampaignPayloadValidator
         'systemType',
         'is_active',
         'isActive',
+        'system_id',
+        'systemId',
+        'universe_id',
+        'universeId',
     ];
+
+    private $catalogPayload;
+
+    public function __construct(?CampaignCatalogPayloadValidator $catalogPayload = null)
+    {
+        $this->catalogPayload = $catalogPayload ?: new CampaignCatalogPayloadValidator();
+    }
 
     public function validateCreate(array $payload): array
     {
@@ -66,6 +77,10 @@ class CampaignPayloadValidator
         } else {
             $data['is_active'] = 1;
         }
+
+        $catalog = $this->catalogPayload->validate($payload);
+        $data += $catalog['data'];
+        $errors += $catalog['errors'];
 
         return ['valid' => !$errors, 'errors' => $errors, 'data' => $data];
     }
