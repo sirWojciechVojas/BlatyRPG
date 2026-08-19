@@ -90,9 +90,9 @@ final class LinkCampaignsToRpgCatalog extends Migration
         $systems = $this->table('rpg_systems');
         $pairs = $this->table('rpg_system_universes');
         $this->db->query(
-            "UPDATE {$campaigns} campaign JOIN {$systems} system "
-            . 'ON system.code = campaign.system_type '
-            . 'SET campaign.rpg_system_id = system.id '
+            "UPDATE {$campaigns} campaign JOIN {$systems} catalog_system "
+            . 'ON catalog_system.code = campaign.system_type '
+            . 'SET campaign.rpg_system_id = catalog_system.id '
             . 'WHERE campaign.rpg_system_id IS NULL'
         );
         $this->db->query(
