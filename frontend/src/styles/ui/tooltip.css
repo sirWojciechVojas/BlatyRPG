@@ -1,0 +1,80 @@
+.ui-system-active .ui-tooltip {
+  position: relative;
+  display: inline-flex;
+}
+
+.ui-system-active .ui-tooltip__trigger {
+  display: inline-grid;
+  width: 1.25rem;
+  height: 1.25rem;
+  padding: 0;
+  place-items: center;
+  border: var(--ui-border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ui-color-text-muted);
+  font: inherit;
+  font-size: var(--ui-font-size-xs);
+}
+
+.ui-system-active .ui-tooltip__bubble {
+  position: absolute;
+  z-index: var(--ui-z-tooltip);
+  width: max-content;
+  max-width: min(18rem, 80vw);
+  padding: var(--ui-space-2) var(--ui-space-3);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-raised);
+  color: var(--ui-color-text);
+  box-shadow: var(--ui-shadow-lg);
+  font-size: var(--ui-font-size-xs);
+  line-height: 1.35;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -0.25rem);
+  transition:
+    opacity 120ms ease,
+    transform 120ms ease;
+}
+
+.ui-system-active .ui-tooltip:hover .ui-tooltip__bubble,
+.ui-system-active .ui-tooltip:focus-within .ui-tooltip__bubble,
+.ui-system-active .ui-tooltip[data-tooltip-open="true"] .ui-tooltip__bubble {
+  opacity: 1;
+}
+
+.ui-system-active .ui-tooltip--top .ui-tooltip__bubble {
+  bottom: calc(100% + var(--ui-space-2));
+  left: 50%;
+}
+
+.ui-system-active .ui-tooltip--bottom .ui-tooltip__bubble {
+  top: calc(100% + var(--ui-space-2));
+  left: 50%;
+  transform: translate(-50%, 0.25rem);
+}
+
+.ui-system-active .ui-tooltip--right .ui-tooltip__bubble {
+  top: 50%;
+  left: calc(100% + var(--ui-space-2));
+  transform: translate(0.25rem, -50%);
+}
+
+.ui-system-active .ui-tooltip--left .ui-tooltip__bubble {
+  top: 50%;
+  right: calc(100% + var(--ui-space-2));
+  transform: translate(-0.25rem, -50%);
+}
+
+.ui-system-active .tooltip {
+  z-index: var(--ui-z-tooltip);
+}
+
+.ui-system-active .tooltip .tooltip-inner {
+  border: var(--ui-border);
+  background: var(--ui-color-surface-raised);
+  box-shadow: var(--ui-shadow-lg);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-xs);
+}

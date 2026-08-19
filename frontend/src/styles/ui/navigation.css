@@ -1,0 +1,117 @@
+#app.ui-system-active .app-navigation {
+  position: sticky;
+  top: 0;
+  z-index: var(--ui-z-sticky);
+  box-sizing: border-box;
+  display: flex;
+  width: 100%;
+  min-height: var(--ui-navigation-height);
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--ui-space-1);
+  padding: var(--ui-space-2) var(--ui-space-3);
+  overflow: hidden;
+  border: 0;
+  border-bottom: var(--ui-border);
+  background: rgba(18, 24, 33, 0.97);
+  color: var(--ui-color-text-muted);
+  box-shadow: none;
+  font-size: var(--ui-font-size-sm);
+  white-space: nowrap;
+}
+
+#app.ui-system-active .app-navigation a {
+  display: inline-flex;
+  min-height: var(--ui-control-height-sm);
+  flex: 0 0 auto;
+  align-items: center;
+  padding: var(--ui-space-1) var(--ui-space-3);
+  border-radius: var(--ui-radius-sm);
+  color: var(--ui-color-text-muted);
+  font-weight: 650;
+  text-decoration: none;
+}
+
+#app.ui-system-active .app-navigation a:hover {
+  background: var(--ui-color-surface-raised);
+  color: var(--ui-color-text);
+}
+
+#app.ui-system-active .app-navigation a.router-link-exact-active {
+  background: var(--ui-color-accent-soft);
+  color: var(--ui-color-accent);
+}
+
+#app.ui-system-active .app-navigation .nav-sep {
+  width: 1px;
+  height: 1rem;
+  flex: 0 0 auto;
+  margin: 0 var(--ui-space-1);
+  overflow: hidden;
+  background: var(--ui-color-border);
+  color: transparent;
+}
+
+#app.ui-system-active .app-navigation .locale-switch {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--ui-space-2);
+  margin: 0 0 0 var(--ui-space-2);
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+  font-weight: 650;
+}
+
+#app.ui-system-active .app-navigation .locale-switch select {
+  width: auto;
+  min-height: var(--ui-control-height-sm);
+  padding: 0.125rem var(--ui-space-3);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-subtle);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-sm);
+}
+
+#app.ui-system-active .app-navigation--workspace {
+  background: rgba(11, 15, 21, 0.98);
+}
+
+#app.ui-system-active .app-navigation--public {
+  background: rgba(18, 24, 33, 0.92);
+  backdrop-filter: blur(12px);
+}
+
+#app.ui-system-active .app-navigation--overlay {
+  position: fixed;
+  top: var(--ui-space-3);
+  right: var(--ui-space-3);
+  left: auto;
+  width: auto;
+  max-width: calc(100vw - 1rem);
+  min-height: var(--ui-control-height);
+  padding: var(--ui-space-1) var(--ui-space-2);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-md);
+  background: rgba(11, 15, 21, 0.9);
+  box-shadow: var(--ui-shadow-sm);
+  backdrop-filter: blur(10px);
+}
+
+@media (max-width: 760px) {
+  #app.ui-system-active .app-navigation:not(.app-navigation--overlay) {
+    min-height: auto;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+
+  #app.ui-system-active .app-navigation .nav-sep {
+    display: none;
+  }
+
+  #app.ui-system-active .app-navigation .locale-switch {
+    margin-left: 0;
+  }
+}

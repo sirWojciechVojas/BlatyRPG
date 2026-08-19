@@ -1,33 +1,36 @@
 <template>
   <nav
-    v-if="!isHomeRoute"
+    v-if="showNavigation"
     class="app-navigation"
     :class="{
+      'app-navigation--legacy': !uiSystemActive,
       'app-navigation--overlay': usesOverlayNav,
       'app-navigation--workspace': isCampaignWorkspace,
+      'app-navigation--public': routeUi.isPublic,
     }"
+    aria-label="Blaty RPG"
   >
-    <router-link to="/">{{ $t("nav.home") }}</router-link>
+    <router-link :to="{ name: 'landing' }">{{ $t("nav.home") }}</router-link>
     <template v-if="isAdmin">
-      <span class="nav-sep">|</span>
+      <span class="nav-sep" aria-hidden="true">|</span>
       <router-link :to="{ name: 'admin' }">{{ $t("admin.title") }}</router-link>
     </template>
-    <span class="nav-sep">|</span>
-    <router-link to="/about">{{ $t("nav.about") }}</router-link>
-    <span class="nav-sep">|</span>
-    <router-link to="/dice">{{ $t("nav.diceRoller") }}</router-link>
+    <span class="nav-sep" aria-hidden="true">|</span>
+    <router-link :to="{ name: 'about' }">{{ $t("nav.about") }}</router-link>
+    <span class="nav-sep" aria-hidden="true">|</span>
+    <router-link :to="{ name: 'dice' }">{{ $t("nav.diceRoller") }}</router-link>
     <template v-if="campaignId">
-      <span class="nav-sep">|</span>
+      <span class="nav-sep" aria-hidden="true">|</span>
       <router-link :to="{ name: 'scene-workspace', params: { campaignId } }">{{
         $t("vtt.scene.navigation.title")
       }}</router-link>
-      <span class="nav-sep">|</span>
+      <span class="nav-sep" aria-hidden="true">|</span>
       <router-link
         :to="{ name: 'character-workspace', params: { campaignId } }"
       >
         {{ $t("dashboard.campaign.openCharacters") }}
       </router-link>
-      <span class="nav-sep">|</span>
+      <span class="nav-sep" aria-hidden="true">|</span>
       <router-link
         :to="{
           name: 'scene-workspace',
@@ -38,10 +41,10 @@
         {{ $t("dashboard.campaign.openChat") }}
       </router-link>
     </template>
-    <span class="nav-sep">|</span>
+    <span class="nav-sep" aria-hidden="true">|</span>
     <label class="locale-switch">
       <span>{{ $t("nav.language") }}</span>
-      <select v-model="currentLocale" aria-label="Language">
+      <select v-model="currentLocale" :aria-label="$t('nav.language')">
         <option
           v-for="locale in locales"
           :key="locale.code"
@@ -60,6 +63,11 @@
 import { availableLocales, setLocale } from "@/i18n";
 import ShopAccessModeSelector from "@/components/shop/ShopAccessModeSelector.vue";
 import { authSession } from "@/lib/auth/authSession";
+import {
+  UI_ROOT_CLASS_NAMES,
+  resolveRouteUi,
+  routeUiRootClasses,
+} from "@/components/ui/routeUi";
 export default {
   name: "AppRoot",
   components: { ShopAccessModeSelector },
@@ -85,6 +93,7 @@ export default {
     });
   },
   beforeUnmount() {
+    this.clearUiRootState();
     this.unsubscribeAuth?.();
   },
   watch: {
@@ -97,6 +106,7 @@ export default {
         document.title = pageTitle
           ? `${pageTitle} — ${this.appTitle}`
           : this.appTitle;
+        this.syncUiRootState(to);
       },
     },
   },
@@ -111,22 +121,55 @@ export default {
         setLocale(locale);
       },
     },
+    routeUi() {
+      return resolveRouteUi(this.$route);
+    },
+    uiSystemActive() {
+      return this.routeUi.enabled;
+    },
+    showNavigation() {
+      return this.routeUi.showNavigation;
+    },
     usesOverlayNav() {
-      return this.$route?.path === "/dice" || this.$route?.name === "shop-gm";
+      return this.routeUi.navigation === "overlay";
     },
     isCampaignWorkspace() {
-      return ["scene-workspace", "character-workspace"].includes(
-        this.$route?.name,
-      );
-    },
-    isHomeRoute() {
-      return this.$route?.path === "/";
+      return this.routeUi.isWorkspace;
     },
     campaignId() {
       return this.$route?.params?.campaignId || null;
     },
     isAdmin() {
       return this.session?.user?.role === "admin";
+    },
+  },
+  methods: {
+    uiRootElements() {
+      if (typeof document === "undefined") {
+        return [];
+      }
+
+      return [document.body, document.getElementById("app")].filter(Boolean);
+    },
+    clearUiRootState() {
+      this.uiRootElements().forEach((element) => {
+        element.classList.remove(...UI_ROOT_CLASS_NAMES);
+        delete element.dataset.uiLayout;
+      });
+    },
+    syncUiRootState(route) {
+      const routeUi = resolveRouteUi(route);
+      this.clearUiRootState();
+
+      if (!routeUi.enabled) {
+        return;
+      }
+
+      const classes = routeUiRootClasses(routeUi);
+      this.uiRootElements().forEach((element) => {
+        element.classList.add(...classes);
+        element.dataset.uiLayout = routeUi.layout;
+      });
     },
   },
 };

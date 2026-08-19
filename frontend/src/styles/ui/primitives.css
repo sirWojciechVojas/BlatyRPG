@@ -1,0 +1,268 @@
+.ui-system-active
+  :where(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(
+        [type="color"]
+      ),
+    select,
+    textarea,
+    .form-control,
+    .form-select
+  ) {
+  min-height: var(--ui-control-height);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-subtle);
+  color: var(--ui-color-text);
+  font: inherit;
+}
+
+.ui-system-active
+  :where(
+    input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+    select,
+    .form-control,
+    .form-select
+  ) {
+  padding: var(--ui-space-1) var(--ui-space-3);
+}
+
+.ui-system-active :where(textarea) {
+  min-height: 4.5rem;
+  padding: var(--ui-space-2) var(--ui-space-3);
+  resize: vertical;
+}
+
+.ui-system-active :where(input, select, textarea)::placeholder {
+  color: var(--ui-color-text-faint);
+  opacity: 1;
+}
+
+.ui-system-active :where(input, select, textarea):disabled {
+  cursor: not-allowed;
+  opacity: 0.56;
+}
+
+.ui-system-active :where(input, select, textarea):focus {
+  border-color: var(--ui-color-accent);
+  box-shadow: 0 0 0 2px var(--ui-color-accent-soft);
+  outline: 0;
+}
+
+.ui-system-active :where(label, .form-label) {
+  margin-bottom: var(--ui-space-1);
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-sm);
+  font-weight: 650;
+}
+
+.ui-system-active .ui-button,
+.ui-system-active .btn {
+  display: inline-flex;
+  min-height: var(--ui-control-height);
+  align-items: center;
+  justify-content: center;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-1) var(--ui-space-4);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-raised);
+  color: var(--ui-color-text);
+  font: inherit;
+  font-weight: 650;
+  line-height: 1;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.ui-system-active .ui-button:hover:not(:disabled),
+.ui-system-active .btn:hover:not(:disabled) {
+  border-color: var(--ui-color-border-strong);
+  background: #253244;
+  color: #ffffff;
+}
+
+.ui-system-active .ui-button:disabled,
+.ui-system-active .btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.ui-system-active .ui-button--primary,
+.ui-system-active :where(.btn-primary, .btn-success) {
+  border-color: var(--ui-color-accent-strong);
+  background: var(--ui-color-accent-strong);
+  color: #ffffff;
+}
+
+.ui-system-active .ui-button--danger,
+.ui-system-active .btn-danger {
+  border-color: var(--ui-color-danger);
+  background: var(--ui-color-danger-soft);
+  color: #ffd7da;
+}
+
+.ui-system-active .ui-button--ghost,
+.ui-system-active :where(.btn-link, .btn-outline-secondary) {
+  border-color: transparent;
+  background: transparent;
+  color: var(--ui-color-text-muted);
+}
+
+.ui-system-active .ui-button--small,
+.ui-system-active .btn-sm {
+  min-height: var(--ui-control-height-sm);
+  padding: 0.125rem var(--ui-space-3);
+  font-size: var(--ui-font-size-sm);
+}
+
+.ui-system-active .ui-button--block {
+  width: 100%;
+}
+
+.ui-system-active .ui-button--icon {
+  width: var(--ui-control-height);
+  padding-inline: 0;
+}
+
+.ui-system-active .ui-button__spinner {
+  width: 0.75rem;
+  height: 0.75rem;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: ui-spin 0.7s linear infinite;
+}
+
+.ui-system-active .ui-panel,
+.ui-system-active :where(.card, .modal-content) {
+  min-width: 0;
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-md);
+  background: var(--ui-color-surface);
+  color: var(--ui-color-text);
+  box-shadow: var(--ui-shadow-sm);
+}
+
+.ui-system-active .ui-panel--subtle {
+  background: var(--ui-color-surface-subtle);
+}
+
+.ui-system-active .ui-panel--raised {
+  background: var(--ui-color-surface-raised);
+  box-shadow: var(--ui-shadow-lg);
+}
+
+.ui-system-active .ui-panel--flat {
+  box-shadow: none;
+}
+
+.ui-system-active .ui-panel__header,
+.ui-system-active .ui-panel__footer,
+.ui-system-active
+  :where(.card-header, .card-footer, .modal-header, .modal-footer) {
+  display: flex;
+  min-height: 2.25rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-3);
+  padding: var(--ui-space-2) var(--ui-space-4);
+  border-color: var(--ui-color-border);
+  background: transparent;
+}
+
+.ui-system-active .ui-panel__header {
+  border-bottom: var(--ui-border);
+}
+
+.ui-system-active .ui-panel__footer {
+  border-top: var(--ui-border);
+}
+
+.ui-system-active .ui-panel__heading :where(h1, h2, h3, h4, h5, h6) {
+  margin: 0;
+  font-size: var(--ui-font-size-lg);
+}
+
+.ui-system-active .ui-panel__eyebrow {
+  display: block;
+  margin-bottom: 0.125rem;
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.ui-system-active .ui-panel__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-2);
+}
+
+.ui-system-active .ui-panel__body,
+.ui-system-active :where(.card-body, .modal-body) {
+  min-width: 0;
+  padding: var(--ui-space-4);
+}
+
+.ui-system-active .ui-panel--comfortable .ui-panel__body {
+  padding: var(--ui-space-5);
+}
+
+.ui-system-active :where(.table, .ui-table) {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  border-color: var(--ui-color-border);
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-sm);
+}
+
+.ui-system-active :where(.table, .ui-table) > :not(caption) > * > * {
+  padding: var(--ui-space-2) var(--ui-space-3);
+  border-bottom: var(--ui-border);
+  background: transparent;
+  color: inherit;
+  vertical-align: middle;
+}
+
+.ui-system-active :where(.table, .ui-table) thead th {
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-xs);
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+
+.ui-system-active .ui-field {
+  display: grid;
+  min-width: 0;
+  gap: var(--ui-space-1);
+}
+
+.ui-system-active .ui-field__label {
+  display: flex;
+  gap: 0.2rem;
+}
+
+.ui-system-active .ui-field__required,
+.ui-system-active .ui-field--invalid .ui-field__label,
+.ui-system-active .ui-field__message {
+  color: var(--ui-color-danger);
+}
+
+.ui-system-active .ui-field__hint,
+.ui-system-active .ui-field__message {
+  margin: 0;
+  font-size: var(--ui-font-size-xs);
+}
+
+.ui-system-active .ui-field__hint {
+  color: var(--ui-color-text-faint);
+}
+
+@keyframes ui-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
