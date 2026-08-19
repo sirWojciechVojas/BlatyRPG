@@ -1,0 +1,108 @@
+{
+  "characters": {
+    "workspace": {
+      "eyebrow": "Campaign",
+      "title": "Characters and NPCs"
+    },
+    "list": {
+      "eyebrow": "World cast",
+      "title": "Characters",
+      "legacy": "legacy library",
+      "noDetails": "No description"
+    },
+    "sheet": {
+      "eyebrow": "Character sheet",
+      "readOnly": "read only"
+    },
+    "sections": {
+      "identity": "Identity and history",
+      "attributes": "Current attributes",
+      "skills": "Skills",
+      "talents": "Talents",
+      "advanced": "Advanced JSON data"
+    },
+    "fields": {
+      "name": "Character name",
+      "avatar": "Avatar — URL or asset identifier",
+      "balance": "Balance",
+      "onePerLine": "One entry per line.",
+      "game": "System and universe"
+    },
+    "detailFields": {
+      "age": "Age",
+      "sex": "Sex",
+      "name": "Full name",
+      "race": "Race",
+      "deity": "Deity",
+      "height": "Height",
+      "weight": "Weight",
+      "history": "History",
+      "siblings": "Siblings",
+      "eye_color": "Eye colour",
+      "star_sign": "Star sign",
+      "true_name": "True name",
+      "birthplace": "Birthplace",
+      "hair_color": "Hair colour",
+      "profession_id": "Profession ID",
+      "special_signs": "Distinguishing marks"
+    },
+    "advanced": {
+      "description": "This editor preserves custom data types and mechanics. Applying JSON replaces the current form data."
+    },
+    "actions": {
+      "dashboard": "Campaigns",
+      "refresh": "Refresh",
+      "retry": "Try again",
+      "save": "Save sheet",
+      "discard": "Discard changes",
+      "applyJson": "Apply JSON",
+      "refreshJson": "Copy form data",
+      "close": "Close",
+      "cancel": "Cancel",
+      "create": "Create character",
+      "new": "New character",
+      "delete": "Delete character"
+    },
+    "loading": {
+      "list": "Loading characters…",
+      "sheet": "Loading sheet…",
+      "saving": "Saving…",
+      "creating": "Creating…"
+    },
+    "empty": {
+      "title": "No characters in this campaign",
+      "description": "Characters created in or assigned to this campaign will appear here.",
+      "selection": "Select a character to open their sheet.",
+      "attributes": "This character has no attributes yet."
+    },
+    "notices": {
+      "saved": "Character sheet saved.",
+      "created": "Character created.",
+      "deleted": "Character deleted."
+    },
+    "errors": {
+      "load": "Characters could not be loaded.",
+      "save": "Character sheet could not be saved.",
+      "network": "The server cannot be reached.",
+      "session": "Your session expired. Sign in again.",
+      "forbidden": "You do not have access to this character.",
+      "conflict": "Someone changed this character. Refresh before saving again.",
+      "invalid_json": "JSON syntax is invalid.",
+      "json_object_required": "The JSON root must be an object.",
+      "name": "The character name must have at least 2 characters.",
+      "catalog": "The system and universe catalog could not be loaded.",
+      "create": "The character could not be created.",
+      "delete": "The character could not be deleted."
+    },
+    "create": {
+      "eyebrow": "New actor",
+      "title": "Create a character or NPC",
+      "description": "Choose an active system and universe from the application catalog.",
+      "chooseGame": "Choose a game",
+      "noGames": "There are no active games in the catalog."
+    },
+    "delete": {
+      "confirm": "Delete “{name}”? This action cannot be undone."
+    }
+  }
+}

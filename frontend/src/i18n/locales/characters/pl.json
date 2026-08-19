@@ -1,0 +1,108 @@
+{
+  "characters": {
+    "workspace": {
+      "eyebrow": "Kampania",
+      "title": "Postacie i NPC"
+    },
+    "list": {
+      "eyebrow": "Obsada świata",
+      "title": "Postacie",
+      "legacy": "biblioteka legacy",
+      "noDetails": "Brak opisu"
+    },
+    "sheet": {
+      "eyebrow": "Karta postaci",
+      "readOnly": "tylko podgląd"
+    },
+    "sections": {
+      "identity": "Tożsamość i historia",
+      "attributes": "Cechy aktualne",
+      "skills": "Umiejętności",
+      "talents": "Talenty",
+      "advanced": "Dane zaawansowane JSON"
+    },
+    "fields": {
+      "name": "Imię postaci",
+      "avatar": "Avatar — URL lub identyfikator zasobu",
+      "balance": "Stan konta",
+      "onePerLine": "Jeden wpis w każdym wierszu.",
+      "game": "System i uniwersum"
+    },
+    "detailFields": {
+      "age": "Wiek",
+      "sex": "Płeć",
+      "name": "Pełne imię",
+      "race": "Rasa",
+      "deity": "Bóstwo",
+      "height": "Wzrost",
+      "weight": "Waga",
+      "history": "Historia",
+      "siblings": "Rodzeństwo",
+      "eye_color": "Kolor oczu",
+      "star_sign": "Znak gwiezdny",
+      "true_name": "Prawdziwe imię",
+      "birthplace": "Miejsce urodzenia",
+      "hair_color": "Kolor włosów",
+      "profession_id": "ID profesji",
+      "special_signs": "Znaki szczególne"
+    },
+    "advanced": {
+      "description": "Edytor zachowuje własne typy danych i mechaniki. Zastosowanie JSON zastąpi bieżące dane formularza."
+    },
+    "actions": {
+      "dashboard": "Kampanie",
+      "refresh": "Odśwież",
+      "retry": "Spróbuj ponownie",
+      "save": "Zapisz kartę",
+      "discard": "Odrzuć zmiany",
+      "applyJson": "Zastosuj JSON",
+      "refreshJson": "Pobierz dane z formularza",
+      "close": "Zamknij",
+      "cancel": "Anuluj",
+      "create": "Utwórz postać",
+      "new": "Nowa postać",
+      "delete": "Usuń postać"
+    },
+    "loading": {
+      "list": "Wczytywanie postaci…",
+      "sheet": "Wczytywanie karty…",
+      "saving": "Zapisywanie…",
+      "creating": "Tworzenie…"
+    },
+    "empty": {
+      "title": "Brak postaci w kampanii",
+      "description": "Postacie utworzone lub przypisane do tej kampanii pojawią się tutaj.",
+      "selection": "Wybierz postać z listy, aby otworzyć jej kartę.",
+      "attributes": "Ta postać nie ma jeszcze zdefiniowanych cech."
+    },
+    "notices": {
+      "saved": "Karta postaci została zapisana.",
+      "created": "Postać została utworzona.",
+      "deleted": "Postać została usunięta."
+    },
+    "errors": {
+      "load": "Nie udało się pobrać postaci.",
+      "save": "Nie udało się zapisać karty postaci.",
+      "network": "Brak połączenia z serwerem.",
+      "session": "Sesja wygasła. Zaloguj się ponownie.",
+      "forbidden": "Nie masz uprawnień do tej postaci.",
+      "conflict": "Ktoś zmienił tę postać. Odśwież kartę przed ponownym zapisem.",
+      "invalid_json": "JSON ma niepoprawną składnię.",
+      "json_object_required": "Główną wartością JSON musi być obiekt.",
+      "name": "Imię postaci musi mieć co najmniej 2 znaki.",
+      "catalog": "Nie udało się pobrać katalogu systemów i uniwersów.",
+      "create": "Nie udało się utworzyć postaci.",
+      "delete": "Nie udało się usunąć postaci."
+    },
+    "create": {
+      "eyebrow": "Nowy aktor",
+      "title": "Utwórz postać lub NPC",
+      "description": "Wybierz aktywny system i uniwersum z katalogu aplikacji.",
+      "chooseGame": "Wybierz grę",
+      "noGames": "Brak aktywnych gier w katalogu."
+    },
+    "delete": {
+      "confirm": "Czy na pewno usunąć postać „{name}”? Tej operacji nie można cofnąć."
+    }
+  }
+}
