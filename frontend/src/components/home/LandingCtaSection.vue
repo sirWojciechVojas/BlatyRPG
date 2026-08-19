@@ -1,14 +1,14 @@
 <template>
-  <section class="section cta-section parallax" id="cta">
+  <section class="section cta-section" id="cta">
     <div class="cta-panel">
       <p class="eyebrow">{{ $t("landing.cta.eyebrow") }}</p>
       <h2>{{ $t("landing.cta.title") }}</h2>
       <p class="section-lead">{{ $t("landing.cta.lead") }}</p>
       <div class="cta-actions">
-        <button type="button" class="cta-btn large">
+        <router-link class="cta-btn large" :to="{ name: 'register' }">
           {{ $t("landing.cta.primaryCta") }}
-        </button>
-        <router-link class="ghost-link" to="/dice">
+        </router-link>
+        <router-link class="ghost-btn" :to="{ name: 'dice' }">
           {{ $t("landing.cta.secondaryCta") }}
         </router-link>
       </div>

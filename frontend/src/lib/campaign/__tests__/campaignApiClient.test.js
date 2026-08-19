@@ -52,4 +52,34 @@ describe("campaignApiClient", () => {
       body: { name: "Vault", description: "Below", systemType: "coc7e" },
     });
   });
+
+  it("posts managed RPG catalog IDs and normalizes them", async () => {
+    const request = vi.fn().mockResolvedValue({
+      campaign: {
+        id: 9,
+        name: "Reikland",
+        system_id: "2",
+        universe_id: "5",
+      },
+    });
+    const client = createCampaignApiClient({ request });
+
+    await expect(
+      client.create({
+        name: "Reikland",
+        description: "Weekly",
+        systemId: 2,
+        universeId: 5,
+      }),
+    ).resolves.toMatchObject({ systemId: 2, universeId: 5 });
+    expect(request).toHaveBeenCalledWith("/campaigns", {
+      method: "POST",
+      body: {
+        name: "Reikland",
+        description: "Weekly",
+        systemId: 2,
+        universeId: 5,
+      },
+    });
+  });
 });

@@ -1,0 +1,272 @@
+{
+  "landing": {
+    "brand": {
+      "title": "Blaty RPG",
+      "subtitle": "A virtual table for shared stories"
+    },
+    "nav": {
+      "primary": "Primary navigation",
+      "features": "Features",
+      "modules": "Modules",
+      "plans": "Plans",
+      "dice": "3D dice",
+      "signIn": "Sign in",
+      "createAccount": "Create account"
+    },
+    "hero": {
+      "eyebrow": "Your campaign in one place",
+      "logoAlt": "Blaty RPG",
+      "title": "Run sessions without switching between tools",
+      "lead": "The table, participants, characters, materials and real-time communication form one consistent campaign space.",
+      "primaryCta": "Create a free account",
+      "secondaryCta": "Explore the interface",
+      "chips": {
+        "maps": "Maps and scenes",
+        "characters": "Characters and tokens",
+        "narration": "Handouts and scenarios",
+        "live": "Live chat"
+      },
+      "metrics": {
+        "scenes": "Virtual tabletop",
+        "latency": "Live communication",
+        "hosting": "Dice rolls"
+      },
+      "screen": {
+        "title": "Table: Shadows over Altdorf",
+        "badge": "ONLINE",
+        "party": "Participants",
+        "journal": "Journal"
+      },
+      "cards": {
+        "gmTitle": "GM panel",
+        "gmText": "Campaign, participants and assets under control.",
+        "fogTitle": "Shared session",
+        "fogText": "The same table state for the entire party."
+      }
+    },
+    "usp": {
+      "scenes": {
+        "title": "Tables and campaigns",
+        "desc": "A separate data context for every story."
+      },
+      "characters": {
+        "title": "Characters",
+        "desc": "Sheets and access matching the table role."
+      },
+      "narration": {
+        "title": "Live session",
+        "desc": "Chat and presence over WebSocket."
+      },
+      "library": {
+        "title": "Materials",
+        "desc": "Graphics, handouts, music and scenarios."
+      }
+    },
+    "features": {
+      "eyebrow": "Tools",
+      "title": "Everything a table needs",
+      "lead": "Compact modules share the campaign, users and access rules.",
+      "items": {
+        "campaigns": {
+          "title": "Campaign management",
+          "desc": "Create Tables, choose a system and setting, and manage participants."
+        },
+        "maps": {
+          "title": "Virtual tabletop",
+          "desc": "A central space for maps, scenes and session elements."
+        },
+        "characters": {
+          "title": "Characters and tokens",
+          "desc": "Assign heroes to players and control their visibility."
+        },
+        "chat": {
+          "title": "Real-time chat",
+          "desc": "Messages instantly reach participants at the same Table."
+        },
+        "dice": {
+          "title": "3D dice",
+          "desc": "The existing dice module remains available without changing its behaviour."
+        },
+        "handouts": {
+          "title": "Handouts",
+          "desc": "Share player aids and story materials."
+        },
+        "scenarios": {
+          "title": "Scenarios",
+          "desc": "Organise the adventure flow and GM notes."
+        },
+        "graphics": {
+          "title": "Graphics library",
+          "desc": "Keep visual assets close to session tools."
+        },
+        "shop": {
+          "title": "Shop",
+          "desc": "Handle equipment and trading within the campaign."
+        },
+        "music": {
+          "title": "Jukebox",
+          "desc": "Prepare audio fitting the current scene."
+        },
+        "gmTools": {
+          "title": "GM tools",
+          "desc": "Manage the Table, participants, assets and session preparation."
+        }
+      },
+      "callout": {
+        "gm": {
+          "title": "For Game Masters",
+          "desc": "One place to prepare and run your own campaigns."
+        },
+        "player": {
+          "title": "For players",
+          "desc": "Quick access only to invited Tables and assigned characters."
+        }
+      }
+    },
+    "gallery": {
+      "eyebrow": "One interface",
+      "title": "Readable in the middle of a session",
+      "lead": "The most important information stays close to the VTT area.",
+      "shots": {
+        "table": {
+          "title": "Campaign Table",
+          "desc": "Scene, tools and party context.",
+          "alt": "Campaign table preview"
+        },
+        "hero": {
+          "title": "Characters",
+          "desc": "Hero sheets and access control.",
+          "alt": "Character preview"
+        },
+        "lore": {
+          "title": "Materials",
+          "desc": "Handouts, graphics and notes.",
+          "alt": "Materials preview"
+        }
+      },
+      "strip": {
+        "fantasy": {
+          "title": "Multiple systems",
+          "desc": "The RPG system and world are manageable Table data."
+        },
+        "infographics": {
+          "title": "Dense layout",
+          "desc": "Compact panels leave room for the scene."
+        }
+      }
+    },
+    "modules": {
+      "eyebrow": "Shared foundation",
+      "title": "Modules operate within the Table context",
+      "lead": "You do not sign in again when switching campaigns.",
+      "nodes": {
+        "engine": "Table",
+        "maps": "Scenes",
+        "characters": "Characters",
+        "journal": "Handouts",
+        "rules": "System",
+        "audio": "Music",
+        "stats": "Chat"
+      },
+      "cards": {
+        "integrations": {
+          "title": "One user session",
+          "desc": "Signing in leads to the available Tables.",
+          "tag1": "Profile",
+          "tag2": "Roles",
+          "tag3": "Invitations"
+        },
+        "stability": {
+          "title": "Campaign-scoped data",
+          "desc": "The backend verifies membership and permissions.",
+          "tag1": "Campaign ID",
+          "tag2": "Ownership",
+          "tag3": "Permissions"
+        },
+        "growth": {
+          "title": "Ready to grow",
+          "desc": "Space for future scene tools without placeholder mechanics.",
+          "tag1": "Walls",
+          "tag2": "Lighting",
+          "tag3": "Measurement"
+        }
+      }
+    },
+    "plans": {
+      "eyebrow": "Subscriptions",
+      "title": "Choose the scope for your campaigns",
+      "lead": "Prices, limits and features come from central server configuration.",
+      "loading": "Loading plans…",
+      "error": "The current plans could not be loaded.",
+      "retry": "Try again",
+      "recommended": "Recommended",
+      "free": "Free",
+      "unlimited": "Unlimited",
+      "storageMb": "{value} MB",
+      "storageGb": "{value} GB",
+      "choose": "Choose plan",
+      "intervals": { "month": "/ month" },
+      "limits": {
+        "tables": "Tables",
+        "playersPerTable": "Players per Table",
+        "storageMb": "Asset storage"
+      },
+      "catalog": {
+        "starter": {
+          "name": "Starter",
+          "description": "For a first campaign and a small party."
+        },
+        "adventurer": {
+          "name": "Adventurer",
+          "description": "More Tables and materials for regular play."
+        },
+        "gameMaster": {
+          "name": "Game Master",
+          "description": "A complete workshop for running multiple campaigns."
+        },
+        "guild": {
+          "name": "Guild",
+          "description": "For large communities and extensive libraries."
+        }
+      },
+      "features": {
+        "campaigns": "Campaigns",
+        "vtt": "Virtual tabletop",
+        "characters": "Characters and tokens",
+        "realtimeChat": "Real-time chat",
+        "dice3d": "3D dice",
+        "graphicsLibrary": "Graphics library",
+        "handouts": "Handouts",
+        "scenarios": "Scenarios",
+        "shop": "Shop",
+        "music": "Jukebox",
+        "gmTools": "GM tools",
+        "prioritySupport": "Priority support"
+      }
+    },
+    "stats": {
+      "eyebrow": "Technology",
+      "title": "Practical session foundations",
+      "lead": "No marketing numbers — only capabilities available in the app.",
+      "cards": {
+        "realtime": "Chat and presence",
+        "dice": "Dice rolls",
+        "languages": "Interface",
+        "hosting": "Container-ready for NAS"
+      }
+    },
+    "cta": {
+      "eyebrow": "Get started",
+      "title": "Create an account and your first Table",
+      "lead": "You sign in to the app, then freely choose a campaign.",
+      "primaryCta": "Create account",
+      "secondaryCta": "Try the 3D dice",
+      "foot": "One account can belong to multiple Tables.",
+      "diceAlt": "Twenty-sided die"
+    },
+    "footer": {
+      "text": "Blaty RPG — a virtual tabletop for shared play.",
+      "meta": "Campaigns • characters • materials • real time"
+    }
+  }
+}

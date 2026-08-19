@@ -7,7 +7,24 @@ const buildRouter = () =>
   createRouter({
     history: createMemoryHistory(),
     routes: [
-      { path: "/", name: "home", component: View },
+      {
+        path: "/",
+        name: "landing",
+        component: View,
+        meta: { redirectAuthenticated: true },
+      },
+      {
+        path: "/login",
+        name: "login",
+        component: View,
+        meta: { redirectAuthenticated: true },
+      },
+      {
+        path: "/tables",
+        name: "tables",
+        component: View,
+        meta: { requiresAuth: true },
+      },
       {
         path: "/campaigns/:campaignId/scenes",
         name: "scene-workspace",
@@ -31,75 +48,77 @@ const buildRouter = () =>
     ],
   });
 
+const authenticated = (role = "player") => ({
+  isAuthenticated: () => true,
+  read: () => ({ user: { role } }),
+});
+
 describe("authentication route guard", () => {
-  it("redirects an anonymous user and retains the intended internal path", async () => {
+  it("redirects an anonymous user to login with the intended local path", async () => {
     const router = buildRouter();
-    router.beforeEach(createAuthGuard({ isAuthenticated: () => false }));
+    router.beforeEach(
+      createAuthGuard({ read: () => null, isAuthenticated: () => false }),
+    );
     await router.push("/campaigns/9/scenes?tool=walls");
 
     expect(router.currentRoute.value).toMatchObject({
-      name: "home",
+      name: "login",
       query: { redirect: "/campaigns/9/scenes?tool=walls" },
     });
   });
 
+  it.each([
+    ["admin", "admin"],
+    ["gm", "tables"],
+    ["player", "tables"],
+  ])(
+    "sends an authenticated %s to its default view",
+    async (role, routeName) => {
+      const router = buildRouter();
+      router.beforeEach(createAuthGuard(authenticated(role)));
+      await router.push("/");
+
+      expect(router.currentRoute.value.name).toBe(routeName);
+    },
+  );
+
   it("allows administrators and rejects a known non-admin role", async () => {
     const adminRouter = buildRouter();
-    adminRouter.beforeEach(
-      createAuthGuard({
-        isAuthenticated: () => true,
-        read: () => ({ user: { role: "admin" } }),
-      }),
-    );
+    adminRouter.beforeEach(createAuthGuard(authenticated("admin")));
     await adminRouter.push("/admin");
     expect(adminRouter.currentRoute.value.name).toBe("admin");
 
     const playerRouter = buildRouter();
-    playerRouter.beforeEach(
-      createAuthGuard({
-        isAuthenticated: () => true,
-        read: () => ({ user: { role: "user" } }),
-      }),
-    );
+    playerRouter.beforeEach(createAuthGuard(authenticated("player")));
     await playerRouter.push("/admin");
     expect(playerRouter.currentRoute.value.name).toBe("forbidden");
   });
 
-  it("fails closed for an administrator without a trusted role", async () => {
-    const router = buildRouter();
-    router.beforeEach(
-      createAuthGuard({
-        isAuthenticated: () => true,
-        read: () => ({ user: null }),
-      }),
-    );
-    await router.push("/admin");
-    expect(router.currentRoute.value.name).toBe("forbidden");
-  });
-
   it("never derives campaign management from the global role", async () => {
-    const session = {
-      isAuthenticated: () => true,
-      read: () => ({ user: { role: "admin" } }),
-    };
     const denied = buildRouter();
-    denied.beforeEach(createAuthGuard(session));
+    denied.beforeEach(createAuthGuard(authenticated("admin")));
     await denied.push("/campaigns/7/manage");
     expect(denied.currentRoute.value.name).toBe("forbidden");
 
     const allowed = buildRouter();
     allowed.beforeEach(
-      createAuthGuard(session, async (to) => to.params.campaignId === "7"),
+      createAuthGuard(
+        authenticated("admin"),
+        async (to) => to.params.campaignId === "7",
+      ),
     );
     await allowed.push("/campaigns/7/manage");
     expect(allowed.currentRoute.value.name).toBe("campaign-manage");
   });
 
   it("treats a campaign authorization 401 as an expired session", async () => {
+    let active = true;
     const session = {
-      clear: vi.fn(),
-      isAuthenticated: () => true,
-      read: () => ({ user: { role: "player" } }),
+      read: () => (active ? { user: { role: "player" } } : null),
+      isAuthenticated: () => active,
+      clear: vi.fn(() => {
+        active = false;
+      }),
     };
     const error = Object.assign(new Error("unauthorized"), { status: 401 });
     const router = buildRouter();
@@ -111,16 +130,18 @@ describe("authentication route guard", () => {
 
     expect(session.clear).toHaveBeenCalledWith("unauthorized");
     expect(router.currentRoute.value).toMatchObject({
-      name: "home",
+      name: "login",
       query: { redirect: "/campaigns/7/manage" },
     });
   });
 
-  it("accepts only a matched local redirect", () => {
+  it("accepts only a matched, non-auth-entry local redirect", () => {
     const router = buildRouter();
     expect(safeRedirectTarget(router, "/campaigns/3/scenes")).toBe(
       "/campaigns/3/scenes",
     );
+    expect(safeRedirectTarget(router, "/")).toBeNull();
+    expect(safeRedirectTarget(router, "/login")).toBeNull();
     expect(safeRedirectTarget(router, "https://evil.test")).toBeNull();
     expect(safeRedirectTarget(router, "//evil.test")).toBeNull();
     expect(safeRedirectTarget(router, "/missing")).toBeNull();

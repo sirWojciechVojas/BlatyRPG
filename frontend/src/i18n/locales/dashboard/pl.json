@@ -1,10 +1,16 @@
 {
   "dashboard": {
     "brand": { "title": "Blaty RPG", "subtitle": "Wirtualny stół do gry" },
-    "actions": { "dice": "Kości 3D", "openShop": "Sklep", "logout": "Wyloguj", "refresh": "Odśwież", "retry": "Spróbuj ponownie" },
+    "actions": {
+      "dice": "Kości 3D",
+      "openShop": "Sklep",
+      "logout": "Wyloguj",
+      "refresh": "Odśwież",
+      "retry": "Spróbuj ponownie"
+    },
     "login": {
       "eyebrow": "Bezpieczny dostęp",
-      "title": "Zaloguj się do stołu",
+      "title": "Zaloguj się do Blaty RPG",
       "description": "Użyj loginu lub adresu e-mail, aby otworzyć swoje kampanie.",
       "identifier": "Login lub e-mail",
       "password": "Hasło",
@@ -27,18 +33,34 @@
       "openChat": "Czat",
       "openShop": "Otwórz sklep"
     },
-    "roles": { "admin": "Administrator", "gm": "Mistrz Gry", "assistant": "Asystent MG", "player": "Gracz", "observer": "Obserwator" },
+    "roles": {
+      "admin": "Administrator",
+      "gm": "Mistrz Gry",
+      "assistant": "Asystent MG",
+      "player": "Gracz",
+      "observer": "Obserwator"
+    },
     "create": {
       "eyebrow": "Nowy świat",
       "title": "Utwórz kampanię",
       "name": "Nazwa kampanii",
-      "system": "Identyfikator systemu",
+      "system": "System RPG",
+      "world": "Świat / setting",
+      "selectSystem": "Wybierz system",
+      "selectWorld": "Wybierz świat",
+      "catalogEmpty": "Brak aktywnych systemów i światów. Administrator musi uzupełnić katalog.",
       "description": "Opis",
       "submit": "Utwórz kampanię",
       "submitting": "Tworzenie…"
     },
-    "empty": { "title": "Brak kampanii", "description": "Nie masz jeszcze dostępu do żadnej kampanii." },
-    "loading": { "session": "Sprawdzanie sesji…", "campaigns": "Wczytywanie kampanii…" },
+    "empty": {
+      "title": "Brak kampanii",
+      "description": "Nie masz jeszcze dostępu do żadnej kampanii."
+    },
+    "loading": {
+      "session": "Sprawdzanie sesji…",
+      "campaigns": "Wczytywanie kampanii…"
+    },
     "errors": {
       "network": "Nie można połączyć się z serwerem.",
       "invalidCredentials": "Nieprawidłowy login lub hasło.",

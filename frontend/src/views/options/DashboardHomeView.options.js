@@ -1,12 +1,10 @@
 import CampaignCard from "@/components/dashboard/CampaignCard.vue";
 import CampaignCreateForm from "@/components/dashboard/CampaignCreateForm.vue";
-import DashboardLoginPanel from "@/components/dashboard/DashboardLoginPanel.vue";
 import { authApiClient } from "@/lib/auth/authApiClient";
 import { authSession } from "@/lib/auth/authSession";
 import { campaignApiClient } from "@/lib/campaign/campaignApiClient";
+import { gameCatalogApiClient } from "@/lib/catalog/gameCatalogApiClient";
 import { availableLocales, setLocale } from "@/i18n";
-import { isJsonApiAuthorizationError } from "@/lib/api/jsonApiClient";
-import { safeRedirectTarget } from "@/router/authGuard";
 import logo from "@/assets/app-ui/img/BlatyRPG-logo.png";
 import background from "@/assets/app-ui/img/bg2.jpg";
 
@@ -19,17 +17,15 @@ const sortCampaigns = (campaigns) =>
 
 export default {
   name: "DashboardHomeView",
-  components: { CampaignCard, CampaignCreateForm, DashboardLoginPanel },
+  components: { CampaignCard, CampaignCreateForm },
   data: () => ({
     logo,
     session: null,
     campaigns: [],
+    games: [],
     canCreateCampaign: false,
-    isRestoring: true,
     isLoading: false,
-    isLoggingIn: false,
     isCreating: false,
-    loginError: "",
     dashboardError: "",
     creationError: "",
     unsubscribeAuth: null,
@@ -67,8 +63,7 @@ export default {
       { immediate: false },
     );
     this.session = authSession.read();
-    if (this.session) await this.loadDashboard();
-    this.isRestoring = false;
+    await this.loadDashboard();
   },
   beforeUnmount() {
     this.unsubscribeAuth?.();
@@ -85,56 +80,23 @@ export default {
       if (error?.status === 429) return this.$t("dashboard.errors.rateLimited");
       return this.$t(fallbackKey);
     },
-    async login(credentials) {
-      this.isLoggingIn = true;
-      this.loginError = "";
-      try {
-        const result = await authApiClient.login(credentials);
-        if (!result.token || !result.user)
-          throw new TypeError("invalid_login_response");
-        this.session = authSession.save(result);
-      } catch (error) {
-        authSession.clear();
-        this.session = null;
-        this.loginError = this.errorMessage(error, "dashboard.errors.login");
-        this.isLoggingIn = false;
-        return;
-      }
-
-      try {
-        const redirect = safeRedirectTarget(
-          this.$router,
-          this.$route?.query?.redirect,
-        );
-        if (redirect) {
-          await this.$router.replace(redirect);
-          return;
-        }
-      } catch (error) {
-        this.dashboardError = this.errorMessage(
-          error,
-          "dashboard.errors.navigation",
-        );
-      } finally {
-        this.isLoggingIn = false;
-      }
-      await this.loadDashboard();
-    },
     async loadDashboard() {
       this.isLoading = true;
       this.dashboardError = "";
       try {
-        const [user, directory] = await Promise.all([
+        const [user, directory, games] = await Promise.all([
           authApiClient.me(),
           campaignApiClient.list(),
+          gameCatalogApiClient.listGames(),
         ]);
         this.session = authSession.updateUser(user);
         this.campaigns = sortCampaigns(directory.campaigns);
         this.canCreateCampaign = directory.capabilities.canCreate;
+        this.games = games;
       } catch (error) {
-        if (isJsonApiAuthorizationError(error) || error?.status === 404) {
-          this.logout();
-          this.loginError = this.$t("dashboard.errors.sessionExpired");
+        if ([401, 403].includes(error?.status)) {
+          await this.logout();
+          return;
         } else {
           this.dashboardError = this.errorMessage(
             error,
@@ -154,8 +116,7 @@ export default {
         this.$refs.createForm?.reset();
       } catch (error) {
         if (error?.status === 401) {
-          this.logout();
-          this.loginError = this.$t("dashboard.errors.sessionExpired");
+          await this.logout();
           return;
         }
         this.creationError = this.errorMessage(
@@ -177,8 +138,8 @@ export default {
         this.campaigns = [];
         this.canCreateCampaign = false;
         this.dashboardError = "";
-        if (this.$route.name !== "home") {
-          await this.$router.replace({ name: "home" });
+        if (this.$route.name !== "landing") {
+          await this.$router.replace({ name: "landing" });
         }
       }
     },

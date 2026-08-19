@@ -21,7 +21,7 @@ export const installAuthLifecycle = (options = {}) => {
     const route = currentRoute(router);
     if (isProtectedRoute(route)) {
       await router.replace({
-        name: "home",
+        name: "login",
         query: { redirect: route.fullPath },
       });
     }

@@ -53,6 +53,12 @@ const trimmedSettings = (draft = {}) => {
       .trim()
       .toLowerCase();
   }
+  if (draft.systemId !== undefined) {
+    body.systemId = positiveId(draft.systemId, "systemId");
+  }
+  if (draft.universeId !== undefined) {
+    body.universeId = positiveId(draft.universeId, "universeId");
+  }
   if (draft.settings !== undefined) body.settings = draft.settings;
   return body;
 };
@@ -79,13 +85,19 @@ export const createCampaignApiClient = (client = jsonApiClient) => ({
   },
 
   async create(draft) {
+    const body = {
+      name: String(draft.name || "").trim(),
+      description: String(draft.description || "").trim(),
+    };
+    if (draft.systemId && draft.universeId) {
+      body.systemId = positiveId(draft.systemId, "systemId");
+      body.universeId = positiveId(draft.universeId, "universeId");
+    } else {
+      body.systemType = String(draft.systemType || "").trim();
+    }
     const payload = await client.request("/campaigns", {
       method: "POST",
-      body: {
-        name: String(draft.name || "").trim(),
-        description: String(draft.description || "").trim(),
-        systemType: String(draft.systemType || "").trim(),
-      },
+      body,
     });
     return campaignFrom(payload);
   },

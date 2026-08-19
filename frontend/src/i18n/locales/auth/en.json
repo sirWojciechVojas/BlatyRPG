@@ -5,6 +5,7 @@
       "account": "Account options",
       "resetPassword": "Forgot password",
       "signIn": "Back to sign in",
+      "backToLanding": "Back to the landing page",
       "saving": "Saving…",
       "sending": "Sending…",
       "sendReset": "Send instructions",
@@ -50,7 +51,10 @@
       "passwordMismatch": "The passwords do not match.",
       "resetToken": "The password reset link is invalid.",
       "register": "The account could not be created.",
-      "reset": "The password could not be reset."
+      "reset": "The password could not be reset.",
+      "login": "Sign-in failed.",
+      "sessionStorage": "The session cannot be stored safely in this browser.",
+      "navigation": "You signed in, but the selected view could not be opened."
     }
   }
 }

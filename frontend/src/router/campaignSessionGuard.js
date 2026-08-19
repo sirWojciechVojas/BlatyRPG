@@ -79,7 +79,7 @@ export const createCampaignSessionGuard = (store) => async (to, from) => {
   } catch (error) {
     await leaveCampaignSession(store);
     if (error?.status === 401) {
-      return { name: "home", query: { redirect: to.fullPath } };
+      return { name: "login", query: { redirect: to.fullPath } };
     }
     return { name: "forbidden" };
   }

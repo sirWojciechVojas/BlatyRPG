@@ -1,0 +1,14 @@
+.auth-entry-page {
+  min-height: 100dvh;
+}
+
+.auth-entry-main {
+  display: grid;
+  min-height: calc(100dvh - 72px);
+  place-items: center;
+  padding-block: 24px;
+}
+
+.auth-entry-main .login-panel {
+  margin: 0;
+}

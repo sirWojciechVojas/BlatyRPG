@@ -10,18 +10,8 @@
       <h1>{{ $t("landing.hero.title") }}</h1>
       <p class="lead">{{ $t("landing.hero.lead") }}</p>
       <div class="hero-actions">
-        <button type="button" class="cta-btn" @click="$emit('scroll', 'cta')">
+        <router-link class="cta-btn" :to="{ name: 'register' }">
           {{ $t("landing.hero.primaryCta") }}
-        </button>
-        <button
-          type="button"
-          class="cta-btn shop-btn"
-          @click="$emit('open-shop-trade')"
-        >
-          Sklep / Handel
-        </button>
-        <router-link class="ghost-btn" to="/campaigns/1/shop">
-          {{ $t("shop.workspace.title") }}
         </router-link>
         <button
           type="button"
@@ -33,25 +23,25 @@
       </div>
       <div class="hero-chips">
         <span>{{ $t("landing.hero.chips.maps") }}</span>
-        <span>{{ $t("landing.hero.chips.fog") }}</span>
+        <span>{{ $t("landing.hero.chips.characters") }}</span>
         <span>{{ $t("landing.hero.chips.narration") }}</span>
         <span>{{ $t("landing.hero.chips.live") }}</span>
       </div>
       <div class="hero-metrics">
         <div class="metric">
-          <span class="metric-value">120+</span>
+          <span class="metric-value">VTT</span>
           <span class="metric-label">{{
             $t("landing.hero.metrics.scenes")
           }}</span>
         </div>
         <div class="metric">
-          <span class="metric-value">48 ms</span>
+          <span class="metric-value">WS</span>
           <span class="metric-label">{{
             $t("landing.hero.metrics.latency")
           }}</span>
         </div>
         <div class="metric">
-          <span class="metric-value">24/7</span>
+          <span class="metric-value">3D</span>
           <span class="metric-label">{{
             $t("landing.hero.metrics.hosting")
           }}</span>
@@ -59,7 +49,7 @@
       </div>
     </div>
 
-    <div class="hero-media">
+    <div class="hero-media" aria-hidden="true">
       <div class="screen-mock">
         <div class="screen-top">
           <div class="screen-dots"><span></span><span></span><span></span></div>
@@ -91,7 +81,6 @@
               <div class="log-line"></div>
               <div class="log-line"></div>
               <div class="log-line wide"></div>
-              <div class="log-line"></div>
             </div>
           </div>
         </div>
@@ -118,5 +107,5 @@ defineProps({
   },
 });
 
-defineEmits(["open-shop-trade", "scroll"]);
+defineEmits(["scroll"]);
 </script>

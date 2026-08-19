@@ -1,0 +1,264 @@
+.home-page .hero {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+  align-items: center;
+  gap: clamp(28px, 5vw, 72px);
+  min-height: min(720px, calc(100vh - 56px));
+  padding: clamp(44px, 7vw, 88px) clamp(20px, 7vw, 110px);
+  border-bottom: 1px solid var(--landing-border);
+}
+
+.home-page .hero-content {
+  max-width: 680px;
+}
+
+.home-page .eyebrow {
+  margin: 0 0 8px;
+  color: var(--landing-accent);
+  font-size: 0.69rem;
+  font-weight: 760;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.home-page .hero-logo {
+  width: min(230px, 55vw);
+  max-height: 76px;
+  margin-bottom: 14px;
+  object-fit: contain;
+  object-position: left center;
+}
+
+.home-page h1,
+.home-page h2,
+.home-page h3,
+.home-page p {
+  margin-top: 0;
+}
+
+.home-page h1 {
+  max-width: 760px;
+  margin-bottom: 14px;
+  font-size: clamp(2.1rem, 4vw, 4rem);
+  line-height: 0.98;
+  letter-spacing: -0.045em;
+}
+
+.home-page .lead,
+.home-page .section-lead {
+  color: var(--landing-muted);
+  line-height: 1.55;
+}
+
+.home-page .lead {
+  max-width: 620px;
+  margin-bottom: 20px;
+  font-size: clamp(0.98rem, 1.4vw, 1.15rem);
+}
+
+.home-page .hero-chips,
+.home-page .feature-meta,
+.home-page .callout-list,
+.home-page .module-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.home-page .hero-chips {
+  margin: 18px 0;
+}
+
+.home-page .hero-chips span,
+.home-page .feature-meta span,
+.home-page .callout-list span,
+.home-page .module-tags span {
+  padding: 4px 7px;
+  border: 1px solid var(--landing-border);
+  border-radius: 999px;
+  color: var(--landing-muted);
+  font-size: 0.69rem;
+}
+
+.home-page .hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  max-width: 470px;
+  border: 1px solid var(--landing-border);
+  border-radius: 8px;
+}
+
+.home-page .metric {
+  display: grid;
+  gap: 2px;
+  padding: 10px;
+}
+
+.home-page .metric + .metric {
+  border-left: 1px solid var(--landing-border);
+}
+
+.home-page .metric-value {
+  font-weight: 780;
+}
+
+.home-page .metric-label {
+  color: var(--landing-muted);
+  font-size: 0.68rem;
+}
+
+.home-page .hero-media {
+  position: relative;
+}
+
+.home-page .screen-mock {
+  overflow: hidden;
+  min-height: 390px;
+  border: 1px solid rgba(211, 168, 74, 0.35);
+  border-radius: 12px;
+  background: #121416;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.48);
+}
+
+.home-page .screen-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 38px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--landing-border);
+}
+
+.home-page .screen-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.home-page .screen-dots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #595b5d;
+}
+
+.home-page .screen-title {
+  flex: 1;
+  color: var(--landing-muted);
+  font-size: 0.73rem;
+}
+
+.home-page .screen-badge {
+  color: #8ad7a2;
+  font-size: 0.64rem;
+}
+
+.home-page .screen-body {
+  display: grid;
+  grid-template-columns: 1fr 150px;
+  min-height: 352px;
+}
+
+.home-page .map-preview {
+  position: relative;
+  background:
+    linear-gradient(rgba(0, 0, 0, 0.42), rgba(0, 0, 0, 0.42)),
+    var(--landing-map) center / cover;
+}
+
+.home-page .map-token {
+  position: absolute;
+  width: 27px;
+  height: 27px;
+  border: 2px solid #f0cc78;
+  border-radius: 50%;
+  background: #27343c;
+}
+
+.home-page .token-one {
+  top: 30%;
+  left: 25%;
+}
+.home-page .token-two {
+  top: 52%;
+  left: 58%;
+}
+.home-page .token-three {
+  top: 67%;
+  left: 38%;
+}
+
+.home-page .side-panels {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 8px;
+  border-left: 1px solid var(--landing-border);
+}
+
+.home-page .side-card {
+  min-height: 92px;
+  padding: 9px;
+  border: 1px solid var(--landing-border);
+  border-radius: 7px;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.home-page .side-title {
+  margin-bottom: 8px;
+  color: var(--landing-muted);
+  font-size: 0.68rem;
+}
+
+.home-page .avatar-row {
+  display: flex;
+  gap: 4px;
+}
+
+.home-page .avatar {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #34383c;
+}
+
+.home-page .log-line,
+.home-page .side-meter {
+  height: 5px;
+  margin-top: 7px;
+  border-radius: 4px;
+  background: #303438;
+}
+
+.home-page .log-line.wide {
+  width: 85%;
+}
+
+.home-page .floating-card {
+  position: absolute;
+  max-width: 190px;
+  padding: 10px;
+  border: 1px solid var(--landing-border);
+  border-radius: 8px;
+  background: rgba(15, 16, 17, 0.96);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+}
+
+.home-page .floating-card p {
+  margin: 4px 0 0;
+  color: var(--landing-muted);
+  font-size: 0.72rem;
+}
+
+.home-page .floating-title {
+  font-size: 0.78rem;
+  font-weight: 720;
+}
+
+.home-page .card-one {
+  right: -20px;
+  bottom: 34px;
+}
+.home-page .card-two {
+  top: 60px;
+  left: -28px;
+}

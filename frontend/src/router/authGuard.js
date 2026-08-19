@@ -1,13 +1,22 @@
 import { authSession } from "@/lib/auth/authSession";
+import { defaultAuthenticatedRoute } from "@/lib/auth/authNavigation";
 
 export const createAuthGuard =
   (session = authSession, campaignAuthorization = null) =>
   async (to) => {
-    if (!to.matched.some((record) => record.meta.requiresAuth)) return true;
     const current = session.read?.();
-    if (!current || !session.isAuthenticated()) {
+    const authenticated = Boolean(current && session.isAuthenticated());
+    const redirectsAuthenticated = to.matched.some(
+      (record) => record.meta.redirectAuthenticated,
+    );
+    if (redirectsAuthenticated && authenticated) {
+      return defaultAuthenticatedRoute(current);
+    }
+
+    if (!to.matched.some((record) => record.meta.requiresAuth)) return true;
+    if (!authenticated) {
       return {
-        name: "home",
+        name: "login",
         query: { redirect: to.fullPath },
       };
     }
@@ -30,17 +39,10 @@ export const createAuthGuard =
     } catch (error) {
       if (error?.status === 401) {
         session.clear?.("unauthorized");
-        return { name: "home", query: { redirect: to.fullPath } };
+        return { name: "login", query: { redirect: to.fullPath } };
       }
       return { name: "forbidden" };
     }
   };
 
-export const safeRedirectTarget = (router, value) => {
-  if (typeof value !== "string" || !value.startsWith("/")) return null;
-  if (value.startsWith("//") || value.includes("\\")) return null;
-  const resolved = router.resolve(value);
-  if (!resolved.matched.length || resolved.name === "not-found") return null;
-  if (resolved.name === "home") return null;
-  return resolved.fullPath;
-};
+export { safeRedirectTarget } from "@/lib/auth/authNavigation";

@@ -35,7 +35,7 @@ describe("authLifecycle", () => {
       "campaignContext/leaveCampaign",
     );
     expect(router.replace).toHaveBeenCalledWith({
-      name: "home",
+      name: "login",
       query: { redirect: "/campaigns/7/scenes" },
     });
     expect(onSession).toHaveBeenLastCalledWith(null, "expired");

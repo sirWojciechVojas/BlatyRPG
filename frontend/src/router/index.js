@@ -1,5 +1,5 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import DashboardHomeView from "../views/DashboardHomeView.vue";
+import HomeView from "../views/HomeView.vue";
 import store from "../store";
 import { ensureShopStoreModuleForRoute } from "../store/modules/loadShopModule";
 import { ensureVttStoreModuleForRoute } from "../store/modules/loadVttModule";
@@ -12,8 +12,30 @@ import {
 const routes = [
   {
     path: "/",
+    name: "landing",
+    meta: { redirectAuthenticated: true },
+    component: HomeView,
+  },
+  {
+    path: "/home",
     name: "home",
-    component: DashboardHomeView,
+    redirect: { name: "tables" },
+  },
+  {
+    path: "/login",
+    name: "login",
+    meta: { title: "Sign in", redirectAuthenticated: true },
+    component: () =>
+      import(/* webpackChunkName: "authentication" */ "../views/LoginView.vue"),
+  },
+  {
+    path: "/tables",
+    name: "tables",
+    meta: { title: "Tables", requiresAuth: true },
+    component: () =>
+      import(
+        /* webpackChunkName: "campaign-dashboard" */ "../views/DashboardHomeView.vue"
+      ),
   },
   {
     path: "/about",

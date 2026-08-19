@@ -49,7 +49,7 @@
           {{ busy ? $t("auth.actions.saving") : $t("auth.actions.register") }}
         </button>
       </form>
-      <router-link :to="{ name: 'home' }">{{
+      <router-link :to="{ name: 'login' }">{{
         $t("auth.actions.signIn")
       }}</router-link>
     </section>
@@ -59,6 +59,7 @@
 <script>
 import { authApiClient } from "@/lib/auth/authApiClient";
 import { authErrorKey } from "@/lib/auth/authErrors";
+import { defaultAuthenticatedRoute } from "@/lib/auth/authNavigation";
 import { authSession } from "@/lib/auth/authSession";
 
 export default {
@@ -79,12 +80,13 @@ export default {
       this.busy = true;
       try {
         const result = await authApiClient.register(this.form);
-        if (result.token) authSession.save(result);
+        const session = result.token ? authSession.save(result) : null;
         this.success = true;
-        await this.$router.replace({
-          name: "home",
-          query: { registered: "1" },
-        });
+        await this.$router.replace(
+          session
+            ? defaultAuthenticatedRoute(session)
+            : { name: "login", query: { registered: "1" } },
+        );
       } catch (error) {
         this.error = this.$t(authErrorKey(error, "auth.errors.register"));
       } finally {

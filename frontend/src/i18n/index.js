@@ -6,6 +6,7 @@ import plAdmin from "./locales/admin/pl.json";
 import plCharacters from "./locales/characters/pl.json";
 import plAuth from "./locales/auth/pl.json";
 import plCampaign from "./locales/campaign/pl.json";
+import plLanding from "./locales/landing/pl.json";
 
 const DEFAULT_LOCALE = "pl";
 const LOCALE_STORAGE_KEY = "blatyrpg-locale";
@@ -29,6 +30,7 @@ const i18n = createI18n({
       plCharacters,
       plAuth,
       plCampaign,
+      plLanding,
     ),
   },
   globalInjection: true,
@@ -64,6 +66,7 @@ export async function setLocale(locale) {
       characterMessages,
       authMessages,
       campaignMessages,
+      landingMessages,
     ] = await Promise.all([
       import(
         /* webpackChunkName: "locale-[request]" */ `./locales/${target}.json`
@@ -86,6 +89,9 @@ export async function setLocale(locale) {
       import(
         /* webpackChunkName: "locale-campaign-[request]" */ `./locales/campaign/${target}.json`
       ),
+      import(
+        /* webpackChunkName: "locale-landing-[request]" */ `./locales/landing/${target}.json`
+      ),
     ]);
     i18n.global.setLocaleMessage(
       target,
@@ -97,6 +103,7 @@ export async function setLocale(locale) {
         characterMessages.default || characterMessages,
         authMessages.default || authMessages,
         campaignMessages.default || campaignMessages,
+        landingMessages.default || landingMessages,
       ),
     );
     loadedLocales.add(target);

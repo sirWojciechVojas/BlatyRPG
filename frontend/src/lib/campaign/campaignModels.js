@@ -31,6 +31,12 @@ export const normalizeCampaign = (campaign = {}) => ({
   description: text(campaign.description),
   bannerUrl: campaign.bannerUrl ?? campaign.banner_url ?? null,
   systemType: text(campaign.systemType ?? campaign.system_type),
+  systemId: idOf(
+    campaign.systemId ?? campaign.system_id ?? campaign.rpg_system_id,
+  ),
+  universeId: idOf(
+    campaign.universeId ?? campaign.universe_id ?? campaign.rpg_universe_id,
+  ),
   status: text(
     campaign.status ||
       ((campaign.isActive ?? campaign.is_active ?? true) ? "active" : "paused"),

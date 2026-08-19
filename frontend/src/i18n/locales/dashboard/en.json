@@ -1,10 +1,16 @@
 {
   "dashboard": {
     "brand": { "title": "Blaty RPG", "subtitle": "Virtual tabletop" },
-    "actions": { "dice": "3D Dice", "openShop": "Shop", "logout": "Log out", "refresh": "Refresh", "retry": "Try again" },
+    "actions": {
+      "dice": "3D Dice",
+      "openShop": "Shop",
+      "logout": "Log out",
+      "refresh": "Refresh",
+      "retry": "Try again"
+    },
     "login": {
       "eyebrow": "Secure access",
-      "title": "Sign in to your table",
+      "title": "Sign in to Blaty RPG",
       "description": "Use your username or email address to open your campaigns.",
       "identifier": "Username or email",
       "password": "Password",
@@ -27,18 +33,34 @@
       "openChat": "Chat",
       "openShop": "Open shop"
     },
-    "roles": { "admin": "Administrator", "gm": "Game Master", "assistant": "Assistant GM", "player": "Player", "observer": "Observer" },
+    "roles": {
+      "admin": "Administrator",
+      "gm": "Game Master",
+      "assistant": "Assistant GM",
+      "player": "Player",
+      "observer": "Observer"
+    },
     "create": {
       "eyebrow": "New world",
       "title": "Create a campaign",
       "name": "Campaign name",
-      "system": "System identifier",
+      "system": "RPG system",
+      "world": "World / setting",
+      "selectSystem": "Choose a system",
+      "selectWorld": "Choose a world",
+      "catalogEmpty": "No active systems and worlds are available. An administrator must update the catalog.",
       "description": "Description",
       "submit": "Create campaign",
       "submitting": "Creating…"
     },
-    "empty": { "title": "No campaigns", "description": "You do not have access to any campaigns yet." },
-    "loading": { "session": "Checking session…", "campaigns": "Loading campaigns…" },
+    "empty": {
+      "title": "No campaigns",
+      "description": "You do not have access to any campaigns yet."
+    },
+    "loading": {
+      "session": "Checking session…",
+      "campaigns": "Loading campaigns…"
+    },
     "errors": {
       "network": "Could not connect to the server.",
       "invalidCredentials": "Invalid username or password.",

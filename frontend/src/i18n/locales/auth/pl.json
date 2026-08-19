@@ -5,6 +5,7 @@
       "account": "Opcje konta",
       "resetPassword": "Nie pamiętam hasła",
       "signIn": "Wróć do logowania",
+      "backToLanding": "Wróć na stronę główną",
       "saving": "Zapisywanie…",
       "sending": "Wysyłanie…",
       "sendReset": "Wyślij instrukcję",
@@ -50,7 +51,10 @@
       "passwordMismatch": "Hasła nie są takie same.",
       "resetToken": "Link resetujący jest nieprawidłowy.",
       "register": "Nie udało się utworzyć konta.",
-      "reset": "Nie udało się zresetować hasła."
+      "reset": "Nie udało się zresetować hasła.",
+      "login": "Logowanie nie powiodło się.",
+      "sessionStorage": "Nie można bezpiecznie zapisać sesji w tej przeglądarce.",
+      "navigation": "Zalogowano poprawnie, ale nie udało się otworzyć wybranego widoku."
     }
   }
 }

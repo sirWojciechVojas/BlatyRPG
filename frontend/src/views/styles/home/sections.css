@@ -1,0 +1,221 @@
+.home-page .section {
+  padding: clamp(42px, 6vw, 72px) clamp(18px, 6vw, 90px);
+  border-bottom: 1px solid var(--landing-border);
+}
+
+.home-page .section-inner {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.home-page .section-head {
+  max-width: 680px;
+  margin-bottom: 24px;
+}
+
+.home-page .section-head h2,
+.home-page .cta-panel h2 {
+  margin-bottom: 8px;
+  font-size: clamp(1.65rem, 3vw, 2.7rem);
+  letter-spacing: -0.035em;
+}
+
+.home-page .section-lead {
+  margin-bottom: 0;
+  font-size: 0.95rem;
+}
+
+.home-page .usp-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--landing-border);
+  background: rgba(255, 255, 255, 0.018);
+}
+
+.home-page .usp-card {
+  display: grid;
+  gap: 4px;
+  padding: 18px clamp(14px, 3vw, 38px);
+}
+
+.home-page .usp-card + .usp-card {
+  border-left: 1px solid var(--landing-border);
+}
+
+.home-page .usp-title,
+.home-page .strip-title,
+.home-page .shot-title {
+  font-size: 0.84rem;
+  font-weight: 740;
+}
+
+.home-page .usp-desc,
+.home-page .strip-card p,
+.home-page .shot-sub {
+  margin: 4px 0 0;
+  color: var(--landing-muted);
+  font-size: 0.74rem;
+  line-height: 1.4;
+}
+
+.home-page .feature-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.home-page .feature-card,
+.home-page .callout-card,
+.home-page .shot-card,
+.home-page .strip-card,
+.home-page .module-card,
+.home-page .stat-card,
+.home-page .plan-card {
+  border: 1px solid var(--landing-border);
+  border-radius: 9px;
+  background: var(--landing-panel);
+}
+
+.home-page .feature-card {
+  display: grid;
+  grid-template-columns: 30px 1fr;
+  align-content: start;
+  gap: 3px 9px;
+  min-height: 124px;
+  padding: 13px;
+}
+
+.home-page .feature-icon {
+  grid-row: span 2;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid rgba(211, 168, 74, 0.35);
+  border-radius: 7px;
+  color: var(--landing-accent);
+  font-size: 1rem;
+}
+
+.home-page .feature-card h3,
+.home-page .callout-card h3,
+.home-page .module-card h3,
+.home-page .plan-card h3 {
+  margin-bottom: 3px;
+  font-size: 0.9rem;
+}
+
+.home-page .feature-card p,
+.home-page .callout-card p,
+.home-page .module-card p,
+.home-page .plan-card > p {
+  grid-column: 2;
+  margin: 0;
+  color: var(--landing-muted);
+  font-size: 0.73rem;
+  line-height: 1.42;
+}
+
+.home-page .feature-callout {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.home-page .callout-card {
+  padding: 14px;
+}
+
+.home-page .callout-card p {
+  grid-column: auto;
+}
+
+.home-page .gallery-section {
+  background: rgba(0, 0, 0, 0.18);
+}
+
+.home-page .gallery-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr 1fr;
+  gap: 9px;
+}
+
+.home-page .shot-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 270px;
+  padding: 14px;
+}
+
+.home-page .shot-image {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0.23;
+}
+
+.home-page .shot-card::after {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  content: "";
+  background: linear-gradient(transparent 10%, rgba(12, 13, 14, 0.92));
+}
+
+.home-page .shot-title,
+.home-page .shot-sub,
+.home-page .shot-ui {
+  position: relative;
+  z-index: 2;
+}
+
+.home-page .shot-ui {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  left: 14px;
+  display: grid;
+  gap: 6px;
+  padding: 9px;
+  border: 1px solid var(--landing-border);
+  border-radius: 6px;
+  background: rgba(8, 9, 10, 0.75);
+}
+
+.home-page .shot-bar,
+.home-page .shot-line,
+.home-page .shot-block {
+  width: 74%;
+  height: 5px;
+  border-radius: 5px;
+  background: #55595c;
+}
+
+.home-page .shot-line.wide {
+  width: 94%;
+}
+.home-page .shot-block.short {
+  width: 42%;
+}
+
+.home-page .shot-chip {
+  width: 30%;
+  height: 8px;
+  border-radius: 5px;
+  background: #55595c;
+}
+
+.home-page .gallery-strip {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.home-page .strip-card {
+  padding: 13px;
+}
