@@ -1,0 +1,52 @@
+{
+  "dashboard": {
+    "brand": { "title": "Blaty RPG", "subtitle": "Wirtualny stół do gry" },
+    "actions": { "dice": "Kości 3D", "openShop": "Sklep", "logout": "Wyloguj", "refresh": "Odśwież", "retry": "Spróbuj ponownie" },
+    "login": {
+      "eyebrow": "Bezpieczny dostęp",
+      "title": "Zaloguj się do stołu",
+      "description": "Użyj loginu lub adresu e-mail, aby otworzyć swoje kampanie.",
+      "identifier": "Login lub e-mail",
+      "password": "Hasło",
+      "submit": "Zaloguj się",
+      "submitting": "Logowanie…"
+    },
+    "home": {
+      "eyebrow": "Panel kampanii",
+      "title": "Witaj, {name}",
+      "description": "Wybierz kampanię i przejdź bezpośrednio do scen albo sklepu."
+    },
+    "campaign": {
+      "eyebrow": "Twoje światy",
+      "title": "Kampanie",
+      "active": "Aktywna",
+      "inactive": "Nieaktywna",
+      "noDescription": "Brak opisu kampanii.",
+      "openScenes": "Otwórz sceny",
+      "openShop": "Otwórz sklep"
+    },
+    "roles": { "admin": "Administrator", "gm": "Mistrz Gry", "assistant": "Asystent MG", "player": "Gracz", "observer": "Obserwator" },
+    "create": {
+      "eyebrow": "Nowy świat",
+      "title": "Utwórz kampanię",
+      "name": "Nazwa kampanii",
+      "system": "Identyfikator systemu",
+      "description": "Opis",
+      "submit": "Utwórz kampanię",
+      "submitting": "Tworzenie…"
+    },
+    "empty": { "title": "Brak kampanii", "description": "Nie masz jeszcze dostępu do żadnej kampanii." },
+    "loading": { "session": "Sprawdzanie sesji…", "campaigns": "Wczytywanie kampanii…" },
+    "errors": {
+      "network": "Nie można połączyć się z serwerem.",
+      "invalidCredentials": "Nieprawidłowy login lub hasło.",
+      "forbidden": "Nie masz uprawnień do tej operacji.",
+      "validation": "Popraw dane formularza.",
+      "login": "Logowanie nie powiodło się.",
+      "sessionExpired": "Sesja wygasła. Zaloguj się ponownie.",
+      "campaigns": "Nie udało się wczytać kampanii.",
+      "create": "Nie udało się utworzyć kampanii."
+    },
+    "footer": "Blaty RPG — centrum Twoich kampanii"
+  }
+}

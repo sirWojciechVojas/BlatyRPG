@@ -1,4 +1,4 @@
-const TOKEN_KEYS = [
+export const ACCESS_TOKEN_KEYS = Object.freeze([
   "access_token",
   "blatyrpg.access_token",
   "blatyrpg.jwt",
@@ -6,7 +6,7 @@ const TOKEN_KEYS = [
   "auth_token",
   "token",
   "jwt",
-];
+]);
 
 const errorCode = (payload, fallback) => {
   for (const candidate of [
@@ -41,7 +41,7 @@ export const resolveAccessToken = (storage) => {
   if (!source) return "";
 
   try {
-    for (const key of TOKEN_KEYS) {
+    for (const key of ACCESS_TOKEN_KEYS) {
       const token = String(source.getItem(key) || "").trim();
       if (token) return token;
     }

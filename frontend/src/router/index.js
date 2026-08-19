@@ -1,14 +1,15 @@
 import { createRouter, createWebHashHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
+import DashboardHomeView from "../views/DashboardHomeView.vue";
 import store from "../store";
 import { ensureShopStoreModuleForRoute } from "../store/modules/loadShopModule";
 import { ensureVttStoreModuleForRoute } from "../store/modules/loadVttModule";
+import { createAuthGuard } from "./authGuard";
 
 const routes = [
   {
     path: "/",
     name: "home",
-    component: HomeView,
+    component: DashboardHomeView,
   },
   {
     path: "/about",
@@ -29,7 +30,7 @@ const routes = [
   {
     path: "/campaigns/:campaignId/shop",
     name: "shop-gm",
-    meta: { title: "Shop — GM", requiresGm: true },
+    meta: { title: "Shop — GM", requiresAuth: true, requiresGm: true },
     beforeEnter: () => ensureShopStoreModuleForRoute(store),
     component: () =>
       import(/* webpackChunkName: "shop-gm" */ "../views/ShopGmWorkspace.vue"),
@@ -37,7 +38,7 @@ const routes = [
   {
     path: "/campaigns/:campaignId/scenes",
     name: "scene-workspace",
-    meta: { title: "Scenes" },
+    meta: { title: "Scenes", requiresAuth: true },
     beforeEnter: () => ensureVttStoreModuleForRoute(store),
     component: () =>
       import(
@@ -64,5 +65,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
 });
+
+router.beforeEach(createAuthGuard());
 
 export default router;

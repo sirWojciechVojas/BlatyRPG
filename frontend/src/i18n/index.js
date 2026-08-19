@@ -1,21 +1,22 @@
 import { createI18n } from "vue-i18n";
 import pl from "./locales/pl.json";
 import plVtt from "./locales/vtt/pl.json";
+import plDashboard from "./locales/dashboard/pl.json";
 
 const DEFAULT_LOCALE = "pl";
 const LOCALE_STORAGE_KEY = "blatyrpg-locale";
 const SUPPORTED_LOCALES = ["pl", "en"];
 
-const mergeLocaleMessages = (base, feature) => ({
+const mergeLocaleMessages = (base, ...features) => ({
   ...base,
-  ...feature,
+  ...Object.assign({}, ...features),
 });
 
 const i18n = createI18n({
   legacy: true,
   locale: DEFAULT_LOCALE,
   fallbackLocale: DEFAULT_LOCALE,
-  messages: { pl: mergeLocaleMessages(pl, plVtt) },
+  messages: { pl: mergeLocaleMessages(pl, plVtt, plDashboard) },
   globalInjection: true,
 });
 
@@ -41,12 +42,15 @@ export async function setLocale(locale) {
   const target = SUPPORTED_LOCALES.includes(locale) ? locale : DEFAULT_LOCALE;
 
   if (!loadedLocales.has(target)) {
-    const [messages, vttMessages] = await Promise.all([
+    const [messages, vttMessages, dashboardMessages] = await Promise.all([
       import(
         /* webpackChunkName: "locale-[request]" */ `./locales/${target}.json`
       ),
       import(
         /* webpackChunkName: "locale-vtt-[request]" */ `./locales/vtt/${target}.json`
+      ),
+      import(
+        /* webpackChunkName: "locale-dashboard-[request]" */ `./locales/dashboard/${target}.json`
       ),
     ]);
     i18n.global.setLocaleMessage(
@@ -54,6 +58,7 @@ export async function setLocale(locale) {
       mergeLocaleMessages(
         messages.default || messages,
         vttMessages.default || vttMessages,
+        dashboardMessages.default || dashboardMessages,
       ),
     );
     loadedLocales.add(target);

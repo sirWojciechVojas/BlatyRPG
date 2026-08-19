@@ -26,7 +26,7 @@
     </label>
   </nav>
   <router-view />
-  <ShopAccessModeSelector />
+  <ShopAccessModeSelector v-if="$route.name === 'shop-gm'" />
 </template>
 
 <script>
