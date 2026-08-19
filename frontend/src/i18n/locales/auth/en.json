@@ -1,0 +1,56 @@
+{
+  "auth": {
+    "actions": {
+      "register": "Create account",
+      "account": "Account options",
+      "resetPassword": "Forgot password",
+      "signIn": "Back to sign in",
+      "saving": "Saving…",
+      "sending": "Sending…",
+      "sendReset": "Send instructions",
+      "setPassword": "Set new password",
+      "saveProfile": "Save profile",
+      "changePassword": "Change password"
+    },
+    "fields": {
+      "username": "Username",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "avatar": "Avatar URL"
+    },
+    "register": {
+      "title": "Create an account",
+      "success": "Your account was created. You can now sign in."
+    },
+    "resetRequest": {
+      "title": "Reset password",
+      "description": "Enter the account email. The response will not reveal whether it exists.",
+      "sent": "If the account exists, instructions have been sent."
+    },
+    "resetConfirm": { "title": "Set a new password" },
+    "profile": {
+      "title": "User profile",
+      "saved": "Your profile has been saved."
+    },
+    "password": {
+      "title": "Change password",
+      "changed": "Your password and session were securely renewed."
+    },
+    "errors": {
+      "generic": "The operation failed.",
+      "network": "The server cannot be reached.",
+      "invalidCredentials": "The credentials are invalid.",
+      "forbidden": "You are not allowed to perform this action.",
+      "conflict": "The supplied value is already in use.",
+      "validation": "Correct the form data.",
+      "rateLimited": "Too many attempts. Wait and try again.",
+      "passwordMismatch": "The passwords do not match.",
+      "resetToken": "The password reset link is invalid.",
+      "register": "The account could not be created.",
+      "reset": "The password could not be reset."
+    }
+  }
+}

@@ -4,7 +4,10 @@ const normalizeUser = (user = {}) => ({
   id: Number(user.id) || null,
   username: String(user.username || user.login || ""),
   email: String(user.email || ""),
-  role: String(user.role || "user").toLowerCase(),
+  role:
+    String(user.role || "player").toLowerCase() === "user"
+      ? "player"
+      : String(user.role || "player").toLowerCase(),
   avatarUrl: user.avatarUrl || user.avatar_url || null,
   campaignCount: Number(user.campaignCount ?? user.campaign_count ?? 0),
 });

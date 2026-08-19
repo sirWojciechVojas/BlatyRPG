@@ -23,7 +23,6 @@
           name="password"
           type="password"
           autocomplete="current-password"
-          minlength="5"
           required
           :disabled="busy"
         />
@@ -35,6 +34,14 @@
         }}
       </button>
     </form>
+    <nav class="login-links" :aria-label="$t('auth.actions.account')">
+      <router-link :to="{ name: 'register' }">
+        {{ $t("auth.actions.register") }}
+      </router-link>
+      <router-link :to="{ name: 'password-reset-request' }">
+        {{ $t("auth.actions.resetPassword") }}
+      </router-link>
+    </nav>
   </section>
 </template>
 

@@ -69,6 +69,7 @@ export default {
       localization: {},
       locales: availableLocales,
       session: authSession.read(),
+      unsubscribeAuth: null,
       // Nazwa aplikacji (fallback do tytułu zakładki)
       appTitle:
         typeof process !== "undefined" &&
@@ -77,6 +78,14 @@ export default {
           ? process.env.VUE_APP_TITLE
           : "BlatyRPG",
     };
+  },
+  created() {
+    this.unsubscribeAuth = authSession.subscribe((session) => {
+      this.session = session;
+    });
+  },
+  beforeUnmount() {
+    this.unsubscribeAuth?.();
   },
   watch: {
     // Ustawia tytuł zakładki na podstawie meta.title w routach

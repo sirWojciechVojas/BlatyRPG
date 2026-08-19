@@ -1,0 +1,83 @@
+{
+  "campaignLobby": {
+    "loading": "Loading campaign…",
+    "settings": { "title": "Campaign settings" },
+    "members": { "title": "Members and invitations" },
+    "fields": {
+      "name": "Name",
+      "description": "Description",
+      "banner": "Banner",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Active",
+      "paused": "Paused",
+      "archived": "Archived"
+    },
+    "roles": {
+      "admin": "Administrator",
+      "gm": "Game Master",
+      "assistant": "Assistant GM",
+      "player": "Player",
+      "observer": "Observer"
+    },
+    "invites": {
+      "identifier": "Username or email",
+      "message": "Optional message",
+      "pending": "Pending invitations"
+    },
+    "myInvitations": {
+      "title": "My invitations",
+      "empty": "You have no pending invitations."
+    },
+    "characters": {
+      "title": "Available characters",
+      "assignments": "Character assignments",
+      "character": "Character",
+      "choose": "Choose a character",
+      "member": "Choose a member",
+      "visibility": "Default visibility"
+    },
+    "access": {
+      "none": "None",
+      "limited": "Limited",
+      "observer": "Observer",
+      "owner": "Owner"
+    },
+    "online": {
+      "title": "Presence",
+      "online": "online",
+      "offline": "offline"
+    },
+    "connection": {
+      "ready": "Connected",
+      "syncing": "Synchronizing…",
+      "connecting": "Connecting…",
+      "reconnecting": "Reconnecting…",
+      "auth_failed": "Realtime session expired",
+      "forbidden": "Realtime access denied",
+      "exhausted": "Connection could not be restored",
+      "disconnected": "Disconnected"
+    },
+    "actions": {
+      "save": "Save",
+      "invite": "Invite",
+      "remove": "Remove",
+      "revoke": "Revoke",
+      "grant": "Grant access",
+      "primaryOwner": "Set owner",
+      "openLobby": "Open campaign",
+      "enterVtt": "Enter VTT",
+      "retry": "Reconnect",
+      "accept": "Accept",
+      "reject": "Reject",
+      "back": "Back"
+    },
+    "errors": {
+      "network": "The server cannot be reached.",
+      "forbidden": "You do not have access to this campaign.",
+      "rateLimited": "Too many attempts. Wait and try again.",
+      "generic": "The campaign operation failed."
+    }
+  }
+}

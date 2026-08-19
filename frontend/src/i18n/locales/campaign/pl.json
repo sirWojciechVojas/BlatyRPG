@@ -1,0 +1,83 @@
+{
+  "campaignLobby": {
+    "loading": "Wczytywanie kampanii…",
+    "settings": { "title": "Ustawienia kampanii" },
+    "members": { "title": "Uczestnicy i zaproszenia" },
+    "fields": {
+      "name": "Nazwa",
+      "description": "Opis",
+      "banner": "Banner",
+      "status": "Status"
+    },
+    "status": {
+      "active": "Aktywna",
+      "paused": "Wstrzymana",
+      "archived": "Zarchiwizowana"
+    },
+    "roles": {
+      "admin": "Administrator",
+      "gm": "Mistrz Gry",
+      "assistant": "Asystent MG",
+      "player": "Gracz",
+      "observer": "Obserwator"
+    },
+    "invites": {
+      "identifier": "Login lub e-mail",
+      "message": "Wiadomość opcjonalna",
+      "pending": "Oczekujące zaproszenia"
+    },
+    "myInvitations": {
+      "title": "Moje zaproszenia",
+      "empty": "Nie masz oczekujących zaproszeń."
+    },
+    "characters": {
+      "title": "Dostępne postacie",
+      "assignments": "Przypisania postaci",
+      "character": "Postać",
+      "choose": "Wybierz postać",
+      "member": "Wybierz uczestnika",
+      "visibility": "Widoczność domyślna"
+    },
+    "access": {
+      "none": "Brak",
+      "limited": "Ograniczony",
+      "observer": "Obserwator",
+      "owner": "Właściciel"
+    },
+    "online": {
+      "title": "Obecność",
+      "online": "online",
+      "offline": "offline"
+    },
+    "connection": {
+      "ready": "Połączono",
+      "syncing": "Synchronizacja…",
+      "connecting": "Łączenie…",
+      "reconnecting": "Ponowne łączenie…",
+      "auth_failed": "Sesja realtime wygasła",
+      "forbidden": "Brak dostępu do realtime",
+      "exhausted": "Nie udało się wznowić połączenia",
+      "disconnected": "Rozłączono"
+    },
+    "actions": {
+      "save": "Zapisz",
+      "invite": "Zaproś",
+      "remove": "Usuń",
+      "revoke": "Wycofaj",
+      "grant": "Nadaj dostęp",
+      "primaryOwner": "Ustaw właściciela",
+      "openLobby": "Otwórz kampanię",
+      "enterVtt": "Wejdź do VTT",
+      "retry": "Połącz ponownie",
+      "accept": "Akceptuj",
+      "reject": "Odrzuć",
+      "back": "Wróć"
+    },
+    "errors": {
+      "network": "Brak połączenia z serwerem.",
+      "forbidden": "Nie masz dostępu do tej kampanii.",
+      "rateLimited": "Zbyt wiele prób. Odczekaj i spróbuj ponownie.",
+      "generic": "Nie udało się wykonać operacji kampanii."
+    }
+  }
+}

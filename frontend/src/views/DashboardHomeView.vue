@@ -28,6 +28,15 @@
           </select>
         </label>
         <template v-if="session">
+          <router-link class="secondary-action" :to="{ name: 'profile' }">
+            {{ $t("auth.profile.title") }}
+          </router-link>
+          <router-link
+            class="secondary-action"
+            :to="{ name: 'my-invitations' }"
+          >
+            {{ $t("campaignLobby.myInvitations.title") }}
+          </router-link>
           <span class="user-chip">
             {{ session.user?.username || session.user?.email }}
           </span>

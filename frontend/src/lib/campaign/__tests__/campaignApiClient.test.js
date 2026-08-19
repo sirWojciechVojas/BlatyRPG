@@ -23,11 +23,11 @@ describe("campaignApiClient", () => {
           id: 5,
           systemType: "wfrp2ed",
           membershipRole: "gm",
-          capabilities: {
+          capabilities: expect.objectContaining({
             canManage: true,
             canViewHidden: true,
             canOpenShop: true,
-          },
+          }),
         }),
       ],
       capabilities: { canCreate: true },

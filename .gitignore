@@ -6,6 +6,7 @@
 
 # --- Konfiguracja lokalna (BARDZO WAŻNE) ---
 *.code-workspace
+/.env
 /certs/
 *.pem
 /docker-entrypoint-initdb.db/*.sql
@@ -19,6 +20,7 @@ AGENTS.md
 /backend/public/uploads/
 
 # --- Frontend (Vue/Webpack) ---
+/node_modules/
 /frontend/node_modules/
 /frontend/dist/
 /frontend/.env.local

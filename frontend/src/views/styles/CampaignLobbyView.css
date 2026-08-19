@@ -1,0 +1,100 @@
+.campaign-lobby {
+  min-height: 100vh;
+  padding: 2rem;
+  color: #efe9dc;
+  background: #151311;
+}
+
+.campaign-lobby-header,
+.campaign-panel {
+  border: 1px solid #6f5a3b;
+  border-radius: 0.75rem;
+  padding: 1rem;
+  background: #211d18;
+}
+
+.campaign-lobby-header {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.campaign-lobby-header img {
+  width: 10rem;
+  max-height: 7rem;
+  object-fit: cover;
+}
+
+.campaign-lobby-header div {
+  flex: 1;
+}
+
+.campaign-lobby-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.campaign-panel-form,
+.campaign-invite-form,
+.campaign-panel label {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.campaign-panel-form {
+  gap: 0.75rem;
+}
+
+.campaign-panel input,
+.campaign-panel textarea,
+.campaign-panel select,
+.campaign-panel button {
+  padding: 0.55rem;
+}
+
+.campaign-list {
+  padding: 0;
+  list-style: none;
+}
+
+.campaign-list li {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #463b2d;
+}
+
+.campaign-list li > :first-child:not(.presence-dot) {
+  flex: 1;
+}
+
+.presence-dot {
+  width: 0.65rem;
+  height: 0.65rem;
+  border-radius: 50%;
+  background: #777;
+}
+
+.presence-dot.online {
+  background: #55bd77;
+}
+
+.campaign-lobby-error {
+  padding: 0.75rem;
+  color: #fff;
+  background: #7c2929;
+}
+
+@media (max-width: 700px) {
+  .campaign-lobby {
+    padding: 1rem;
+  }
+
+  .campaign-lobby-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

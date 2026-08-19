@@ -17,7 +17,7 @@ services:
       frontend:
         condition: service_healthy
       websocket:
-        condition: service_started
+        condition: service_healthy
 
   # 2. PHP backend
   php:
@@ -28,8 +28,29 @@ services:
     volumes:
       - ./backend:/var/www/html
     environment:
-      CI_ENVIRONMENT: development
-      SHOP_ALLOW_ANONYMOUS_SHOP_ACCESS: "true"
+      CI_ENVIRONMENT: ${CI_ENVIRONMENT:-development}
+      SHOP_ALLOW_ANONYMOUS_SHOP_ACCESS: ${SHOP_ALLOW_ANONYMOUS_SHOP_ACCESS:-false}
+      JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
+      JWT_TIME_TO_LIVE: ${JWT_TIME_TO_LIVE:-3600}
+      PASSWORD_RESET_URL: ${PASSWORD_RESET_URL:-https://localhost:8443/#/password-reset/confirm}
+      PASSWORD_RESET_TIME_TO_LIVE: ${PASSWORD_RESET_TIME_TO_LIVE:-1800}
+      email.fromEmail: ${MAIL_FROM_ADDRESS:-no-reply@blatyrpg.local}
+      email.fromName: ${MAIL_FROM_NAME:-Blaty RPG}
+      email.protocol: ${MAIL_PROTOCOL:-mail}
+      email.SMTPHost: ${MAIL_SMTP_HOST:-}
+      email.SMTPUser: ${MAIL_SMTP_USER:-}
+      email.SMTPPass: ${MAIL_SMTP_PASSWORD:-}
+      email.SMTPPort: ${MAIL_SMTP_PORT:-587}
+      email.SMTPCrypto: ${MAIL_SMTP_CRYPTO:-tls}
+      REALTIME_TICKET_SECRET: ${REALTIME_TICKET_SECRET:?REALTIME_TICKET_SECRET is required}
+      REALTIME_TICKET_ISSUER: ${REALTIME_TICKET_ISSUER:-BlatyRPG}
+      REALTIME_TICKET_AUDIENCE: ${REALTIME_TICKET_AUDIENCE:-blatyrpg-realtime}
+      database.default.hostname: mysql
+      database.default.database: ${MYSQL_DATABASE:-blatyrpg}
+      database.default.username: root
+      database.default.password: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is required}
+      database.default.DBDriver: MySQLi
+      database.default.port: "3306"
     depends_on:
       mysql:
         condition: service_healthy
@@ -46,8 +67,8 @@ services:
     container_name: blatyrpg_mysql
     restart: always
     environment:
-      MYSQL_DATABASE: blatyrpg
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-blatyrpg}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?MYSQL_ROOT_PASSWORD is required}
     volumes:
       - mysql_data:/var/lib/mysql
     ports:
@@ -79,6 +100,7 @@ services:
       - VUE_CLI_USE_POLLING=true
       - WDS_SOCKET_URL=auto://0.0.0.0:0/ws
       - WDS_SOCKET_PATH=/ws
+      - VUE_APP_REALTIME_PATH=/realtime
     depends_on:
       php:
         condition: service_healthy
@@ -91,7 +113,7 @@ services:
       retries: 12
       start_period: 90s
 
-  # 5. WebSocket server (standby mode)
+  # 5. Authoritative realtime WebSocket server
   websocket:
     image: node:22-alpine
     container_name: blatyrpg_websocket
@@ -99,12 +121,34 @@ services:
     working_dir: /app
     volumes:
       - ./websocket:/app
-    # Keeps the container alive until websocket code is added.
-    command: tail -f /dev/null
+      - websocket_node_modules:/app/node_modules
+    command: sh -c "npm ci --omit=dev && npm start"
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      WS_HOST: 0.0.0.0
+      WS_PORT: "8081"
+      WS_PATH: /realtime
+      WS_HEALTH_PATH: /health
+      WS_TICKET_SECRET: ${REALTIME_TICKET_SECRET:?REALTIME_TICKET_SECRET is required}
+      WS_ALLOWED_ORIGINS: ${REALTIME_ALLOWED_ORIGINS:?REALTIME_ALLOWED_ORIGINS is required}
+      WS_TICKET_ISSUER: ${REALTIME_TICKET_ISSUER:-BlatyRPG}
+      WS_TICKET_AUDIENCE: ${REALTIME_TICKET_AUDIENCE:-blatyrpg-realtime}
+    depends_on:
+      php:
+        condition: service_healthy
+    expose:
+      - "8081"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:8081/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+      start_period: 30s
 
 volumes:
   mysql_data:
   frontend_node_modules:
+  websocket_node_modules:
 
 networks:
   default:

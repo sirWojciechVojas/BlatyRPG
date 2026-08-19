@@ -1,0 +1,56 @@
+{
+  "auth": {
+    "actions": {
+      "register": "Utwórz konto",
+      "account": "Opcje konta",
+      "resetPassword": "Nie pamiętam hasła",
+      "signIn": "Wróć do logowania",
+      "saving": "Zapisywanie…",
+      "sending": "Wysyłanie…",
+      "sendReset": "Wyślij instrukcję",
+      "setPassword": "Ustaw nowe hasło",
+      "saveProfile": "Zapisz profil",
+      "changePassword": "Zmień hasło"
+    },
+    "fields": {
+      "username": "Nazwa użytkownika",
+      "email": "E-mail",
+      "password": "Hasło",
+      "confirmPassword": "Powtórz hasło",
+      "currentPassword": "Obecne hasło",
+      "newPassword": "Nowe hasło",
+      "avatar": "Adres avatara"
+    },
+    "register": {
+      "title": "Rejestracja",
+      "success": "Konto zostało utworzone. Możesz się zalogować."
+    },
+    "resetRequest": {
+      "title": "Reset hasła",
+      "description": "Podaj e-mail konta. Odpowiedź nie ujawni, czy konto istnieje.",
+      "sent": "Jeśli konto istnieje, instrukcja została wysłana."
+    },
+    "resetConfirm": { "title": "Ustaw nowe hasło" },
+    "profile": {
+      "title": "Profil użytkownika",
+      "saved": "Profil został zapisany."
+    },
+    "password": {
+      "title": "Zmiana hasła",
+      "changed": "Hasło i sesja zostały bezpiecznie odnowione."
+    },
+    "errors": {
+      "generic": "Nie udało się wykonać operacji.",
+      "network": "Brak połączenia z serwerem.",
+      "invalidCredentials": "Dane logowania są nieprawidłowe.",
+      "forbidden": "Brak uprawnień.",
+      "conflict": "Podane dane są już zajęte.",
+      "validation": "Popraw dane formularza.",
+      "rateLimited": "Zbyt wiele prób. Odczekaj i spróbuj ponownie.",
+      "passwordMismatch": "Hasła nie są takie same.",
+      "resetToken": "Link resetujący jest nieprawidłowy.",
+      "register": "Nie udało się utworzyć konta.",
+      "reset": "Nie udało się zresetować hasła."
+    }
+  }
+}

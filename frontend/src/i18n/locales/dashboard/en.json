@@ -44,6 +44,7 @@
       "invalidCredentials": "Invalid username or password.",
       "forbidden": "You are not allowed to perform this action.",
       "validation": "Please correct the form data.",
+      "rateLimited": "Too many attempts. Wait and try again.",
       "login": "Sign-in failed.",
       "sessionExpired": "Your session expired. Please sign in again.",
       "campaigns": "Could not load campaigns.",

@@ -4,6 +4,10 @@ import store from "../store";
 import { ensureShopStoreModuleForRoute } from "../store/modules/loadShopModule";
 import { ensureVttStoreModuleForRoute } from "../store/modules/loadVttModule";
 import { createAuthGuard } from "./authGuard";
+import {
+  createCampaignAuthorization,
+  createCampaignSessionGuard,
+} from "./campaignSessionGuard";
 
 const routes = [
   {
@@ -21,11 +25,65 @@ const routes = [
       import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
   },
   {
+    path: "/register",
+    name: "register",
+    meta: { title: "Register" },
+    component: () =>
+      import(
+        /* webpackChunkName: "authentication" */ "../views/RegisterView.vue"
+      ),
+  },
+  {
+    path: "/password-reset",
+    name: "password-reset-request",
+    meta: { title: "Reset password" },
+    component: () =>
+      import(
+        /* webpackChunkName: "authentication" */ "../views/PasswordResetRequestView.vue"
+      ),
+  },
+  {
+    path: "/password-reset/confirm",
+    name: "password-reset-confirm",
+    meta: { title: "Set new password" },
+    component: () =>
+      import(
+        /* webpackChunkName: "authentication" */ "../views/PasswordResetConfirmView.vue"
+      ),
+  },
+  {
+    path: "/profile",
+    name: "profile",
+    meta: { title: "Profile", requiresAuth: true },
+    component: () =>
+      import(
+        /* webpackChunkName: "authentication" */ "../views/ProfileView.vue"
+      ),
+  },
+  {
+    path: "/invitations",
+    name: "my-invitations",
+    meta: { title: "Invitations", requiresAuth: true },
+    component: () =>
+      import(
+        /* webpackChunkName: "campaign-lobby" */ "../views/MyInvitationsView.vue"
+      ),
+  },
+  {
     path: "/dice",
     name: "dice",
     meta: { title: "Dice Roller 3D" },
     component: () =>
       import(/* webpackChunkName: "dice" */ "../views/DiceRollerView.vue"),
+  },
+  {
+    path: "/campaigns/:campaignId",
+    name: "campaign-lobby",
+    meta: { title: "Campaign lobby", requiresAuth: true },
+    component: () =>
+      import(
+        /* webpackChunkName: "campaign-lobby" */ "../views/CampaignLobbyView.vue"
+      ),
   },
   {
     path: "/campaigns/:campaignId/shop",
@@ -82,6 +140,9 @@ const router = createRouter({
   routes,
 });
 
-router.beforeEach(createAuthGuard());
+router.beforeEach(
+  createAuthGuard(undefined, createCampaignAuthorization(store)),
+);
+router.beforeEach(createCampaignSessionGuard(store));
 
 export default router;

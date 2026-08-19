@@ -48,7 +48,7 @@ export default {
     busyUserId: { type: Number, default: 0 },
   },
   emits: ["role-change"],
-  data: () => ({ roles: ["user", "gm", "admin"] }),
+  data: () => ({ roles: ["player", "gm", "admin"] }),
   methods: {
     changeRole(user, role) {
       if (role !== user.role) this.$emit("role-change", { user, role });

@@ -44,7 +44,7 @@
       "members": "Członkowie",
       "status": "Status"
     },
-    "roles": { "user": "Gracz", "gm": "Mistrz gry", "admin": "Administrator" },
+    "roles": { "player": "Gracz", "gm": "Mistrz gry", "admin": "Administrator" },
     "status": { "active": "Aktywna", "inactive": "Nieaktywna" },
     "errors": {
       "network": "Brak połączenia z API.",

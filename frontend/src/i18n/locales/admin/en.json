@@ -45,7 +45,7 @@
       "status": "Status"
     },
     "roles": {
-      "user": "Player",
+      "player": "Player",
       "gm": "Game master",
       "admin": "Administrator"
     },

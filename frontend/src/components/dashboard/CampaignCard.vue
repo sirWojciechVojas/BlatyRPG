@@ -21,11 +21,11 @@
       <router-link
         class="primary-action"
         :to="{
-          name: 'scene-workspace',
+          name: 'campaign-lobby',
           params: { campaignId: campaign.id },
         }"
       >
-        {{ $t("dashboard.campaign.openScenes") }}
+        {{ $t("campaignLobby.actions.openLobby") }}
       </router-link>
       <router-link
         class="secondary-action"

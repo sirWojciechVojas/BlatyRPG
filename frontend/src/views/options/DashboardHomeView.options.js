@@ -32,6 +32,7 @@ export default {
     loginError: "",
     dashboardError: "",
     creationError: "",
+    unsubscribeAuth: null,
     locales: availableLocales,
   }),
   computed: {
@@ -56,9 +57,21 @@ export default {
     },
   },
   async mounted() {
+    this.unsubscribeAuth = authSession.subscribe(
+      (session) => {
+        this.session = session;
+        if (session) return;
+        this.campaigns = [];
+        this.canCreateCampaign = false;
+      },
+      { immediate: false },
+    );
     this.session = authSession.read();
     if (this.session) await this.loadDashboard();
     this.isRestoring = false;
+  },
+  beforeUnmount() {
+    this.unsubscribeAuth?.();
   },
   methods: {
     errorMessage(error, fallbackKey) {
@@ -67,6 +80,7 @@ export default {
         return this.$t("dashboard.errors.invalidCredentials");
       if (error?.status === 403) return this.$t("dashboard.errors.forbidden");
       if (error?.status === 422) return this.$t("dashboard.errors.validation");
+      if (error?.status === 429) return this.$t("dashboard.errors.rateLimited");
       return this.$t(fallbackKey);
     },
     async login(credentials) {
@@ -140,13 +154,21 @@ export default {
         this.isCreating = false;
       }
     },
-    logout() {
-      authSession.clear();
-      this.session = null;
-      this.campaigns = [];
-      this.canCreateCampaign = false;
-      this.dashboardError = "";
-      if (this.$route.name !== "home") this.$router.replace({ name: "home" });
+    async logout() {
+      try {
+        if (authSession.read()) await authApiClient.logout();
+      } catch (_error) {
+        // Local logout remains mandatory when the server is unreachable.
+      } finally {
+        authSession.clear("logout");
+        this.session = null;
+        this.campaigns = [];
+        this.canCreateCampaign = false;
+        this.dashboardError = "";
+        if (this.$route.name !== "home") {
+          await this.$router.replace({ name: "home" });
+        }
+      }
     },
   },
 };
