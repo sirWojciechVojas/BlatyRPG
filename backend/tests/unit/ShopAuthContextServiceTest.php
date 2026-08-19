@@ -58,7 +58,7 @@ final class ShopAuthContextServiceTest extends CIUnitTestCase
         }
     }
 
-    public function testResolveFromAuthorizationHeaderKeepsTokenWhenSecretMissing(): void
+    public function testResolveFromAuthorizationHeaderDoesNotRetainRawToken(): void
     {
         $previous = getenv('JWT_SECRET');
         putenv('JWT_SECRET');
@@ -68,7 +68,7 @@ final class ShopAuthContextServiceTest extends CIUnitTestCase
 
         $this->assertNull($result['user_id']);
         $this->assertNull($result['role']);
-        $this->assertSame('abc.def.ghi', $result['token']);
+        $this->assertNull($result['token']);
 
         if ($previous !== false) {
             putenv('JWT_SECRET='.$previous);
@@ -84,7 +84,13 @@ final class ShopAuthContextServiceTest extends CIUnitTestCase
 
         try {
             $request = $this->createMock(RequestInterface::class);
-            $request->method('getServer')->willReturn(null);
+            $request->method('getServer')->willReturnCallback(
+                static function (string $name) {
+                    return $name === 'REQUEST_URI'
+                        ? '/api/shop/campaigns/1/bootstrap'
+                        : null;
+                }
+            );
             $request->method('getHeaderLine')->willReturnCallback(
                 static function (string $name): string {
                     return [

@@ -2,66 +2,24 @@
 
 namespace App\Services\Shop;
 
+use App\Services\Auth\AuthContextService as BaseAuthContextService;
 use CodeIgniter\HTTP\RequestInterface;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 
-class AuthContextService
+/** Shop compatibility adapter for development-only character selectors. */
+class AuthContextService extends BaseAuthContextService
 {
-    public function resolveFromAuthorizationHeader(?string $header): array
-    {
-        if (!$header) {
-            return [
-                'user_id' => null,
-                'role' => null,
-                'token' => null,
-                'anonymous' => true,
-            ];
-        }
-
-        if (!preg_match('/Bearer\s(\S+)/', $header, $matches)) {
-            return [
-                'user_id' => null,
-                'role' => null,
-                'token' => null,
-            ];
-        }
-
-        $token = $matches[1];
-        $secret = getenv('JWT_SECRET');
-        if (!$secret) {
-            return [
-                'user_id' => null,
-                'role' => null,
-                'token' => $token,
-            ];
-        }
-
-        try {
-            $decoded = JWT::decode($token, new Key($secret, 'HS256'));
-            return [
-                'user_id' => isset($decoded->sub) ? (int) $decoded->sub : null,
-                'role' => isset($decoded->role) ? (string) $decoded->role : null,
-                'token' => $token,
-            ];
-        } catch (\Throwable $e) {
-            return [
-                'user_id' => null,
-                'role' => null,
-                'token' => $token,
-            ];
-        }
-    }
 
     public function resolveFromRequest(RequestInterface $request): array
     {
-        $auth = $this->resolveFromAuthorizationHeader(
-            (string) $request->getServer('HTTP_AUTHORIZATION')
-        );
+        $auth = parent::resolveFromRequest($request);
+        $auth['character_view'] = false;
+        if (!$this->isShopRequest($request)) {
+            return $auth;
+        }
+
         $auth['character_view'] = strtolower(trim(
             $request->getHeaderLine('X-Shop-View-Mode')
         )) === 'character';
-
         if (!$this->isDevelopmentSelectorEnabled()) {
             return $auth;
         }
@@ -94,12 +52,6 @@ class AuthContextService
         ];
     }
 
-    public function isGmOrAdmin(array $authContext): bool
-    {
-        $role = strtolower((string) ($authContext['role'] ?? ''));
-        return in_array($role, ['gm', 'admin'], true);
-    }
-
     public function isDevelopmentSelectorEnabled(): bool
     {
         if (strtolower((string) getenv('CI_ENVIRONMENT')) === 'production') {
@@ -109,6 +61,30 @@ class AuthContextService
         $flag = getenv('SHOP_ALLOW_ANONYMOUS_SHOP_ACCESS');
         if ($flag !== false && $flag !== '') {
             return in_array(strtolower((string) $flag), ['1', 'true', 'yes', 'on'], true);
+        }
+
+        return false;
+    }
+
+    private function isShopRequest(RequestInterface $request): bool
+    {
+        $paths = [
+            (string) $request->getServer('REQUEST_URI'),
+            (string) $request->getServer('PATH_INFO'),
+        ];
+
+        try {
+            $paths[] = $request->getUri()->getPath();
+        } catch (\Throwable $exception) {
+            // Some CLI/unit-test requests do not expose a URI object.
+        }
+
+        foreach ($paths as $path) {
+            $path = trim((string) parse_url($path, PHP_URL_PATH), '/');
+            $path = preg_replace('#^index\.php/#', '', $path) ?: $path;
+            if (preg_match('#^api/shop(?:/|$)#', $path)) {
+                return true;
+            }
         }
 
         return false;
