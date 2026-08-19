@@ -70,6 +70,78 @@
         "generic": "Nie udało się wykonać operacji na scenie.",
         "validation": "Popraw pola: {fields}."
       }
+    },
+    "table": {
+      "header": {
+        "kicker": "Stół kampanii",
+        "switch": "Wybierz inny Stół",
+        "online": "Online: {count}"
+      },
+      "drawer": {
+        "kicker": "Panel Stołu",
+        "close": "Zamknij panel"
+      },
+      "rail": {
+        "label": "Narzędzia Stołu",
+        "chat": "Czat",
+        "graphics": "Biblioteka grafik",
+        "characters": "Postacie",
+        "handouts": "Handouty",
+        "scenario": "Scenariusz",
+        "shop": "Sklep",
+        "jukebox": "Szafa grająca",
+        "notifications": "Powiadomienia",
+        "settings": "Moje ustawienia"
+      },
+      "gm": {
+        "kicker": "Prowadzenie",
+        "title": "Narzędzia MG",
+        "map": "Mapa",
+        "tokens": "Tokeny",
+        "future": "Przygotowane narzędzia",
+        "walls": "Ściany",
+        "lighting": "Światło",
+        "measurements": "Pomiary"
+      },
+      "player": {
+        "kicker": "Stół gracza"
+      },
+      "graphics": {
+        "description": "Grafiki używane przez kampanię i jej sceny.",
+        "empty": "Ten Stół nie ma jeszcze przypisanych grafik."
+      },
+      "characters": {
+        "empty": "Brak postaci dostępnych w tej kampanii.",
+        "open": "Otwórz postacie"
+      },
+      "handouts": {
+        "description": "Materiały udostępniane uczestnikom kampanii.",
+        "empty": "Nie udostępniono jeszcze żadnych handoutów."
+      },
+      "scenario": {
+        "noDescription": "Kampania nie ma jeszcze opisu.",
+        "status": "Status",
+        "scenes": "Sceny"
+      },
+      "shop": {
+        "description": "Ekwipunek i handel w kontekście bieżącej kampanii.",
+        "open": "Otwórz sklep",
+        "unavailable": "Nie masz dostępu do sklepu tego Stołu."
+      },
+      "jukebox": {
+        "description": "Muzyka i oprawa dźwiękowa Stołu.",
+        "empty": "Nie dodano jeszcze utworów do tej kampanii."
+      },
+      "notifications": {
+        "connection": "Połączenie",
+        "online": "Uczestnicy online",
+        "invites": "Oczekujące zaproszenia"
+      },
+      "settings": {
+        "description": "Ustawienia kampanii oraz Twojego profilu.",
+        "table": "Ustawienia Stołu",
+        "profile": "Mój profil"
+      }
     }
   }
 }

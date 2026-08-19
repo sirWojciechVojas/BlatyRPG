@@ -21,9 +21,32 @@
     <div
       v-else
       class="scene-workspace__layout"
-      :class="{ 'scene-workspace__layout--settings': settingsOpen }"
+      :class="{ 'scene-workspace__layout--drawer': drawerOpen }"
     >
-      <SceneNavigation
+      <header class="table-workspace-header">
+        <div class="table-workspace-header__identity">
+          <small>{{ $t("vtt.table.header.kicker") }}</small>
+          <h1>{{ campaign.name || $t("vtt.scene.workspace.title") }}</h1>
+          <span v-if="selectedScene">{{ selectedScene.name }}</span>
+        </div>
+        <div class="table-workspace-header__status">
+          <span
+            class="presence-dot"
+            :class="{ online: realtime.status === 'ready' }"
+          ></span>
+          <span>{{
+            $t(`campaignLobby.connection.${realtime.status || "disconnected"}`)
+          }}</span>
+          <span>{{
+            $t("vtt.table.header.online", { count: onlineMembers.length })
+          }}</span>
+        </div>
+        <router-link class="scene-button" :to="{ name: 'tables' }">
+          {{ $t("vtt.table.header.switch") }}
+        </router-link>
+      </header>
+
+      <GmToolPanel
         :scenes="scenes"
         :selected-id="state.selectedSceneId"
         :active-id="state.activeSceneId"
@@ -31,6 +54,8 @@
         :busy="busy"
         @select="selectScene"
         @create="openCreate"
+        @edit="openEdit"
+        @characters="selectUtility('characters')"
       />
 
       <section class="scene-workspace__main">
@@ -72,159 +97,56 @@
         :busy="busy"
         @save="saveSettings"
         @cancel="settingsOpen = false"
-        @delete="deleteScene"
+        @delete="requestDelete"
       />
 
-      <CampaignChatPanel id="campaign-chat" :campaign-id="campaignId()" />
+      <TableUtilityDrawer
+        v-else-if="activeUtility"
+        :title="$t(activeUtility.labelKey)"
+        :panel-id="activeUtility.id"
+        @close="activePanelId = ''"
+      >
+        <CampaignChatPanel
+          v-if="activePanelId === 'chat'"
+          id="campaign-chat"
+          :campaign-id="currentCampaignId"
+          embedded
+        />
+        <TableContextPanel
+          v-else
+          :panel-id="activePanelId"
+          :campaign="campaign"
+          :scenes="scenes"
+          :characters="characters"
+          :members="members"
+          :invitations="invitations"
+          :realtime-status="realtime.status"
+          :can-manage="canManage"
+          :can-open-shop="canOpenShop"
+        />
+      </TableUtilityDrawer>
+
+      <TableUtilityRail :active-id="activePanelId" @select="selectUtility" />
     </div>
+
+    <UiConfirmDialog
+      v-model="confirmDeleteOpen"
+      :title="$t('vtt.scene.actions.delete')"
+      :description="$t('vtt.scene.actions.deleteConfirm')"
+      :confirm-label="$t('vtt.scene.actions.delete')"
+      :cancel-label="$t('vtt.scene.actions.cancel')"
+      :busy="busy"
+      danger
+      @confirm="deleteScene"
+      @cancel="confirmDeleteOpen = false"
+    />
   </main>
 </template>
 
 <script>
-import CampaignChatPanel from "@/components/chat/CampaignChatPanel.vue";
-import SceneCanvas from "@/components/vtt/scene/SceneCanvas.vue";
-import SceneNavigation from "@/components/vtt/scene/SceneNavigation.vue";
-import SceneSettingsPanel from "@/components/vtt/scene/SceneSettingsPanel.vue";
-import SceneToolbar from "@/components/vtt/scene/SceneToolbar.vue";
-import { ensureVttStoreModule } from "@/store/modules/loadVttModule";
+import options from "./options/SceneWorkspaceView.options";
 
-const emptyState = () => ({
-  scenes: [],
-  selectedSceneId: null,
-  activeSceneId: null,
-  capabilities: { canManage: false, canViewHidden: false },
-  phase: "idle",
-  error: null,
-  unauthorized: false,
-});
-
-export default {
-  name: "SceneWorkspaceView",
-  components: {
-    CampaignChatPanel,
-    SceneCanvas,
-    SceneNavigation,
-    SceneSettingsPanel,
-    SceneToolbar,
-  },
-  data: () => ({
-    moduleReady: false,
-    settingsOpen: false,
-    settingsMode: "edit",
-    zoomPercent: 100,
-  }),
-  computed: {
-    state() {
-      return this.$store.state.vtt || emptyState();
-    },
-    scenes() {
-      return this.$store.getters["vtt/sortedScenes"] || this.state.scenes;
-    },
-    selectedScene() {
-      return this.$store.getters["vtt/selectedScene"] || null;
-    },
-    canManage() {
-      return this.$store.getters["vtt/canManage"] === true;
-    },
-    busy() {
-      return ["loading", "saving"].includes(this.state.phase);
-    },
-    initialLoading() {
-      return this.state.phase === "loading" && !this.state.scenes.length;
-    },
-    errorMessage() {
-      if (this.state.error?.network) {
-        return this.$t("vtt.scene.errors.network");
-      }
-      if (this.state.error?.status === 409) {
-        return this.$t("vtt.scene.errors.conflict");
-      }
-      const details = this.state.error?.details;
-      if (this.state.error?.status === 422 && details) {
-        const fields = Object.keys(details).map((field) => {
-          const camel = field.replace(/_([a-z])/g, (_match, char) =>
-            char.toUpperCase(),
-          );
-          const key = `vtt.scene.fields.${camel}`;
-          const label = this.$t(key);
-          return label === key ? field : label;
-        });
-        return this.$t("vtt.scene.errors.validation", {
-          fields: fields.join(", "),
-        });
-      }
-      return this.$t("vtt.scene.errors.generic");
-    },
-  },
-  watch: {
-    "$route.params.campaignId": "loadCampaign",
-  },
-  created() {
-    this.loadCampaign();
-  },
-  methods: {
-    zoomOut() {
-      this.$refs.canvas?.zoomBy(1 / 1.2);
-    },
-    zoomIn() {
-      this.$refs.canvas?.zoomBy(1.2);
-    },
-    fitCanvas() {
-      this.$refs.canvas?.fit();
-    },
-    campaignId() {
-      const raw = this.$route.params.campaignId;
-      const numeric = Number(raw);
-      return Number.isFinite(numeric) ? numeric : raw;
-    },
-    async loadCampaign() {
-      await ensureVttStoreModule(this.$store);
-      this.moduleReady = true;
-      this.$store.commit("vtt/SET_CAMPAIGN", this.campaignId());
-      await this.$store.dispatch("vtt/initialize").catch(() => {});
-    },
-    selectScene(sceneId) {
-      this.settingsOpen = false;
-      this.$store.dispatch("vtt/selectScene", sceneId).catch(() => {});
-    },
-    refresh() {
-      this.$store.dispatch("vtt/initialize").catch(() => {});
-    },
-    openCreate() {
-      this.settingsMode = "create";
-      this.settingsOpen = true;
-    },
-    openEdit() {
-      this.settingsMode = "edit";
-      this.settingsOpen = true;
-    },
-    async saveSettings(payload) {
-      const action =
-        this.settingsMode === "create"
-          ? "vtt/createScene"
-          : "vtt/updateSelectedScene";
-      try {
-        await this.$store.dispatch(action, payload);
-        this.settingsOpen = false;
-      } catch (_error) {
-        // Store exposes the API error in a visible workspace notice.
-      }
-    },
-    async deleteScene() {
-      const message = this.$t("vtt.scene.actions.deleteConfirm");
-      if (typeof window !== "undefined" && !window.confirm(message)) return;
-      try {
-        await this.$store.dispatch("vtt/deleteSelectedScene");
-        this.settingsOpen = false;
-      } catch (_error) {
-        // Store exposes the API error in a visible workspace notice.
-      }
-    },
-    activate() {
-      this.$store.dispatch("vtt/activateSelectedScene").catch(() => {});
-    },
-  },
-};
+export default options;
 </script>
 
 <style src="@/components/vtt/scene/scene-workspace.css"></style>

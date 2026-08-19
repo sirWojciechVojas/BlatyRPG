@@ -70,6 +70,78 @@
         "generic": "The scene operation failed.",
         "validation": "Correct these fields: {fields}."
       }
+    },
+    "table": {
+      "header": {
+        "kicker": "Campaign table",
+        "switch": "Choose another table",
+        "online": "Online: {count}"
+      },
+      "drawer": {
+        "kicker": "Table panel",
+        "close": "Close panel"
+      },
+      "rail": {
+        "label": "Table tools",
+        "chat": "Chat",
+        "graphics": "Image library",
+        "characters": "Characters",
+        "handouts": "Handouts",
+        "scenario": "Scenario",
+        "shop": "Shop",
+        "jukebox": "Jukebox",
+        "notifications": "Notifications",
+        "settings": "My settings"
+      },
+      "gm": {
+        "kicker": "Game mastering",
+        "title": "GM tools",
+        "map": "Map",
+        "tokens": "Tokens",
+        "future": "Prepared tools",
+        "walls": "Walls",
+        "lighting": "Lighting",
+        "measurements": "Measurements"
+      },
+      "player": {
+        "kicker": "Player table"
+      },
+      "graphics": {
+        "description": "Images used by this campaign and its scenes.",
+        "empty": "This table has no assigned images yet."
+      },
+      "characters": {
+        "empty": "No characters are available in this campaign.",
+        "open": "Open characters"
+      },
+      "handouts": {
+        "description": "Materials shared with campaign participants.",
+        "empty": "No handouts have been shared yet."
+      },
+      "scenario": {
+        "noDescription": "This campaign has no description yet.",
+        "status": "Status",
+        "scenes": "Scenes"
+      },
+      "shop": {
+        "description": "Equipment and trading in the current campaign.",
+        "open": "Open shop",
+        "unavailable": "You cannot access this table's shop."
+      },
+      "jukebox": {
+        "description": "Music and audio ambience for the table.",
+        "empty": "No tracks have been added to this campaign yet."
+      },
+      "notifications": {
+        "connection": "Connection",
+        "online": "Participants online",
+        "invites": "Pending invitations"
+      },
+      "settings": {
+        "description": "Campaign and personal profile settings.",
+        "table": "Table settings",
+        "profile": "My profile"
+      }
     }
   }
 }

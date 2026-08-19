@@ -1,6 +1,9 @@
 <template>
-  <aside class="scene-navigation" aria-labelledby="scene-navigation-title">
-    <header class="scene-navigation__header">
+  <section
+    class="scene-navigation"
+    :aria-labelledby="showHeader ? 'scene-navigation-title' : undefined"
+  >
+    <header v-if="showHeader" class="scene-navigation__header">
       <h2 id="scene-navigation-title">
         {{ $t("vtt.scene.navigation.title") }}
       </h2>
@@ -43,7 +46,7 @@
         </span>
       </button>
     </nav>
-  </aside>
+  </section>
 </template>
 
 <script>
@@ -55,6 +58,7 @@ export default {
     activeId: { type: [Number, String], default: null },
     canManage: { type: Boolean, default: false },
     busy: { type: Boolean, default: false },
+    showHeader: { type: Boolean, default: true },
   },
   emits: ["select", "create"],
 };
