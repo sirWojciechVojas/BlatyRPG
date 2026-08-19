@@ -1,3 +1,4 @@
+/* global globalThis */
 import {
   ACCESS_TOKEN_KEYS,
   registerJsonApiUnauthorizedHandler,
@@ -61,9 +62,11 @@ const browserEventTarget = () =>
 export const createAuthSession = (options = {}) => {
   const storage = storageOrDefault(options.storage);
   const now = options.now || Date.now;
+  const setTimer = options.setTimeout || globalThis.setTimeout;
+  const clearTimer = options.clearTimeout || globalThis.clearTimeout;
   const timers = {
-    set: options.setTimeout || setTimeout,
-    clear: options.clearTimeout || clearTimeout,
+    set: (...args) => Reflect.apply(setTimer, globalThis, args),
+    clear: (...args) => Reflect.apply(clearTimer, globalThis, args),
   };
   const eventTarget = options.eventTarget ?? browserEventTarget();
   const listeners = new Set();
@@ -86,7 +89,13 @@ export const createAuthSession = (options = {}) => {
   };
 
   const emit = (session, reason) => {
-    listeners.forEach((listener) => listener(session, reason));
+    listeners.forEach((listener) => {
+      try {
+        listener(session, reason);
+      } catch (_error) {
+        // One stale UI subscriber must not invalidate a saved session.
+      }
+    });
   };
 
   const findToken = () =>
@@ -173,9 +182,17 @@ export const createAuthSession = (options = {}) => {
     if (calculatedExpiry <= now()) throw new TypeError("session_expired");
 
     const session = { user: normalizeUser(user), expiresAt: calculatedExpiry };
-    removeStoredSession();
-    storage.setItem(ACCESS_TOKEN_KEY, normalizedToken);
-    storage.setItem(AUTH_SESSION_KEY, JSON.stringify(session));
+    try {
+      removeStoredSession();
+      storage.setItem(ACCESS_TOKEN_KEY, normalizedToken);
+      storage.setItem(AUTH_SESSION_KEY, JSON.stringify(session));
+    } catch (cause) {
+      removeStoredSession();
+      const error = new TypeError("session_storage_unavailable");
+      error.code = "session_storage_unavailable";
+      error.cause = cause;
+      throw error;
+    }
     const result = { ...session, token: normalizedToken };
     scheduleExpiry(calculatedExpiry);
     emit(result, "saved");

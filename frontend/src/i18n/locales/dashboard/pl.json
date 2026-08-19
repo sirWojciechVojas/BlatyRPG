@@ -46,6 +46,8 @@
       "validation": "Popraw dane formularza.",
       "rateLimited": "Zbyt wiele prób. Odczekaj i spróbuj ponownie.",
       "login": "Logowanie nie powiodło się.",
+      "sessionStorage": "Nie można bezpiecznie zapisać sesji w tej przeglądarce. Odblokuj pamięć witryny i spróbuj ponownie.",
+      "navigation": "Zalogowano poprawnie, ale nie udało się otworzyć poprzedniego widoku.",
       "sessionExpired": "Sesja wygasła. Zaloguj się ponownie.",
       "campaigns": "Nie udało się wczytać kampanii.",
       "create": "Nie udało się utworzyć kampanii."

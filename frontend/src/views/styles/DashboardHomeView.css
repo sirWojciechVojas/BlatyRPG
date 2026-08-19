@@ -102,6 +102,28 @@ body { margin: 0; background: #090705; }
 .text-action { border: 0; color: var(--gold); background: transparent; }
 button:disabled { opacity: 0.55; cursor: wait; }
 
+.login-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 14px;
+}
+
+.login-links a {
+  color: var(--gold);
+  text-underline-offset: 3px;
+}
+
+.login-links a:hover {
+  color: var(--ink);
+}
+
+.login-links a:focus-visible {
+  border-radius: 3px;
+  outline: 2px solid var(--gold);
+  outline-offset: 4px;
+}
+
 .section-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
 .campaign-count { min-width: 38px; padding: 6px 12px; text-align: center; border: 1px solid var(--border); border-radius: 999px; }
 .campaign-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 18px; }
@@ -129,4 +151,8 @@ button:disabled { opacity: 0.55; cursor: wait; }
   .dashboard-topbar-actions { justify-content: flex-start; }
   .create-form { grid-template-columns: 1fr; }
   .wide-field { grid-column: auto; }
+  .login-links {
+    align-items: flex-start;
+    flex-direction: column;
+  }
 }

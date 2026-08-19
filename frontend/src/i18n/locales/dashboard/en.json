@@ -46,6 +46,8 @@
       "validation": "Please correct the form data.",
       "rateLimited": "Too many attempts. Wait and try again.",
       "login": "Sign-in failed.",
+      "sessionStorage": "The session cannot be stored safely in this browser. Allow site storage and try again.",
+      "navigation": "You signed in, but the previous view could not be opened.",
       "sessionExpired": "Your session expired. Please sign in again.",
       "campaigns": "Could not load campaigns.",
       "create": "Could not create the campaign."

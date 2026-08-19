@@ -76,6 +76,8 @@ export default {
   methods: {
     errorMessage(error, fallbackKey) {
       if (error?.network) return this.$t("dashboard.errors.network");
+      if (error?.code === "session_storage_unavailable")
+        return this.$t("dashboard.errors.sessionStorage");
       if (error?.status === 401)
         return this.$t("dashboard.errors.invalidCredentials");
       if (error?.status === 403) return this.$t("dashboard.errors.forbidden");
@@ -91,22 +93,32 @@ export default {
         if (!result.token || !result.user)
           throw new TypeError("invalid_login_response");
         this.session = authSession.save(result);
+      } catch (error) {
+        authSession.clear();
+        this.session = null;
+        this.loginError = this.errorMessage(error, "dashboard.errors.login");
+        this.isLoggingIn = false;
+        return;
+      }
+
+      try {
         const redirect = safeRedirectTarget(
           this.$router,
-          this.$route.query.redirect,
+          this.$route?.query?.redirect,
         );
         if (redirect) {
           await this.$router.replace(redirect);
           return;
         }
-        await this.loadDashboard();
       } catch (error) {
-        authSession.clear();
-        this.session = null;
-        this.loginError = this.errorMessage(error, "dashboard.errors.login");
+        this.dashboardError = this.errorMessage(
+          error,
+          "dashboard.errors.navigation",
+        );
       } finally {
         this.isLoggingIn = false;
       }
+      await this.loadDashboard();
     },
     async loadDashboard() {
       this.isLoading = true;

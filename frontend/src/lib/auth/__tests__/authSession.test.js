@@ -1,3 +1,4 @@
+/* global globalThis */
 import { afterEach, describe, expect, it, vi } from "vitest";
 import {
   ACCESS_TOKEN_KEY,
@@ -102,6 +103,76 @@ describe("authSession", () => {
 
     expect(session.read()).toBeNull();
     expect(listener).toHaveBeenLastCalledWith(null, "expired");
+  });
+
+  it("isolates a failing subscriber from session persistence", () => {
+    const storage = createStorage();
+    const session = createAuthSession({ storage, now: () => 1_000 });
+    const listener = vi.fn();
+    session.subscribe(
+      () => {
+        throw new Error("stale_component");
+      },
+      { immediate: false },
+    );
+    session.subscribe(listener, { immediate: false });
+
+    expect(() =>
+      session.save({ token: "token", expiresIn: 60, user: { id: 1 } }),
+    ).not.toThrow();
+    expect(listener).toHaveBeenLastCalledWith(
+      expect.objectContaining({ token: "token" }),
+      "saved",
+    );
+    expect(session.read()).toMatchObject({ token: "token" });
+  });
+
+  it("reports an unavailable browser storage without leaving a token", () => {
+    const values = new Map();
+    const storage = {
+      getItem: (key) => values.get(key) ?? null,
+      removeItem: (key) => values.delete(key),
+      setItem: (key, value) => {
+        if (key === ACCESS_TOKEN_KEY) values.set(key, String(value));
+        else throw new DOMException("Quota exceeded", "QuotaExceededError");
+      },
+    };
+    const session = createAuthSession({ storage, now: () => 1_000 });
+
+    expect(() =>
+      session.save({ token: "token", expiresIn: 60, user: { id: 1 } }),
+    ).toThrow(
+      expect.objectContaining({
+        code: "session_storage_unavailable",
+        message: "session_storage_unavailable",
+      }),
+    );
+    expect(storage.getItem(ACCESS_TOKEN_KEY)).toBeNull();
+  });
+
+  it("invokes browser timers with the global receiver", () => {
+    const storage = createStorage();
+    const setTimer = vi.fn(function () {
+      if (this !== globalThis) throw new TypeError("Illegal invocation");
+      return 73;
+    });
+    const clearTimer = vi.fn(function () {
+      if (this !== globalThis) throw new TypeError("Illegal invocation");
+    });
+    const session = createAuthSession({
+      storage,
+      now: () => 1_000,
+      setTimeout: setTimer,
+      clearTimeout: clearTimer,
+    });
+
+    expect(() =>
+      session.save({ token: "token", expiresIn: 60, user: { id: 1 } }),
+    ).not.toThrow();
+    session.clear();
+
+    expect(setTimer).toHaveBeenCalledOnce();
+    expect(clearTimer).toHaveBeenCalledWith(73);
   });
 
   it("requires a reliable expiry when saving", () => {
