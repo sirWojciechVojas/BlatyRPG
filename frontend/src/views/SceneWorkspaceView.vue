@@ -74,11 +74,14 @@
         @cancel="settingsOpen = false"
         @delete="deleteScene"
       />
+
+      <CampaignChatPanel :campaign-id="campaignId()" />
     </div>
   </main>
 </template>
 
 <script>
+import CampaignChatPanel from "@/components/chat/CampaignChatPanel.vue";
 import SceneCanvas from "@/components/vtt/scene/SceneCanvas.vue";
 import SceneNavigation from "@/components/vtt/scene/SceneNavigation.vue";
 import SceneSettingsPanel from "@/components/vtt/scene/SceneSettingsPanel.vue";
@@ -98,6 +101,7 @@ const emptyState = () => ({
 export default {
   name: "SceneWorkspaceView",
   components: {
+    CampaignChatPanel,
     SceneCanvas,
     SceneNavigation,
     SceneSettingsPanel,
