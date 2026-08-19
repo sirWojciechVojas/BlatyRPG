@@ -1,0 +1,62 @@
+{
+  "admin": {
+    "eyebrow": "World administration",
+    "title": "Administrator panel",
+    "subtitle": "Manage Blaty RPG accounts, roles and campaigns.",
+    "loading": "Loading administration data…",
+    "actions": {
+      "back": "Back to campaigns",
+      "retry": "Try again",
+      "refresh": "Refresh",
+      "createUser": "Create account",
+      "saving": "Saving…"
+    },
+    "metrics": {
+      "title": "Summary",
+      "users": "Users",
+      "admins": "Administrators",
+      "campaigns": "Campaigns"
+    },
+    "users": {
+      "title": "Users",
+      "description": "Roles are enforced by the API on every request.",
+      "you": "You",
+      "changeRole": "Change {name}'s role"
+    },
+    "create": {
+      "title": "New account",
+      "description": "Create a player, game master or administrator account. Passwords require at least 12 characters."
+    },
+    "campaigns": {
+      "title": "Campaigns",
+      "description": "Overview of owners and active memberships."
+    },
+    "fields": {
+      "user": "User",
+      "username": "Username",
+      "email": "Email",
+      "password": "Temporary password",
+      "role": "Role",
+      "campaign": "Campaign",
+      "campaigns": "Campaigns",
+      "system": "System",
+      "gameMaster": "Game master",
+      "members": "Members",
+      "status": "Status"
+    },
+    "roles": {
+      "user": "Player",
+      "gm": "Game master",
+      "admin": "Administrator"
+    },
+    "status": { "active": "Active", "inactive": "Inactive" },
+    "errors": {
+      "network": "The API is unavailable.",
+      "load": "The panel could not be loaded.",
+      "create": "The account could not be created.",
+      "role": "The role could not be changed.",
+      "validation": "Check the data and its uniqueness.",
+      "lastAdmin": "The last administrator cannot be demoted."
+    }
+  }
+}

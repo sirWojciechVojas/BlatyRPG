@@ -9,6 +9,13 @@
         </span>
       </router-link>
       <div class="dashboard-topbar-actions">
+        <router-link
+          v-if="isAdmin"
+          class="secondary-action"
+          :to="{ name: 'admin' }"
+        >
+          {{ $t("admin.title") }}
+        </router-link>
         <router-link class="secondary-action" :to="{ name: 'dice' }">
           {{ $t("dashboard.actions.dice") }}
         </router-link>

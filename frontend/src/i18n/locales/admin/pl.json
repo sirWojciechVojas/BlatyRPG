@@ -1,0 +1,58 @@
+{
+  "admin": {
+    "eyebrow": "Administracja świata",
+    "title": "Panel administratora",
+    "subtitle": "Zarządzaj kontami, rolami i kampaniami Blaty RPG.",
+    "loading": "Wczytywanie danych administracyjnych…",
+    "actions": {
+      "back": "Wróć do kampanii",
+      "retry": "Spróbuj ponownie",
+      "refresh": "Odśwież",
+      "createUser": "Utwórz konto",
+      "saving": "Zapisywanie…"
+    },
+    "metrics": {
+      "title": "Podsumowanie",
+      "users": "Użytkownicy",
+      "admins": "Administratorzy",
+      "campaigns": "Kampanie"
+    },
+    "users": {
+      "title": "Użytkownicy",
+      "description": "Role są egzekwowane przez API przy każdym żądaniu.",
+      "you": "To Ty",
+      "changeRole": "Zmień rolę użytkownika {name}"
+    },
+    "create": {
+      "title": "Nowe konto",
+      "description": "Utwórz konto gracza, MG albo administratora. Hasło musi mieć co najmniej 12 znaków."
+    },
+    "campaigns": {
+      "title": "Kampanie",
+      "description": "Przegląd właścicieli i aktywnych członkostw."
+    },
+    "fields": {
+      "user": "Użytkownik",
+      "username": "Login",
+      "email": "E-mail",
+      "password": "Hasło tymczasowe",
+      "role": "Rola",
+      "campaign": "Kampania",
+      "campaigns": "Kampanie",
+      "system": "System",
+      "gameMaster": "Mistrz gry",
+      "members": "Członkowie",
+      "status": "Status"
+    },
+    "roles": { "user": "Gracz", "gm": "Mistrz gry", "admin": "Administrator" },
+    "status": { "active": "Aktywna", "inactive": "Nieaktywna" },
+    "errors": {
+      "network": "Brak połączenia z API.",
+      "load": "Nie udało się wczytać panelu.",
+      "create": "Nie udało się utworzyć konta.",
+      "role": "Nie udało się zmienić roli.",
+      "validation": "Sprawdź poprawność danych i ich unikalność.",
+      "lastAdmin": "Nie można odebrać roli ostatniemu administratorowi."
+    }
+  }
+}

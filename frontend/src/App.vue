@@ -8,6 +8,10 @@
     }"
   >
     <router-link to="/">{{ $t("nav.home") }}</router-link>
+    <template v-if="isAdmin">
+      <span class="nav-sep">|</span>
+      <router-link :to="{ name: 'admin' }">{{ $t("admin.title") }}</router-link>
+    </template>
     <span class="nav-sep">|</span>
     <router-link to="/about">{{ $t("nav.about") }}</router-link>
     <span class="nav-sep">|</span>
@@ -39,6 +43,7 @@
 <script>
 import { availableLocales, setLocale } from "@/i18n";
 import ShopAccessModeSelector from "@/components/shop/ShopAccessModeSelector.vue";
+import { authSession } from "@/lib/auth/authSession";
 export default {
   name: "AppRoot",
   components: { ShopAccessModeSelector },
@@ -47,6 +52,7 @@ export default {
     return {
       localization: {},
       locales: availableLocales,
+      session: authSession.read(),
       // Nazwa aplikacji (fallback do tytułu zakładki)
       appTitle:
         typeof process !== "undefined" &&
@@ -61,6 +67,7 @@ export default {
     $route: {
       immediate: true,
       handler(to) {
+        this.session = authSession.read();
         const pageTitle = to?.meta?.title;
         document.title = pageTitle
           ? `${pageTitle} — ${this.appTitle}`
@@ -90,6 +97,9 @@ export default {
     },
     campaignId() {
       return this.$route?.params?.campaignId || null;
+    },
+    isAdmin() {
+      return this.session?.user?.role === "admin";
     },
   },
 };

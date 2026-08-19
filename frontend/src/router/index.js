@@ -53,6 +53,13 @@ const routes = [
       import(/* webpackChunkName: "forbidden" */ "../views/ForbiddenView.vue"),
   },
   {
+    path: "/admin",
+    name: "admin",
+    meta: { title: "Administration", requiresAuth: true, requiresAdmin: true },
+    component: () =>
+      import(/* webpackChunkName: "administration" */ "../views/AdminView.vue"),
+  },
+  {
     path: "/:pathMatch(.*)*",
     name: "not-found",
     meta: { title: "404" },

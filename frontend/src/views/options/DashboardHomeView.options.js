@@ -48,6 +48,9 @@ export default {
     displayName() {
       return this.session?.user?.username || this.session?.user?.email || "";
     },
+    isAdmin() {
+      return this.session?.user?.role === "admin";
+    },
     styleVars() {
       return { "--dashboard-background": `url("${background}")` };
     },

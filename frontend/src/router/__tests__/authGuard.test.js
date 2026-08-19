@@ -14,6 +14,13 @@ const buildRouter = () =>
         component: View,
         meta: { requiresAuth: true },
       },
+      {
+        path: "/admin",
+        name: "admin",
+        component: View,
+        meta: { requiresAuth: true, requiresAdmin: true },
+      },
+      { path: "/403", name: "forbidden", component: View },
       { path: "/:pathMatch(.*)*", name: "not-found", component: View },
     ],
   });
@@ -28,6 +35,28 @@ describe("authentication route guard", () => {
       name: "home",
       query: { redirect: "/campaigns/9/scenes?tool=walls" },
     });
+  });
+
+  it("allows administrators and rejects a known non-admin role", async () => {
+    const adminRouter = buildRouter();
+    adminRouter.beforeEach(
+      createAuthGuard({
+        isAuthenticated: () => true,
+        read: () => ({ user: { role: "admin" } }),
+      }),
+    );
+    await adminRouter.push("/admin");
+    expect(adminRouter.currentRoute.value.name).toBe("admin");
+
+    const playerRouter = buildRouter();
+    playerRouter.beforeEach(
+      createAuthGuard({
+        isAuthenticated: () => true,
+        read: () => ({ user: { role: "user" } }),
+      }),
+    );
+    await playerRouter.push("/admin");
+    expect(playerRouter.currentRoute.value.name).toBe("forbidden");
   });
 
   it("accepts only a matched local redirect", () => {
