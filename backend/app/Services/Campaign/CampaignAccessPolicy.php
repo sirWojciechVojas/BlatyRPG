@@ -2,22 +2,41 @@
 
 namespace App\Services\Campaign;
 
+use App\Services\Authorization\AccessLevel;
+
 /** Pure authorization policy; database lookup stays in CampaignAccessService. */
 class CampaignAccessPolicy
 {
     public function evaluate(array $auth, array $campaign, ?array $membership): array
     {
-        $denied = ['canAccess' => false, 'canManage' => false, 'canViewHidden' => false];
+        $denied = [
+            'canAccess' => false,
+            'canManage' => false,
+            'canManageScenes' => false,
+            'canManageCharacters' => false,
+            'canViewHidden' => false,
+            'accessLevel' => AccessLevel::NONE,
+        ];
         $userId = (int) ($auth['user_id'] ?? 0);
         if ($userId < 1 || !empty($auth['anonymous'])) {
             return $denied;
         }
 
         if (strtolower((string) ($auth['role'] ?? '')) === 'admin') {
-            return ['canAccess' => true, 'canManage' => true, 'canViewHidden' => true];
+            return [
+                'canAccess' => true, 'canManage' => true,
+                'canManageScenes' => true, 'canManageCharacters' => true,
+                'canViewHidden' => true,
+                'accessLevel' => AccessLevel::OWNER,
+            ];
         }
         if ((int) ($campaign['game_master_id'] ?? 0) === $userId) {
-            return ['canAccess' => true, 'canManage' => true, 'canViewHidden' => true];
+            return [
+                'canAccess' => true, 'canManage' => true,
+                'canManageScenes' => true, 'canManageCharacters' => true,
+                'canViewHidden' => true,
+                'accessLevel' => AccessLevel::OWNER,
+            ];
         }
         if (!$membership || empty($membership['is_active'])) {
             return $denied;
@@ -34,10 +53,21 @@ class CampaignAccessPolicy
         $manageDefault = $role === 'gm';
         $hiddenDefault = in_array($role, ['gm', 'assistant'], true);
 
+        $canManage = $this->permission($permissions, 'manage_campaign', $manageDefault);
+        $canManageScenes = $canManage
+            || $this->permission($permissions, 'manage_scenes', $manageDefault);
+        $canManageCharacters = $canManage
+            || $this->permission($permissions, 'manage_characters', $manageDefault);
         return [
             'canAccess' => true,
-            'canManage' => $this->permission($permissions, 'manage_scenes', $manageDefault),
+            'canManage' => $canManage,
+            'canManageScenes' => $canManageScenes,
+            'canManageCharacters' => $canManageCharacters,
             'canViewHidden' => $this->permission($permissions, 'view_hidden_scenes', $hiddenDefault),
+            'accessLevel' => $canManage
+                ? AccessLevel::OWNER
+                : (in_array($role, ['assistant', 'observer'], true)
+                    ? AccessLevel::OBSERVER : AccessLevel::LIMITED),
         ];
     }
 

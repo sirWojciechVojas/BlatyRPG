@@ -112,9 +112,14 @@ class CampaignDirectoryService
         }
 
         $userId = (int) $auth['user_id'];
+        $campaignData = $validated['data'];
+        $campaignData['status'] = !empty($campaignData['is_active']) ? 'active' : 'paused';
         $this->db->transBegin();
         try {
-            if (!$this->campaigns->insert($validated['data'] + ['game_master_id' => $userId])) {
+            if (!$this->campaigns->insert($campaignData + [
+                'game_master_id' => $userId,
+                'last_activity_at' => date('Y-m-d H:i:s'),
+            ])) {
                 throw new CampaignException(
                     'validation_failed',
                     'Campaign could not be created.',
@@ -221,8 +226,11 @@ class CampaignDirectoryService
             'id' => (int) $row['id'],
             'name' => (string) $row['name'],
             'description' => $row['description'] ?? null,
+            'banner_url' => $row['banner_url'] ?? null,
             'system_type' => (string) $row['system_type'],
             'is_active' => (bool) $row['is_active'],
+            'status' => (string) ($row['status'] ?? (!empty($row['is_active']) ? 'active' : 'paused')),
+            'settings' => is_array($row['settings_json'] ?? null) ? $row['settings_json'] : [],
             'game_master_id' => (int) $row['game_master_id'],
             'access_role' => $isAdmin
                 ? 'admin'
@@ -234,6 +242,7 @@ class CampaignDirectoryService
             ],
             'created_at' => $row['created_at'] ?? null,
             'updated_at' => $row['updated_at'] ?? null,
+            'last_activity_at' => $row['last_activity_at'] ?? null,
         ];
     }
 }

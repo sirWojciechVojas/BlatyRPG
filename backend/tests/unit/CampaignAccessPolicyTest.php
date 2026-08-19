@@ -47,4 +47,17 @@ final class CampaignAccessPolicyTest extends CIUnitTestCase
 
         $this->assertFalse($result['canAccess']);
     }
+
+    public function testGlobalGmCannotAccessAnotherGmsCampaign(): void
+    {
+        $result = (new CampaignAccessPolicy())->evaluate(
+            ['user_id' => 8, 'role' => 'gm', 'anonymous' => false],
+            ['game_master_id' => 7],
+            null
+        );
+
+        $this->assertFalse($result['canAccess']);
+        $this->assertFalse($result['canManage']);
+        $this->assertFalse($result['canManageCharacters']);
+    }
 }

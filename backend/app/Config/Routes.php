@@ -66,6 +66,19 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         // ----------------------------------------
         $routes->get('campaigns', 'CampaignController::index');
         $routes->post('campaigns', 'CampaignController::create');
+        $routes->get('campaigns/(:num)/settings', 'CampaignSettingsController::show/$1');
+        $routes->patch('campaigns/(:num)/settings', 'CampaignSettingsController::update/$1');
+        $routes->post('campaigns/(:num)/enter', 'CampaignSettingsController::enter/$1');
+        $routes->get('campaigns/(:num)/members', 'CampaignMemberController::index/$1');
+        $routes->patch('campaigns/(:num)/members/(:num)', 'CampaignMemberController::update/$1/$2');
+        $routes->delete('campaigns/(:num)/members/(:num)', 'CampaignMemberController::delete/$1/$2');
+        $routes->get('campaigns/(:num)/invitations', 'CampaignInvitationController::index/$1');
+        $routes->post('campaigns/(:num)/invitations', 'CampaignInvitationController::create/$1');
+        $routes->delete('campaigns/(:num)/invitations/(:num)', 'CampaignInvitationController::revoke/$1/$2');
+        $routes->get('campaign-invitations', 'CampaignInvitationController::mine');
+        $routes->post('campaign-invitations/(:num)/accept', 'CampaignInvitationController::accept/$1');
+        $routes->post('campaign-invitations/(:num)/reject', 'CampaignInvitationController::reject/$1');
+        $routes->post('campaigns/(:num)/realtime-ticket', 'RealtimeTicketController::create/$1');
         $routes->get('campaigns/(:num)/chat/messages', 'CampaignChatController::index/$1');
         $routes->post('campaigns/(:num)/chat/messages', 'CampaignChatController::create/$1');
 

@@ -52,7 +52,7 @@ class CampaignAccessService
     private function publicCapabilities(array $capabilities): array
     {
         return [
-            'canManage' => !empty($capabilities['canManage']),
+            'canManage' => !empty($capabilities['canManageScenes']),
             'canViewHidden' => !empty($capabilities['canViewHidden']),
         ];
     }

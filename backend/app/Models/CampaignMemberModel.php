@@ -14,6 +14,8 @@ class CampaignMemberModel extends BaseJsonModel
         'role',
         'permissions_json',
         'is_active',
+        'joined_at',
+        'left_at',
     ];
     protected $useTimestamps = true;
     protected $dateFormat = 'datetime';

@@ -39,4 +39,22 @@ final class CampaignAccessPolicySecurityTest extends CIUnitTestCase
         $this->assertFalse($result['canManage']);
         $this->assertFalse($result['canViewHidden']);
     }
+
+    public function testScenePermissionDoesNotGrantCampaignAdministration(): void
+    {
+        $result = (new CampaignAccessPolicy())->evaluate(
+            ['user_id' => 8, 'role' => 'player', 'anonymous' => false],
+            ['game_master_id' => 7],
+            [
+                'user_id' => 8,
+                'role' => 'player',
+                'is_active' => 1,
+                'permissions_json' => ['manage_scenes' => true],
+            ]
+        );
+
+        $this->assertTrue($result['canAccess']);
+        $this->assertTrue($result['canManageScenes']);
+        $this->assertFalse($result['canManage']);
+    }
 }
