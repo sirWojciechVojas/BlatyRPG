@@ -4,6 +4,8 @@
       "register": "Create account",
       "account": "Account options",
       "resetPassword": "Forgot password",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password",
       "signIn": "Back to sign in",
       "backToLanding": "Back to the landing page",
       "saving": "Saving…",

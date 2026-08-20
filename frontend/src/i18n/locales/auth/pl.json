@@ -4,6 +4,8 @@
       "register": "Utwórz konto",
       "account": "Opcje konta",
       "resetPassword": "Nie pamiętam hasła",
+      "showPassword": "Pokaż hasło",
+      "hidePassword": "Ukryj hasło",
       "signIn": "Wróć do logowania",
       "backToLanding": "Wróć na stronę główną",
       "saving": "Zapisywanie…",

@@ -105,4 +105,31 @@ describe("LoginView", () => {
     expect(instance.error).toBe("auth.errors.invalidCredentials");
     expect(authSession.read()).toBeNull();
   });
+
+  it("ignores a second submit while authentication is in progress", async () => {
+    let resolveRequest;
+    const pendingRequest = new Promise((resolveRequestPromise) => {
+      resolveRequest = resolveRequestPromise;
+    });
+    const loginRequest = vi
+      .spyOn(authApiClient, "login")
+      .mockReturnValue(pendingRequest);
+    const instance = context();
+    const credentials = {
+      login: "tester",
+      password: "valid-password",
+    };
+
+    const firstAttempt = options.methods.login.call(instance, credentials);
+    await Promise.resolve();
+    await options.methods.login.call(instance, credentials);
+
+    expect(loginRequest).toHaveBeenCalledTimes(1);
+    expect(instance.busy).toBe(true);
+
+    resolveRequest(result());
+    await firstAttempt;
+
+    expect(instance.busy).toBe(false);
+  });
 });

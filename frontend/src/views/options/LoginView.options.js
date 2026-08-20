@@ -28,6 +28,7 @@ export default {
       return this.$t(authErrorKey(error, "auth.errors.login"));
     },
     async login(credentials) {
+      if (this.busy) return;
       this.busy = true;
       this.error = "";
       let sessionSaved = false;
