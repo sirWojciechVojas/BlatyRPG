@@ -1,21 +1,29 @@
+@import url("https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap");
+
 .home-page {
-  --landing-ink: #f4f1e8;
-  --landing-muted: #aaa99f;
-  --landing-panel: rgba(20, 21, 22, 0.9);
-  --landing-border: rgba(255, 255, 255, 0.12);
-  --landing-accent: #d3a84a;
+  --landing-ink: #f6efe2;
+  --landing-muted: #c7b8a1;
+  --landing-panel: rgba(16, 11, 9, 0.82);
+  --landing-border: rgba(216, 183, 120, 0.3);
+  --landing-accent: #d8b778;
+  --landing-accent-bright: #f1d59c;
+  --landing-ember: #b35830;
   min-height: 100vh;
   color: var(--landing-ink);
   background:
-    linear-gradient(rgba(9, 10, 11, 0.92), rgba(9, 10, 11, 0.97)),
+    radial-gradient(
+      75rem 37.5rem at 10% 10%,
+      rgba(84, 53, 27, 0.48),
+      transparent 65%
+    ),
+    radial-gradient(
+      56.25rem 31.25rem at 85% 5%,
+      rgba(39, 66, 86, 0.28),
+      transparent 70%
+    ),
+    linear-gradient(rgba(11, 8, 7, 0.86), rgba(25, 18, 13, 0.94)),
     var(--landing-background) center / cover fixed;
-  font-family:
-    Inter,
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+  font-family: "EB Garamond", Garamond, "Times New Roman", serif;
 }
 
 .home-page *,
@@ -43,7 +51,12 @@
   min-height: 56px;
   padding: 6px clamp(12px, 3vw, 42px);
   border-bottom: 1px solid var(--landing-border);
-  background: rgba(10, 11, 12, 0.94);
+  background-image:
+    linear-gradient(180deg, rgba(10, 8, 7, 0.82), rgba(10, 8, 7, 0.6)),
+    var(--landing-navbar);
+  background-position: center top;
+  background-size: cover;
+  background-blend-mode: multiply;
   backdrop-filter: blur(14px);
 }
 
@@ -104,8 +117,8 @@
 
 .home-page .nav-link:hover,
 .home-page .ghost-link:hover {
-  color: var(--landing-ink);
-  background: rgba(255, 255, 255, 0.06);
+  color: var(--landing-accent-bright);
+  background: rgba(216, 183, 120, 0.08);
 }
 
 .home-page .topbar-actions {
@@ -121,8 +134,12 @@
   padding: 7px 13px;
   border: 1px solid var(--landing-accent);
   border-radius: 7px;
-  background: var(--landing-accent);
-  color: #17140d;
+  background: linear-gradient(
+    135deg,
+    var(--landing-accent-bright),
+    var(--landing-ember)
+  );
+  color: #1d120b;
   font-weight: 720;
   font-size: 0.82rem;
   cursor: pointer;
@@ -134,7 +151,7 @@
 
 .home-page .ghost-btn {
   border-color: var(--landing-border);
-  background: rgba(255, 255, 255, 0.035);
+  background: rgba(18, 12, 10, 0.6);
   color: var(--landing-ink);
 }
 

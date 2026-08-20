@@ -12,6 +12,7 @@ import bg2 from "@/assets/app-ui/img/bg2.jpg";
 import background from "@/assets/app-ui/img/background.jpg";
 import logo from "@/assets/app-ui/img/BlatyRPG-logo.png";
 import dice20 from "@/assets/app-ui/img/dice20.png";
+import navbar from "@/assets/app-ui/gfx/navbar-bg.jpg";
 
 export default {
   name: "HomeView",
@@ -26,7 +27,7 @@ export default {
     LandingUspStrip,
   },
   data: () => ({
-    assets: { bg1, bg2, background, logo, dice20 },
+    assets: { bg1, bg2, background, logo, dice20, navbar },
     plans: [],
     plansLoading: false,
     plansError: "",
@@ -37,6 +38,7 @@ export default {
         "--landing-background": `url("${this.assets.bg2}")`,
         "--landing-hero": `url("${this.assets.background}")`,
         "--landing-map": `url("${this.assets.bg1}")`,
+        "--landing-navbar": `url("${this.assets.navbar}")`,
       };
     },
   },

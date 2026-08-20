@@ -9,7 +9,7 @@
   min-height: 360px;
   border: 1px solid var(--landing-border);
   border-radius: 10px;
-  background: rgba(0, 0, 0, 0.22);
+  background: rgba(10, 7, 5, 0.34);
 }
 
 .home-page .module-lines {
@@ -27,7 +27,7 @@
   padding: 7px 10px;
   border: 1px solid var(--landing-border);
   border-radius: 7px;
-  background: #181a1c;
+  background: rgba(16, 11, 9, 0.85);
   color: var(--landing-muted);
   font-size: 0.72rem;
 }
@@ -78,7 +78,7 @@
 }
 
 .home-page .plans-section {
-  background: rgba(255, 255, 255, 0.018);
+  background: rgba(216, 183, 120, 0.025);
 }
 
 .home-page .plans-state {

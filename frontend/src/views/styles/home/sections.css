@@ -29,7 +29,7 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   border-bottom: 1px solid var(--landing-border);
-  background: rgba(255, 255, 255, 0.018);
+  background: rgba(216, 183, 120, 0.025);
 }
 
 .home-page .usp-card {
@@ -132,7 +132,7 @@
 }
 
 .home-page .gallery-section {
-  background: rgba(0, 0, 0, 0.18);
+  background: rgba(11, 8, 7, 0.35);
 }
 
 .home-page .gallery-grid {
@@ -163,7 +163,7 @@
   z-index: 1;
   inset: 0;
   content: "";
-  background: linear-gradient(transparent 10%, rgba(12, 13, 14, 0.92));
+  background: linear-gradient(transparent 10%, rgba(12, 9, 8, 0.92));
 }
 
 .home-page .shot-title,
@@ -183,7 +183,7 @@
   padding: 9px;
   border: 1px solid var(--landing-border);
   border-radius: 6px;
-  background: rgba(8, 9, 10, 0.75);
+  background: rgba(12, 9, 8, 0.78);
 }
 
 .home-page .shot-bar,
@@ -192,7 +192,7 @@
   width: 74%;
   height: 5px;
   border-radius: 5px;
-  background: #55595c;
+  background: rgba(216, 183, 120, 0.3);
 }
 
 .home-page .shot-line.wide {
@@ -206,7 +206,7 @@
   width: 30%;
   height: 8px;
   border-radius: 5px;
-  background: #55595c;
+  background: rgba(216, 183, 120, 0.3);
 }
 
 .home-page .gallery-strip {

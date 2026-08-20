@@ -116,7 +116,11 @@
   min-height: 390px;
   border: 1px solid rgba(211, 168, 74, 0.35);
   border-radius: 12px;
-  background: #121416;
+  background: linear-gradient(
+    160deg,
+    rgba(36, 25, 18, 0.95),
+    rgba(12, 9, 8, 0.92)
+  );
   box-shadow: 0 24px 70px rgba(0, 0, 0, 0.48);
 }
 
@@ -138,7 +142,7 @@
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: #595b5d;
+  background: rgba(216, 183, 120, 0.6);
 }
 
 .home-page .screen-title {
@@ -171,7 +175,7 @@
   height: 27px;
   border: 2px solid #f0cc78;
   border-radius: 50%;
-  background: #27343c;
+  background: radial-gradient(circle, #f1d59c 0%, #6a3f1f 70%);
 }
 
 .home-page .token-one {
@@ -200,7 +204,7 @@
   padding: 9px;
   border: 1px solid var(--landing-border);
   border-radius: 7px;
-  background: rgba(255, 255, 255, 0.025);
+  background: rgba(12, 9, 8, 0.8);
 }
 
 .home-page .side-title {
@@ -218,7 +222,11 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background: #34383c;
+  background: linear-gradient(
+    135deg,
+    rgba(241, 213, 156, 0.8),
+    rgba(107, 63, 31, 0.8)
+  );
 }
 
 .home-page .log-line,
@@ -226,7 +234,7 @@
   height: 5px;
   margin-top: 7px;
   border-radius: 4px;
-  background: #303438;
+  background: rgba(216, 183, 120, 0.18);
 }
 
 .home-page .log-line.wide {
@@ -239,7 +247,7 @@
   padding: 10px;
   border: 1px solid var(--landing-border);
   border-radius: 8px;
-  background: rgba(15, 16, 17, 0.96);
+  background: rgba(12, 9, 8, 0.92);
   box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
 }
 
