@@ -14,7 +14,12 @@
   overflow: hidden;
   border: 0;
   border-bottom: var(--ui-border);
-  background: color-mix(in srgb, var(--ui-color-surface) 97%, transparent);
+  background-color: var(--ui-color-surface);
+  background-image:
+    linear-gradient(rgba(10, 8, 7, 0.82), rgba(10, 8, 7, 0.68)),
+    url("../../assets/app-ui/gfx/navbar-bg.jpg");
+  background-position: center top;
+  background-size: auto, cover;
   color: var(--ui-color-text-muted);
   box-shadow: none;
   font-size: var(--ui-font-size-sm);
@@ -76,11 +81,11 @@
 }
 
 #app.ui-system-active .app-navigation--workspace {
-  background: color-mix(in srgb, var(--ui-color-canvas) 98%, transparent);
+  background-color: var(--ui-color-canvas);
 }
 
 #app.ui-system-active .app-navigation--public {
-  background: color-mix(in srgb, var(--ui-color-surface) 92%, transparent);
+  background-color: var(--ui-color-surface);
   backdrop-filter: blur(12px);
 }
 

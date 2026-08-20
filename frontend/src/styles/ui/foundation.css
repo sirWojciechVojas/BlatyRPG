@@ -26,7 +26,8 @@ body.ui-system-active {
   flex: 1 1 auto;
 }
 
-#app.ui-system-active.ui-shell--public > :first-child {
+#app.ui-system-active.ui-shell--public
+  > :first-child:not(.app-navigation) {
   flex: 1 0 auto;
 }
 

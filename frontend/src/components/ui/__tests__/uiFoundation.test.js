@@ -78,6 +78,16 @@ describe("route UI foundation", () => {
     });
   });
 
+  it("never stretches public navigation as page content", () => {
+    const source = readFileSync(
+      resolve(process.cwd(), "src/styles/ui/foundation.css"),
+      "utf8",
+    );
+
+    expect(source).toContain("> :first-child:not(.app-navigation)");
+    expect(source).not.toMatch(/ui-shell--public\s*>\s*:first-child\s*\{/);
+  });
+
   it("keeps each UI foundation file below 300 lines", () => {
     const files = [
       "src/components/ui/routeUi.js",
