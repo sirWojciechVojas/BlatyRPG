@@ -6,30 +6,21 @@
     embedded
   />
 
-  <div v-else-if="panelId === 'scenes'" class="table-scenes-panel">
-    <div v-if="canManage" class="table-scenes-panel__actions">
-      <button type="button" class="scene-button" @click="$emit('create-scene')">
-        {{ $t("vtt.scene.actions.create") }}
-      </button>
-      <button
-        type="button"
-        class="scene-button"
-        :disabled="!selectedScene"
-        @click="$emit('edit-scene')"
-      >
-        {{ $t("vtt.scene.actions.settings") }}
-      </button>
-    </div>
-    <SceneNavigation
-      :scenes="scenes"
-      :selected-id="selectedId"
-      :active-id="activeId"
-      :can-manage="canManage"
-      :busy="busy"
-      :show-header="false"
-      @select="$emit('select-scene', $event)"
-    />
-  </div>
+  <SceneManagerPanel
+    v-else-if="panelId === 'scenes'"
+    :scene="selectedScene"
+    :scenes="scenes"
+    :selected-id="selectedId"
+    :active-id="activeId"
+    :can-manage="canManage"
+    :busy="busy"
+    @select="$emit('select-scene', $event)"
+    @create="$emit('create-scene')"
+    @duplicate="$emit('duplicate-scene')"
+    @edit="$emit('edit-scene')"
+    @delete="$emit('delete-scene')"
+    @activate="$emit('activate-scene')"
+  />
 
   <TableCharacterPanel
     v-else-if="panelId === 'characters'"
@@ -54,7 +45,7 @@
 <script>
 import { defineAsyncComponent } from "vue";
 import CampaignChatPanel from "@/components/chat/CampaignChatPanel.vue";
-import SceneNavigation from "@/components/vtt/scene/SceneNavigation.vue";
+import SceneManagerPanel from "@/components/vtt/scene/SceneManagerPanel.vue";
 import TableContextPanel from "./TableContextPanel.vue";
 
 const TableCharacterPanel = defineAsyncComponent(
@@ -68,7 +59,7 @@ export default {
   name: "TablePanelContent",
   components: {
     CampaignChatPanel,
-    SceneNavigation,
+    SceneManagerPanel,
     TableCharacterPanel,
     TableContextPanel,
   },
@@ -88,7 +79,15 @@ export default {
     canOpenShop: { type: Boolean, default: false },
     busy: { type: Boolean, default: false },
   },
-  emits: ["select-scene", "create-scene", "edit-scene", "character-changed"],
+  emits: [
+    "select-scene",
+    "create-scene",
+    "duplicate-scene",
+    "edit-scene",
+    "delete-scene",
+    "activate-scene",
+    "character-changed",
+  ],
   computed: {
     selectedScene() {
       return this.scenes.find((scene) => scene.id === this.selectedId) || null;

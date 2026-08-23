@@ -225,6 +225,13 @@ export default {
       this.settingsMode = "edit";
       this.settingsOpen = true;
     },
+    duplicateScene() {
+      if (!this.selectedScene) return;
+      const name = this.$t("vtt.scene.actions.copyName", {
+        name: this.selectedScene.name,
+      });
+      this.$store.dispatch("vtt/duplicateSelectedScene", name).catch(() => {});
+    },
     async saveSettings(payload) {
       const action =
         this.settingsMode === "create"

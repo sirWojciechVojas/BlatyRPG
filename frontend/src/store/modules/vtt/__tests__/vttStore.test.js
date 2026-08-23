@@ -71,4 +71,19 @@ describe("VTT scene store", () => {
     expect(store.state.vtt.selectedSceneId).toBe(2);
     expect(store.getters["vtt/selectedScene"].name).toBe("New scene");
   });
+
+  it("duplicates the selected scene through the existing create API", async () => {
+    const api = apiMock(true);
+    const store = setup(api);
+    await store.dispatch("vtt/initialize");
+
+    await store.dispatch("vtt/duplicateSelectedScene", "Old road — copy");
+
+    expect(api.create).toHaveBeenCalledWith(
+      7,
+      expect.objectContaining({ name: "Old road — copy", sortOrder: 1 }),
+    );
+    expect(api.create.mock.calls[0][1]).not.toHaveProperty("id");
+    expect(api.create.mock.calls[0][1]).not.toHaveProperty("revision");
+  });
 });

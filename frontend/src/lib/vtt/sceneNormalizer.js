@@ -82,6 +82,18 @@ const WRITE_FIELDS = [
   ["sortOrder", "sort_order"],
 ];
 
+export const cloneSceneDraft = (source = {}, name = "") => {
+  const draft = {};
+  for (const [field] of WRITE_FIELDS) {
+    if (Object.prototype.hasOwnProperty.call(source, field)) {
+      draft[field] = source[field];
+    }
+  }
+  draft.name = String(name || source.name || "").trim();
+  draft.sortOrder = numberOr(source.sortOrder, 0) + 1;
+  return draft;
+};
+
 export const toSceneWritePayload = (source = {}, includeRevision = false) => {
   const payload = {};
   for (const [camel, snake] of WRITE_FIELDS) {

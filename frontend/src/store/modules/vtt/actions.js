@@ -1,3 +1,5 @@
+import { cloneSceneDraft } from "@/lib/vtt/sceneNormalizer";
+
 const normalizedError = (error) => ({
   code: String(error?.code || error?.message || "unknown_error"),
   status: Number(error?.status || 0),
@@ -72,6 +74,12 @@ export const createVttActions = (api) => ({
     } catch (error) {
       return failRequest(commit, requestId, error);
     }
+  },
+  duplicateSelectedScene({ state, getters, dispatch }, name) {
+    assertCanManage(state);
+    const scene = getters.selectedScene;
+    if (!scene) throw new Error("scene_required");
+    return dispatch("createScene", cloneSceneDraft(scene, name));
   },
   async updateSelectedScene({ state, getters, commit }, changes) {
     assertCanManage(state);

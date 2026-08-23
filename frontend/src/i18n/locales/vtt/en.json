@@ -8,6 +8,8 @@
       },
       "actions": {
         "create": "New scene",
+        "duplicate": "Duplicate",
+        "copyName": "{name} — copy",
         "zoomOut": "Zoom out",
         "zoomIn": "Zoom in",
         "fit": "Fit",
@@ -44,6 +46,7 @@
         "name": "Name",
         "description": "Description",
         "backgroundUrl": "Background URL",
+        "dimensions": "Dimensions",
         "width": "Width",
         "height": "Height",
         "padding": "Map padding",
@@ -64,6 +67,12 @@
         "square": "Square",
         "hex_pointy": "Hexagonal — pointy top",
         "hex_flat": "Hexagonal — flat top"
+      },
+      "preload": {
+        "idle": "Preload background",
+        "loading": "Loading…",
+        "ready": "Background ready",
+        "error": "Retry preload"
       },
       "errors": {
         "network": "Could not connect to the server.",

@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { createSceneApiClient } from "@/lib/vtt/sceneApiClient";
+import { cloneSceneDraft } from "@/lib/vtt/sceneNormalizer";
 
 const apiScene = {
   id: 4,
@@ -14,6 +15,29 @@ const apiScene = {
 };
 
 describe("sceneApiClient", () => {
+  it("clones only writable scene data", () => {
+    expect(
+      cloneSceneDraft(
+        {
+          ...apiScene,
+          backgroundUrl: apiScene.background_url,
+          sortOrder: 4,
+          revision: 9,
+        },
+        "Ruins — copy",
+      ),
+    ).toMatchObject({
+      name: "Ruins — copy",
+      backgroundUrl: apiScene.background_url,
+      width: 1600,
+      height: 900,
+      sortOrder: 5,
+    });
+    expect(
+      cloneSceneDraft({ ...apiScene, revision: 9 }, "Copy"),
+    ).not.toHaveProperty("revision");
+  });
+
   it("uses campaign routes and normalizes scene snapshots", async () => {
     const request = vi.fn().mockResolvedValue({
       scene: apiScene,

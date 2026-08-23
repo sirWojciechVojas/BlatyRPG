@@ -111,7 +111,10 @@
           :busy="busy"
           @select-scene="selectScene"
           @create-scene="openCreate"
+          @duplicate-scene="duplicateScene"
           @edit-scene="openEdit"
+          @delete-scene="requestDelete"
+          @activate-scene="activate"
           @character-changed="refreshCampaignContext"
         />
       </TableUtilityDrawer>
@@ -158,7 +161,10 @@
           :busy="busy"
           @select-scene="selectScene"
           @create-scene="openCreate"
+          @duplicate-scene="duplicateScene"
           @edit-scene="openEdit"
+          @delete-scene="requestDelete"
+          @activate-scene="activate"
           @character-changed="refreshCampaignContext"
         />
       </TableFloatingWindow>

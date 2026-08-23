@@ -8,6 +8,8 @@
       },
       "actions": {
         "create": "Nowa scena",
+        "duplicate": "Duplikuj",
+        "copyName": "{name} — kopia",
         "zoomOut": "Pomniejsz",
         "zoomIn": "Powiększ",
         "fit": "Dopasuj",
@@ -44,6 +46,7 @@
         "name": "Nazwa",
         "description": "Opis",
         "backgroundUrl": "Adres tła",
+        "dimensions": "Wymiary",
         "width": "Szerokość",
         "height": "Wysokość",
         "padding": "Margines mapy",
@@ -64,6 +67,12 @@
         "square": "Kwadratowa",
         "hex_pointy": "Heksagonalna — wierzchołek u góry",
         "hex_flat": "Heksagonalna — płaska u góry"
+      },
+      "preload": {
+        "idle": "Preload tła",
+        "loading": "Wczytywanie…",
+        "ready": "Tło gotowe",
+        "error": "Ponów preload"
       },
       "errors": {
         "network": "Brak połączenia z serwerem.",
