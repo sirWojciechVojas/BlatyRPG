@@ -31,6 +31,12 @@
     />
   </div>
 
+  <TableCharacterPanel
+    v-else-if="panelId === 'characters'"
+    :campaign-id="campaignId"
+    @changed="$emit('character-changed', $event)"
+  />
+
   <TableContextPanel
     v-else
     :panel-id="panelId"
@@ -46,13 +52,26 @@
 </template>
 
 <script>
+import { defineAsyncComponent } from "vue";
 import CampaignChatPanel from "@/components/chat/CampaignChatPanel.vue";
 import SceneNavigation from "@/components/vtt/scene/SceneNavigation.vue";
 import TableContextPanel from "./TableContextPanel.vue";
 
+const TableCharacterPanel = defineAsyncComponent(
+  () =>
+    import(
+      /* webpackChunkName: "table-characters" */ "./TableCharacterPanel.vue"
+    ),
+);
+
 export default {
   name: "TablePanelContent",
-  components: { CampaignChatPanel, SceneNavigation, TableContextPanel },
+  components: {
+    CampaignChatPanel,
+    SceneNavigation,
+    TableCharacterPanel,
+    TableContextPanel,
+  },
   props: {
     panelId: { type: String, required: true },
     instanceId: { type: String, default: "drawer" },
@@ -69,7 +88,7 @@ export default {
     canOpenShop: { type: Boolean, default: false },
     busy: { type: Boolean, default: false },
   },
-  emits: ["select-scene", "create-scene", "edit-scene"],
+  emits: ["select-scene", "create-scene", "edit-scene", "character-changed"],
   computed: {
     selectedScene() {
       return this.scenes.find((scene) => scene.id === this.selectedId) || null;

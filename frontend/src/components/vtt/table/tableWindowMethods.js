@@ -14,8 +14,16 @@ export const tableWindowMethods = {
     const utility = utilityById(id);
     if (!utility) return;
     const offset = this.panelWindows.length * 26;
-    const width = Math.min(380, Math.max(280, window.innerWidth - 96));
-    const height = Math.min(560, Math.max(260, window.innerHeight - 128));
+    const preferredWidth = Number(utility.windowWidth) || 380;
+    const preferredHeight = Number(utility.windowHeight) || 560;
+    const width = Math.min(
+      preferredWidth,
+      Math.max(280, window.innerWidth - 96),
+    );
+    const height = Math.min(
+      preferredHeight,
+      Math.max(260, window.innerHeight - 128),
+    );
     this.nextWindowZ += 1;
     this.panelWindows.push({
       id: `utility-${id}`,

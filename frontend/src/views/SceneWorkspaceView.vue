@@ -112,6 +112,7 @@
           @select-scene="selectScene"
           @create-scene="openCreate"
           @edit-scene="openEdit"
+          @character-changed="refreshCampaignContext"
         />
       </TableUtilityDrawer>
 
@@ -158,6 +159,7 @@
           @select-scene="selectScene"
           @create-scene="openCreate"
           @edit-scene="openEdit"
+          @character-changed="refreshCampaignContext"
         />
       </TableFloatingWindow>
     </div>

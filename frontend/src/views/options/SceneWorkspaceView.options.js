@@ -203,6 +203,9 @@ export default {
     refresh() {
       this.$store.dispatch("vtt/initialize").catch(() => {});
     },
+    refreshCampaignContext() {
+      this.$store.dispatch("campaignContext/refresh").catch(() => {});
+    },
     zoomOut() {
       this.$refs.canvas?.zoomBy(1 / 1.2);
     },
