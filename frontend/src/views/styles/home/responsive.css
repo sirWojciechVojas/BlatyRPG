@@ -82,6 +82,7 @@
 
 @media (max-width: 760px) {
   .home-page {
+    --landing-topbar-height: 50px;
     background-attachment: scroll;
   }
 
@@ -252,7 +253,6 @@
 
 @media (max-height: 720px) and (min-width: 1181px) {
   .home-page .hero {
-    min-height: auto;
     padding-block: 42px;
   }
 }

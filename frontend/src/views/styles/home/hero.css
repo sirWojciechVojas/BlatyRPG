@@ -4,7 +4,8 @@
   justify-content: center;
   align-items: center;
   gap: clamp(28px, 5vw, 72px);
-  min-height: min(720px, calc(100vh - 56px));
+  min-height: min(720px, calc(100vh - var(--landing-topbar-height)));
+  min-height: min(720px, calc(100svh - var(--landing-topbar-height)));
   padding: clamp(44px, 7vw, 88px) clamp(20px, 7vw, 110px);
   border-bottom: 1px solid var(--landing-border);
 }

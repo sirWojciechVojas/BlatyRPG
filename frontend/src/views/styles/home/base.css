@@ -8,6 +8,7 @@
   --landing-accent: #d8b778;
   --landing-accent-bright: #f1d59c;
   --landing-ember: #b35830;
+  --landing-topbar-height: 56px;
   min-height: 100vh;
   min-height: 100dvh;
   overflow-x: hidden;
@@ -47,6 +48,13 @@
   scroll-margin-top: 68px;
 }
 
+.home-page .landing-intro {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: calc(100vh - var(--landing-topbar-height));
+  min-height: calc(100svh - var(--landing-topbar-height));
+}
+
 .home-page .topbar {
   position: sticky;
   z-index: 20;
@@ -54,7 +62,7 @@
   display: grid;
   grid-template-columns: minmax(165px, 1fr) auto minmax(285px, 1fr);
   align-items: center;
-  min-height: 56px;
+  min-height: var(--landing-topbar-height);
   padding: 6px clamp(12px, 3vw, 42px);
   border-bottom: 1px solid var(--landing-border);
   background-image:

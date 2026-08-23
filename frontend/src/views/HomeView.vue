@@ -82,8 +82,10 @@
     </header>
 
     <main>
-      <LandingHeroSection :assets="assets" @scroll="scrollTo" />
-      <LandingUspStrip />
+      <div class="landing-intro">
+        <LandingHeroSection :assets="assets" @scroll="scrollTo" />
+        <LandingUspStrip />
+      </div>
       <LandingFeaturesSection />
       <LandingGallerySection :assets="assets" />
       <LandingModulesSection />
