@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\CampaignModel;
+use App\Models\CampaignMemberModel;
 use App\Models\ShopOwnerClaimModel;
 use App\Services\Shop\ShopAuthorizationService;
 use CodeIgniter\Test\CIUnitTestCase;
@@ -27,6 +28,26 @@ final class ShopOwnerClaimBatchStub extends ShopOwnerClaimModel
     }
 }
 
+final class ShopCampaignMemberBatchStub extends CampaignMemberModel
+{
+    private $rows;
+
+    public function __construct(array $rows = [])
+    {
+        $this->rows = $rows;
+    }
+
+    public function __call($name, $arguments)
+    {
+        return $this;
+    }
+
+    public function findAll(int $limit = 0, int $offset = 0)
+    {
+        return $this->rows;
+    }
+}
+
 /** @internal */
 final class ShopCampaignAccessMapTest extends CIUnitTestCase
 {
@@ -44,7 +65,8 @@ final class ShopCampaignAccessMapTest extends CIUnitTestCase
         $service = new ShopAuthorizationService(
             null,
             $claims,
-            $this->campaignModel()
+            $this->campaignModel(),
+            new ShopCampaignMemberBatchStub()
         );
 
         $result = $service->campaignAccessMap(
@@ -56,7 +78,7 @@ final class ShopCampaignAccessMapTest extends CIUnitTestCase
         $this->assertSame(1, $claims->findAllCalls);
     }
 
-    public function testGmAndAdminMapsFollowExistingAuthorizationRules(): void
+    public function testCampaignOwnerAndAdminMapsFollowAuthorizationRules(): void
     {
         $claims = new ShopOwnerClaimBatchStub([]);
         $campaigns = [
@@ -66,18 +88,19 @@ final class ShopCampaignAccessMapTest extends CIUnitTestCase
         $service = new ShopAuthorizationService(
             null,
             $claims,
-            $this->campaignModel()
+            $this->campaignModel(),
+            new ShopCampaignMemberBatchStub()
         );
 
         $this->assertSame(
             [1 => true, 2 => false],
-            $service->campaignAccessMap(['user_id' => 10, 'role' => 'gm'], $campaigns)
+            $service->campaignAccessMap(['user_id' => 10, 'role' => 'user'], $campaigns)
         );
         $this->assertSame(
             [1 => true, 2 => true],
             $service->campaignAccessMap(['user_id' => 99, 'role' => 'admin'], $campaigns)
         );
-        $this->assertSame(0, $claims->findAllCalls);
+        $this->assertSame(1, $claims->findAllCalls);
     }
 
     private function campaignModel(): CampaignModel

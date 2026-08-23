@@ -200,13 +200,17 @@ final class CharacterDirectoryService
         return $row;
     }
 
-    public function assertAssetSetManager(array $auth): array
+    public function assertAssetSetManager(array $auth, int $campaignId): array
     {
-        $auth = $this->verifiedAuth($auth);
-        if (!in_array($auth['role'], ['gm', 'admin'], true)) {
-            throw new CharacterException('forbidden', 'GM permissions are required.', 403);
+        $context = $this->campaignContext($auth, $campaignId);
+        if (empty($context['canManageAll'])) {
+            throw new CharacterException(
+                'forbidden',
+                'Campaign manager permissions are required.',
+                403
+            );
         }
-        return $auth;
+        return $context;
     }
 
     private function assignCreatedAssetSet(int $characterId, ?int $assetSetId): void

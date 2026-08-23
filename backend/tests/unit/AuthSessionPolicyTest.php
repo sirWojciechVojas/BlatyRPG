@@ -15,7 +15,7 @@ final class AuthSessionPolicyTest extends CIUnitTestCase
         );
 
         $this->assertTrue($result['valid']);
-        $this->assertSame('gm', $result['role']);
+        $this->assertSame('user', $result['role']);
     }
 
     /**

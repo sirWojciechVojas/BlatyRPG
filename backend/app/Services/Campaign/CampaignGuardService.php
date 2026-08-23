@@ -5,6 +5,7 @@ namespace App\Services\Campaign;
 use App\Models\CampaignMemberModel;
 use App\Models\CampaignModel;
 use App\Models\UserModel;
+use App\Services\Auth\UserRole;
 
 /** Canonical database-backed campaign authorization context. */
 class CampaignGuardService
@@ -85,7 +86,6 @@ class CampaignGuardService
 
     private function globalRole($role): string
     {
-        $normalized = strtolower(trim((string) $role));
-        return $normalized === 'user' ? 'player' : $normalized;
+        return UserRole::normalize($role);
     }
 }

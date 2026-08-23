@@ -37,7 +37,7 @@ final class AuthAccountService
             'username' => $data['username'],
             'email' => $data['email'],
             'password_hash' => $data['password'],
-            'role' => UserRole::PLAYER,
+            'role' => UserRole::USER,
         ]);
         if (!$inserted) {
             throw new AuthException(

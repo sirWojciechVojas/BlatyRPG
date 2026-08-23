@@ -82,12 +82,12 @@ describe("authApiClient", () => {
     expect(request.mock.calls[2][0]).toBe("/auth/password-reset/confirm");
   });
 
-  it("maps the legacy global user role to player", async () => {
+  it("keeps the regular application account role", async () => {
     const request = vi.fn().mockResolvedValue({
       user: { id: 4, username: "player", role: "user" },
     });
     await expect(createAuthApiClient({ request }).me()).resolves.toMatchObject({
-      role: "player",
+      role: "user",
     });
   });
 });

@@ -122,21 +122,21 @@ class CharacterController extends BaseController
         });
     }
 
-    /** GET /api/character-asset-sets/available */
+    /** GET /api/character-asset-sets/available?campaignId=1 */
     public function availableAssetSets()
     {
         return $this->execute(function (): array {
-            $this->characters->assertAssetSetManager($this->auth());
+            $this->characters->assertAssetSetManager($this->auth(), $this->campaignId(true));
             $sets = $this->assets->availableSets();
             return ['count' => count($sets), 'items' => $sets];
         });
     }
 
-    /** POST /api/character-asset-sets */
+    /** POST /api/character-asset-sets?campaignId=1 */
     public function createAssetSet()
     {
         return $this->execute(function (): array {
-            $this->characters->assertAssetSetManager($this->auth());
+            $this->characters->assertAssetSetManager($this->auth(), $this->campaignId(true));
             $input = $this->jsonPayload();
             try {
                 $set = $this->assets->createAvailableSet(

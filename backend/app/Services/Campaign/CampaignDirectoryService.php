@@ -6,6 +6,7 @@ use App\Models\CampaignMemberModel;
 use App\Models\CampaignModel;
 use App\Models\ShopOwnerClaimModel;
 use App\Models\UserModel;
+use App\Services\Auth\UserRole;
 use App\Services\Shop\ShopAuthorizationService;
 use CodeIgniter\Database\BaseConnection;
 
@@ -192,7 +193,7 @@ class CampaignDirectoryService
         if (!$user) {
             throw new CampaignException('unauthorized', 'Authentication is required.', 401);
         }
-        $auth['role'] = strtolower((string) ($user['role'] ?? 'user'));
+        $auth['role'] = UserRole::normalize($user['role'] ?? '');
         return $auth;
     }
 

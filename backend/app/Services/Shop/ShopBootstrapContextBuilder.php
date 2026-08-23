@@ -24,7 +24,9 @@ final class ShopBootstrapContextBuilder
     public function access(int $campaignId, array $authContext): array
     {
         $role = strtolower((string) ($authContext['role'] ?? ''));
-        $isGm = in_array($role, ['gm', 'admin'], true);
+        $isGm = $role === 'admin'
+            || ($authContext['campaign_role'] ?? null) === 'gm'
+            || !empty($authContext['is_campaign_manager']);
         $userId = isset($authContext['user_id']) ? (int) $authContext['user_id'] : null;
         $developmentAccess = !empty($authContext['development_access']);
         $selectedOwnerCodes = array_map('strtoupper', (array) ($authContext['selected_owner_codes'] ?? []));

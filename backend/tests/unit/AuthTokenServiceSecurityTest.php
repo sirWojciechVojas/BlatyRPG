@@ -37,7 +37,7 @@ final class AuthTokenServiceSecurityTest extends CIUnitTestCase
 
         $this->assertTrue($decoded['valid']);
         $this->assertSame(7, $decoded['user_id']);
-        $this->assertSame('player', $decoded['role']);
+        $this->assertSame('user', $decoded['role']);
         $this->assertSame(str_repeat('a', 32), $decoded['jti']);
         $this->assertSame(3600, $issued['expires_in']);
     }

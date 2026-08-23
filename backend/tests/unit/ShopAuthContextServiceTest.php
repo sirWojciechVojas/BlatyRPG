@@ -104,7 +104,8 @@ final class ShopAuthContextServiceTest extends CIUnitTestCase
 
             $result = (new AuthContextService())->resolveFromRequest($request);
 
-            $this->assertSame('gm', $result['role']);
+            $this->assertSame('user', $result['role']);
+            $this->assertSame('gm', $result['campaign_role']);
             $this->assertTrue($result['character_view']);
             $this->assertSame(['CHAR_3'], $result['selected_owner_codes']);
             $this->assertSame(3, $result['character_id']);
@@ -122,7 +123,7 @@ final class ShopAuthContextServiceTest extends CIUnitTestCase
     {
         $service = new AuthContextService();
 
-        $this->assertTrue($service->isGmOrAdmin(['role' => 'gm']));
+        $this->assertTrue($service->isGmOrAdmin(['role' => 'user', 'campaign_role' => 'gm']));
         $this->assertTrue($service->isGmOrAdmin(['role' => 'admin']));
         $this->assertFalse($service->isGmOrAdmin(['role' => 'user']));
     }

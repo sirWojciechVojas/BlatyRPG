@@ -32,10 +32,8 @@ class AuthContextService
 
     public function isGmOrAdmin(array $authContext): bool
     {
-        return in_array(
-            UserRole::normalize($authContext['role'] ?? ''),
-            [UserRole::GM, UserRole::ADMIN],
-            true
-        );
+        return UserRole::normalize($authContext['role'] ?? '') === UserRole::ADMIN
+            || ($authContext['campaign_role'] ?? null) === 'gm'
+            || !empty($authContext['is_campaign_manager']);
     }
 }

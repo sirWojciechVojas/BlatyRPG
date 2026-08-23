@@ -12,14 +12,12 @@ trait ShopTradeServicePart3
 {
     private function canForcePrices(array $payload, array $authContext): bool
     {
-        $role = strtolower((string) ($authContext['role'] ?? ''));
-        return !empty($payload['forcedPrices']) && in_array($role, ['gm', 'admin'], true);
+        return !empty($payload['forcedPrices']) && $this->campaignManager($authContext);
     }
 
     private function trustedCondition(array $selection, array $authContext, array $placements = []): string
     {
-        $role = strtolower((string) ($authContext['role'] ?? ''));
-        if (!in_array($role, ['gm', 'admin'], true)) {
+        if (!$this->campaignManager($authContext)) {
             $meta = $placements[0]['data_override_json'] ?? [];
             if (is_string($meta)) {
                 $meta = json_decode($meta, true) ?: [];
@@ -37,10 +35,16 @@ trait ShopTradeServicePart3
 
     private function containerStateForAuth(int $campaignId, string $ownerCode, array $authContext): array
     {
-        $role = strtolower((string) ($authContext['role'] ?? ''));
-        return in_array($role, ['gm', 'admin'], true)
+        return $this->campaignManager($authContext)
             ? $this->containerService->getContainers($campaignId, $ownerCode)
             : $this->containerService->getContainersForOwner($campaignId, $ownerCode);
+    }
+
+    private function campaignManager(array $authContext): bool
+    {
+        return strtolower((string) ($authContext['role'] ?? '')) === 'admin'
+            || ($authContext['campaign_role'] ?? null) === 'gm'
+            || !empty($authContext['is_campaign_manager']);
     }
 
     private function characterCarryLimit(): int

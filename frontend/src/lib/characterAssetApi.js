@@ -45,7 +45,8 @@ const request = async (path, options = {}) => {
 };
 
 export const characterAssetApi = {
-  availableSets: () => request("/character-asset-sets/available"),
+  availableSets: (campaignId) =>
+    request(`/character-asset-sets/available?campaignId=${Number(campaignId)}`),
   forCharacter: (characterId) =>
     request(`/characters/${Number(characterId)}/assets`),
   assign: (characterId, assetSetId) =>

@@ -4,8 +4,8 @@ const firstObject = (...values) =>
   values.find((value) => value && typeof value === "object") || null;
 
 const canonicalRole = (role) => {
-  const value = String(role || "player").toLowerCase();
-  return value === "user" ? "player" : value;
+  const value = String(role || "user").toLowerCase();
+  return ["player", "gm"].includes(value) ? "user" : value;
 };
 
 export const normalizeAuthUser = (user) => {

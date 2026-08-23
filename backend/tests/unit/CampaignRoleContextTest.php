@@ -7,7 +7,7 @@ final class CampaignRoleContextTest extends CIUnitTestCase
 {
     public function testGmCanBeAPlayerAtAnotherGameMastersCampaign(): void
     {
-        $auth = ['user_id' => 8, 'role' => 'gm'];
+        $auth = ['user_id' => 8, 'role' => 'user'];
         $own = CampaignRoleContext::resolve(
             $auth,
             ['game_master_id' => 8],
