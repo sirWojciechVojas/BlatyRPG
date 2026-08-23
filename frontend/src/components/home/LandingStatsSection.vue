@@ -8,7 +8,7 @@
       </div>
       <div class="stats-grid">
         <div v-for="item in items" :key="item.value" class="stat-card">
-          <div class="stat-value">{{ item.value }}</div>
+          <div class="stat-value">{{ $t(item.value) }}</div>
           <div class="stat-label">{{ $t(item.label) }}</div>
         </div>
       </div>
@@ -18,9 +18,15 @@
 
 <script setup>
 const items = [
-  { value: "WebSocket", label: "landing.stats.cards.realtime" },
-  { value: "3D", label: "landing.stats.cards.dice" },
-  { value: "PL / EN", label: "landing.stats.cards.languages" },
-  { value: "Self-hosted", label: "landing.stats.cards.hosting" },
+  {
+    value: "landing.stats.values.account",
+    label: "landing.stats.cards.account",
+  },
+  { value: "landing.stats.values.tables", label: "landing.stats.cards.tables" },
+  {
+    value: "landing.stats.values.together",
+    label: "landing.stats.cards.together",
+  },
+  { value: "landing.stats.values.roles", label: "landing.stats.cards.roles" },
 ];
 </script>

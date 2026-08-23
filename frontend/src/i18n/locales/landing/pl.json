@@ -2,24 +2,31 @@
   "landing": {
     "brand": {
       "title": "Blaty RPG",
-      "subtitle": "Wirtualny stół do wspólnych opowieści"
+      "subtitle": "Twoje miejsce do prowadzenia i grania"
     },
     "nav": {
       "primary": "Główna nawigacja",
+      "mobile": "Nawigacja mobilna",
       "features": "Możliwości",
+      "gallery": "Galeria",
       "modules": "Moduły",
+      "stats": "Statystyki",
       "plans": "Plany",
+      "start": "Start",
       "dice": "Kości 3D",
       "signIn": "Zaloguj się",
-      "createAccount": "Załóż konto"
+      "createAccount": "Załóż konto",
+      "startSession": "Rozpocznij sesję",
+      "openMenu": "Otwórz menu",
+      "closeMenu": "Zamknij menu"
     },
     "hero": {
-      "eyebrow": "Kampania w jednym miejscu",
+      "eyebrow": "Zbierz drużynę przy jednym Stole",
       "logoAlt": "Blaty RPG",
-      "title": "Prowadź sesje bez przełączania między narzędziami",
-      "lead": "Stół, uczestnicy, postacie, materiały i komunikacja czasu rzeczywistego tworzą jedną spójną przestrzeń kampanii.",
-      "primaryCta": "Załóż bezpłatne konto",
-      "secondaryCta": "Zobacz interfejs",
+      "title": "Twoja kampania zaczyna się tutaj",
+      "lead": "Przygotuj przygodę, zaproś graczy i prowadź sesję z mapą, postaciami, materiałami, czatem i rzutami kośćmi zawsze pod ręką.",
+      "primaryCta": "Stwórz swój Stół",
+      "secondaryCta": "Zobacz, jak to wygląda",
       "chips": {
         "maps": "Mapy i sceny",
         "characters": "Postacie i tokeny",
@@ -27,9 +34,12 @@
         "live": "Czat na żywo"
       },
       "metrics": {
-        "scenes": "Wirtualny stół",
-        "latency": "Komunikacja na żywo",
-        "hosting": "Rzuty kośćmi"
+        "scenesValue": "Scena",
+        "scenes": "Mapy i wspólna rozgrywka",
+        "latencyValue": "Drużyna",
+        "latency": "Czat i obecność drużyny",
+        "hostingValue": "Kości 3D",
+        "hosting": "Rzuty podczas sesji"
       },
       "screen": {
         "title": "Stół: Cienie nad Altdorfem",
@@ -38,54 +48,54 @@
         "journal": "Dziennik"
       },
       "cards": {
-        "gmTitle": "Panel MG",
-        "gmText": "Kampania, uczestnicy i zasoby pod kontrolą.",
-        "fogTitle": "Wspólna sesja",
-        "fogText": "Ten sam stan stołu dla całej drużyny."
+        "gmTitle": "Wszystko pod ręką",
+        "gmText": "Sceny, bohaterowie i materiały czekają tam, gdzie ich potrzebujesz.",
+        "fogTitle": "Drużyna razem",
+        "fogText": "Od razu widzisz, kto jest przy Stole i co dzieje się w grze."
       }
     },
     "usp": {
       "scenes": {
-        "title": "Stoły i kampanie",
-        "desc": "Oddzielny kontekst danych każdej opowieści."
+        "title": "Własny Stół",
+        "desc": "Osobne miejsce dla każdej prowadzonej opowieści."
       },
       "characters": {
-        "title": "Postacie",
-        "desc": "Karty i dostęp zgodny z rolą przy stole."
+        "title": "Bohaterowie",
+        "desc": "Karty postaci przypisane do właściwych graczy."
       },
       "narration": {
-        "title": "Sesja na żywo",
-        "desc": "Czat i obecność przez WebSocket."
+        "title": "Wspólna sesja",
+        "desc": "Rozmowa i obecność drużyny aktualizowane od razu."
       },
       "library": {
-        "title": "Materiały",
-        "desc": "Grafiki, handouty, muzyka i scenariusze."
+        "title": "Materiały pod ręką",
+        "desc": "Grafiki, handouty, muzyka i scenariusz w jednym miejscu."
       }
     },
     "features": {
-      "eyebrow": "Narzędzia",
-      "title": "Wszystko, czego potrzebuje stół",
-      "lead": "Kompaktowe moduły współdzielą kampanię, użytkowników i reguły dostępu.",
+      "eyebrow": "Dla całej drużyny",
+      "title": "Mniej organizowania, więcej grania",
+      "lead": "Blaty RPG porządkują przygotowania MG i dają graczom szybki dostęp do tego, czego potrzebują podczas sesji.",
       "items": {
         "campaigns": {
           "title": "Prowadzenie kampanii",
-          "desc": "Twórz Stoły, dobieraj system i setting oraz zarządzaj uczestnikami."
+          "desc": "Nadaj kampanii tytuł, wybierz system i świat, a potem zaproś drużynę."
         },
         "maps": {
           "title": "Wirtualny stół",
-          "desc": "Centralna przestrzeń dla map, scen i elementów sesji."
+          "desc": "Pokaż mapę, wybierz scenę i skup uwagę graczy na bieżącej przygodzie."
         },
         "characters": {
           "title": "Postacie i tokeny",
-          "desc": "Przypisuj bohaterów graczom i kontroluj ich widoczność."
+          "desc": "Każdy gracz prowadzi swojego bohatera, a MG zachowuje pełną kontrolę."
         },
         "chat": {
-          "title": "Czat czasu rzeczywistego",
-          "desc": "Wiadomości trafiają natychmiast do uczestników tego samego Stołu."
+          "title": "Czat przy Stole",
+          "desc": "Wiadomości pojawiają się od razu u wszystkich uczestników kampanii."
         },
         "dice": {
           "title": "Rzuty 3D",
-          "desc": "Osobny, istniejący moduł kości dostępny bez zmiany jego działania."
+          "desc": "Rzucaj kośćmi w efektownej oprawie 3D bez odrywania się od gry."
         },
         "handouts": {
           "title": "Handouty",
@@ -97,7 +107,7 @@
         },
         "graphics": {
           "title": "Biblioteka grafik",
-          "desc": "Trzymaj zasoby wizualne blisko narzędzi sesji."
+          "desc": "Trzymaj portrety, mapy i ilustracje gotowe do pokazania drużynie."
         },
         "shop": {
           "title": "Sklep",
@@ -109,24 +119,24 @@
         },
         "gmTools": {
           "title": "Narzędzia MG",
-          "desc": "Zarządzaj Stołem, uczestnikami, zasobami i przygotowaniem sesji."
+          "desc": "Zarządzaj Stołem, uczestnikami i przebiegiem sesji z jednego miejsca."
         }
       },
       "callout": {
         "gm": {
           "title": "Dla Mistrza Gry",
-          "desc": "Jedno miejsce do przygotowania i prowadzenia własnych kampanii."
+          "desc": "Przygotuj wcześniej sceny i materiały, a podczas gry skup się na opowieści."
         },
         "player": {
           "title": "Dla gracza",
-          "desc": "Szybki dostęp wyłącznie do zaproszonych Stołów i przypisanych postaci."
+          "desc": "Dołącz z zaproszenia, wybierz bohatera i od razu wróć do wspólnej przygody."
         }
       }
     },
     "gallery": {
-      "eyebrow": "Jeden interfejs",
-      "title": "Czytelny nawet w środku sesji",
-      "lead": "Najważniejsze informacje pozostają blisko obszaru VTT.",
+      "eyebrow": "Zobacz Blaty RPG",
+      "title": "Klimat gry bez zasłaniania mapy",
+      "lead": "Kompaktowe panele zostawiają dużo miejsca dla sceny, a potrzebne narzędzia są zawsze o jedno kliknięcie stąd.",
       "shots": {
         "table": {
           "title": "Stół kampanii",
@@ -146,19 +156,19 @@
       },
       "strip": {
         "fantasy": {
-          "title": "Wiele systemów",
-          "desc": "System RPG i świat są zarządzalnymi danymi Stołu."
+          "title": "Twój system i świat",
+          "desc": "Dopasuj Stół do zasad i realiów, w których rozgrywa się kampania."
         },
         "infographics": {
-          "title": "Gęsty układ",
-          "desc": "Kompaktowe panele zostawiają miejsce dla sceny."
+          "title": "Scena na pierwszym planie",
+          "desc": "Otwierasz tylko ten panel, którego właśnie potrzebujesz."
         }
       }
     },
     "modules": {
-      "eyebrow": "Wspólny fundament",
-      "title": "Moduły pracują w kontekście Stołu",
-      "lead": "Nie musisz ponownie logować się przy zmianie kampanii.",
+      "eyebrow": "Twój warsztat",
+      "title": "Od pomysłu do rozegranej sesji",
+      "lead": "Przygotowania, prowadzenie i rozwój kampanii spotykają się przy jednym Stole.",
       "nodes": {
         "engine": "Stół",
         "maps": "Sceny",
@@ -170,32 +180,32 @@
       },
       "cards": {
         "integrations": {
-          "title": "Jedna sesja użytkownika",
-          "desc": "Logowanie prowadzi do listy dostępnych Stołów.",
-          "tag1": "Profil",
-          "tag2": "Role",
-          "tag3": "Zaproszenia"
+          "title": "Przygotuj przygodę",
+          "desc": "Zbierz sceny, bohaterów i materiały jeszcze przed spotkaniem.",
+          "tag1": "Mapy",
+          "tag2": "Postacie",
+          "tag3": "Handouty"
         },
         "stability": {
-          "title": "Dane odseparowane kampanią",
-          "desc": "Backend weryfikuje członkostwo i uprawnienia.",
-          "tag1": "Campaign ID",
-          "tag2": "Ownership",
-          "tag3": "Permissions"
+          "title": "Prowadź bez chaosu",
+          "desc": "Przełączaj sceny, rozmawiaj z drużyną i wykonuj rzuty bez szukania kolejnych kart.",
+          "tag1": "Drużyna",
+          "tag2": "Czat",
+          "tag3": "Kości"
         },
         "growth": {
-          "title": "Gotowe na dalszy rozwój",
-          "desc": "Miejsce dla kolejnych narzędzi sceny bez atrap ich mechaniki.",
-          "tag1": "Ściany",
-          "tag2": "Światło",
-          "tag3": "Pomiary"
+          "title": "Rozwijaj kampanię",
+          "desc": "Dodawaj kolejne materiały, wyposażenie i oprawę do następnych rozdziałów opowieści.",
+          "tag1": "Scenariusze",
+          "tag2": "Sklep",
+          "tag3": "Muzyka"
         }
       }
     },
     "plans": {
       "eyebrow": "Subskrypcje",
       "title": "Wybierz zakres dla swoich kampanii",
-      "lead": "Ceny, limity i funkcje pochodzą z centralnej konfiguracji serwera.",
+      "lead": "Zacznij od pierwszej kampanii albo wybierz więcej miejsca na Stoły, graczy i materiały.",
       "loading": "Pobieranie planów…",
       "error": "Nie udało się pobrać aktualnych planów.",
       "retry": "Spróbuj ponownie",
@@ -245,23 +255,29 @@
       }
     },
     "stats": {
-      "eyebrow": "Technologia",
-      "title": "Praktyczne fundamenty sesji",
-      "lead": "Bez marketingowych liczb — tylko funkcje dostępne w aplikacji.",
+      "eyebrow": "Blaty RPG w praktyce",
+      "title": "Jedno miejsce na każdą sesję",
+      "lead": "Prowadzisz, grasz i wracasz do swoich kampanii bez ponownego układania całego warsztatu.",
+      "values": {
+        "account": "1 konto",
+        "tables": "Wiele Stołów",
+        "together": "Na żywo",
+        "roles": "MG + Gracze"
+      },
       "cards": {
-        "realtime": "Czat i obecność",
-        "dice": "Rzuty kośćmi",
-        "languages": "Interfejs",
-        "hosting": "Kontenery gotowe na NAS"
+        "account": "Wszystkie Twoje kampanie",
+        "tables": "Prowadź i graj w różnych opowieściach",
+        "together": "Drużyna widzi zmiany od razu",
+        "roles": "Każdy otrzymuje właściwe narzędzia"
       }
     },
     "cta": {
       "eyebrow": "Zacznij",
       "title": "Załóż konto i utwórz swój pierwszy Stół",
-      "lead": "Logujesz się do aplikacji, a potem swobodnie wybierasz kampanię.",
+      "lead": "Zaproś drużynę, przygotuj pierwszą scenę i rozpocznij wspólną opowieść.",
       "primaryCta": "Załóż konto",
       "secondaryCta": "Wypróbuj kości 3D",
-      "foot": "Jedno konto może należeć do wielu Stołów.",
+      "foot": "Jedno konto wystarczy do prowadzenia i grania w wielu kampaniach.",
       "diceAlt": "Kość dwudziestościenna"
     },
     "footer": {

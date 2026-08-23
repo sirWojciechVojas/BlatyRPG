@@ -28,6 +28,15 @@ export default {
   },
   data: () => ({
     assets: { bg1, bg2, background, logo, dice20, navbar },
+    menuOpen: false,
+    sectionLinks: [
+      { target: "features", label: "landing.nav.features" },
+      { target: "gallery", label: "landing.nav.gallery" },
+      { target: "modules", label: "landing.nav.modules" },
+      { target: "stats", label: "landing.nav.stats" },
+      { target: "plans", label: "landing.nav.plans" },
+      { target: "cta", label: "landing.nav.start" },
+    ],
     plans: [],
     plansLoading: false,
     plansError: "",
@@ -35,7 +44,7 @@ export default {
   computed: {
     styleVars() {
       return {
-        "--landing-background": `url("${this.assets.bg2}")`,
+        "--landing-background": `url("${this.assets.background}")`,
         "--landing-hero": `url("${this.assets.background}")`,
         "--landing-map": `url("${this.assets.bg1}")`,
         "--landing-navbar": `url("${this.assets.navbar}")`,
@@ -46,11 +55,21 @@ export default {
     this.loadPlans();
   },
   methods: {
+    selectSection(targetId) {
+      this.closeMenu();
+      this.scrollTo(targetId);
+    },
     scrollTo(targetId) {
       document.getElementById(targetId)?.scrollIntoView({
         behavior: "smooth",
         block: "start",
       });
+    },
+    toggleMenu() {
+      this.menuOpen = !this.menuOpen;
+    },
+    closeMenu() {
+      this.menuOpen = false;
     },
     async loadPlans() {
       this.plansLoading = true;

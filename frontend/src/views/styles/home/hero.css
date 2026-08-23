@@ -1,6 +1,7 @@
 .home-page .hero {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(420px, 1.1fr);
+  grid-template-columns: minmax(0, 620px) minmax(420px, 900px);
+  justify-content: center;
   align-items: center;
   gap: clamp(28px, 5vw, 72px);
   min-height: min(720px, calc(100vh - 56px));

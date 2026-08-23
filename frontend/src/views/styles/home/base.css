@@ -9,6 +9,8 @@
   --landing-accent-bright: #f1d59c;
   --landing-ember: #b35830;
   min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
   color: var(--landing-ink);
   background:
     radial-gradient(
@@ -18,7 +20,7 @@
     ),
     radial-gradient(
       56.25rem 31.25rem at 85% 5%,
-      rgba(39, 66, 86, 0.28),
+      rgba(91, 55, 28, 0.3),
       transparent 70%
     ),
     linear-gradient(rgba(11, 8, 7, 0.86), rgba(25, 18, 13, 0.94)),
@@ -41,12 +43,16 @@
   font: inherit;
 }
 
+.home-page section[id] {
+  scroll-margin-top: 68px;
+}
+
 .home-page .topbar {
   position: sticky;
   z-index: 20;
   top: 0;
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) auto minmax(300px, 1fr);
+  grid-template-columns: minmax(165px, 1fr) auto minmax(285px, 1fr);
   align-items: center;
   min-height: 56px;
   padding: 6px clamp(12px, 3vw, 42px);
@@ -125,6 +131,59 @@
   justify-content: flex-end;
 }
 
+.home-page .menu-toggle,
+.home-page .mobile-menu {
+  display: none;
+}
+
+.home-page .menu-toggle {
+  width: 40px;
+  height: 40px;
+  padding: 9px;
+  border: 1px solid var(--landing-border);
+  border-radius: 7px;
+  background: rgba(18, 12, 10, 0.72);
+  cursor: pointer;
+}
+
+.home-page .menu-toggle span {
+  display: block;
+  width: 100%;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--landing-ink);
+  transition:
+    transform 160ms ease,
+    opacity 160ms ease;
+}
+
+.home-page .menu-toggle span + span {
+  margin-top: 5px;
+}
+
+.home-page .topbar--menu-open .menu-toggle span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+}
+
+.home-page .topbar--menu-open .menu-toggle span:nth-child(2) {
+  opacity: 0;
+}
+
+.home-page .topbar--menu-open .menu-toggle span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+}
+
+.home-page .brand:focus-visible,
+.home-page .nav-link:focus-visible,
+.home-page .ghost-link:focus-visible,
+.home-page .cta-btn:focus-visible,
+.home-page .ghost-btn:focus-visible,
+.home-page .menu-toggle:focus-visible,
+.home-page .mobile-menu a:focus-visible {
+  outline: 2px solid var(--landing-accent-bright);
+  outline-offset: 2px;
+}
+
 .home-page .cta-btn,
 .home-page .ghost-btn {
   display: inline-flex;
@@ -157,4 +216,17 @@
 
 .home-page .cta-btn.small {
   min-height: 32px;
+}
+
+.home-page .landing-menu-enter-active,
+.home-page .landing-menu-leave-active {
+  transition:
+    opacity 150ms ease,
+    transform 150ms ease;
+}
+
+.home-page .landing-menu-enter-from,
+.home-page .landing-menu-leave-to {
+  opacity: 0;
+  transform: translateY(-6px);
 }
