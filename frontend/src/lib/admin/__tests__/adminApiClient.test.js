@@ -10,7 +10,18 @@ describe("adminApiClient", () => {
           { id: "2", username: "admin", role: "ADMIN", campaignCount: "1" },
         ],
         campaigns: [{ id: "4", name: "World", isActive: 1, memberCount: "2" }],
-        metrics: { users: "1", admins: "1", campaigns: "1" },
+        metrics: {
+          users: "1",
+          admins: "1",
+          campaigns: "1",
+          activeCampaigns: "1",
+          memberships: "2",
+          activeSessions: "1",
+        },
+        analytics: {
+          accountRoles: [{ key: "admin", value: "1" }],
+          growth: [{ label: "18.08", users: "1", campaigns: "0" }],
+        },
       }),
     };
     const result = await createAdminApiClient(client).overview();
@@ -21,16 +32,31 @@ describe("adminApiClient", () => {
       role: "admin",
       campaignCount: 1,
     });
-    expect(result.campaigns[0]).toMatchObject({ id: 4, memberCount: 2 });
+    expect(result.campaigns[0]).toMatchObject({
+      id: 4,
+      memberCount: 2,
+      status: "active",
+    });
+    expect(result.metrics).toMatchObject({
+      activeCampaigns: 1,
+      memberships: 2,
+      activeSessions: 1,
+    });
+    expect(result.analytics.accountRoles).toEqual([{ key: "admin", value: 1 }]);
+    expect(result.analytics.growth[0]).toEqual({
+      label: "18.08",
+      users: 1,
+      campaigns: 0,
+    });
   });
 
   it("uses dedicated write endpoints", async () => {
     const client = {
-      request: vi.fn().mockResolvedValue({ user: { id: 3, role: "gm" } }),
+      request: vi.fn().mockResolvedValue({ user: { id: 3, role: "user" } }),
     };
     const api = createAdminApiClient(client);
     await api.createUser({ username: "gm" });
-    await api.changeUserRole(3, "gm");
+    await api.changeUserRole(3, "user");
 
     expect(client.request).toHaveBeenNthCalledWith(1, "/admin/users", {
       method: "POST",
@@ -38,7 +64,7 @@ describe("adminApiClient", () => {
     });
     expect(client.request).toHaveBeenNthCalledWith(2, "/admin/users/3/role", {
       method: "PATCH",
-      body: { role: "gm" },
+      body: { role: "user" },
     });
   });
 });

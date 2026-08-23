@@ -7,6 +7,7 @@
           <th>{{ $t("admin.fields.system") }}</th>
           <th>{{ $t("admin.fields.gameMaster") }}</th>
           <th>{{ $t("admin.fields.members") }}</th>
+          <th>{{ $t("admin.fields.lastActivity") }}</th>
           <th>{{ $t("admin.fields.status") }}</th>
         </tr>
       </thead>
@@ -25,16 +26,21 @@
           <td>{{ campaign.systemType }}</td>
           <td>{{ campaign.gameMasterName || `#${campaign.gameMasterId}` }}</td>
           <td>{{ campaign.memberCount }}</td>
+          <td>{{ formatDate(campaign.lastActivityAt) }}</td>
           <td>
-            <span :class="['admin-status', { inactive: !campaign.isActive }]">
-              {{
-                $t(
-                  campaign.isActive
-                    ? "admin.status.active"
-                    : "admin.status.inactive",
-                )
-              }}
+            <span
+              :class="[
+                'admin-status',
+                { inactive: campaign.status !== 'active' },
+              ]"
+            >
+              {{ statusLabel(campaign.status) }}
             </span>
+          </td>
+        </tr>
+        <tr v-if="!campaigns.length">
+          <td colspan="6" class="admin-table-empty">
+            {{ $t("admin.campaigns.empty") }}
           </td>
         </tr>
       </tbody>
@@ -46,5 +52,17 @@
 export default {
   name: "AdminCampaignTable",
   props: { campaigns: { type: Array, required: true } },
+  methods: {
+    formatDate(value) {
+      if (!value) return "—";
+      return new Intl.DateTimeFormat(this.$i18n.locale, {
+        dateStyle: "short",
+      }).format(new Date(value));
+    },
+    statusLabel(status) {
+      const key = `admin.status.${status}`;
+      return this.$te(key) ? this.$t(key) : status;
+    },
+  },
 };
 </script>

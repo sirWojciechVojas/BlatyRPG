@@ -1,0 +1,53 @@
+.admin-activity-layout { grid-template-columns: minmax(0,1fr) minmax(15rem,.38fr); }
+.admin-activity-feed { grid-row: span 2; }
+.admin-activity-feed ol { margin: 0; padding: 0; list-style: none; }
+.admin-activity-feed li { display: grid; grid-template-columns: .55rem 1fr auto; gap: .55rem; align-items: center; padding: .48rem 0; border-bottom: 1px solid rgba(75,58,41,.5); }
+.admin-activity-feed li > i { width: .5rem; height: .5rem; border-radius: 50%; background: var(--ui-color-success); }
+.admin-activity-feed li > i.user_created { background: var(--ui-color-accent); }
+.admin-activity-feed li span { color: var(--ui-color-text-faint); font-size: .65rem; }
+.admin-activity-feed li strong { display: block; color: var(--ui-color-text); font-size: var(--ui-font-size-sm); }
+.admin-activity-feed time { color: var(--ui-color-text-faint); font-size: .62rem; }
+.admin-system-layout { grid-template-columns: repeat(2,minmax(0,1fr)); }
+.admin-system-card--wide { grid-column: 1/-1; }
+.admin-health { display: inline-flex; align-items: center; gap: .35rem; color: var(--ui-color-success); font-size: var(--ui-font-size-xs); }
+.admin-health i, .admin-check-list i { width: .45rem; height: .45rem; border-radius: 50%; background: var(--ui-color-success); }
+.admin-system-card dl { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: .45rem; margin: 0; }
+.admin-system-card dl div { padding: .5rem; border: 1px solid rgba(75,58,41,.6); border-radius: var(--ui-radius-sm); }
+.admin-system-card dt, .admin-role-model small { color: var(--ui-color-text-faint); font-size: .63rem; text-transform: uppercase; }
+.admin-system-card dd { margin: .12rem 0 0; color: var(--ui-color-text); font-family: var(--ui-font-mono); font-size: var(--ui-font-size-sm); }
+.admin-check-list { display: grid; grid-template-columns: repeat(2,1fr); gap: .5rem; margin: 0; padding: 0; list-style: none; }
+.admin-check-list li { display: flex; align-items: center; gap: .45rem; padding: .5rem; border: 1px solid rgba(75,58,41,.6); border-radius: var(--ui-radius-sm); color: var(--ui-color-text-muted); }
+.admin-role-model { display: grid; grid-template-columns: 1fr auto 1.5fr; gap: 1rem; align-items: center; }
+.admin-role-model div { padding: .6rem; border: var(--ui-border); border-radius: var(--ui-radius-sm); }
+.admin-role-model strong { display: block; margin-top: .18rem; color: var(--ui-color-accent); font-size: var(--ui-font-size-sm); }
+.admin-role-model > span { color: var(--ui-color-accent); }
+.admin-loading { display: flex; min-height: 15rem; align-items: center; justify-content: center; gap: .6rem; color: var(--ui-color-text-muted); }
+.admin-loading i { width: 1rem; height: 1rem; border: 2px solid var(--ui-color-border); border-top-color: var(--ui-color-accent); border-radius: 50%; animation: admin-spin .8s linear infinite; }
+@keyframes admin-spin { to { transform: rotate(360deg); } }
+@media (max-width: 1050px) {
+  .admin-kpis { grid-template-columns: repeat(3,1fr); }
+  .admin-overview { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .admin-users-layout, .admin-campaigns-layout { grid-template-columns: 1fr; }
+  .admin-create-card { order: -1; }
+  .admin-form-grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 720px) {
+  .admin-sync { display: none; }
+  .admin-shell { grid-template-columns: 1fr; }
+  .admin-tabs { display: flex; overflow-x: auto; padding: .4rem; border-right: 0; border-bottom: var(--ui-border); }
+  .admin-tabs button { min-width: 3rem; grid-template-columns: 1fr; justify-items: center; margin: 0; }
+  .admin-tabs button strong { font-size: .62rem; }
+  .admin-tabs button small { display: none; }
+  .admin-overview, .admin-activity-layout, .admin-system-layout { grid-template-columns: 1fr; }
+  .admin-chart-card--wide, .admin-system-card--wide { grid-column: auto; }
+  .admin-section-heading { align-items: stretch; flex-direction: column; }
+  .admin-search, .admin-filters { width: 100%; }
+}
+@media (max-width: 480px) {
+  .admin-header { align-items: flex-start; }
+  .admin-header__actions { align-self: center; }
+  .admin-secondary { max-width: 7rem; }
+  .admin-kpis, .admin-form-grid, .admin-system-card dl, .admin-check-list { grid-template-columns: repeat(2,1fr); }
+  .admin-role-model { grid-template-columns: 1fr; }
+  .admin-role-model > span { transform: rotate(90deg); text-align: center; }
+}

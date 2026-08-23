@@ -6,6 +6,7 @@
           <th>{{ $t("admin.fields.user") }}</th>
           <th>{{ $t("admin.fields.email") }}</th>
           <th>{{ $t("admin.fields.campaigns") }}</th>
+          <th>{{ $t("admin.fields.created") }}</th>
           <th>{{ $t("admin.fields.role") }}</th>
         </tr>
       </thead>
@@ -19,6 +20,7 @@
           </td>
           <td>{{ user.email }}</td>
           <td>{{ user.campaignCount }}</td>
+          <td>{{ formatDate(user.createdAt) }}</td>
           <td>
             <select
               :value="user.role"
@@ -32,6 +34,11 @@
                 {{ $t(`admin.roles.${role}`) }}
               </option>
             </select>
+          </td>
+        </tr>
+        <tr v-if="!users.length">
+          <td colspan="5" class="admin-table-empty">
+            {{ $t("admin.users.empty") }}
           </td>
         </tr>
       </tbody>
@@ -48,10 +55,16 @@ export default {
     busyUserId: { type: Number, default: 0 },
   },
   emits: ["role-change"],
-  data: () => ({ roles: ["player", "gm", "admin"] }),
+  data: () => ({ roles: ["user", "admin"] }),
   methods: {
     changeRole(user, role) {
       if (role !== user.role) this.$emit("role-change", { user, role });
+    },
+    formatDate(value) {
+      if (!value) return "—";
+      return new Intl.DateTimeFormat(this.$i18n.locale, {
+        dateStyle: "short",
+      }).format(new Date(value));
     },
   },
 };

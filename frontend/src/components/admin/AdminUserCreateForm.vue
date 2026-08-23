@@ -52,14 +52,14 @@ const emptyDraft = () => ({
   username: "",
   email: "",
   password: "",
-  role: "player",
+  role: "user",
 });
 
 export default {
   name: "AdminUserCreateForm",
   props: { busy: Boolean, error: { type: String, default: "" } },
   emits: ["submit"],
-  data: () => ({ draft: emptyDraft(), roles: ["player", "gm", "admin"] }),
+  data: () => ({ draft: emptyDraft(), roles: ["user", "admin"] }),
   methods: {
     submit() {
       this.$emit("submit", { ...this.draft });
