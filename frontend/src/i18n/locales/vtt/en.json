@@ -27,6 +27,7 @@
       },
       "workspace": {
         "title": "Scene",
+        "noSceneShort": "No scene",
         "noScene": "Select a scene or create a new one.",
         "loading": "Loading scenes…",
         "unauthorizedTitle": "Access denied",
@@ -75,7 +76,11 @@
       "header": {
         "kicker": "Campaign table",
         "switch": "Choose another table",
-        "online": "Online: {count}"
+        "online": "Online: {count}",
+        "previousScene": "Previous scene",
+        "nextScene": "Next scene",
+        "pause": "Pause",
+        "pauseUnavailable": "Game pause will be enabled with shared session state synchronization."
       },
       "drawer": {
         "kicker": "Table panel",
@@ -84,14 +89,46 @@
       "rail": {
         "label": "Table tools",
         "chat": "Chat",
+        "combat": "Combat Tracker",
         "graphics": "Image library",
         "characters": "Characters",
+        "items": "Items / Inventory",
         "handouts": "Handouts",
         "scenario": "Scenario",
+        "scenes": "Scenes",
+        "tables": "Roll Tables",
         "shop": "Shop",
         "jukebox": "Jukebox",
+        "compendium": "Compendium / Library",
         "notifications": "Notifications",
         "settings": "My settings"
+      },
+      "tools": {
+        "label": "Scene tools",
+        "unavailable": "Tool not available yet",
+        "select": "Select and move",
+        "tokens": "Tokens",
+        "measure": "Distance measurement",
+        "templates": "Area templates",
+        "walls": "Walls",
+        "doors": "Doors",
+        "lights": "Lights",
+        "sounds": "Sounds",
+        "tiles": "Tiles and map elements",
+        "drawings": "Drawings",
+        "notes": "Map notes",
+        "regions": "Regions",
+        "fog": "Fog of war",
+        "grid": "Grid configuration"
+      },
+      "hotbar": {
+        "label": "Quick access bar",
+        "configure": "Configure slot {slot}"
+      },
+      "window": {
+        "minimize": "Minimize window",
+        "restore": "Restore window",
+        "close": "Close window"
       },
       "gm": {
         "kicker": "Game mastering",

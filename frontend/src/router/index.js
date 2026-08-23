@@ -117,7 +117,12 @@ const routes = [
   {
     path: "/campaigns/:campaignId/scenes",
     name: "scene-workspace",
-    meta: { title: "Scenes", requiresAuth: true },
+    meta: {
+      title: "Table",
+      requiresAuth: true,
+      uiLayout: "workspace",
+      navigation: "hidden",
+    },
     beforeEnter: () => ensureVttStoreModuleForRoute(store),
     component: () =>
       import(

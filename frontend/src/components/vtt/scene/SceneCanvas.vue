@@ -2,7 +2,10 @@
   <section
     ref="viewport"
     class="scene-canvas"
-    :class="{ 'scene-canvas--dragging': dragging }"
+    :class="{
+      'scene-canvas--dragging': dragging,
+      [`scene-canvas--tool-${activeTool}`]: true,
+    }"
     tabindex="0"
     role="region"
     :aria-label="
@@ -70,7 +73,10 @@ import { buildGridPattern, clamp } from "@/lib/vtt/grid";
 
 export default {
   name: "SceneCanvas",
-  props: { scene: { type: Object, default: null } },
+  props: {
+    scene: { type: Object, default: null },
+    activeTool: { type: String, default: "select" },
+  },
   emits: ["camera-change"],
   data() {
     return {

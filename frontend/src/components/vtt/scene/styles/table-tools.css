@@ -1,0 +1,81 @@
+.table-tool-rail {
+  grid-area: tools;
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 0.25rem;
+  overflow: hidden;
+  border-right: 1px solid var(--ui-color-border, #2c3747);
+  background: var(--ui-color-surface, #121821);
+}
+
+.table-tool-rail__button {
+  position: relative;
+  display: grid;
+  width: 2.2rem;
+  min-height: 1.75rem;
+  flex: 1 1 2.2rem;
+  place-items: center;
+  padding: 0;
+  color: var(--ui-color-text-muted, #9ba8ba);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--ui-radius-sm, 0.25rem);
+}
+
+.table-tool-rail__button:hover:not(:disabled),
+.table-tool-rail__button--active {
+  color: var(--ui-color-accent, #d4a24c);
+  background: var(--ui-color-accent-soft, rgb(212 162 76 / 13%));
+  border-color: var(--ui-color-accent, #d4a24c);
+}
+
+.table-tool-rail__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.28;
+}
+
+.table-tool-rail__button svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.table-tool-rail__button span {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+.scene-toolbar {
+  position: absolute;
+  z-index: 12;
+  top: 0.5rem;
+  left: 0.5rem;
+  min-height: 2rem;
+  padding: 0.2rem;
+  border: 1px solid var(--ui-color-border, #2c3747);
+  border-radius: var(--ui-radius-sm, 0.25rem);
+  background: rgb(18 24 33 / 90%);
+  box-shadow: var(--ui-shadow-sm, 0 4px 12px rgb(0 0 0 / 25%));
+  backdrop-filter: blur(8px);
+}
+
+.scene-toolbar__identity {
+  display: none;
+}
+
+.scene-toolbar .scene-button {
+  min-width: 1.8rem;
+  min-height: 1.8rem;
+  padding: 0.15rem 0.35rem;
+  font-size: 0.65rem;
+}
+
+.scene-toolbar__zoom {
+  min-width: 2.5rem;
+  font-size: 0.65rem;
+}

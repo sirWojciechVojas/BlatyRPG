@@ -3,3 +3,7 @@
 @import url("./styles/scene-canvas.css");
 @import url("./styles/scene-settings.css");
 @import url("./styles/table-panels.css");
+@import url("./styles/table-header.css");
+@import url("./styles/table-tools.css");
+@import url("./styles/table-hotbar.css");
+@import url("./styles/table-windows.css");

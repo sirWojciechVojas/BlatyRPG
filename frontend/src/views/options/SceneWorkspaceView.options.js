@@ -1,13 +1,23 @@
-import CampaignChatPanel from "@/components/chat/CampaignChatPanel.vue";
 import UiConfirmDialog from "@/components/ui/UiConfirmDialog.vue";
 import SceneCanvas from "@/components/vtt/scene/SceneCanvas.vue";
 import SceneSettingsPanel from "@/components/vtt/scene/SceneSettingsPanel.vue";
 import SceneToolbar from "@/components/vtt/scene/SceneToolbar.vue";
-import GmToolPanel from "@/components/vtt/table/GmToolPanel.vue";
-import TableContextPanel from "@/components/vtt/table/TableContextPanel.vue";
+import TableFloatingWindow from "@/components/vtt/table/TableFloatingWindow.vue";
+import TableHotbar from "@/components/vtt/table/TableHotbar.vue";
+import TablePanelContent from "@/components/vtt/table/TablePanelContent.vue";
+import TableToolRail from "@/components/vtt/table/TableToolRail.vue";
 import TableUtilityDrawer from "@/components/vtt/table/TableUtilityDrawer.vue";
 import TableUtilityRail from "@/components/vtt/table/TableUtilityRail.vue";
-import { utilityById } from "@/components/vtt/table/tableUtilities";
+import TableWorkspaceHeader from "@/components/vtt/table/TableWorkspaceHeader.vue";
+import {
+  DEFAULT_TABLE_HOTBAR_ACTIONS,
+  tableHotbarActions,
+} from "@/components/vtt/table/tableHotbar";
+import { tableWindowMethods } from "@/components/vtt/table/tableWindowMethods";
+import {
+  IMPLEMENTED_TABLE_UTILITIES,
+  utilityById,
+} from "@/components/vtt/table/tableUtilities";
 import { ensureVttStoreModule } from "@/store/modules/loadVttModule";
 
 const emptyState = () => ({
@@ -23,14 +33,16 @@ const emptyState = () => ({
 export default {
   name: "SceneWorkspaceView",
   components: {
-    CampaignChatPanel,
-    GmToolPanel,
     SceneCanvas,
     SceneSettingsPanel,
     SceneToolbar,
-    TableContextPanel,
+    TableFloatingWindow,
+    TableHotbar,
+    TablePanelContent,
+    TableToolRail,
     TableUtilityDrawer,
     TableUtilityRail,
+    TableWorkspaceHeader,
     UiConfirmDialog,
   },
   data: () => ({
@@ -38,7 +50,10 @@ export default {
     settingsOpen: false,
     settingsMode: "edit",
     zoomPercent: 100,
+    activeSceneTool: "select",
     activePanelId: "",
+    panelWindows: [],
+    nextWindowZ: 400,
     confirmDeleteOpen: false,
   }),
   computed: {
@@ -95,6 +110,20 @@ export default {
     drawerOpen() {
       return this.settingsOpen || Boolean(this.activeUtility);
     },
+    availableUtilityIds() {
+      return IMPLEMENTED_TABLE_UTILITIES.filter(
+        (id) => id !== "shop" || this.canOpenShop,
+      );
+    },
+    hotbarStorageKey() {
+      return `blatyrpg.table.${this.currentCampaignId}.hotbar`;
+    },
+    defaultHotbarActions() {
+      return DEFAULT_TABLE_HOTBAR_ACTIONS;
+    },
+    hotbarActions() {
+      return tableHotbarActions(this.$t, this.canManage);
+    },
     errorMessage() {
       if (this.state.error?.network) return this.$t("vtt.scene.errors.network");
       if (this.state.error?.status === 409)
@@ -132,6 +161,7 @@ export default {
     this.loadCampaign();
   },
   methods: {
+    ...tableWindowMethods,
     async loadCampaign() {
       this.activePanelId = this.$route.hash === "#campaign-chat" ? "chat" : "";
       this.settingsOpen = false;
@@ -142,11 +172,33 @@ export default {
     },
     selectUtility(id) {
       this.settingsOpen = false;
+      const existing = this.panelWindows.find((item) => item.panelId === id);
+      if (existing) {
+        this.activePanelId = "";
+        this.focusUtilityWindow(existing.id);
+        return;
+      }
       this.activePanelId = this.activePanelId === id ? "" : id;
     },
     selectScene(sceneId) {
       this.settingsOpen = false;
       this.$store.dispatch("vtt/selectScene", sceneId).catch(() => {});
+    },
+    selectRelativeScene(offset) {
+      if (!this.scenes.length) return;
+      const index = this.scenes.findIndex(
+        (scene) => scene.id === this.state.selectedSceneId,
+      );
+      const next =
+        (Math.max(0, index) + offset + this.scenes.length) % this.scenes.length;
+      this.selectScene(this.scenes[next].id);
+    },
+    selectSceneTool(id) {
+      if (id === "grid") {
+        this.openEdit();
+        return;
+      }
+      this.activeSceneTool = id;
     },
     refresh() {
       this.$store.dispatch("vtt/initialize").catch(() => {});
@@ -196,6 +248,19 @@ export default {
     },
     activate() {
       this.$store.dispatch("vtt/activateSelectedScene").catch(() => {});
+    },
+    runHotbarAction(id) {
+      const actions = {
+        "zoom-out": this.zoomOut,
+        fit: this.fitCanvas,
+        "zoom-in": this.zoomIn,
+        refresh: this.refresh,
+        chat: () => this.selectUtility("chat"),
+        characters: () => this.selectUtility("characters"),
+        scenes: () => this.selectUtility("scenes"),
+        settings: this.openEdit,
+      };
+      actions[id]?.();
     },
   },
 };

@@ -27,6 +27,7 @@
       },
       "workspace": {
         "title": "Scena",
+        "noSceneShort": "Brak sceny",
         "noScene": "Wybierz scenę lub utwórz nową.",
         "loading": "Wczytywanie scen…",
         "unauthorizedTitle": "Brak dostępu",
@@ -75,7 +76,11 @@
       "header": {
         "kicker": "Stół kampanii",
         "switch": "Wybierz inny Stół",
-        "online": "Online: {count}"
+        "online": "Online: {count}",
+        "previousScene": "Poprzednia scena",
+        "nextScene": "Następna scena",
+        "pause": "Pauza",
+        "pauseUnavailable": "Pauza gry zostanie włączona wraz z synchronizacją stanu sesji."
       },
       "drawer": {
         "kicker": "Panel Stołu",
@@ -84,14 +89,46 @@
       "rail": {
         "label": "Narzędzia Stołu",
         "chat": "Czat",
+        "combat": "Walka / Combat Tracker",
         "graphics": "Biblioteka grafik",
         "characters": "Postacie",
+        "items": "Przedmioty / Ekwipunek",
         "handouts": "Handouty",
         "scenario": "Scenariusz",
+        "scenes": "Sceny",
+        "tables": "Tabele losowe",
         "shop": "Sklep",
         "jukebox": "Szafa grająca",
+        "compendium": "Compendium / Biblioteka",
         "notifications": "Powiadomienia",
         "settings": "Moje ustawienia"
+      },
+      "tools": {
+        "label": "Narzędzia sceny",
+        "unavailable": "Narzędzie jeszcze niedostępne",
+        "select": "Zaznaczanie i przesuwanie",
+        "tokens": "Tokeny",
+        "measure": "Pomiar odległości",
+        "templates": "Szablony obszarowe",
+        "walls": "Ściany",
+        "doors": "Drzwi",
+        "lights": "Światła",
+        "sounds": "Dźwięki",
+        "tiles": "Tiles i elementy mapy",
+        "drawings": "Rysowanie",
+        "notes": "Notatki mapy",
+        "regions": "Regiony",
+        "fog": "Fog of war",
+        "grid": "Konfiguracja grida"
+      },
+      "hotbar": {
+        "label": "Pasek szybkiego dostępu",
+        "configure": "Skonfiguruj slot {slot}"
+      },
+      "window": {
+        "minimize": "Minimalizuj okno",
+        "restore": "Przywróć okno",
+        "close": "Zamknij okno"
       },
       "gm": {
         "kicker": "Prowadzenie",

@@ -1,0 +1,91 @@
+.table-floating-window {
+  position: fixed;
+  display: flex;
+  min-width: 17.5rem;
+  min-height: 2.25rem;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--ui-color-text, #edf2f8);
+  border: 1px solid var(--ui-color-border-strong, #435167);
+  border-radius: var(--ui-radius-md, 0.4rem);
+  background: var(--ui-color-surface, #121821);
+  box-shadow: 0 18px 50px rgb(0 0 0 / 48%);
+}
+
+.table-floating-window--minimized {
+  min-width: 13rem;
+}
+
+.table-floating-window__header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  min-height: 2.25rem;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.25rem 0.3rem 0.25rem 0.55rem;
+  cursor: move;
+  touch-action: none;
+  border-bottom: 1px solid var(--ui-color-border, #2c3747);
+  background: var(--ui-color-surface-raised, #1c2633);
+  user-select: none;
+}
+
+.table-floating-window--minimized .table-floating-window__header {
+  border-bottom: 0;
+}
+
+.table-floating-window__header > svg {
+  width: 1rem;
+  height: 1rem;
+  color: var(--ui-color-accent, #d4a24c);
+}
+
+.table-floating-window__header h2 {
+  overflow: hidden;
+  margin: 0;
+  font-size: 0.75rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table-floating-window__header button {
+  display: grid;
+  width: 1.65rem;
+  height: 1.65rem;
+  place-items: center;
+  padding: 0;
+  color: var(--ui-color-text-muted, #9ba8ba);
+  background: transparent;
+  border: 0;
+  border-radius: var(--ui-radius-sm, 0.25rem);
+}
+
+.table-floating-window__header button:hover {
+  color: var(--ui-color-text, #edf2f8);
+  background: var(--ui-color-surface-subtle, #171f2a);
+}
+
+.table-floating-window__body {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.table-floating-window__body > .campaign-chat,
+.table-floating-window__body > .table-scenes-panel {
+  height: 100%;
+}
+
+.table-scenes-panel {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.table-scenes-panel__actions {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.4rem;
+  border-bottom: 1px solid var(--ui-color-border, #2c3747);
+}

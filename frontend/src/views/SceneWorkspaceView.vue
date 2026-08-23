@@ -23,39 +23,26 @@
       class="scene-workspace__layout"
       :class="{ 'scene-workspace__layout--drawer': drawerOpen }"
     >
-      <header class="table-workspace-header">
-        <div class="table-workspace-header__identity">
-          <small>{{ $t("vtt.table.header.kicker") }}</small>
-          <h1>{{ campaign.name || $t("vtt.scene.workspace.title") }}</h1>
-          <span v-if="selectedScene">{{ selectedScene.name }}</span>
-        </div>
-        <div class="table-workspace-header__status">
-          <span
-            class="presence-dot"
-            :class="{ online: realtime.status === 'ready' }"
-          ></span>
-          <span>{{
-            $t(`campaignLobby.connection.${realtime.status || "disconnected"}`)
-          }}</span>
-          <span>{{
-            $t("vtt.table.header.online", { count: onlineMembers.length })
-          }}</span>
-        </div>
-        <router-link class="scene-button" :to="{ name: 'tables' }">
-          {{ $t("vtt.table.header.switch") }}
-        </router-link>
-      </header>
-
-      <GmToolPanel
+      <TableWorkspaceHeader
+        :campaign="campaign"
+        :scene="selectedScene"
         :scenes="scenes"
         :selected-id="state.selectedSceneId"
         :active-id="state.activeSceneId"
+        :online-members="onlineMembers"
+        :realtime-status="realtime.status || 'disconnected'"
         :can-manage="canManage"
         :busy="busy"
-        @select="selectScene"
-        @create="openCreate"
-        @edit="openEdit"
-        @characters="selectUtility('characters')"
+        @select-scene="selectScene"
+        @previous-scene="selectRelativeScene(-1)"
+        @next-scene="selectRelativeScene(1)"
+        @activate="activate"
+      />
+
+      <TableToolRail
+        :active-id="activeSceneTool"
+        :can-manage="canManage"
+        @select="selectSceneTool"
       />
 
       <section class="scene-workspace__main">
@@ -86,6 +73,7 @@
           "
           ref="canvas"
           :scene="selectedScene"
+          :active-tool="activeSceneTool"
           @camera-change="zoomPercent = $event.zoomPercent"
         />
       </section>
@@ -106,27 +94,72 @@
         :panel-id="activeUtility.id"
         @close="activePanelId = ''"
       >
-        <CampaignChatPanel
-          v-if="activePanelId === 'chat'"
-          id="campaign-chat"
-          :campaign-id="currentCampaignId"
-          embedded
-        />
-        <TableContextPanel
-          v-else
+        <TablePanelContent
           :panel-id="activePanelId"
+          instance-id="drawer"
+          :campaign-id="currentCampaignId"
           :campaign="campaign"
           :scenes="scenes"
+          :selected-id="state.selectedSceneId"
+          :active-id="state.activeSceneId"
           :characters="characters"
           :members="members"
           :invitations="invitations"
           :realtime-status="realtime.status"
           :can-manage="canManage"
           :can-open-shop="canOpenShop"
+          :busy="busy"
+          @select-scene="selectScene"
+          @create-scene="openCreate"
+          @edit-scene="openEdit"
         />
       </TableUtilityDrawer>
 
-      <TableUtilityRail :active-id="activePanelId" @select="selectUtility" />
+      <TableHotbar
+        :actions="hotbarActions"
+        :default-action-ids="defaultHotbarActions"
+        :storage-key="hotbarStorageKey"
+        @activate="runHotbarAction"
+      />
+
+      <TableUtilityRail
+        :active-id="activePanelId"
+        :available-ids="availableUtilityIds"
+        @select="selectUtility"
+        @open="openUtilityWindow"
+      />
+
+      <TableFloatingWindow
+        v-for="panelWindow in panelWindows"
+        :key="panelWindow.id"
+        :model="panelWindow"
+        :title="$t(panelWindow.labelKey)"
+        :icon="panelWindow.icon"
+        @move="moveUtilityWindow"
+        @focus="focusUtilityWindow"
+        @minimize="toggleUtilityWindow"
+        @close="closeUtilityWindow"
+      >
+        <TablePanelContent
+          :panel-id="panelWindow.panelId"
+          :instance-id="panelWindow.id"
+          :campaign-id="currentCampaignId"
+          :campaign="campaign"
+          :scenes="scenes"
+          :selected-id="state.selectedSceneId"
+          :active-id="state.activeSceneId"
+          :characters="characters"
+          :members="members"
+          :invitations="invitations"
+          :realtime-status="realtime.status"
+          :can-manage="canManage"
+          :can-open-shop="canOpenShop"
+          :busy="busy"
+          @select-scene="selectScene"
+          @create-scene="openCreate"
+          @edit-scene="openEdit"
+        />
+      </TableFloatingWindow>
     </div>
 
     <UiConfirmDialog

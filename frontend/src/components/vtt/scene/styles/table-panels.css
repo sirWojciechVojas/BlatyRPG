@@ -6,6 +6,7 @@
   align-items: stretch;
   gap: 1px;
   padding: var(--ui-space-1, 0.25rem);
+  overflow: hidden;
   border-left: 1px solid var(--ui-color-border, #2c3747);
   background: var(--ui-color-surface, #121821);
 }
@@ -29,6 +30,17 @@
   color: var(--ui-color-text, #edf2f8);
   background: var(--ui-color-accent-soft, rgb(114 167 242 / 14%));
   border-color: var(--ui-color-accent, #72a7f2);
+}
+
+.table-utility-rail__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.26;
+}
+
+.table-utility-rail__button:disabled:hover {
+  color: var(--ui-color-text-muted, #9ba8ba);
+  background: transparent;
+  border-color: transparent;
 }
 
 .table-utility-rail__button svg {
@@ -209,6 +221,10 @@
   display: flex;
   flex-wrap: wrap;
   gap: var(--ui-space-2, 0.375rem);
+}
+
+.table-scenes-panel .scene-navigation {
+  flex: 1;
 }
 
 .presence-dot {
