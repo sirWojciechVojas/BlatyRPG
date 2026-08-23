@@ -11,7 +11,7 @@
   --landing-topbar-height: 56px;
   min-height: 100vh;
   min-height: 100dvh;
-  overflow-x: hidden;
+  overflow-x: clip;
   color: var(--landing-ink);
   background:
     radial-gradient(
@@ -45,7 +45,7 @@
 }
 
 .home-page section[id] {
-  scroll-margin-top: 68px;
+  scroll-margin-top: calc(var(--landing-topbar-height) + 12px);
 }
 
 .home-page .landing-intro {

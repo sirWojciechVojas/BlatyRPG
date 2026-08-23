@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@/components/home/LandingCtaSection.vue", () => ({ default: {} }));
@@ -60,5 +62,31 @@ describe("HomeView landing navigation", () => {
 
     options.methods.closeMenu.call(context);
     expect(context.menuOpen).toBe(false);
+  });
+
+  it("keeps complete sections in view without breaking the sticky navbar", () => {
+    const baseStyles = readFileSync(
+      resolve(process.cwd(), "src/views/styles/home/base.css"),
+      "utf8",
+    );
+    const sectionStyles = readFileSync(
+      resolve(process.cwd(), "src/views/styles/home/sections.css"),
+      "utf8",
+    );
+    const moduleStyles = readFileSync(
+      resolve(process.cwd(), "src/views/styles/home/modules-plans.css"),
+      "utf8",
+    );
+
+    expect(baseStyles).toContain("overflow-x: clip");
+    expect(baseStyles).toMatch(
+      /\.home-page \.topbar\s*\{[^}]*position: sticky/s,
+    );
+    expect(sectionStyles).toContain(
+      "min-height: calc(100svh - var(--landing-topbar-height))",
+    );
+    expect(moduleStyles).not.toMatch(
+      /\.home-page \.stat-value\s*\{[^}]*text-overflow/s,
+    );
   });
 });
