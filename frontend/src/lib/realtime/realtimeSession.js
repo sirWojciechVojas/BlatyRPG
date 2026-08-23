@@ -7,6 +7,7 @@ import {
   syncRequestMessage,
 } from "./realtimeProtocol";
 import { createRealtimeEventRouter } from "./realtimeEventRouter";
+import { createRealtimeTimers } from "./realtimeTimers";
 import { createReconnectBudget } from "./reconnectBudget";
 import {
   realtimeCloseStatus,
@@ -23,10 +24,7 @@ export const createRealtimeSession = (options = {}) => {
   const WebSocketImpl =
     options.WebSocket || (typeof WebSocket === "undefined" ? null : WebSocket);
   const sequence = options.sequence || createRealtimeSequence(options);
-  const timers = {
-    set: options.setTimeout || setTimeout,
-    clear: options.clearTimeout || clearTimeout,
-  };
+  const timers = createRealtimeTimers(options);
   const clientInstanceId =
     options.clientInstanceId || getClientInstanceId(options);
   const callbacks = {
