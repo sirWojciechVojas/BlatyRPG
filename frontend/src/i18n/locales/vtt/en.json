@@ -172,6 +172,8 @@
       "shop": {
         "description": "Equipment and trading in the current campaign.",
         "open": "Open shop",
+        "openWindow": "Open Shop in a window",
+        "loadError": "The Shop module could not be loaded.",
         "unavailable": "You cannot access this table's shop."
       },
       "jukebox": {

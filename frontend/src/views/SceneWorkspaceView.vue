@@ -116,6 +116,7 @@
           @delete-scene="requestDelete"
           @activate-scene="activate"
           @character-changed="refreshCampaignContext"
+          @open-window="openUtilityWindow"
         />
       </TableUtilityDrawer>
 
@@ -166,6 +167,7 @@
           @delete-scene="requestDelete"
           @activate-scene="activate"
           @character-changed="refreshCampaignContext"
+          @open-window="openUtilityWindow"
         />
       </TableFloatingWindow>
     </div>

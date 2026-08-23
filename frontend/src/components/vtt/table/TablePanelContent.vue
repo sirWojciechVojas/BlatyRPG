@@ -28,6 +28,12 @@
     @changed="$emit('character-changed', $event)"
   />
 
+  <TableShopPanel
+    v-else-if="panelId === 'shop'"
+    :compact="instanceId === 'drawer'"
+    @promote="$emit('open-window', 'shop')"
+  />
+
   <TableContextPanel
     v-else
     :panel-id="panelId"
@@ -47,6 +53,7 @@ import { defineAsyncComponent } from "vue";
 import CampaignChatPanel from "@/components/chat/CampaignChatPanel.vue";
 import SceneManagerPanel from "@/components/vtt/scene/SceneManagerPanel.vue";
 import TableContextPanel from "./TableContextPanel.vue";
+import TableShopPanel from "./TableShopPanel.vue";
 
 const TableCharacterPanel = defineAsyncComponent(
   () =>
@@ -62,6 +69,7 @@ export default {
     SceneManagerPanel,
     TableCharacterPanel,
     TableContextPanel,
+    TableShopPanel,
   },
   props: {
     panelId: { type: String, required: true },
@@ -87,6 +95,7 @@ export default {
     "delete-scene",
     "activate-scene",
     "character-changed",
+    "open-window",
   ],
   computed: {
     selectedScene() {

@@ -172,6 +172,8 @@
       "shop": {
         "description": "Ekwipunek i handel w kontekście bieżącej kampanii.",
         "open": "Otwórz sklep",
+        "openWindow": "Otwórz Sklep w oknie",
+        "loadError": "Nie udało się wczytać modułu Sklepu.",
         "unavailable": "Nie masz dostępu do sklepu tego Stołu."
       },
       "jukebox": {
