@@ -41,6 +41,24 @@ describe("HomeView landing navigation", () => {
     );
   });
 
+  it("replaces sign-in actions with the correct destination after login", () => {
+    expect(
+      options.computed.isAuthenticated.call({
+        session: { user: { role: "user" } },
+      }),
+    ).toBe(true);
+    expect(
+      options.computed.authenticatedPrimaryRoute.call({
+        session: { user: { role: "user" } },
+      }),
+    ).toEqual({ name: "tables" });
+    expect(
+      options.computed.authenticatedPrimaryRoute.call({
+        session: { user: { role: "admin" } },
+      }),
+    ).toEqual({ name: "admin" });
+  });
+
   it("closes the compact menu before scrolling to a section", () => {
     const context = {
       menuOpen: true,

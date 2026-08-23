@@ -7,6 +7,7 @@ import LandingPlansSection from "@/components/home/LandingPlansSection.vue";
 import LandingStatsSection from "@/components/home/LandingStatsSection.vue";
 import LandingUspStrip from "@/components/home/LandingUspStrip.vue";
 import { subscriptionPlanApiClient } from "@/lib/subscription/subscriptionPlanApiClient";
+import { authSession } from "@/lib/auth/authSession";
 import bg1 from "@/assets/app-ui/img/bg1.jpg";
 import bg2 from "@/assets/app-ui/img/bg2.jpg";
 import background from "@/assets/app-ui/img/background.jpg";
@@ -29,6 +30,8 @@ export default {
   data: () => ({
     assets: { bg1, bg2, background, logo, dice20, navbar },
     menuOpen: false,
+    session: authSession.read(),
+    unsubscribeAuth: null,
     sectionLinks: [
       { target: "features", label: "landing.nav.features" },
       { target: "gallery", label: "landing.nav.gallery" },
@@ -42,6 +45,19 @@ export default {
     plansError: "",
   }),
   computed: {
+    isAuthenticated() {
+      return Boolean(this.session?.user);
+    },
+    authenticatedPrimaryRoute() {
+      return {
+        name: this.session?.user?.role === "admin" ? "admin" : "tables",
+      };
+    },
+    authenticatedPrimaryLabel() {
+      return this.session?.user?.role === "admin"
+        ? "landing.nav.adminPanel"
+        : "landing.nav.myTables";
+    },
     styleVars() {
       return {
         "--landing-background": `url("${this.assets.background}")`,
@@ -52,7 +68,13 @@ export default {
     },
   },
   mounted() {
+    this.unsubscribeAuth = authSession.subscribe((session) => {
+      this.session = session;
+    });
     this.loadPlans();
+  },
+  beforeUnmount() {
+    this.unsubscribeAuth?.();
   },
   methods: {
     selectSection(targetId) {

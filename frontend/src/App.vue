@@ -11,10 +11,6 @@
     aria-label="Blaty RPG"
   >
     <router-link :to="{ name: 'landing' }">{{ $t("nav.home") }}</router-link>
-    <template v-if="isAdmin">
-      <span class="nav-sep" aria-hidden="true">|</span>
-      <router-link :to="{ name: 'admin' }">{{ $t("admin.title") }}</router-link>
-    </template>
     <span class="nav-sep" aria-hidden="true">|</span>
     <router-link :to="{ name: 'about' }">{{ $t("nav.about") }}</router-link>
     <span class="nav-sep" aria-hidden="true">|</span>
@@ -54,6 +50,15 @@
         </option>
       </select>
     </label>
+    <template v-if="session?.user">
+      <span class="nav-sep" aria-hidden="true">|</span>
+      <UserAccountMenu
+        :session="session"
+        :is-admin="isAdmin"
+        :logging-out="loggingOut"
+        @logout="logout"
+      />
+    </template>
   </nav>
   <router-view />
   <ShopAccessModeSelector v-if="$route.name === 'shop-gm'" />
@@ -62,6 +67,8 @@
 <script>
 import { availableLocales, setLocale } from "@/i18n";
 import ShopAccessModeSelector from "@/components/shop/ShopAccessModeSelector.vue";
+import UserAccountMenu from "@/components/navigation/UserAccountMenu.vue";
+import { authApiClient } from "@/lib/auth/authApiClient";
 import { authSession } from "@/lib/auth/authSession";
 import {
   UI_ROOT_CLASS_NAMES,
@@ -70,13 +77,14 @@ import {
 } from "@/components/ui/routeUi";
 export default {
   name: "AppRoot",
-  components: { ShopAccessModeSelector },
+  components: { ShopAccessModeSelector, UserAccountMenu },
 
   data() {
     return {
       localization: {},
       locales: availableLocales,
       session: authSession.read(),
+      loggingOut: false,
       unsubscribeAuth: null,
       // Nazwa aplikacji (fallback do tytułu zakładki)
       appTitle:
@@ -144,6 +152,21 @@ export default {
     },
   },
   methods: {
+    async logout() {
+      if (this.loggingOut) return;
+      this.loggingOut = true;
+      try {
+        if (authSession.read()) await authApiClient.logout();
+      } catch (_error) {
+        // Local sign-out must still work if the server is temporarily offline.
+      } finally {
+        authSession.clear("logout");
+        this.loggingOut = false;
+        if (this.$route.name !== "landing") {
+          await this.$router.replace({ name: "landing" });
+        }
+      }
+    },
     uiRootElements() {
       if (typeof document === "undefined") {
         return [];

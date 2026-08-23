@@ -31,6 +31,14 @@ const sessionResult = (payload) => {
 
 const trim = (value) => String(value || "").trim();
 
+const normalizeSession = (session = {}) => ({
+  id: Number(session.id) || null,
+  isCurrent: Boolean(session.isCurrent ?? session.is_current),
+  createdAt: session.createdAt ?? session.created_at ?? null,
+  lastSeenAt: session.lastSeenAt ?? session.last_seen_at ?? null,
+  expiresAt: session.expiresAt ?? session.expires_at ?? null,
+});
+
 export const createAuthApiClient = (client = jsonApiClient) => ({
   async login({ login, password }) {
     const payload = await client.request("/auth/login", {
@@ -64,6 +72,26 @@ export const createAuthApiClient = (client = jsonApiClient) => ({
 
   logout() {
     return client.request("/auth/logout", { method: "POST" });
+  },
+
+  async sessions(options = {}) {
+    const payload = await client.request("/auth/sessions", options);
+    const sessions = payload?.sessions ?? payload?.data?.sessions ?? [];
+    return Array.isArray(sessions)
+      ? sessions.map(normalizeSession).filter((session) => session.id)
+      : [];
+  },
+
+  revokeSession(sessionId) {
+    const id = Number(sessionId);
+    if (!Number.isInteger(id) || id < 1) {
+      throw new TypeError("session_id_must_be_positive_integer");
+    }
+    return client.request(`/auth/sessions/${id}`, { method: "DELETE" });
+  },
+
+  revokeOtherSessions() {
+    return client.request("/auth/sessions/revoke-others", { method: "POST" });
   },
 
   async updateProfile(changes) {

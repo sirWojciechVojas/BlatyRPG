@@ -11,7 +11,7 @@
   justify-content: flex-end;
   gap: var(--ui-space-1);
   padding: var(--ui-space-2) var(--ui-space-3);
-  overflow: hidden;
+  overflow: visible;
   border: 0;
   border-bottom: var(--ui-border);
   background-color: var(--ui-color-surface);

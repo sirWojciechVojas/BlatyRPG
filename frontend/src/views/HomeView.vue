@@ -27,12 +27,22 @@
         <router-link class="ghost-link" :to="{ name: 'dice' }">
           {{ $t("landing.nav.dice") }}
         </router-link>
-        <router-link class="ghost-link" :to="{ name: 'login' }">
-          {{ $t("landing.nav.signIn") }}
-        </router-link>
-        <router-link class="cta-btn small" :to="{ name: 'register' }">
-          {{ $t("landing.nav.startSession") }}
-        </router-link>
+        <template v-if="isAuthenticated">
+          <router-link class="ghost-link" :to="{ name: 'profile' }">
+            {{ $t("landing.nav.userPanel") }}
+          </router-link>
+          <router-link class="cta-btn small" :to="authenticatedPrimaryRoute">
+            {{ $t(authenticatedPrimaryLabel) }}
+          </router-link>
+        </template>
+        <template v-else>
+          <router-link class="ghost-link" :to="{ name: 'login' }">
+            {{ $t("landing.nav.signIn") }}
+          </router-link>
+          <router-link class="cta-btn small" :to="{ name: 'register' }">
+            {{ $t("landing.nav.startSession") }}
+          </router-link>
+        </template>
       </div>
       <button
         type="button"
@@ -66,16 +76,30 @@
             <router-link :to="{ name: 'dice' }" @click="closeMenu">
               {{ $t("landing.nav.dice") }}
             </router-link>
-            <router-link :to="{ name: 'login' }" @click="closeMenu">
-              {{ $t("landing.nav.signIn") }}
-            </router-link>
-            <router-link
-              class="cta-btn"
-              :to="{ name: 'register' }"
-              @click="closeMenu"
-            >
-              {{ $t("landing.nav.startSession") }}
-            </router-link>
+            <template v-if="isAuthenticated">
+              <router-link :to="{ name: 'profile' }" @click="closeMenu">
+                {{ $t("landing.nav.userPanel") }}
+              </router-link>
+              <router-link
+                class="cta-btn"
+                :to="authenticatedPrimaryRoute"
+                @click="closeMenu"
+              >
+                {{ $t(authenticatedPrimaryLabel) }}
+              </router-link>
+            </template>
+            <template v-else>
+              <router-link :to="{ name: 'login' }" @click="closeMenu">
+                {{ $t("landing.nav.signIn") }}
+              </router-link>
+              <router-link
+                class="cta-btn"
+                :to="{ name: 'register' }"
+                @click="closeMenu"
+              >
+                {{ $t("landing.nav.startSession") }}
+              </router-link>
+            </template>
           </div>
         </div>
       </transition>

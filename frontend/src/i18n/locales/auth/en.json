@@ -36,11 +36,86 @@
     "resetConfirm": { "title": "Set a new password" },
     "profile": {
       "title": "User profile",
-      "saved": "Your profile has been saved."
+      "saved": "Your profile has been saved.",
+      "eyebrow": "Account details",
+      "details": "Profile and contact details",
+      "avatarHelp": "Enter a secure HTTPS image address. Initials are shown when the image is unavailable."
     },
     "password": {
       "title": "Change password",
-      "changed": "Your password and session were securely renewed."
+      "changed": "Your password and session were securely renewed.",
+      "hint": "Changing your password ends all other account sessions."
+    },
+    "account": {
+      "openMenu": "Open account menu",
+      "panel": "User panel",
+      "tables": "My Tables",
+      "invitations": "Invitations",
+      "admin": "Administrator panel",
+      "landing": "Landing page",
+      "logout": "Sign out",
+      "loggingOut": "Signing out…",
+      "user": "User",
+      "roleAdmin": "Administrator",
+      "roleUser": "Blaty RPG user"
+    },
+    "userPanel": {
+      "title": "User panel",
+      "eyebrow": "Your Blaty RPG account",
+      "backToTables": "Back to Tables",
+      "loading": "Loading account data…",
+      "tabs": {
+        "overview": "Overview",
+        "profile": "Profile",
+        "security": "Security",
+        "preferences": "Preferences"
+      },
+      "overview": {
+        "eyebrow": "At a glance",
+        "title": "Your play space",
+        "openTables": "View all Tables",
+        "tables": "Available Tables",
+        "managed": "Managed",
+        "invitations": "Invitations",
+        "sessions": "Active sessions",
+        "recentTables": "Recent Tables",
+        "noTables": "You do not belong to a Table yet.",
+        "quickActions": "Quick actions",
+        "createOrJoin": "Choose or create a Table",
+        "reviewInvitations": "Review invitations",
+        "openDice": "Open 3D Dice",
+        "roles": { "gm": "Game Master", "player": "Player" },
+        "status": { "active": "Active", "paused": "Paused" }
+      }
+    },
+    "security": {
+      "eyebrow": "Account protection",
+      "title": "Password and active sessions"
+    },
+    "sessions": {
+      "title": "Active sessions",
+      "hint": "Devices where your account remains signed in.",
+      "current": "This browser",
+      "browser": "Another browser session",
+      "lastActive": "Last active",
+      "expires": "Expires",
+      "active": "Current",
+      "revoke": "End",
+      "revokeOthers": "End all others",
+      "revoked": "The session has been ended.",
+      "othersRevoked": "Other sessions have been ended.",
+      "empty": "There are no active sessions.",
+      "unknown": "unknown"
+    },
+    "preferences": {
+      "eyebrow": "Interface",
+      "title": "Application preferences",
+      "language": "Application language",
+      "languageHint": "The change applies to the entire interface and is remembered.",
+      "appearance": "Appearance",
+      "appearanceHint": "A consistent Blaty RPG theme optimized for working at the Table.",
+      "compactBrown": "Brown · compact",
+      "saved": "Preferences have been saved."
     },
     "errors": {
       "generic": "The operation failed.",
