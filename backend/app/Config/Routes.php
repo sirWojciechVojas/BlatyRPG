@@ -62,6 +62,9 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->post('auth/logout', 'AuthSessionController::logout');
         $routes->patch('auth/profile', 'AuthSessionController::updateProfile');
         $routes->post('auth/change-password', 'AuthSessionController::changePassword');
+        $routes->get('auth/sessions', 'AuthSessionController::sessions');
+        $routes->delete('auth/sessions/(:num)', 'AuthSessionController::revokeSession/$1');
+        $routes->post('auth/sessions/revoke-others', 'AuthSessionController::revokeOtherSessions');
         $routes->get('me', 'AuthSessionController::me');
 
         // ----------------------------------------
