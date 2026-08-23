@@ -13,7 +13,6 @@ const routes = [
   {
     path: "/",
     name: "landing",
-    meta: { redirectAuthenticated: true },
     component: HomeView,
   },
   {
