@@ -55,19 +55,20 @@ class CampaignDirectoryService
         $auth = $this->verifiedAuth($auth);
         $userId = (int) $auth['user_id'];
         $isAdmin = strtolower((string) $auth['role']) === 'admin';
-        $query = $this->campaigns->select('campaigns.*');
+        $query = $this->campaigns->select([
+            'campaigns.*',
+            'member.user_id AS membership_user_id',
+            'member.role AS membership_role',
+            'member.permissions_json AS membership_permissions',
+            'member.is_active AS membership_active',
+        ])->join(
+            'campaign_members member',
+            'member.campaign_id = campaigns.id AND member.user_id = ' . $userId,
+            'left'
+        );
 
         if (!$isAdmin) {
-            $query->select([
-                'member.user_id AS membership_user_id',
-                'member.role AS membership_role',
-                'member.permissions_json AS membership_permissions',
-                'member.is_active AS membership_active',
-            ])->join(
-                'campaign_members member',
-                'member.campaign_id = campaigns.id AND member.user_id = ' . $userId,
-                'left'
-            )->groupStart()
+            $query->groupStart()
                 ->where('campaigns.game_master_id', $userId)
                 ->orWhere('member.user_id', $userId)
                 ->groupEnd();
@@ -79,7 +80,7 @@ class CampaignDirectoryService
         $shopAccess = $this->shopAuthorization->campaignAccessMap($auth, $rows);
         $items = [];
         foreach ($rows as $row) {
-            $membership = $isAdmin ? null : $this->membershipFromRow($row);
+            $membership = $this->membershipFromRow($row);
             $capabilities = $this->policy->evaluate($auth, $row, $membership);
             if (!$capabilities['canAccess']) {
                 continue;
@@ -89,7 +90,6 @@ class CampaignDirectoryService
                 $row,
                 $capabilities,
                 $membership,
-                $isAdmin,
                 !empty($shopAccess[(int) $row['id']])
             );
         }
@@ -177,7 +177,6 @@ class CampaignDirectoryService
             $campaign,
             $capabilities,
             $membership,
-            strtolower((string) $auth['role']) === 'admin',
             !empty($shopAccess[$campaignId])
         )];
     }
@@ -227,10 +226,9 @@ class CampaignDirectoryService
         array $row,
         array $capabilities,
         ?array $membership,
-        bool $isAdmin,
         bool $canOpenShop
     ): array {
-        $isOwner = (int) $row['game_master_id'] === (int) ($auth['user_id'] ?? 0);
+        $roleContext = CampaignRoleContext::resolve($auth, $row, $membership);
         return [
             'id' => (int) $row['id'],
             'name' => (string) $row['name'],
@@ -245,9 +243,10 @@ class CampaignDirectoryService
             'status' => (string) ($row['status'] ?? (!empty($row['is_active']) ? 'active' : 'paused')),
             'settings' => is_array($row['settings_json'] ?? null) ? $row['settings_json'] : [],
             'game_master_id' => (int) $row['game_master_id'],
-            'access_role' => $isAdmin
-                ? 'admin'
-                : ($isOwner ? 'gm' : (string) ($membership['role'] ?? 'player')),
+            'global_role' => $roleContext['globalRole'],
+            'campaign_role' => $roleContext['campaignRole'],
+            'access_role' => $roleContext['accessRole'],
+            'is_admin' => $roleContext['isAdmin'],
             'capabilities' => [
                 'canAccess' => (bool) $capabilities['canAccess'],
                 'canManage' => (bool) $capabilities['canManage'],
