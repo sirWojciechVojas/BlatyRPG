@@ -1,4 +1,4 @@
-import { getClientInstanceId } from "./clientInstanceId";
+import { getClientInstanceId as getInstanceId } from "./clientInstanceId";
 import { createRealtimeChatTransport } from "./realtimeChatTransport";
 import { createAuthExpiryScheduler } from "./authExpiryScheduler";
 import {
@@ -6,6 +6,7 @@ import {
   leaveMessage,
   syncRequestMessage,
   tokenMoveMessage,
+  wallChangeMessage,
 } from "./realtimeProtocol";
 import { createRealtimeEventRouter } from "./realtimeEventRouter";
 import { createRealtimeTimers } from "./realtimeTimers";
@@ -26,8 +27,7 @@ export const createRealtimeSession = (options = {}) => {
     options.WebSocket || (typeof WebSocket === "undefined" ? null : WebSocket);
   const sequence = options.sequence || createRealtimeSequence(options);
   const timers = createRealtimeTimers(options);
-  const clientInstanceId =
-    options.clientInstanceId || getClientInstanceId(options);
+  const clientInstanceId = options.clientInstanceId || getInstanceId(options);
   const callbacks = {
     onEvent: options.onEvent || noop,
     onPresenceSnapshot: options.onPresenceSnapshot || noop,
@@ -287,6 +287,7 @@ export const createRealtimeSession = (options = {}) => {
     retry,
     sendChat: chat.sendMessage,
     moveToken: (payload) => authenticated && send(tokenMoveMessage(payload)),
+    changeWall: (payload) => authenticated && send(wallChangeMessage(payload)),
     syncChat: chat.sync,
     snapshot: () => ({
       campaignId,

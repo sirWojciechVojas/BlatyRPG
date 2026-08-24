@@ -7,6 +7,10 @@ import {
   createRealtimeTokenActions,
   routeRealtimeTokenEvent,
 } from "./tokenActions";
+import {
+  createRealtimeWallActions,
+  routeRealtimeWallEvent,
+} from "./wallActions";
 
 const defaultRestore = async (context, details) => {
   if (!details.reconnected) return;
@@ -37,6 +41,7 @@ export const createRealtimeActions = (
         }
         routeRealtimeChatEvent(context, ensureSession(context), event);
         routeRealtimeTokenEvent(context, event);
+        routeRealtimeWallEvent(context, event);
       },
       onSequenceGap: ({ expected }) =>
         context.commit("SET_LAST_SEQUENCE", expected - 1),
@@ -52,6 +57,7 @@ export const createRealtimeActions = (
   return {
     ...createRealtimeChatActions(ensureSession),
     ...createRealtimeTokenActions(ensureSession),
+    ...createRealtimeWallActions(ensureSession),
     connect(context, campaignId) {
       const id = Number(campaignId);
       if (context.state.campaignId !== id) {
