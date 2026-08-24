@@ -23,7 +23,6 @@
   overflow: visible;
   border: 0;
   border-bottom: 1px solid var(--app-nav-border);
-  background-color: #0a0807;
   background-image:
     linear-gradient(180deg, rgba(10, 8, 7, 0.82), rgba(10, 8, 7, 0.6)),
     url("../../assets/app-ui/gfx/navbar-bg.jpg");
@@ -156,7 +155,9 @@
 }
 
 #app.ui-system-active .app-navigation--workspace {
-  background-color: #0a0807;
+  background-image:
+    linear-gradient(180deg, rgba(10, 8, 7, 0.82), rgba(10, 8, 7, 0.6)),
+    url("../../assets/app-ui/gfx/navbar-bg.jpg");
 }
 
 #app.ui-system-active .app-navigation--public {
@@ -164,7 +165,6 @@
 }
 
 #app.ui-system-active .app-navigation--overlay {
-  background-color: #0a0807;
   background-image:
     linear-gradient(180deg, rgba(10, 8, 7, 0.82), rgba(10, 8, 7, 0.6)),
     url("../../assets/app-ui/gfx/navbar-bg.jpg");
@@ -185,7 +185,6 @@
   padding: var(--ui-space-1) var(--ui-space-2);
   border: 1px solid var(--app-nav-border);
   border-radius: var(--ui-radius-md);
-  background-color: #0a0807;
   background-image:
     linear-gradient(180deg, rgba(10, 8, 7, 0.9), rgba(10, 8, 7, 0.74)),
     url("../../assets/app-ui/gfx/navbar-bg.jpg");

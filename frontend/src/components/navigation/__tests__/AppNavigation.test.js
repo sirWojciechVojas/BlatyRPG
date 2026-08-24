@@ -35,6 +35,7 @@ describe("application navigation", () => {
     const english = JSON.parse(read("src/i18n/locales/en.json"));
 
     expect(navigation).toContain("navbar-bg.jpg");
+    expect(navigation).not.toContain("background-color: #0a0807");
     expect(polish.nav.diceRoller).toBe("Kości 3D");
     expect(english.nav.diceRoller).toBe("3D Dice");
   });
