@@ -43,6 +43,13 @@ const positiveRevision = (value, code) => {
   return value;
 };
 
+const coordinate = (value, code) => {
+  if (typeof value !== "number" || !Number.isFinite(value) || Math.abs(value) > 1000000) {
+    throw new ProtocolError(code);
+  }
+  return value;
+};
+
 const requiredRequestId = (value) => {
   const normalized = requestId(value);
   if (!normalized) throw new ProtocolError("request_id_required");
@@ -114,6 +121,26 @@ export const parseAuthMessage = (message) => {
 };
 
 export const parseAuthenticatedMessage = (message) => {
+  if (message.type === "token.move") {
+    exactKeys(message, [
+      "v", "type", "requestId", "sceneId", "tokenId", "revision", "x", "y",
+    ]);
+    const sceneId = positiveRevision(message.sceneId, "scene_id_invalid");
+    const tokenId = positiveRevision(message.tokenId, "token_id_invalid");
+    const revision = positiveRevision(message.revision, "token_revision_invalid");
+    if (!sceneId || !tokenId || !revision) {
+      throw new ProtocolError("token_move_invalid");
+    }
+    return {
+      type: message.type,
+      requestId: requiredRequestId(message.requestId),
+      sceneId,
+      tokenId,
+      revision,
+      x: coordinate(message.x, "token_x_invalid"),
+      y: coordinate(message.y, "token_y_invalid"),
+    };
+  }
   if (message.type === "chat.send") {
     exactKeys(message, ["v", "type", "requestId", "clientNonce", "body"]);
     return {

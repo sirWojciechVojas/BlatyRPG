@@ -30,6 +30,17 @@ export const leaveMessage = (requestId) => ({
   ...(requestId ? { requestId: String(requestId) } : {}),
 });
 
+export const tokenMoveMessage = (payload) => ({
+  v: REALTIME_VERSION,
+  type: "token.move",
+  requestId: String(payload.requestId),
+  sceneId: Number(payload.sceneId),
+  tokenId: Number(payload.tokenId),
+  revision: Number(payload.revision),
+  x: Number(payload.x),
+  y: Number(payload.y),
+});
+
 export const chatSendMessage = ({ requestId, clientNonce, body }) => ({
   v: REALTIME_VERSION,
   type: "chat.send",

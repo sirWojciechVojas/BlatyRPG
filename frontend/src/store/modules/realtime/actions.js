@@ -3,6 +3,10 @@ import {
   restoreRealtimeChat,
   routeRealtimeChatEvent,
 } from "./chatActions";
+import {
+  createRealtimeTokenActions,
+  routeRealtimeTokenEvent,
+} from "./tokenActions";
 
 const defaultRestore = async (context, details) => {
   if (!details.reconnected) return;
@@ -32,6 +36,7 @@ export const createRealtimeActions = (
           context.commit("SET_LAST_SEQUENCE", event.sequence);
         }
         routeRealtimeChatEvent(context, ensureSession(context), event);
+        routeRealtimeTokenEvent(context, event);
       },
       onSequenceGap: ({ expected }) =>
         context.commit("SET_LAST_SEQUENCE", expected - 1),
@@ -46,6 +51,7 @@ export const createRealtimeActions = (
 
   return {
     ...createRealtimeChatActions(ensureSession),
+    ...createRealtimeTokenActions(ensureSession),
     connect(context, campaignId) {
       const id = Number(campaignId);
       if (context.state.campaignId !== id) {

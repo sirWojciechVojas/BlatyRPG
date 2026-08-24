@@ -79,7 +79,7 @@ final class SceneTokenService
         array $auth,
         array $payload
     ): array {
-        [, $capabilities] = $this->sceneContext($campaignId, $sceneId, $auth);
+        [$scene, $capabilities] = $this->sceneContext($campaignId, $sceneId, $auth);
         $row = $this->find($campaignId, $sceneId, $tokenId);
         $canManage = $this->canManage($auth, $campaignId, $sceneId, $capabilities);
         $canControl = $this->access->canControl($auth, $campaignId, $row, $canManage);
@@ -93,7 +93,13 @@ final class SceneTokenService
             $this->access->assertCharacterInCampaign($campaignId, $validated['data']['character_id']);
         }
         $this->writeRevision($campaignId, $sceneId, $tokenId, $validated['revision'], $validated['data']);
-        return ['token' => $this->present($campaignId, $sceneId, $tokenId, $auth)];
+        $token = $this->present($campaignId, $sceneId, $tokenId, $auth);
+        return [
+            'token' => $token,
+            'visibility' => [
+                'publishToPlayers' => !empty($scene['is_visible']) && empty($token['hidden']),
+            ],
+        ];
     }
 
     public function delete(int $campaignId, int $sceneId, int $tokenId, array $auth, array $payload): array

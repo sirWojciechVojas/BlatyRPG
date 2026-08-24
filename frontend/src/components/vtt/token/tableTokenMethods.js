@@ -17,8 +17,14 @@ export const tableTokenMethods = {
       })
       .catch(() => {});
   },
-  moveToken({ token, x, y }) {
-    this.updateToken({ token, changes: { x, y } });
+  async moveToken({ token, x, y }) {
+    let sent = false;
+    try {
+      sent = await this.$store.dispatch("realtime/moveToken", { token, x, y });
+    } catch (_error) {
+      sent = false;
+    }
+    if (!sent) this.updateToken({ token, changes: { x, y } });
   },
   updateToken({ token, changes }) {
     this.$store

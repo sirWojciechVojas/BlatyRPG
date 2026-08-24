@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { WebSocket } from "ws";
 import { BackendChatClient } from "./backend-chat-client.js";
+import { BackendTokenClient } from "./backend-token-client.js";
 import { createChatHandler } from "./chat-handler.js";
 import { createHttpTransport } from "./http-transport.js";
 import { PresenceRegistry } from "./presence-registry.js";
@@ -16,6 +17,7 @@ import {
 import { FixedWindowRateLimiter } from "./rate-limiter.js";
 import { RoomRegistry } from "./room-registry.js";
 import { TicketError, TicketVerifier } from "./ticket-verifier.js";
+import { createTokenHandler } from "./token-handler.js";
 
 const closeReason = (value) => String(value || "connection_closed").slice(0, 100);
 
@@ -78,6 +80,12 @@ export const createRealtimeServer = (config, dependencies = {}) => {
 
   const chat = createChatHandler({
     backend: dependencies.chatBackend || new BackendChatClient(config),
+    rooms,
+    onAuthenticationFailure: (session) =>
+      closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized"),
+  });
+  const tokens = createTokenHandler({
+    backend: dependencies.tokenBackend || new BackendTokenClient(config),
     rooms,
     onAuthenticationFailure: (session) =>
       closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized"),
@@ -167,6 +175,10 @@ export const createRealtimeServer = (config, dependencies = {}) => {
     const parsed = parseAuthenticatedMessage(message);
     if (parsed.type === "chat.send" || parsed.type === "chat.sync") {
       chat.handle(session, parsed);
+      return;
+    }
+    if (parsed.type === "token.move") {
+      tokens.handle(session, parsed);
       return;
     }
     if (parsed.type === "sync.request") {

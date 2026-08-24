@@ -5,6 +5,7 @@ import {
   authMessage,
   leaveMessage,
   syncRequestMessage,
+  tokenMoveMessage,
 } from "./realtimeProtocol";
 import { createRealtimeEventRouter } from "./realtimeEventRouter";
 import { createRealtimeTimers } from "./realtimeTimers";
@@ -285,6 +286,7 @@ export const createRealtimeSession = (options = {}) => {
     requestSync,
     retry,
     sendChat: chat.sendMessage,
+    moveToken: (payload) => authenticated && send(tokenMoveMessage(payload)),
     syncChat: chat.sync,
     snapshot: () => ({
       campaignId,
