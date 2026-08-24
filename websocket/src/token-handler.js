@@ -41,6 +41,13 @@ export const createTokenHandler = ({ backend, rooms, onAuthenticationFailure }) 
       { token: result.token },
       sequence,
     );
+    const marker = createServerEvent({
+      type: "sync.marker",
+      campaignId: session.campaignId,
+      sequence,
+      actorUserId: null,
+      payload: {},
+    });
     for (const recipient of rooms.sessions(session.campaignId)) {
       if (
         recipient.id === session.id ||
@@ -48,6 +55,8 @@ export const createTokenHandler = ({ backend, rooms, onAuthenticationFailure }) 
         recipient.capabilities?.canViewHidden === true
       ) {
         sendEvent(recipient.ws, event);
+      } else {
+        sendEvent(recipient.ws, marker);
       }
     }
     sendEvent(

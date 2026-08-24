@@ -69,6 +69,9 @@ test("does not leak hidden-scene movement to regular campaign members", async ()
 
   sender.send(request);
   await Promise.all([sender.event("token.ack"), gm.event("token.updated")]);
+  const marker = await regular.event("sync.marker");
   await delay(30);
+  assert.equal(marker.actorUserId, null);
+  assert.deepEqual(marker.payload, {});
   assert.equal(regular.history.some((event) => event.type === "token.updated"), false);
 });
