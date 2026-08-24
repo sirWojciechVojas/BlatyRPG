@@ -1,10 +1,51 @@
+#app .app-navigation {
+  --app-nav-ink: #f6efe2;
+  --app-nav-muted: #c7b8a1;
+  --app-nav-border: rgba(216, 183, 120, 0.3);
+  --app-nav-accent: #f1d59c;
+  box-sizing: border-box;
+  min-height: 56px;
+  padding: 6px clamp(12px, 3vw, 42px);
+}
+
+#app.ui-system-active .app-navigation {
+  position: sticky;
+  z-index: var(--ui-z-sticky);
+  top: 0;
+  display: grid;
+  grid-template-columns: minmax(165px, 1fr) auto minmax(285px, 1fr);
+  width: 100%;
+  min-height: 56px;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 12px;
+  padding: 6px clamp(12px, 3vw, 42px);
+  overflow: visible;
+  border: 0;
+  border-bottom: 1px solid var(--app-nav-border);
+  background-color: #0a0807;
+  background-image:
+    linear-gradient(180deg, rgba(10, 8, 7, 0.82), rgba(10, 8, 7, 0.6)),
+    url("../../assets/app-ui/gfx/navbar-bg.jpg");
+  background-position: center top;
+  background-size: cover;
+  background-blend-mode: multiply;
+  color: var(--app-nav-muted);
+  box-shadow: none;
+  font-family: "EB Garamond", Garamond, "Times New Roman", serif;
+  white-space: nowrap;
+  backdrop-filter: blur(14px);
+}
+
 #app .app-navigation .app-nav-brand {
   display: inline-flex;
   min-width: 0;
+  min-height: 40px;
   align-items: center;
   gap: 9px;
-  margin-right: auto;
+  justify-self: start;
   padding: 0;
+  color: var(--app-nav-ink);
   text-decoration: none;
 }
 
@@ -21,150 +62,105 @@
   text-align: left;
 }
 
-#app .app-nav-brand small {
-  overflow: hidden;
-  font-size: 0.67rem;
-  font-weight: 500;
-  text-overflow: ellipsis;
-}
-
-#app .app-navigation--overlay .app-nav-brand {
-  display: none;
-}
-
-#app.ui-system-active .app-navigation {
-  position: sticky;
-  top: 0;
-  z-index: var(--ui-z-sticky);
-  box-sizing: border-box;
-  display: flex;
-  width: 100%;
-  min-height: 56px;
-  flex: 0 0 auto;
-  align-items: center;
-  justify-content: flex-end;
-  gap: var(--ui-space-1);
-  padding: 6px clamp(12px, 3vw, 42px);
-  overflow: visible;
-  border: 0;
-  border-bottom: var(--ui-border);
-  background-color: var(--ui-color-surface);
-  background-image:
-    linear-gradient(rgba(10, 8, 7, 0.82), rgba(10, 8, 7, 0.68)),
-    url("../../assets/app-ui/gfx/navbar-bg.jpg");
-  background-position: center top;
-  background-size: auto, cover;
-  color: var(--ui-color-text-muted);
-  box-shadow: none;
-  font-size: var(--ui-font-size-sm);
-  white-space: nowrap;
-}
-
-#app.ui-system-active .app-navigation a {
-  display: inline-flex;
-  min-height: var(--ui-control-height-sm);
-  flex: 0 0 auto;
-  align-items: center;
-  padding: var(--ui-space-1) var(--ui-space-3);
-  border-radius: var(--ui-radius-sm);
-  color: var(--ui-color-text-muted);
-  font-weight: 650;
-  text-decoration: none;
-}
-
-#app.ui-system-active .app-navigation a:hover {
-  background: var(--ui-color-surface-raised);
-  color: var(--ui-color-text);
-}
-
-#app.ui-system-active .app-navigation a.router-link-exact-active {
-  background: var(--ui-color-accent-soft);
-  color: var(--ui-color-accent);
-}
-
-#app.ui-system-active .app-navigation .app-nav-brand {
-  min-width: 0;
-  min-height: 40px;
-  gap: 9px;
-  margin-right: auto;
-  padding: 0;
-  color: var(--ui-color-text);
-}
-
-#app.ui-system-active .app-navigation .app-nav-brand:hover,
-#app.ui-system-active .app-navigation .app-nav-brand.router-link-exact-active {
-  background: transparent;
-  color: var(--ui-color-text);
-}
-
-#app.ui-system-active .app-nav-brand img {
-  width: 34px;
-  height: 34px;
-  flex: 0 0 auto;
-  object-fit: contain;
-}
-
-#app.ui-system-active .app-nav-brand > span {
-  display: grid;
-  min-width: 0;
-  text-align: left;
-}
-
-#app.ui-system-active .app-nav-brand strong {
-  color: var(--ui-color-text);
-  font-family: "EB Garamond", Garamond, serif;
+#app .app-nav-brand strong {
+  color: var(--app-nav-ink);
   font-size: 0.92rem;
   letter-spacing: 0.03em;
 }
 
-#app.ui-system-active .app-nav-brand small {
+#app .app-nav-brand small {
   overflow: hidden;
-  color: var(--ui-color-text-faint);
-  font-family: "EB Garamond", Garamond, serif;
+  color: var(--app-nav-muted);
   font-size: 0.67rem;
   font-weight: 500;
   text-overflow: ellipsis;
 }
 
-#app.ui-system-active .app-navigation .nav-sep {
-  width: 1px;
-  height: 1rem;
+#app.ui-system-active .app-nav-links,
+#app.ui-system-active .app-nav-actions {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 7px;
+}
+
+#app.ui-system-active .app-nav-links {
+  justify-content: center;
+  justify-self: center;
+}
+
+#app.ui-system-active .app-nav-actions {
+  justify-content: flex-end;
+  justify-self: end;
+}
+
+#app.ui-system-active .app-nav-links > a {
+  display: inline-flex;
+  min-height: 34px;
   flex: 0 0 auto;
-  margin: 0 var(--ui-space-1);
-  overflow: hidden;
-  background: var(--ui-color-border);
-  color: transparent;
+  align-items: center;
+  padding: 7px 9px;
+  border-radius: 6px;
+  color: var(--app-nav-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#app.ui-system-active .app-nav-links > a:hover,
+#app.ui-system-active .app-nav-links > a.router-link-exact-active {
+  background: rgba(216, 183, 120, 0.08);
+  color: var(--app-nav-accent);
+}
+
+#app.ui-system-active .app-nav-action-link {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  padding: 7px 9px;
+  border-radius: 6px;
+  color: var(--app-nav-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#app.ui-system-active .app-nav-action-link:hover,
+#app.ui-system-active .app-nav-action-link.router-link-exact-active {
+  background: rgba(216, 183, 120, 0.08);
+  color: var(--app-nav-accent);
 }
 
 #app.ui-system-active .app-navigation .locale-switch {
   display: inline-flex;
   min-width: 0;
+  min-height: 34px;
   align-items: center;
-  gap: var(--ui-space-2);
-  margin: 0 0 0 var(--ui-space-2);
-  color: var(--ui-color-text-faint);
-  font-size: var(--ui-font-size-xs);
-  font-weight: 650;
+  gap: 7px;
+  color: var(--app-nav-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
 }
 
 #app.ui-system-active .app-navigation .locale-switch select {
   width: auto;
-  min-height: var(--ui-control-height-sm);
-  padding: 0.125rem var(--ui-space-3);
-  border: var(--ui-border);
-  border-radius: var(--ui-radius-sm);
-  background: var(--ui-color-surface-subtle);
-  color: var(--ui-color-text);
-  font-size: var(--ui-font-size-sm);
+  min-height: 32px;
+  padding: 4px 9px;
+  border: 1px solid var(--app-nav-border);
+  border-radius: 6px;
+  background: rgba(18, 12, 10, 0.72);
+  color: var(--app-nav-ink);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
 }
 
 #app.ui-system-active .app-navigation--workspace {
-  background-color: var(--ui-color-canvas);
+  background-color: #0a0807;
 }
 
 #app.ui-system-active .app-navigation--public {
-  background-color: var(--ui-color-surface);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(14px);
 }
 
 #app.ui-system-active .app-navigation--overlay {
@@ -172,6 +168,7 @@
   top: var(--ui-space-3);
   right: var(--ui-space-3);
   left: auto;
+  display: flex;
   width: auto;
   max-width: calc(100vw - 1rem);
   min-height: var(--ui-control-height);
@@ -183,27 +180,50 @@
   backdrop-filter: blur(10px);
 }
 
-#app.ui-system-active .app-navigation--overlay .app-nav-brand {
+#app .app-navigation--overlay .app-nav-brand {
   display: none;
+}
+
+@media (max-width: 1180px) {
+  #app.ui-system-active .app-navigation:not(.app-navigation--overlay) {
+    grid-template-columns: minmax(155px, auto) minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+
+  #app.ui-system-active .app-nav-links {
+    width: 100%;
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  #app.ui-system-active .app-navigation .locale-switch > span {
+    display: none;
+  }
 }
 
 @media (max-width: 760px) {
   #app.ui-system-active .app-navigation:not(.app-navigation--overlay) {
-    min-height: auto;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+    grid-template-columns: minmax(0, 1fr) auto;
     padding: 6px 10px;
-  }
-
-  #app.ui-system-active .app-navigation .nav-sep {
-    display: none;
-  }
-
-  #app.ui-system-active .app-navigation .locale-switch {
-    margin-left: 0;
+    white-space: nowrap;
   }
 
   #app.ui-system-active .app-nav-brand small {
+    display: none;
+  }
+
+  #app.ui-system-active .app-nav-links {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  #app.ui-system-active .app-nav-actions {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  #app.ui-system-active .app-nav-actions .locale-switch {
     display: none;
   }
 }

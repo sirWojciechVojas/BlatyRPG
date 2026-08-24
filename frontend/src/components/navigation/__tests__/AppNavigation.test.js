@@ -11,6 +11,9 @@ describe("application navigation", () => {
     expect(app.match(/class="app-nav-brand"/g)).toHaveLength(1);
     expect(app).toContain("BlatyRPG-logo.png");
     expect(app).toContain("landing.brand.title");
+    expect(app).toContain('class="app-nav-links"');
+    expect(app).toContain('class="app-nav-actions"');
+    expect(app).not.toContain("nav-sep");
   });
 
   it("uses the same horizontal padding as the landing navbar", () => {
@@ -20,5 +23,9 @@ describe("application navigation", () => {
 
     expect(navigation).toContain(`padding: ${padding}`);
     expect(landing).toContain(`padding: ${padding}`);
+    expect(navigation).toContain(
+      "grid-template-columns: minmax(165px, 1fr) auto minmax(285px, 1fr)",
+    );
+    expect(navigation).not.toMatch(/\.app-navigation\s+a\s*\{/);
   });
 });

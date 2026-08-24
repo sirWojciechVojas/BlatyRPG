@@ -17,55 +17,52 @@
         <small>{{ $t("landing.brand.subtitle") }}</small>
       </span>
     </router-link>
-    <router-link :to="{ name: 'landing' }">{{ $t("nav.home") }}</router-link>
-    <span class="nav-sep" aria-hidden="true">|</span>
-    <router-link :to="{ name: 'about' }">{{ $t("nav.about") }}</router-link>
-    <span class="nav-sep" aria-hidden="true">|</span>
-    <router-link :to="{ name: 'dice' }">{{ $t("nav.diceRoller") }}</router-link>
-    <template v-if="campaignId">
-      <span class="nav-sep" aria-hidden="true">|</span>
-      <router-link :to="{ name: 'scene-workspace', params: { campaignId } }">{{
-        $t("vtt.scene.navigation.title")
-      }}</router-link>
-      <span class="nav-sep" aria-hidden="true">|</span>
-      <router-link
-        :to="{ name: 'character-workspace', params: { campaignId } }"
-      >
-        {{ $t("dashboard.campaign.openCharacters") }}
-      </router-link>
-      <span class="nav-sep" aria-hidden="true">|</span>
-      <router-link
-        :to="{
-          name: 'scene-workspace',
-          params: { campaignId },
-          hash: '#campaign-chat',
-        }"
-      >
-        {{ $t("dashboard.campaign.openChat") }}
-      </router-link>
-    </template>
-    <span class="nav-sep" aria-hidden="true">|</span>
-    <label class="locale-switch">
-      <span>{{ $t("nav.language") }}</span>
-      <select v-model="currentLocale" :aria-label="$t('nav.language')">
-        <option
-          v-for="locale in locales"
-          :key="locale.code"
-          :value="locale.code"
+    <div class="app-nav-links">
+      <router-link :to="{ name: 'landing' }">{{ $t("nav.home") }}</router-link>
+      <router-link :to="{ name: 'about' }">{{ $t("nav.about") }}</router-link>
+      <template v-if="campaignId">
+        <router-link
+          :to="{ name: 'scene-workspace', params: { campaignId } }"
+          >{{ $t("vtt.scene.navigation.title") }}</router-link
         >
-          {{ locale.label }}
-        </option>
-      </select>
-    </label>
-    <template v-if="session?.user">
-      <span class="nav-sep" aria-hidden="true">|</span>
+        <router-link
+          :to="{ name: 'character-workspace', params: { campaignId } }"
+          >{{ $t("dashboard.campaign.openCharacters") }}</router-link
+        >
+        <router-link
+          :to="{
+            name: 'scene-workspace',
+            params: { campaignId },
+            hash: '#campaign-chat',
+          }"
+          >{{ $t("dashboard.campaign.openChat") }}</router-link
+        >
+      </template>
+    </div>
+    <div class="app-nav-actions">
+      <router-link class="app-nav-action-link" :to="{ name: 'dice' }">
+        {{ $t("nav.diceRoller") }}
+      </router-link>
+      <label class="locale-switch">
+        <span>{{ $t("nav.language") }}</span>
+        <select v-model="currentLocale" :aria-label="$t('nav.language')">
+          <option
+            v-for="locale in locales"
+            :key="locale.code"
+            :value="locale.code"
+          >
+            {{ locale.label }}
+          </option>
+        </select>
+      </label>
       <UserAccountMenu
+        v-if="session?.user"
         :session="session"
         :is-admin="isAdmin"
         :logging-out="loggingOut"
         @logout="logout"
       />
-    </template>
+    </div>
   </nav>
   <router-view />
   <ShopAccessModeSelector v-if="$route.name === 'shop-gm'" />
@@ -208,92 +205,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-}
-.app-navigation {
-  min-height: 56px;
-  padding: 6px clamp(12px, 3vw, 42px);
-}
-
-.app-navigation a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-.app-navigation a.router-link-exact-active {
-  color: #42b983;
-}
-
-.app-navigation .nav-sep {
-  margin: 0 8px;
-  color: inherit;
-}
-
-.app-navigation .locale-switch {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  font-weight: 600;
-  color: inherit;
-}
-
-.app-navigation .locale-switch select {
-  border-radius: 6px;
-  border: 1px solid rgba(44, 62, 80, 0.3);
-  padding: 4px 8px;
-  background: #ffffff;
-  color: #2c3e50;
-}
-
-.app-navigation--overlay {
-  position: fixed;
-  top: 12px;
-  right: 12px;
-  padding: 6px 10px;
-  background: rgba(0, 0, 0, 0.45);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-  font-size: 0.9rem;
-  z-index: 20;
-}
-
-.app-navigation--overlay a,
-.app-navigation--workspace a {
-  color: #ffffff;
-}
-
-.app-navigation--overlay a.router-link-exact-active,
-.app-navigation--workspace a.router-link-exact-active {
-  color: #ffd166;
-}
-
-.app-navigation--overlay .locale-switch select,
-.app-navigation--workspace .locale-switch select {
-  border-color: rgba(255, 255, 255, 0.35);
-  background: rgba(0, 0, 0, 0.6);
-  color: #ffffff;
-}
-
-.app-navigation--workspace {
-  position: sticky;
-  top: 0;
-  z-index: 30;
-  box-sizing: border-box;
-  display: flex;
-  width: 100%;
-  min-height: 56px;
-  align-items: center;
-  justify-content: flex-end;
-  padding: 6px clamp(12px, 3vw, 42px);
-  overflow-x: auto;
-  color: #edf0f5;
-  white-space: nowrap;
-  background: #141922;
-  border-bottom: 1px solid #303746;
-}
-
-@media (max-width: 760px) {
-  .app-navigation--workspace {
-    justify-content: flex-start;
-  }
 }
 </style>
