@@ -27,11 +27,15 @@
     </header>
 
     <div class="admin-shell">
-      <aside class="admin-tabs" :aria-label="$t('admin.tabs.label')">
+      <aside
+        class="admin-tabs nav flex-column align-items-stretch gap-1 p-1"
+        :aria-label="$t('admin.tabs.label')"
+      >
         <button
           v-for="tab in tabs"
           :key="tab.id"
           type="button"
+          class="nav-link text-start"
           :class="{ active: activeTab === tab.id }"
           :aria-current="activeTab === tab.id ? 'page' : undefined"
           @click="activeTab = tab.id"

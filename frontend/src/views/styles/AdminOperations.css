@@ -186,7 +186,9 @@
     border-bottom: var(--ui-border);
   }
   .admin-tabs button {
+    width: auto;
     min-width: 3rem;
+    flex: 1 0 auto;
     grid-template-columns: 1fr;
     justify-items: center;
     margin: 0;

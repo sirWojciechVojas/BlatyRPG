@@ -59,7 +59,7 @@ describe("AdminView dashboard", () => {
     expect(viewCss).toContain(
       "height: calc(100dvh - var(--ui-navigation-height))",
     );
-    expect(viewCss).toContain("grid-template-columns: 11.25rem minmax(0, 1fr)");
+    expect(viewCss).toContain("grid-template-columns: 13rem minmax(0, 1fr)");
     expect(compatibilityCss).not.toContain("width: min(88rem");
   });
 
@@ -77,5 +77,25 @@ describe("AdminView dashboard", () => {
     expect(usersTab).toContain("col-12 col-xl-9 col-xxl-10");
     expect(usersTab).toContain("col-12 col-xl-3 col-xxl-2");
     expect(adminView).toContain("'ps-0': activeTab === 'users'");
+  });
+
+  it("keeps every administrator navigation label fully visible", () => {
+    const adminView = readFileSync(
+      resolve(process.cwd(), "src/views/AdminView.vue"),
+      "utf8",
+    );
+    const viewCss = readFileSync(
+      resolve(process.cwd(), "src/views/styles/AdminView.css"),
+      "utf8",
+    );
+
+    expect(adminView).toContain(
+      "nav flex-column align-items-stretch gap-1 p-1",
+    );
+    expect(adminView).toContain('class="nav-link text-start"');
+    expect(viewCss).toContain("grid-template-columns: 13rem minmax(0, 1fr)");
+    expect(viewCss).toContain(
+      ".admin-tabs button strong {\n  min-width: max-content;",
+    );
   });
 });

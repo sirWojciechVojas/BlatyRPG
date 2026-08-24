@@ -76,10 +76,10 @@
 .admin-shell {
   display: grid;
   min-height: 0;
-  grid-template-columns: 11.25rem minmax(0, 1fr);
+  grid-template-columns: 13rem minmax(0, 1fr);
 }
 .admin-tabs {
-  padding: 0.65rem;
+  padding: 0.25rem;
   border-right: var(--ui-border);
   background: rgba(16, 11, 8, 0.64);
 }
@@ -90,8 +90,8 @@
   grid-template-columns: 1.3rem 1fr auto;
   align-items: center;
   gap: 0.45rem;
-  margin-bottom: 0.2rem;
-  padding: 0.42rem 0.55rem;
+  margin: 0;
+  padding: 0.42rem 0.45rem;
   border: 1px solid transparent;
   border-radius: var(--ui-radius-sm);
   background: transparent;
@@ -115,9 +115,8 @@
   text-align: center;
 }
 .admin-tabs button strong {
-  overflow: hidden;
+  min-width: max-content;
   font-size: var(--ui-font-size-sm);
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 .admin-tabs button small {
