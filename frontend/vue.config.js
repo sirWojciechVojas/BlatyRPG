@@ -26,6 +26,15 @@ module.exports = defineConfig({
       webSocketURL:
         process.env.WDS_SOCKET_URL ||
         `auto://0.0.0.0:0${process.env.WDS_SOCKET_PATH || "/ws"}`,
+      overlay: {
+        errors: true,
+        warnings: true,
+        runtimeErrors: (error) =>
+          ![
+            "ResizeObserver loop completed with undelivered notifications.",
+            "ResizeObserver loop limit exceeded",
+          ].includes(error?.message),
+      },
     },
     webSocketServer: "ws",
     hot: true,
