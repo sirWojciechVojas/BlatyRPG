@@ -71,8 +71,10 @@
             :busy-user-id="busyUserId"
             :creating="creating"
             :create-error="createError"
+            :create-field-errors="createFieldErrors"
             :role-error="roleError"
             @create="createUser"
+            @field-change="clearCreateFieldError"
             @role-change="changeRole"
           />
           <AdminCampaignsTab

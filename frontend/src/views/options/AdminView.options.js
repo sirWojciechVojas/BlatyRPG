@@ -5,6 +5,7 @@ import AdminSystemTab from "@/components/admin/AdminSystemTab.vue";
 import AdminUsersTab from "@/components/admin/AdminUsersTab.vue";
 import AdminIcon from "@/components/admin/AdminIcon.vue";
 import { adminApiClient } from "@/lib/admin/adminApiClient";
+import { resolveAdminUserApiFieldErrors } from "@/lib/admin/adminUserValidation";
 import { authSession } from "@/lib/auth/authSession";
 
 const emptyAnalytics = () => ({
@@ -46,6 +47,7 @@ export default {
     busyUserId: 0,
     error: "",
     createError: "",
+    createFieldErrors: {},
     roleError: "",
   }),
   computed: {
@@ -105,6 +107,7 @@ export default {
     async createUser(draft) {
       this.creating = true;
       this.createError = "";
+      this.createFieldErrors = {};
       try {
         await adminApiClient.createUser(draft);
         this.$refs.usersTab?.resetForm();
@@ -112,10 +115,23 @@ export default {
       } catch (error) {
         if (!this.handleAuthorization(error)) {
           this.createError = this.message(error, "admin.errors.create");
+          this.createFieldErrors = this.resolveCreateFieldErrors(error);
         }
       } finally {
         this.creating = false;
       }
+    },
+    resolveCreateFieldErrors(error) {
+      return resolveAdminUserApiFieldErrors(error?.payload?.errors, (field) =>
+        this.$t(`admin.errors.fields.${field}`),
+      );
+    },
+    clearCreateFieldError(field) {
+      if (!this.createFieldErrors[field]) return;
+      const remaining = { ...this.createFieldErrors };
+      delete remaining[field];
+      this.createFieldErrors = remaining;
+      if (!Object.keys(remaining).length) this.createError = "";
     },
     async changeRole({ user, role }) {
       this.busyUserId = user.id;

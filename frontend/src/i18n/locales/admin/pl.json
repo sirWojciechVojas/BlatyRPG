@@ -63,7 +63,8 @@
     },
     "create": {
       "title": "Nowe konto",
-      "description": "Utwórz zwykłe konto albo konto administratora. MG i Gracza przypisuje się osobno przy każdym Stole."
+      "description": "Utwórz zwykłe konto albo konto administratora. MG i Gracza przypisuje się osobno przy każdym Stole.",
+      "passwordHint": "Minimum 12 znaków, mała i wielka litera oraz cyfra."
     },
     "campaigns": {
       "title": "Kampanie",
@@ -125,8 +126,16 @@
       "load": "Nie udało się wczytać panelu.",
       "create": "Nie udało się utworzyć konta.",
       "role": "Nie udało się zmienić roli.",
-      "validation": "Sprawdź poprawność danych i ich unikalność.",
-      "lastAdmin": "Nie można odebrać roli ostatniemu administratorowi."
+      "validation": "Nie udało się utworzyć konta. Popraw oznaczone pola.",
+      "lastAdmin": "Nie można odebrać roli ostatniemu administratorowi.",
+      "fields": {
+        "username": "Login musi mieć od 3 do 100 znaków.",
+        "usernameTaken": "Ten login jest już zajęty.",
+        "email": "Podaj prawidłowy adres e-mail.",
+        "emailTaken": "Ten adres e-mail jest już zajęty.",
+        "password": "Hasło musi mieć 12–200 znaków oraz zawierać małą literę, wielką literę i cyfrę.",
+        "role": "Wybierz obsługiwane uprawnienia aplikacji."
+      }
     }
   }
 }

@@ -172,6 +172,24 @@
   font-size: var(--ui-font-size-xs);
   font-weight: 650;
 }
+.admin-field-hint,
+.admin-field-error {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.62rem;
+  line-height: 1.25;
+}
+.admin-field-hint {
+  color: var(--ui-color-text-faint);
+}
+.admin-field-error {
+  color: #f4a89c;
+  font-weight: 650;
+}
+.admin-create-form .is-invalid {
+  border-color: var(--ui-color-danger) !important;
+  background-image: none;
+}
 .admin-primary,
 .admin-secondary,
 .admin-icon-button,

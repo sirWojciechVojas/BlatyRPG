@@ -63,7 +63,8 @@
     },
     "create": {
       "title": "New account",
-      "description": "Create a regular or administrator account. GM and Player are assigned separately at each Table."
+      "description": "Create a regular or administrator account. GM and Player are assigned separately at each Table.",
+      "passwordHint": "At least 12 characters with lower-case, upper-case and numeric characters."
     },
     "campaigns": {
       "title": "Campaigns",
@@ -128,8 +129,16 @@
       "load": "The panel could not be loaded.",
       "create": "The account could not be created.",
       "role": "The role could not be changed.",
-      "validation": "Check the data and its uniqueness.",
-      "lastAdmin": "The last administrator cannot be demoted."
+      "validation": "The account could not be created. Correct the marked fields.",
+      "lastAdmin": "The last administrator cannot be demoted.",
+      "fields": {
+        "username": "Username must contain between 3 and 100 characters.",
+        "usernameTaken": "This username is already in use.",
+        "email": "Enter a valid email address.",
+        "emailTaken": "This email address is already in use.",
+        "password": "Password must be 12–200 characters and include lower-case, upper-case and numeric characters.",
+        "role": "Select supported application privileges."
+      }
     }
   }
 }

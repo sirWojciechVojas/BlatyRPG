@@ -98,4 +98,23 @@ describe("AdminView dashboard", () => {
       ".admin-tabs button strong {\n  min-width: max-content;",
     );
   });
+
+  it("maps API validation details to the exact create-account fields", () => {
+    const fieldErrors = options.methods.resolveCreateFieldErrors.call(
+      { $t: (key) => key },
+      {
+        payload: {
+          errors: {
+            username: "Ta nazwa użytkownika jest już zajęta.",
+            password: "Password must meet the policy.",
+          },
+        },
+      },
+    );
+
+    expect(fieldErrors).toEqual({
+      username: "admin.errors.fields.usernameTaken",
+      password: "admin.errors.fields.password",
+    });
+  });
 });

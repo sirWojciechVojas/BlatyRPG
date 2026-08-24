@@ -38,7 +38,9 @@
           class="admin-panel admin-create-card w-100"
           :busy="creating"
           :error="createError"
+          :field-errors="createFieldErrors"
           @submit="$emit('create', $event)"
+          @field-change="$emit('field-change', $event)"
         />
       </div>
     </div>
@@ -58,9 +60,10 @@ export default {
     busyUserId: { type: Number, default: 0 },
     creating: Boolean,
     createError: { type: String, default: "" },
+    createFieldErrors: { type: Object, default: () => ({}) },
     roleError: { type: String, default: "" },
   },
-  emits: ["create", "role-change"],
+  emits: ["create", "field-change", "role-change"],
   data: () => ({ query: "" }),
   computed: {
     filteredUsers() {
