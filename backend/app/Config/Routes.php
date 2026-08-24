@@ -152,6 +152,10 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->patch('campaigns/(:num)/scenes/(:num)', 'SceneController::update/$1/$2');
         $routes->delete('campaigns/(:num)/scenes/(:num)', 'SceneController::delete/$1/$2');
         $routes->post('campaigns/(:num)/scenes/(:num)/activate', 'SceneController::activate/$1/$2');
+        $routes->get('campaigns/(:num)/scenes/(:num)/tokens', 'SceneTokenController::index/$1/$2');
+        $routes->post('campaigns/(:num)/scenes/(:num)/tokens', 'SceneTokenController::create/$1/$2');
+        $routes->patch('campaigns/(:num)/scenes/(:num)/tokens/(:num)', 'SceneTokenController::update/$1/$2/$3');
+        $routes->delete('campaigns/(:num)/scenes/(:num)/tokens/(:num)', 'SceneTokenController::delete/$1/$2/$3');
 
         // ----------------------------------------
         // SHOP MODULE
