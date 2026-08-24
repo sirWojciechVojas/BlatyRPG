@@ -46,7 +46,15 @@ export const TABLE_SCENE_TOOLS = Object.freeze([
 ]);
 
 export const implementedSceneTool = (id) =>
-  ["select", "tokens", "measure", "templates", "grid"].includes(id);
+  [
+    "select",
+    "tokens",
+    "measure",
+    "templates",
+    "walls",
+    "doors",
+    "grid",
+  ].includes(id);
 
 export const toggledSceneTool = (activeId, selectedId) =>
   activeId === selectedId && selectedId !== "select" ? "select" : selectedId;

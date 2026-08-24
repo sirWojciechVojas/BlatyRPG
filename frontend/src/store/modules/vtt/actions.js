@@ -29,7 +29,7 @@ const assertCanManage = (state) => {
   if (!state.capabilities.canManage) throw forbiddenError();
 };
 
-export const createVttActions = (api, tokenApi) => ({
+export const createVttActions = (api, tokenApi, wallApi) => ({
   async initialize({ state, commit, dispatch }) {
     const requestId = startRequest(state, commit, "loading");
     try {
@@ -43,7 +43,7 @@ export const createVttActions = (api, tokenApi) => ({
         commit("SET_CAPABILITIES", snapshot.capabilities);
       }
       commit("REQUEST_READY", requestId);
-      await dispatch("loadTokens");
+      await Promise.all([dispatch("loadTokens"), dispatch("loadWalls")]);
     } catch (error) {
       if (state.requestId === requestId) failRequest(commit, requestId, error);
     }
@@ -57,7 +57,7 @@ export const createVttActions = (api, tokenApi) => ({
       commit("UPSERT_SCENE", snapshot.scene);
       commit("SET_CAPABILITIES", snapshot.capabilities);
       commit("REQUEST_READY", requestId);
-      await dispatch("loadTokens");
+      await Promise.all([dispatch("loadTokens"), dispatch("loadWalls")]);
     } catch (error) {
       if (state.requestId === requestId) failRequest(commit, requestId, error);
     }
@@ -207,6 +207,71 @@ export const createVttActions = (api, tokenApi) => ({
       commit("SET_TOKEN_PHASE", "ready");
     } catch (error) {
       commit("TOKEN_FAILED", normalizedError(error));
+      throw error;
+    }
+  },
+  async loadWalls({ state, commit }) {
+    const sceneId = state.selectedSceneId;
+    if (sceneId === null || typeof wallApi?.list !== "function") return;
+    commit("SET_WALL_PHASE", "loading");
+    try {
+      const result = await wallApi.list(state.campaignId, sceneId);
+      if (state.selectedSceneId !== sceneId) return;
+      commit("RECEIVE_WALLS", { sceneId, ...result });
+    } catch (error) {
+      commit("WALL_FAILED", normalizedError(error));
+      throw error;
+    }
+  },
+  async createWall({ state, commit }, draft) {
+    const sceneId = state.selectedSceneId;
+    if (sceneId === null || typeof wallApi?.create !== "function") return null;
+    commit("SET_WALL_PHASE", "saving");
+    try {
+      const wall = await wallApi.create(state.campaignId, sceneId, draft);
+      if (state.selectedSceneId === sceneId) {
+        commit("UPSERT_WALL", wall);
+        commit("SELECT_WALL", wall.id);
+      }
+      commit("SET_WALL_PHASE", "ready");
+      return wall;
+    } catch (error) {
+      commit("WALL_FAILED", normalizedError(error));
+      throw error;
+    }
+  },
+  async updateWall({ state, commit }, { wall, changes }) {
+    if (!wall || typeof wallApi?.update !== "function") return null;
+    commit("SET_WALL_PHASE", "saving");
+    try {
+      const updated = await wallApi.update(
+        state.campaignId,
+        wall.sceneId,
+        wall.id,
+        { ...changes, revision: wall.revision },
+      );
+      commit("UPSERT_WALL", updated);
+      commit("SET_WALL_PHASE", "ready");
+      return updated;
+    } catch (error) {
+      commit("WALL_FAILED", normalizedError(error));
+      throw error;
+    }
+  },
+  async deleteWall({ state, commit }, wall) {
+    if (!wall || typeof wallApi?.remove !== "function") return;
+    commit("SET_WALL_PHASE", "saving");
+    try {
+      await wallApi.remove(
+        state.campaignId,
+        wall.sceneId,
+        wall.id,
+        wall.revision,
+      );
+      commit("REMOVE_WALL", { sceneId: wall.sceneId, wallId: wall.id });
+      commit("SET_WALL_PHASE", "ready");
+    } catch (error) {
+      commit("WALL_FAILED", normalizedError(error));
       throw error;
     }
   },

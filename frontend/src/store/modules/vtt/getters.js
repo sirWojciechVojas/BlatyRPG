@@ -15,6 +15,15 @@ export const vttGetters = {
   canCreateToken: (state) =>
     state.tokenCapabilitiesByScene[String(state.selectedSceneId)]?.canCreate ===
     true,
+  selectedSceneWalls: (state) =>
+    state.wallsByScene[String(state.selectedSceneId)] || [],
+  selectedWall: (state, getters) =>
+    getters.selectedSceneWalls.find(
+      (wall) => wall.id === state.selectedWallId,
+    ) || null,
+  canManageWalls: (state) =>
+    state.wallCapabilitiesByScene[String(state.selectedSceneId)]?.canManage ===
+    true,
   canManage: (state) => state.capabilities.canManage === true,
   isLoading: (state) => state.phase === "loading",
   isSaving: (state) => state.phase === "saving",

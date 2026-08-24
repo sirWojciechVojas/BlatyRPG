@@ -12,6 +12,10 @@ export const vttMutations = {
     state.tokenCapabilitiesByScene = {};
     state.selectedTokenId = null;
     state.tokenPhase = "idle";
+    state.wallsByScene = {};
+    state.wallCapabilitiesByScene = {};
+    state.selectedWallId = null;
+    state.wallPhase = "idle";
     state.capabilities = {
       canManage: false,
       canViewHidden: false,
@@ -40,6 +44,7 @@ export const vttMutations = {
   SELECT_SCENE(state, sceneId) {
     state.selectedSceneId = sceneId;
     state.selectedTokenId = null;
+    state.selectedWallId = null;
   },
   RECEIVE_TOKENS(state, { sceneId, items, capabilities }) {
     state.tokensByScene = { ...state.tokensByScene, [String(sceneId)]: items };
@@ -80,6 +85,46 @@ export const vttMutations = {
     state.tokenPhase = "error";
     state.error = error;
     state.unauthorized = error.status === 401 || error.status === 403;
+  },
+  RECEIVE_WALLS(state, { sceneId, items, capabilities }) {
+    const key = String(sceneId);
+    state.wallsByScene = { ...state.wallsByScene, [key]: items };
+    state.wallCapabilitiesByScene = {
+      ...state.wallCapabilitiesByScene,
+      [key]: capabilities,
+    };
+    state.wallPhase = "ready";
+    if (!items.some((wall) => wall.id === state.selectedWallId)) {
+      state.selectedWallId = null;
+    }
+  },
+  UPSERT_WALL(state, wall) {
+    const key = String(wall.sceneId);
+    const items = [...(state.wallsByScene[key] || [])];
+    const index = items.findIndex((item) => item.id === wall.id);
+    if (index < 0) items.push(wall);
+    else items.splice(index, 1, wall);
+    state.wallsByScene = { ...state.wallsByScene, [key]: items };
+  },
+  REMOVE_WALL(state, { sceneId, wallId }) {
+    const key = String(sceneId);
+    state.wallsByScene = {
+      ...state.wallsByScene,
+      [key]: (state.wallsByScene[key] || []).filter(
+        (wall) => wall.id !== wallId,
+      ),
+    };
+    if (state.selectedWallId === wallId) state.selectedWallId = null;
+  },
+  SELECT_WALL(state, wallId) {
+    state.selectedWallId = wallId;
+  },
+  SET_WALL_PHASE(state, phase) {
+    state.wallPhase = phase;
+  },
+  WALL_FAILED(state, error) {
+    state.wallPhase = "error";
+    state.error = error;
   },
   UPSERT_SCENE(state, scene) {
     if (!scene) return;

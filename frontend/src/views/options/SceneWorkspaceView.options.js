@@ -16,6 +16,7 @@ import {
 } from "@/components/vtt/table/tableHotbar";
 import { tableWindowMethods } from "@/components/vtt/table/tableWindowMethods";
 import { tableTokenMethods } from "@/components/vtt/token/tableTokenMethods";
+import { tableWallMethods } from "@/components/vtt/wall/tableWallMethods";
 import {
   IMPLEMENTED_TABLE_UTILITIES,
   utilityById,
@@ -97,8 +98,14 @@ export default {
     selectedSceneTokens() {
       return this.$store.getters["vtt/selectedSceneTokens"] || [];
     },
+    selectedSceneWalls() {
+      return this.$store.getters["vtt/selectedSceneWalls"] || [];
+    },
     canCreateToken() {
       return this.$store.getters["vtt/canCreateToken"] === true;
+    },
+    canManageWalls() {
+      return this.$store.getters["vtt/canManageWalls"] === true;
     },
     canManage() {
       return this.$store.getters["vtt/canManage"] === true;
@@ -111,6 +118,9 @@ export default {
     },
     tokenBusy() {
       return ["loading", "saving"].includes(this.state.tokenPhase);
+    },
+    wallBusy() {
+      return ["loading", "saving"].includes(this.state.wallPhase);
     },
     initialLoading() {
       return this.state.phase === "loading" && !this.state.scenes.length;
@@ -174,6 +184,7 @@ export default {
   methods: {
     ...tableWindowMethods,
     ...tableTokenMethods,
+    ...tableWallMethods,
     async loadCampaign() {
       this.activePanelId = this.$route.hash === "#campaign-chat" ? "chat" : "";
       this.settingsOpen = false;

@@ -7,6 +7,10 @@ export const createVttState = () => ({
   tokenCapabilitiesByScene: {},
   selectedTokenId: null,
   tokenPhase: "idle",
+  wallsByScene: {},
+  wallCapabilitiesByScene: {},
+  selectedWallId: null,
+  wallPhase: "idle",
   capabilities: {
     canManage: false,
     canViewHidden: false,

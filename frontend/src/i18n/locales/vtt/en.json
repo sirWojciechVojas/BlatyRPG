@@ -94,6 +94,16 @@
       "cone": "60° cone",
       "rectangle": "Rectangular area"
     },
+    "wall": {
+      "movement": "Blocks movement",
+      "sight": "Blocks vision",
+      "light": "Blocks light",
+      "toggleDoor": "Open or close door",
+      "toggleLock": "Lock or unlock door",
+      "toggleSecret": "Toggle secret door",
+      "delete": "Delete segment",
+      "deleteConfirm": "Delete the selected segment?"
+    },
     "table": {
       "header": {
         "kicker": "Campaign table",

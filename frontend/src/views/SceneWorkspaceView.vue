@@ -78,6 +78,10 @@
           :selected-token-id="state.selectedTokenId"
           :token-busy="tokenBusy"
           :can-create-token="canCreateToken"
+          :walls="selectedSceneWalls"
+          :selected-wall-id="state.selectedWallId"
+          :can-manage-walls="canManageWalls"
+          :wall-busy="wallBusy"
           @camera-change="zoomPercent = $event.zoomPercent"
           @token-select="selectToken"
           @token-move="moveToken"
@@ -85,6 +89,10 @@
           @token-delete="deleteToken"
           @token-create="createToken"
           @open-actor="openActor"
+          @wall-select="selectWall"
+          @wall-create="createWall"
+          @wall-update="updateWall"
+          @wall-delete="deleteWall"
         />
       </section>
 

@@ -94,6 +94,16 @@
       "cone": "Stożek 60°",
       "rectangle": "Prostokątny obszar"
     },
+    "wall": {
+      "movement": "Blokuje ruch",
+      "sight": "Blokuje widzenie",
+      "light": "Blokuje światło",
+      "toggleDoor": "Otwórz lub zamknij drzwi",
+      "toggleLock": "Zablokuj lub odblokuj drzwi",
+      "toggleSecret": "Przełącz sekretne drzwi",
+      "delete": "Usuń segment",
+      "deleteConfirm": "Czy na pewno usunąć wybrany segment?"
+    },
     "table": {
       "header": {
         "kicker": "Stół kampanii",

@@ -69,6 +69,18 @@
         <p v-if="backgroundFailed" class="scene-canvas__image-error">
           {{ $t("vtt.scene.workspace.backgroundError") }}
         </p>
+        <SceneWallLayer
+          :scene="scene"
+          :walls="walls"
+          :active-tool="activeTool"
+          :selected-id="selectedWallId"
+          :can-manage="canManageWalls"
+          :busy="wallBusy"
+          @select="$emit('wall-select', $event)"
+          @create="$emit('wall-create', $event)"
+          @update="$emit('wall-update', $event)"
+          @delete="$emit('wall-delete', $event)"
+        />
         <SceneTokenLayer
           :tokens="tokens"
           :selected-id="selectedTokenId"
@@ -90,12 +102,13 @@ import { getCurrentInstance, nextTick } from "vue";
 import { buildGridPattern } from "@/lib/vtt/grid";
 import { canvasDropPosition, readDroppedActor } from "@/lib/vtt/tokenDrop";
 import SceneTokenLayer from "@/components/vtt/token/SceneTokenLayer.vue";
+import SceneWallLayer from "@/components/vtt/wall/SceneWallLayer.vue";
 import SceneMeasurementOverlay from "./SceneMeasurementOverlay.vue";
 import { sceneCanvasCameraMethods } from "./sceneCanvasCameraMethods";
 
 export default {
   name: "SceneCanvas",
-  components: { SceneMeasurementOverlay, SceneTokenLayer },
+  components: { SceneMeasurementOverlay, SceneTokenLayer, SceneWallLayer },
   props: {
     scene: { type: Object, default: null },
     activeTool: { type: String, default: "select" },
@@ -103,6 +116,10 @@ export default {
     selectedTokenId: { type: [Number, String], default: null },
     tokenBusy: { type: Boolean, default: false },
     canCreateToken: { type: Boolean, default: false },
+    walls: { type: Array, default: () => [] },
+    selectedWallId: { type: [Number, String], default: null },
+    canManageWalls: { type: Boolean, default: false },
+    wallBusy: { type: Boolean, default: false },
   },
   emits: [
     "camera-change",
@@ -112,6 +129,10 @@ export default {
     "token-delete",
     "token-create",
     "open-actor",
+    "wall-select",
+    "wall-create",
+    "wall-update",
+    "wall-delete",
   ],
   data() {
     return {
