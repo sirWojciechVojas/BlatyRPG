@@ -33,6 +33,15 @@ export const vttGetters = {
   canManageLights: (state) =>
     state.lightCapabilitiesByScene[String(state.selectedSceneId)]?.canManage ===
     true,
+  selectedSceneTiles: (state) =>
+    state.tilesByScene[String(state.selectedSceneId)] || [],
+  selectedTile: (state, getters) =>
+    getters.selectedSceneTiles.find(
+      (tile) => tile.id === state.selectedTileId,
+    ) || null,
+  canManageTiles: (state) =>
+    state.tileCapabilitiesByScene[String(state.selectedSceneId)]?.canManage ===
+    true,
   canManage: (state) => state.capabilities.canManage === true,
   isLoading: (state) => state.phase === "loading",
   isSaving: (state) => state.phase === "saving",

@@ -31,7 +31,13 @@ const assertCanManage = (state) => {
   if (!state.capabilities.canManage) throw forbiddenError();
 };
 
-export const createVttActions = (api, tokenApi, wallApi, lightApi) => ({
+export const createVttActions = (
+  api,
+  tokenApi,
+  wallApi,
+  lightApi,
+  tileApi,
+) => ({
   ...createSceneElementActions(
     wallApi,
     elementActionOptions("wall", "Walls", normalizedError),
@@ -39,6 +45,10 @@ export const createVttActions = (api, tokenApi, wallApi, lightApi) => ({
   ...createSceneElementActions(
     lightApi,
     elementActionOptions("light", "Lights", normalizedError),
+  ),
+  ...createSceneElementActions(
+    tileApi,
+    elementActionOptions("tile", "Tiles", normalizedError),
   ),
   async initialize({ state, commit, dispatch }) {
     const requestId = startRequest(state, commit, "loading");
@@ -57,6 +67,7 @@ export const createVttActions = (api, tokenApi, wallApi, lightApi) => ({
         dispatch("loadTokens"),
         dispatch("loadWalls"),
         dispatch("loadLights"),
+        dispatch("loadTiles"),
       ]);
     } catch (error) {
       if (state.requestId === requestId) failRequest(commit, requestId, error);
@@ -75,6 +86,7 @@ export const createVttActions = (api, tokenApi, wallApi, lightApi) => ({
         dispatch("loadTokens"),
         dispatch("loadWalls"),
         dispatch("loadLights"),
+        dispatch("loadTiles"),
       ]);
     } catch (error) {
       if (state.requestId === requestId) failRequest(commit, requestId, error);

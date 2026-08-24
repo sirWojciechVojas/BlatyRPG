@@ -115,6 +115,27 @@
       "delete": "Delete light source",
       "deleteConfirm": "Delete the selected light source?"
     },
+    "tile": {
+      "assetUrl": "Image or video URL",
+      "mediaType": "Media type",
+      "image": "Image",
+      "video": "Video",
+      "layer": "Layer",
+      "background": "Background",
+      "foreground": "Foreground",
+      "create": "Add tile",
+      "resize": "Resize",
+      "rotateLeft": "Rotate left",
+      "rotateRight": "Rotate right",
+      "sendBack": "Send backward",
+      "bringFront": "Bring forward",
+      "opacity": "Opacity",
+      "locked": "Lock movement",
+      "hidden": "Hide from players",
+      "loop": "Loop video",
+      "delete": "Delete tile",
+      "deleteConfirm": "Delete the selected tile?"
+    },
     "table": {
       "header": {
         "kicker": "Campaign table",
@@ -188,6 +209,7 @@
       },
       "graphics": {
         "description": "Images used by this campaign and its scenes.",
+        "dragHint": "Drag an image onto the Canvas to create a tile.",
         "empty": "This table has no assigned images yet."
       },
       "characters": {

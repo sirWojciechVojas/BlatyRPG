@@ -40,6 +40,8 @@
   height: 100%;
 }
 
+.scene-canvas__grid { z-index: 5; }
+
 .scene-canvas__background {
   object-fit: fill;
   pointer-events: none;

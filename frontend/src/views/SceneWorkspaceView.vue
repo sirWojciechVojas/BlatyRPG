@@ -86,6 +86,10 @@
           :selected-light-id="state.selectedLightId"
           :can-manage-lights="canManageLights"
           :light-busy="lightBusy"
+          :tiles="selectedSceneTiles"
+          :selected-tile-id="state.selectedTileId"
+          :can-manage-tiles="canManageTiles"
+          :tile-busy="tileBusy"
           @camera-change="zoomPercent = $event.zoomPercent"
           @token-select="selectToken"
           @token-move="moveToken"
@@ -101,6 +105,10 @@
           @light-create="createLight"
           @light-update="updateLight"
           @light-delete="deleteLight"
+          @tile-select="selectTile"
+          @tile-create="createTile"
+          @tile-update="updateTile"
+          @tile-delete="deleteTile"
         />
       </section>
 

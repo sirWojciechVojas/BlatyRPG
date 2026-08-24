@@ -15,6 +15,10 @@ export const createVttState = () => ({
   lightCapabilitiesByScene: {},
   selectedLightId: null,
   lightPhase: "idle",
+  tilesByScene: {},
+  tileCapabilitiesByScene: {},
+  selectedTileId: null,
+  tilePhase: "idle",
   capabilities: {
     canManage: false,
     canViewHidden: false,

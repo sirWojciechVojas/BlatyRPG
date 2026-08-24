@@ -115,6 +115,27 @@
       "delete": "Usuń źródło światła",
       "deleteConfirm": "Czy na pewno usunąć wybrane źródło światła?"
     },
+    "tile": {
+      "assetUrl": "URL obrazu lub wideo",
+      "mediaType": "Typ medium",
+      "image": "Obraz",
+      "video": "Wideo",
+      "layer": "Warstwa",
+      "background": "Tło",
+      "foreground": "Foreground",
+      "create": "Dodaj tile",
+      "resize": "Zmień rozmiar",
+      "rotateLeft": "Obróć w lewo",
+      "rotateRight": "Obróć w prawo",
+      "sendBack": "Przesuń niżej",
+      "bringFront": "Przesuń wyżej",
+      "opacity": "Przezroczystość",
+      "locked": "Zablokuj przesuwanie",
+      "hidden": "Ukryj przed graczami",
+      "loop": "Zapętl wideo",
+      "delete": "Usuń tile",
+      "deleteConfirm": "Czy na pewno usunąć wybrany tile?"
+    },
     "table": {
       "header": {
         "kicker": "Stół kampanii",
@@ -188,6 +209,7 @@
       },
       "graphics": {
         "description": "Grafiki używane przez kampanię i jej sceny.",
+        "dragHint": "Przeciągnij grafikę na Canvas, aby utworzyć tile.",
         "empty": "Ten Stół nie ma jeszcze przypisanych grafik."
       },
       "characters": {

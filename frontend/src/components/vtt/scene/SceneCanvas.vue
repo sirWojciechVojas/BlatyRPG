@@ -18,7 +18,7 @@
     @pointerup="endPan"
     @pointercancel="endPan"
     @dragover.prevent
-    @drop.prevent="dropActor"
+    @drop.prevent="dropContent"
   >
     <SceneMeasurementOverlay
       :scene="scene"
@@ -69,6 +69,19 @@
         <p v-if="backgroundFailed" class="scene-canvas__image-error">
           {{ $t("vtt.scene.workspace.backgroundError") }}
         </p>
+        <SceneTileLayer
+          :scene="scene"
+          :tiles="tiles"
+          :active-tool="activeTool"
+          :selected-id="selectedTileId"
+          :can-manage="canManageTiles"
+          :busy="tileBusy"
+          :scale="camera.scale"
+          @select="$emit('tile-select', $event)"
+          @create="$emit('tile-create', $event)"
+          @update="$emit('tile-update', $event)"
+          @delete="$emit('tile-delete', $event)"
+        />
         <SceneLightLayer
           :scene="scene"
           :lights="lights"
@@ -113,12 +126,13 @@
 <script>
 import { getCurrentInstance, nextTick } from "vue";
 import { buildGridPattern } from "@/lib/vtt/grid";
-import { canvasDropPosition, readDroppedActor } from "@/lib/vtt/tokenDrop";
 import SceneTokenLayer from "@/components/vtt/token/SceneTokenLayer.vue";
 import SceneWallLayer from "@/components/vtt/wall/SceneWallLayer.vue";
 import SceneLightLayer from "@/components/vtt/light/SceneLightLayer.vue";
+import SceneTileLayer from "@/components/vtt/tile/SceneTileLayer.vue";
 import SceneMeasurementOverlay from "./SceneMeasurementOverlay.vue";
 import { sceneCanvasCameraMethods } from "./sceneCanvasCameraMethods";
+import { sceneCanvasDropMethods } from "./sceneCanvasDropMethods";
 
 export default {
   name: "SceneCanvas",
@@ -126,6 +140,7 @@ export default {
     SceneLightLayer,
     SceneMeasurementOverlay,
     SceneTokenLayer,
+    SceneTileLayer,
     SceneWallLayer,
   },
   props: {
@@ -143,6 +158,10 @@ export default {
     selectedLightId: { type: [Number, String], default: null },
     canManageLights: { type: Boolean, default: false },
     lightBusy: { type: Boolean, default: false },
+    tiles: { type: Array, default: () => [] },
+    selectedTileId: { type: [Number, String], default: null },
+    canManageTiles: { type: Boolean, default: false },
+    tileBusy: { type: Boolean, default: false },
   },
   emits: [
     "camera-change",
@@ -160,6 +179,10 @@ export default {
     "light-create",
     "light-update",
     "light-delete",
+    "tile-select",
+    "tile-create",
+    "tile-update",
+    "tile-delete",
   ],
   data() {
     return {
@@ -228,18 +251,7 @@ export default {
   },
   methods: {
     ...sceneCanvasCameraMethods,
-    dropActor(event) {
-      if (!this.scene || !this.canCreateToken) return;
-      const actor = readDroppedActor(event.dataTransfer);
-      if (!actor) return;
-      const position = canvasDropPosition(
-        event,
-        this.$refs.viewport,
-        this.camera,
-        this.mapDimensions.padding,
-      );
-      this.$emit("token-create", { actor, ...position });
-    },
+    ...sceneCanvasDropMethods,
   },
 };
 </script>

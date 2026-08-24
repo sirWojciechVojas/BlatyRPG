@@ -20,6 +20,10 @@ export const vttMutations = {
     state.lightCapabilitiesByScene = {};
     state.selectedLightId = null;
     state.lightPhase = "idle";
+    state.tilesByScene = {};
+    state.tileCapabilitiesByScene = {};
+    state.selectedTileId = null;
+    state.tilePhase = "idle";
     state.capabilities = {
       canManage: false,
       canViewHidden: false,
@@ -50,6 +54,7 @@ export const vttMutations = {
     state.selectedTokenId = null;
     state.selectedWallId = null;
     state.selectedLightId = null;
+    state.selectedTileId = null;
   },
   RECEIVE_TOKENS(state, { sceneId, items, capabilities }) {
     state.tokensByScene = { ...state.tokensByScene, [String(sceneId)]: items };
@@ -169,6 +174,46 @@ export const vttMutations = {
   },
   LIGHT_FAILED(state, error) {
     state.lightPhase = "error";
+    state.error = error;
+  },
+  RECEIVE_TILES(state, { sceneId, items, capabilities }) {
+    const key = String(sceneId);
+    state.tilesByScene = { ...state.tilesByScene, [key]: items };
+    state.tileCapabilitiesByScene = {
+      ...state.tileCapabilitiesByScene,
+      [key]: capabilities,
+    };
+    state.tilePhase = "ready";
+    if (!items.some((tile) => tile.id === state.selectedTileId)) {
+      state.selectedTileId = null;
+    }
+  },
+  UPSERT_TILE(state, tile) {
+    const key = String(tile.sceneId);
+    const items = [...(state.tilesByScene[key] || [])];
+    const index = items.findIndex((item) => item.id === tile.id);
+    if (index < 0) items.push(tile);
+    else items.splice(index, 1, tile);
+    state.tilesByScene = { ...state.tilesByScene, [key]: items };
+  },
+  REMOVE_TILE(state, { sceneId, tileId }) {
+    const key = String(sceneId);
+    state.tilesByScene = {
+      ...state.tilesByScene,
+      [key]: (state.tilesByScene[key] || []).filter(
+        (tile) => tile.id !== tileId,
+      ),
+    };
+    if (state.selectedTileId === tileId) state.selectedTileId = null;
+  },
+  SELECT_TILE(state, tileId) {
+    state.selectedTileId = tileId;
+  },
+  SET_TILE_PHASE(state, phase) {
+    state.tilePhase = phase;
+  },
+  TILE_FAILED(state, error) {
+    state.tilePhase = "error";
     state.error = error;
   },
   UPSERT_SCENE(state, scene) {

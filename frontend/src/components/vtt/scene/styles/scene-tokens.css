@@ -1,5 +1,6 @@
 .scene-token-layer {
   position: absolute;
+  z-index: 15;
   inset: 0;
   pointer-events: none;
 }

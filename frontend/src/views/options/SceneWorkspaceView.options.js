@@ -18,22 +18,14 @@ import { tableWindowMethods } from "@/components/vtt/table/tableWindowMethods";
 import { tableTokenMethods } from "@/components/vtt/token/tableTokenMethods";
 import { tableWallMethods } from "@/components/vtt/wall/tableWallMethods";
 import { tableLightMethods } from "@/components/vtt/light/tableLightMethods";
+import { tableTileMethods } from "@/components/vtt/tile/tableTileMethods";
 import {
   IMPLEMENTED_TABLE_UTILITIES,
   utilityById,
 } from "@/components/vtt/table/tableUtilities";
 import { ensureVttStoreModule } from "@/store/modules/loadVttModule";
 import { sceneErrorMessage } from "./sceneErrorMessage";
-
-const emptyState = () => ({
-  scenes: [],
-  selectedSceneId: null,
-  activeSceneId: null,
-  capabilities: { canManage: false, canViewHidden: false },
-  phase: "idle",
-  error: null,
-  unauthorized: false,
-});
+import { emptySceneWorkspaceState } from "./sceneWorkspaceState";
 
 export default {
   name: "SceneWorkspaceView",
@@ -63,7 +55,7 @@ export default {
   }),
   computed: {
     state() {
-      return this.$store.state.vtt || emptyState();
+      return this.$store.state.vtt || emptySceneWorkspaceState();
     },
     campaignContext() {
       return this.$store.state.campaignContext || {};
@@ -106,6 +98,9 @@ export default {
     selectedSceneLights() {
       return this.$store.getters["vtt/selectedSceneLights"] || [];
     },
+    selectedSceneTiles() {
+      return this.$store.getters["vtt/selectedSceneTiles"] || [];
+    },
     canCreateToken() {
       return this.$store.getters["vtt/canCreateToken"] === true;
     },
@@ -114,6 +109,9 @@ export default {
     },
     canManageLights() {
       return this.$store.getters["vtt/canManageLights"] === true;
+    },
+    canManageTiles() {
+      return this.$store.getters["vtt/canManageTiles"] === true;
     },
     canManage() {
       return this.$store.getters["vtt/canManage"] === true;
@@ -132,6 +130,9 @@ export default {
     },
     lightBusy() {
       return ["loading", "saving"].includes(this.state.lightPhase);
+    },
+    tileBusy() {
+      return ["loading", "saving"].includes(this.state.tilePhase);
     },
     initialLoading() {
       return this.state.phase === "loading" && !this.state.scenes.length;
@@ -180,6 +181,7 @@ export default {
     ...tableTokenMethods,
     ...tableWallMethods,
     ...tableLightMethods,
+    ...tableTileMethods,
     async loadCampaign() {
       this.activePanelId = this.$route.hash === "#campaign-chat" ? "chat" : "";
       this.settingsOpen = false;
