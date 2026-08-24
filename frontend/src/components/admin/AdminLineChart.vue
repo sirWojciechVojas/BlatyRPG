@@ -52,13 +52,16 @@ export default {
 
 <style scoped>
 .admin-line-chart {
+  display: grid;
   position: relative;
+  height: 100%;
   min-height: 9rem;
+  grid-template-rows: minmax(7.3rem, 1fr) auto;
 }
 .admin-line-chart svg {
   display: block;
   width: 100%;
-  height: 7.3rem;
+  height: 100%;
   overflow: visible;
 }
 .admin-line-chart path.grid {

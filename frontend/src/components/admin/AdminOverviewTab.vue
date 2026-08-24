@@ -52,13 +52,15 @@
         <h2>{{ $t("admin.quick.title") }}</h2>
       </header>
       <button type="button" @click="$emit('navigate', 'users')">
-        <span>＋</span>{{ $t("admin.quick.addUser") }}
+        <span><AdminIcon name="addUser" /></span>{{ $t("admin.quick.addUser") }}
       </button>
       <button type="button" @click="$emit('navigate', 'campaigns')">
-        <span>⌕</span>{{ $t("admin.quick.reviewTables") }}
+        <span><AdminIcon name="search" /></span
+        >{{ $t("admin.quick.reviewTables") }}
       </button>
       <router-link :to="{ name: 'landing' }">
-        <span>⌂</span>{{ $t("admin.quick.openLanding") }}
+        <span><AdminIcon name="home" /></span
+        >{{ $t("admin.quick.openLanding") }}
       </router-link>
     </section>
   </div>
@@ -68,10 +70,11 @@
 import AdminBarChart from "./AdminBarChart.vue";
 import AdminDonutChart from "./AdminDonutChart.vue";
 import AdminLineChart from "./AdminLineChart.vue";
+import AdminIcon from "./AdminIcon.vue";
 
 export default {
   name: "AdminOverviewTab",
-  components: { AdminBarChart, AdminDonutChart, AdminLineChart },
+  components: { AdminBarChart, AdminDonutChart, AdminIcon, AdminLineChart },
   props: {
     metrics: { type: Object, required: true },
     analytics: { type: Object, required: true },

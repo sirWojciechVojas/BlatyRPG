@@ -52,6 +52,7 @@ export default {
 .admin-bars {
   display: grid;
   gap: 0.55rem;
+  height: 100%;
   min-height: 6rem;
   align-content: center;
 }

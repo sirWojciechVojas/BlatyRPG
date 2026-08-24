@@ -2,7 +2,7 @@
   <div class="admin-page">
     <header class="admin-header">
       <div class="admin-heading">
-        <span class="admin-mark">BR</span>
+        <span class="admin-mark"><AdminIcon name="shield" /></span>
         <div>
           <p>{{ $t("admin.eyebrow") }}</p>
           <h1>{{ $t("admin.title") }}</h1>
@@ -18,7 +18,7 @@
           :title="$t('admin.actions.refresh')"
           @click="load"
         >
-          ↻
+          <AdminIcon name="refresh" />
         </button>
         <router-link class="admin-secondary" :to="{ name: 'home' }">{{
           $t("admin.actions.back")
@@ -36,7 +36,7 @@
           :aria-current="activeTab === tab.id ? 'page' : undefined"
           @click="activeTab = tab.id"
         >
-          <span aria-hidden="true">{{ tab.icon }}</span>
+          <span aria-hidden="true"><AdminIcon :name="tab.icon" /></span>
           <strong>{{ tab.label }}</strong>
           <small v-if="tab.count !== null">{{ tab.count }}</small>
         </button>

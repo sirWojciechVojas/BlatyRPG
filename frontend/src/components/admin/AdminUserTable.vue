@@ -4,7 +4,6 @@
       <thead>
         <tr>
           <th>{{ $t("admin.fields.user") }}</th>
-          <th>{{ $t("admin.fields.email") }}</th>
           <th>{{ $t("admin.fields.campaigns") }}</th>
           <th>{{ $t("admin.fields.created") }}</th>
           <th>{{ $t("admin.fields.role") }}</th>
@@ -13,13 +12,22 @@
       <tbody>
         <tr v-for="user in users" :key="`${user.id}-${user.role}`">
           <td>
-            <strong>{{ user.username }}</strong>
-            <small v-if="user.id === currentUserId">{{
-              $t("admin.users.you")
-            }}</small>
+            <span class="admin-user-cell">
+              <span class="admin-user-avatar" aria-hidden="true">{{
+                initials(user.username)
+              }}</span>
+              <span class="admin-user-identity">
+                <strong>{{ user.username }}</strong>
+                <small>{{ user.email }}</small>
+              </span>
+              <small v-if="user.id === currentUserId" class="admin-user-you">{{
+                $t("admin.users.you")
+              }}</small>
+            </span>
           </td>
-          <td>{{ user.email }}</td>
-          <td>{{ user.campaignCount }}</td>
+          <td>
+            <span class="admin-count-chip">{{ user.campaignCount }}</span>
+          </td>
           <td>{{ formatDate(user.createdAt) }}</td>
           <td>
             <select
@@ -37,7 +45,7 @@
           </td>
         </tr>
         <tr v-if="!users.length">
-          <td colspan="5" class="admin-table-empty">
+          <td colspan="4" class="admin-table-empty">
             {{ $t("admin.users.empty") }}
           </td>
         </tr>
@@ -57,6 +65,15 @@ export default {
   emits: ["role-change"],
   data: () => ({ roles: ["user", "admin"] }),
   methods: {
+    initials(value) {
+      return String(value || "?")
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map((part) => part.charAt(0))
+        .join("")
+        .toLocaleUpperCase();
+    },
     changeRole(user, role) {
       if (role !== user.role) this.$emit("role-change", { user, role });
     },

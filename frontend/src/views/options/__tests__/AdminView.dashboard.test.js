@@ -7,6 +7,7 @@ vi.mock("@/components/admin/AdminCampaignsTab.vue", () => ({ default: {} }));
 vi.mock("@/components/admin/AdminOverviewTab.vue", () => ({ default: {} }));
 vi.mock("@/components/admin/AdminSystemTab.vue", () => ({ default: {} }));
 vi.mock("@/components/admin/AdminUsersTab.vue", () => ({ default: {} }));
+vi.mock("@/components/admin/AdminIcon.vue", () => ({ default: {} }));
 
 import options from "@/views/options/AdminView.options";
 
@@ -27,6 +28,13 @@ describe("AdminView dashboard", () => {
     ]);
     expect(tabs.find((tab) => tab.id === "users").count).toBe(12);
     expect(tabs.find((tab) => tab.id === "activity").count).toBe(2);
+    expect(tabs.map((tab) => tab.icon)).toEqual([
+      "overview",
+      "users",
+      "campaigns",
+      "activity",
+      "system",
+    ]);
   });
 
   it("uses the same background asset as the landing page", () => {
@@ -36,5 +44,22 @@ describe("AdminView dashboard", () => {
     );
 
     expect(css).toContain('url("../../assets/app-ui/img/background.jpg")');
+  });
+
+  it("uses the full viewport without the legacy dashboard width cap", () => {
+    const viewCss = readFileSync(
+      resolve(process.cwd(), "src/views/styles/AdminView.css"),
+      "utf8",
+    );
+    const compatibilityCss = readFileSync(
+      resolve(process.cwd(), "src/styles/ui/compat-campaign-admin.css"),
+      "utf8",
+    );
+
+    expect(viewCss).toContain(
+      "height: calc(100dvh - var(--ui-navigation-height))",
+    );
+    expect(viewCss).toContain("grid-template-columns: 11.25rem minmax(0, 1fr)");
+    expect(compatibilityCss).not.toContain("width: min(88rem");
   });
 });

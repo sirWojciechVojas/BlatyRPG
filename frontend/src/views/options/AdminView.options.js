@@ -3,6 +3,7 @@ import AdminCampaignsTab from "@/components/admin/AdminCampaignsTab.vue";
 import AdminOverviewTab from "@/components/admin/AdminOverviewTab.vue";
 import AdminSystemTab from "@/components/admin/AdminSystemTab.vue";
 import AdminUsersTab from "@/components/admin/AdminUsersTab.vue";
+import AdminIcon from "@/components/admin/AdminIcon.vue";
 import { adminApiClient } from "@/lib/admin/adminApiClient";
 import { authSession } from "@/lib/auth/authSession";
 
@@ -22,6 +23,7 @@ export default {
     AdminOverviewTab,
     AdminSystemTab,
     AdminUsersTab,
+    AdminIcon,
   },
   data: () => ({
     activeTab: "overview",
@@ -49,11 +51,11 @@ export default {
   computed: {
     tabs() {
       return [
-        { id: "overview", icon: "⌂", count: null },
-        { id: "users", icon: "♙", count: this.metrics.users },
-        { id: "campaigns", icon: "◉", count: this.metrics.campaigns },
-        { id: "activity", icon: "⌁", count: this.activity.length },
-        { id: "system", icon: "⚙", count: null },
+        { id: "overview", icon: "overview", count: null },
+        { id: "users", icon: "users", count: this.metrics.users },
+        { id: "campaigns", icon: "campaigns", count: this.metrics.campaigns },
+        { id: "activity", icon: "activity", count: this.activity.length },
+        { id: "system", icon: "system", count: null },
       ].map((tab) => ({ ...tab, label: this.$t(`admin.tabs.${tab.id}`) }));
     },
   },

@@ -59,6 +59,7 @@ export default {
   grid-template-columns: 6.5rem 1fr;
   gap: 1rem;
   align-items: center;
+  height: 100%;
   min-height: 7rem;
 }
 .admin-donut {
