@@ -82,6 +82,47 @@ const exactKeys = (value, allowed) => {
   }
 };
 
+const wallChanges = (value, operation) => {
+  if (!plainObject(value)) throw new ProtocolError("wall_changes_invalid");
+  const allowed = [
+    "type", "x1", "y1", "x2", "y2", "blocksMovement", "blocksSight",
+    "blocksLight", "doorState",
+  ];
+  exactKeys(value, allowed);
+  const changes = {};
+  for (const field of ["x1", "y1", "x2", "y2"]) {
+    if (value[field] !== undefined) {
+      changes[field] = coordinate(value[field], `wall_${field}_invalid`);
+    }
+  }
+  for (const field of ["blocksMovement", "blocksSight", "blocksLight"]) {
+    if (value[field] === undefined) continue;
+    if (typeof value[field] !== "boolean") {
+      throw new ProtocolError(`wall_${field}_invalid`);
+    }
+    changes[field] = value[field];
+  }
+  if (value.type !== undefined) {
+    if (!["wall", "door", "secret"].includes(value.type)) {
+      throw new ProtocolError("wall_type_invalid");
+    }
+    changes.type = value.type;
+  }
+  if (value.doorState !== undefined) {
+    if (!["closed", "open", "locked"].includes(value.doorState)) {
+      throw new ProtocolError("wall_door_state_invalid");
+    }
+    changes.doorState = value.doorState;
+  }
+  if (operation === "create" && !["x1", "y1", "x2", "y2"].every((key) => key in changes)) {
+    throw new ProtocolError("wall_geometry_required");
+  }
+  if (operation === "update" && Object.keys(changes).length === 0) {
+    throw new ProtocolError("wall_changes_required");
+  }
+  return changes;
+};
+
 export const parseMessage = (data, isBinary = false) => {
   if (isBinary) throw new ProtocolError("binary_messages_forbidden");
   let parsed;
@@ -121,6 +162,30 @@ export const parseAuthMessage = (message) => {
 };
 
 export const parseAuthenticatedMessage = (message) => {
+  if (message.type === "wall.change") {
+    const operation = String(message.operation || "");
+    if (!["create", "update", "delete"].includes(operation)) {
+      throw new ProtocolError("wall_operation_invalid");
+    }
+    const allowed = ["v", "type", "requestId", "operation", "sceneId"];
+    if (operation !== "create") allowed.push("wallId", "revision");
+    if (operation !== "delete") allowed.push("changes");
+    exactKeys(message, allowed);
+    const sceneId = positiveRevision(message.sceneId, "scene_id_invalid");
+    const wallId = positiveRevision(message.wallId, "wall_id_invalid");
+    const revision = positiveRevision(message.revision, "wall_revision_invalid");
+    if (!sceneId || (operation !== "create" && (!wallId || !revision))) {
+      throw new ProtocolError("wall_change_invalid");
+    }
+    return {
+      type: message.type,
+      requestId: requiredRequestId(message.requestId),
+      operation,
+      sceneId,
+      ...(wallId ? { wallId, revision } : {}),
+      ...(operation === "delete" ? {} : { changes: wallChanges(message.changes, operation) }),
+    };
+  }
   if (message.type === "token.move") {
     exactKeys(message, [
       "v", "type", "requestId", "sceneId", "tokenId", "revision", "x", "y",

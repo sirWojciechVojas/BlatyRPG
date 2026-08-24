@@ -2,8 +2,10 @@ import { randomUUID } from "node:crypto";
 import { WebSocket } from "ws";
 import { BackendChatClient } from "./backend-chat-client.js";
 import { BackendTokenClient } from "./backend-token-client.js";
+import { BackendWallClient } from "./backend-wall-client.js";
 import { createChatHandler } from "./chat-handler.js";
 import { createHttpTransport } from "./http-transport.js";
+import { routeRealtimeFeature } from "./feature-router.js";
 import { PresenceRegistry } from "./presence-registry.js";
 import {
   CLOSE_CODES,
@@ -18,6 +20,7 @@ import { FixedWindowRateLimiter } from "./rate-limiter.js";
 import { RoomRegistry } from "./room-registry.js";
 import { TicketError, TicketVerifier } from "./ticket-verifier.js";
 import { createTokenHandler } from "./token-handler.js";
+import { createWallHandler } from "./wall-handler.js";
 
 const closeReason = (value) => String(value || "connection_closed").slice(0, 100);
 
@@ -86,6 +89,12 @@ export const createRealtimeServer = (config, dependencies = {}) => {
   });
   const tokens = createTokenHandler({
     backend: dependencies.tokenBackend || new BackendTokenClient(config),
+    rooms,
+    onAuthenticationFailure: (session) =>
+      closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized"),
+  });
+  const walls = createWallHandler({
+    backend: dependencies.wallBackend || new BackendWallClient(config),
     rooms,
     onAuthenticationFailure: (session) =>
       closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized"),
@@ -173,14 +182,7 @@ export const createRealtimeServer = (config, dependencies = {}) => {
 
   const handleAuthenticatedMessage = (session, message) => {
     const parsed = parseAuthenticatedMessage(message);
-    if (parsed.type === "chat.send" || parsed.type === "chat.sync") {
-      chat.handle(session, parsed);
-      return;
-    }
-    if (parsed.type === "token.move") {
-      tokens.handle(session, parsed);
-      return;
-    }
+    if (routeRealtimeFeature({ chat, tokens, walls }, session, parsed)) return;
     if (parsed.type === "sync.request") {
       sendPresenceSnapshot(session, parsed.lastSequence, parsed.requestId, "sync.snapshot");
       return;
