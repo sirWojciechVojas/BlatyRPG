@@ -9,6 +9,7 @@ import TableToolRail from "@/components/vtt/table/TableToolRail.vue";
 import TableUtilityDrawer from "@/components/vtt/table/TableUtilityDrawer.vue";
 import TableUtilityRail from "@/components/vtt/table/TableUtilityRail.vue";
 import TableWorkspaceHeader from "@/components/vtt/table/TableWorkspaceHeader.vue";
+import { toggledSceneTool } from "@/components/vtt/table/tableSceneTools";
 import {
   DEFAULT_TABLE_HOTBAR_ACTIONS,
   tableHotbarActions,
@@ -209,7 +210,7 @@ export default {
         this.openEdit();
         return;
       }
-      this.activeSceneTool = id;
+      this.activeSceneTool = toggledSceneTool(this.activeSceneTool, id);
     },
     refresh() {
       this.$store.dispatch("vtt/initialize").catch(() => {});

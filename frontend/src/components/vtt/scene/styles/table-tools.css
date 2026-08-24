@@ -1,6 +1,6 @@
 .table-tool-rail {
   position: absolute;
-  z-index: 30;
+  z-index: 320;
   top: 3.25rem;
   left: 0.45rem;
   display: flex;
@@ -12,6 +12,7 @@
   padding: 0.2rem;
   overflow-x: hidden;
   overflow-y: auto;
+  pointer-events: auto;
   border: 1px solid var(--ui-color-border, #2c3747);
   border-radius: var(--ui-radius-sm, 0.25rem);
   background: rgb(18 24 33 / 92%);
