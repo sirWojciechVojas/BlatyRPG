@@ -42,7 +42,7 @@
         </button>
       </aside>
 
-      <main class="admin-main">
+      <main class="admin-main" :class="{ 'ps-0': activeTab === 'users' }">
         <p v-if="error" class="admin-alert error" role="alert">
           {{ error }}
           <button type="button" @click="load">

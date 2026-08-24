@@ -48,8 +48,13 @@
   color: var(--ui-color-danger);
 }
 .admin-users-layout {
-  grid-template-columns: minmax(0, 1fr) clamp(17rem, 21vw, 22rem);
-  grid-template-rows: minmax(0, 1fr);
+  min-width: 0;
+}
+.admin-users-layout > .row {
+  min-width: 0;
+}
+.admin-users-list-column {
+  min-width: 0;
 }
 .admin-campaigns-layout {
   grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.3fr);
@@ -68,7 +73,7 @@
 }
 .admin-user-cell {
   display: grid;
-  min-width: 14rem;
+  min-width: 16rem;
   grid-template-columns: 2rem minmax(0, 1fr) auto;
   align-items: center;
   gap: 0.55rem;
@@ -90,9 +95,7 @@
 }
 .admin-user-identity strong,
 .admin-user-identity small {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  overflow-wrap: anywhere;
 }
 .admin-user-identity small {
   color: var(--ui-color-text-faint);
@@ -110,6 +113,22 @@
   place-items: center;
   border: var(--ui-border);
   border-radius: 1rem;
+}
+.admin-users-layout .admin-table th:first-child,
+.admin-users-layout .admin-table td:first-child {
+  width: 55%;
+}
+.admin-users-layout .admin-table th:nth-child(2),
+.admin-users-layout .admin-table td:nth-child(2) {
+  width: 10%;
+}
+.admin-users-layout .admin-table th:nth-child(3),
+.admin-users-layout .admin-table td:nth-child(3) {
+  width: 15%;
+}
+.admin-role-cell {
+  width: 20%;
+  min-width: 9rem;
 }
 .admin-search {
   width: min(16rem, 38%);

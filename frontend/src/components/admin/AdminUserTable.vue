@@ -1,6 +1,6 @@
 <template>
-  <div class="admin-table-wrap">
-    <table class="admin-table">
+  <div class="admin-table-wrap table-responsive">
+    <table class="admin-table align-middle mb-0">
       <thead>
         <tr>
           <th>{{ $t("admin.fields.user") }}</th>
@@ -25,11 +25,11 @@
               }}</small>
             </span>
           </td>
-          <td>
+          <td class="text-center">
             <span class="admin-count-chip">{{ user.campaignCount }}</span>
           </td>
-          <td>{{ formatDate(user.createdAt) }}</td>
-          <td>
+          <td class="text-nowrap">{{ formatDate(user.createdAt) }}</td>
+          <td class="admin-role-cell">
             <select
               :value="user.role"
               :disabled="busyUserId > 0"

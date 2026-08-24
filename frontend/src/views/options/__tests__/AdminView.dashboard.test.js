@@ -62,4 +62,20 @@ describe("AdminView dashboard", () => {
     expect(viewCss).toContain("grid-template-columns: 11.25rem minmax(0, 1fr)");
     expect(compatibilityCss).not.toContain("width: min(88rem");
   });
+
+  it("gives the user list a fluid Bootstrap layout", () => {
+    const usersTab = readFileSync(
+      resolve(process.cwd(), "src/components/admin/AdminUsersTab.vue"),
+      "utf8",
+    );
+    const adminView = readFileSync(
+      resolve(process.cwd(), "src/views/AdminView.vue"),
+      "utf8",
+    );
+
+    expect(usersTab).toContain("container-fluid h-100 p-0");
+    expect(usersTab).toContain("col-12 col-xl-9 col-xxl-10");
+    expect(usersTab).toContain("col-12 col-xl-3 col-xxl-2");
+    expect(adminView).toContain("'ps-0': activeTab === 'users'");
+  });
 });

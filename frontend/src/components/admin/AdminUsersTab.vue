@@ -1,39 +1,47 @@
 <template>
-  <div class="admin-tab-grid admin-users-layout">
-    <section class="admin-panel admin-panel--table">
-      <header class="admin-section-heading">
-        <div>
-          <h2>{{ $t("admin.users.title") }}</h2>
-          <p>{{ $t("admin.users.description") }}</p>
-        </div>
-        <label class="admin-search">
-          <span class="ui-visually-hidden">{{
-            $t("admin.actions.searchUsers")
-          }}</span>
-          <input
-            v-model.trim="query"
-            type="search"
-            :placeholder="$t('admin.actions.searchUsers')"
+  <div class="admin-users-layout container-fluid h-100 p-0">
+    <div class="row g-2 h-100 m-0">
+      <div
+        class="admin-users-list-column col-12 col-xl-9 col-xxl-10 h-100 ps-0"
+      >
+        <section class="admin-panel admin-panel--table w-100 p-0">
+          <header class="admin-section-heading px-3 pt-2">
+            <div>
+              <h2>{{ $t("admin.users.title") }}</h2>
+              <p>{{ $t("admin.users.description") }}</p>
+            </div>
+            <label class="admin-search">
+              <span class="ui-visually-hidden">{{
+                $t("admin.actions.searchUsers")
+              }}</span>
+              <input
+                v-model.trim="query"
+                type="search"
+                :placeholder="$t('admin.actions.searchUsers')"
+              />
+            </label>
+          </header>
+          <AdminUserTable
+            :users="filteredUsers"
+            :current-user-id="currentUserId"
+            :busy-user-id="busyUserId"
+            @role-change="$emit('role-change', $event)"
           />
-        </label>
-      </header>
-      <AdminUserTable
-        :users="filteredUsers"
-        :current-user-id="currentUserId"
-        :busy-user-id="busyUserId"
-        @role-change="$emit('role-change', $event)"
-      />
-      <p v-if="roleError" class="admin-alert error" role="alert">
-        {{ roleError }}
-      </p>
-    </section>
-    <AdminUserCreateForm
-      ref="createForm"
-      class="admin-panel admin-create-card"
-      :busy="creating"
-      :error="createError"
-      @submit="$emit('create', $event)"
-    />
+          <p v-if="roleError" class="admin-alert error mx-3" role="alert">
+            {{ roleError }}
+          </p>
+        </section>
+      </div>
+      <div class="col-12 col-xl-3 col-xxl-2 pe-0">
+        <AdminUserCreateForm
+          ref="createForm"
+          class="admin-panel admin-create-card w-100"
+          :busy="creating"
+          :error="createError"
+          @submit="$emit('create', $event)"
+        />
+      </div>
+    </div>
   </div>
 </template>
 

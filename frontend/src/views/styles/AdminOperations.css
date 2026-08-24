@@ -149,7 +149,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-template-rows: auto;
   }
-  .admin-users-layout,
   .admin-campaigns-layout {
     height: auto;
     grid-template-columns: 1fr;
@@ -160,6 +159,15 @@
   }
   .admin-form-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 1199.98px) {
+  .admin-users-layout,
+  .admin-users-layout > .row {
+    height: auto !important;
+  }
+  .admin-users-list-column {
+    min-height: 26rem;
   }
 }
 @media (max-width: 720px) {
