@@ -167,6 +167,10 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->post('campaigns/(:num)/scenes/(:num)/lights', 'SceneLightController::create/$1/$2');
         $routes->patch('campaigns/(:num)/scenes/(:num)/lights/(:num)', 'SceneLightController::update/$1/$2/$3');
         $routes->delete('campaigns/(:num)/scenes/(:num)/lights/(:num)', 'SceneLightController::delete/$1/$2/$3');
+        $routes->get('campaigns/(:num)/scenes/(:num)/tiles', 'SceneTileController::index/$1/$2');
+        $routes->post('campaigns/(:num)/scenes/(:num)/tiles', 'SceneTileController::create/$1/$2');
+        $routes->patch('campaigns/(:num)/scenes/(:num)/tiles/(:num)', 'SceneTileController::update/$1/$2/$3');
+        $routes->delete('campaigns/(:num)/scenes/(:num)/tiles/(:num)', 'SceneTileController::delete/$1/$2/$3');
 
         // ----------------------------------------
         // SHOP MODULE
