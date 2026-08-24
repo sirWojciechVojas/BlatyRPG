@@ -136,9 +136,88 @@ const lightChanges = (value, operation) => {
   return changes;
 };
 
+const tileChanges = (value, operation) => {
+  if (!plainObject(value)) throw new ProtocolError("tile_changes_invalid");
+  exactKeys(value, [
+    "name",
+    "assetUrl",
+    "mediaType",
+    "layer",
+    "x",
+    "y",
+    "width",
+    "height",
+    "rotation",
+    "opacity",
+    "sortOrder",
+    "hidden",
+    "locked",
+    "autoplay",
+    "loop",
+    "muted",
+  ]);
+  const changes = {};
+  for (const field of ["x", "y", "rotation"]) {
+    if (value[field] !== undefined)
+      changes[field] = number(value[field], `tile_${field}_invalid`);
+  }
+  for (const field of ["width", "height"]) {
+    if (value[field] !== undefined)
+      changes[field] = number(value[field], `tile_${field}_invalid`, 8, 50000);
+  }
+  if (value.opacity !== undefined) {
+    changes.opacity = number(value.opacity, "tile_opacity_invalid", 0, 1);
+  }
+  if (value.sortOrder !== undefined) {
+    if (
+      !Number.isSafeInteger(value.sortOrder) ||
+      Math.abs(value.sortOrder) > 100000
+    ) {
+      throw new ProtocolError("tile_sort_order_invalid");
+    }
+    changes.sortOrder = value.sortOrder;
+  }
+  for (const field of ["hidden", "locked", "autoplay", "loop", "muted"]) {
+    if (value[field] === undefined) continue;
+    if (typeof value[field] !== "boolean")
+      throw new ProtocolError(`tile_${field}_invalid`);
+    changes[field] = value[field];
+  }
+  if (value.name !== undefined) {
+    const name = String(value.name).trim();
+    if (!name || Array.from(name).length > 150)
+      throw new ProtocolError("tile_name_invalid");
+    changes.name = name;
+  }
+  if (value.assetUrl !== undefined) {
+    const url = String(value.assetUrl).trim();
+    const safe = /^\/(?!\/)/u.test(url) || /^https?:\/\//iu.test(url);
+    if (!safe || url.length > 2048)
+      throw new ProtocolError("tile_asset_url_invalid");
+    changes.assetUrl = url;
+  }
+  for (const [field, allowed] of [
+    ["mediaType", ["image", "video"]],
+    ["layer", ["background", "foreground"]],
+  ]) {
+    if (value[field] === undefined) continue;
+    if (!allowed.includes(value[field]))
+      throw new ProtocolError(`tile_${field}_invalid`);
+    changes[field] = value[field];
+  }
+  if (
+    operation === "create" &&
+    !["assetUrl", "x", "y"].every((key) => key in changes)
+  ) {
+    throw new ProtocolError("tile_geometry_required");
+  }
+  return changes;
+};
+
 const definitions = {
   wall: { changes: wallChanges, id: "wallId" },
   light: { changes: lightChanges, id: "lightId" },
+  tile: { changes: tileChanges, id: "tileId" },
 };
 
 export const parseSceneElementMessage = (message) => {

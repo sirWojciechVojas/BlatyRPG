@@ -15,5 +15,9 @@ export const routeRealtimeFeature = (handlers, session, message) => {
     handlers.lights.handle(session, message);
     return true;
   }
+  if (message.type === "tile.change") {
+    handlers.tiles.handle(session, message);
+    return true;
+  }
   return false;
 };

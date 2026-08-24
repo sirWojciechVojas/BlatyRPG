@@ -15,6 +15,7 @@ export const createSceneElementHandler = ({
   onAuthenticationFailure,
   resource,
   publicUpdates = false,
+  hideHidden = false,
 }) => {
   const writes = new Map();
   const idKey = `${resource}Id`;
@@ -54,12 +55,26 @@ export const createSceneElementHandler = ({
       actorUserId: null,
       payload: {},
     });
+    const hiddenEvent = item?.hidden
+      ? eventFor(
+          session,
+          `${resource}.deleted`,
+          { sceneId: item.sceneId, [idKey]: item.id },
+          sequence,
+        )
+      : null;
     for (const recipient of rooms.sessions(session.campaignId)) {
       const canManage =
         recipient.id === session.id ||
         recipient.capabilities?.canManage === true ||
         recipient.capabilities?.canViewHidden === true;
-      sendEvent(recipient.ws, canManage || publicUpdates ? event : marker);
+      let recipientEvent = publicUpdates ? event : marker;
+      if (hideHidden && result.operation === "delete" && result.hidden) {
+        recipientEvent = marker;
+      } else if (hideHidden && hiddenEvent) {
+        recipientEvent = result.operation === "create" ? marker : hiddenEvent;
+      }
+      sendEvent(recipient.ws, canManage ? event : recipientEvent);
     }
     sendEvent(
       session.ws,

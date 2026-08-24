@@ -5,19 +5,33 @@ export const tableTileMethods = {
       tileId === null ? null : Number(tileId),
     );
   },
-  createTile(draft) {
+  async createTile(draft) {
     if (!this.selectedScene || !this.canManageTiles) return;
-    this.$store.dispatch("vtt/createTile", draft).catch(() => {});
+    const sent = await this.$store.dispatch("realtime/changeTile", {
+      operation: "create",
+      changes: draft,
+    });
+    if (!sent) this.$store.dispatch("vtt/createTile", draft).catch(() => {});
   },
-  updateTile({ tile, changes }) {
+  async updateTile({ tile, changes }) {
+    const sent = await this.$store.dispatch("realtime/changeTile", {
+      operation: "update",
+      tile,
+      changes,
+    });
+    if (sent) return;
     this.$store.dispatch("vtt/updateTile", { tile, changes }).catch((error) => {
       if (error?.status === 409) {
         this.$store.dispatch("vtt/loadTiles").catch(() => {});
       }
     });
   },
-  deleteTile(tile) {
+  async deleteTile(tile) {
     if (!window.confirm(this.$t("vtt.tile.deleteConfirm"))) return;
-    this.$store.dispatch("vtt/deleteTile", tile).catch(() => {});
+    const sent = await this.$store.dispatch("realtime/changeTile", {
+      operation: "delete",
+      tile,
+    });
+    if (!sent) this.$store.dispatch("vtt/deleteTile", tile).catch(() => {});
   },
 };
