@@ -12,6 +12,7 @@ vi.mock("@/components/home/LandingModulesSection.vue", () => ({ default: {} }));
 vi.mock("@/components/home/LandingPlansSection.vue", () => ({ default: {} }));
 vi.mock("@/components/home/LandingStatsSection.vue", () => ({ default: {} }));
 vi.mock("@/components/home/LandingUspStrip.vue", () => ({ default: {} }));
+vi.mock("@/components/navigation/UserAccountMenu.vue", () => ({ default: {} }));
 
 import options from "@/views/options/HomeView.options";
 
@@ -41,22 +42,25 @@ describe("HomeView landing navigation", () => {
     );
   });
 
-  it("replaces sign-in actions with the correct destination after login", () => {
+  it("detects an authenticated account for the shared dropdown menu", () => {
     expect(
       options.computed.isAuthenticated.call({
         session: { user: { role: "user" } },
       }),
     ).toBe(true);
     expect(
-      options.computed.authenticatedPrimaryRoute.call({
-        session: { user: { role: "user" } },
-      }),
-    ).toEqual({ name: "tables" });
-    expect(
-      options.computed.authenticatedPrimaryRoute.call({
+      options.computed.isAdmin.call({
         session: { user: { role: "admin" } },
       }),
-    ).toEqual({ name: "admin" });
+    ).toBe(true);
+
+    const template = readFileSync(
+      resolve(process.cwd(), "src/views/HomeView.vue"),
+      "utf8",
+    );
+    expect(template).toContain("<UserAccountMenu");
+    expect(template.match(/<UserAccountMenu/g)).toHaveLength(1);
+    expect(template).not.toContain("authenticatedPrimaryRoute");
   });
 
   it("closes the compact menu before scrolling to a section", () => {

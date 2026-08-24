@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@/components/dashboard/CampaignCard.vue", () => ({ default: {} }));
@@ -18,5 +20,16 @@ describe("DashboardHomeView authentication boundary", () => {
       "CampaignCard",
       "CampaignCreateForm",
     ]);
+  });
+
+  it("does not duplicate the global account navigation", () => {
+    const template = readFileSync(
+      resolve(process.cwd(), "src/views/DashboardHomeView.vue"),
+      "utf8",
+    );
+
+    expect(template).not.toContain("dashboard-topbar");
+    expect(template).not.toContain("auth.profile.title");
+    expect(template).not.toContain("dashboard.actions.logout");
   });
 });

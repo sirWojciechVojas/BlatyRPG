@@ -6,7 +6,9 @@ import LandingModulesSection from "@/components/home/LandingModulesSection.vue";
 import LandingPlansSection from "@/components/home/LandingPlansSection.vue";
 import LandingStatsSection from "@/components/home/LandingStatsSection.vue";
 import LandingUspStrip from "@/components/home/LandingUspStrip.vue";
+import UserAccountMenu from "@/components/navigation/UserAccountMenu.vue";
 import { subscriptionPlanApiClient } from "@/lib/subscription/subscriptionPlanApiClient";
+import { authApiClient } from "@/lib/auth/authApiClient";
 import { authSession } from "@/lib/auth/authSession";
 import bg1 from "@/assets/app-ui/img/bg1.jpg";
 import bg2 from "@/assets/app-ui/img/bg2.jpg";
@@ -26,12 +28,14 @@ export default {
     LandingPlansSection,
     LandingStatsSection,
     LandingUspStrip,
+    UserAccountMenu,
   },
   data: () => ({
     assets: { bg1, bg2, background, logo, dice20, navbar },
     menuOpen: false,
     session: authSession.read(),
     unsubscribeAuth: null,
+    loggingOut: false,
     sectionLinks: [
       { target: "features", label: "landing.nav.features" },
       { target: "gallery", label: "landing.nav.gallery" },
@@ -48,15 +52,8 @@ export default {
     isAuthenticated() {
       return Boolean(this.session?.user);
     },
-    authenticatedPrimaryRoute() {
-      return {
-        name: this.session?.user?.role === "admin" ? "admin" : "tables",
-      };
-    },
-    authenticatedPrimaryLabel() {
-      return this.session?.user?.role === "admin"
-        ? "landing.nav.adminPanel"
-        : "landing.nav.myTables";
+    isAdmin() {
+      return this.session?.user?.role === "admin";
     },
     styleVars() {
       return {
@@ -77,6 +74,19 @@ export default {
     this.unsubscribeAuth?.();
   },
   methods: {
+    async logout() {
+      if (this.loggingOut) return;
+      this.loggingOut = true;
+      try {
+        if (authSession.read()) await authApiClient.logout();
+      } catch (_error) {
+        // Local sign-out remains available when the backend is unreachable.
+      } finally {
+        authSession.clear("logout");
+        this.loggingOut = false;
+        this.closeMenu();
+      }
+    },
     selectSection(targetId) {
       this.closeMenu();
       this.scrollTo(targetId);

@@ -1,52 +1,5 @@
 <template>
   <div class="dashboard-page" :style="styleVars">
-    <header class="dashboard-topbar">
-      <router-link class="dashboard-brand" :to="{ name: 'tables' }">
-        <img :src="logo" alt="" />
-        <span>
-          <strong>{{ $t("dashboard.brand.title") }}</strong>
-          <small>{{ $t("dashboard.brand.subtitle") }}</small>
-        </span>
-      </router-link>
-      <div class="dashboard-topbar-actions">
-        <router-link
-          v-if="isAdmin"
-          class="secondary-action"
-          :to="{ name: 'admin' }"
-        >
-          {{ $t("admin.title") }}
-        </router-link>
-        <router-link class="secondary-action" :to="{ name: 'dice' }">
-          {{ $t("dashboard.actions.dice") }}
-        </router-link>
-        <label class="dashboard-locale">
-          <span class="visually-hidden">{{ $t("nav.language") }}</span>
-          <select v-model="currentLocale" :aria-label="$t('nav.language')">
-            <option v-for="item in locales" :key="item.code" :value="item.code">
-              {{ item.label }}
-            </option>
-          </select>
-        </label>
-        <template v-if="session">
-          <router-link class="secondary-action" :to="{ name: 'profile' }">
-            {{ $t("auth.profile.title") }}
-          </router-link>
-          <router-link
-            class="secondary-action"
-            :to="{ name: 'my-invitations' }"
-          >
-            {{ $t("campaignLobby.myInvitations.title") }}
-          </router-link>
-          <span class="user-chip">
-            {{ session.user?.username || session.user?.email }}
-          </span>
-          <button class="text-action" type="button" @click="logout">
-            {{ $t("dashboard.actions.logout") }}
-          </button>
-        </template>
-      </div>
-    </header>
-
     <main class="dashboard-main">
       <section class="dashboard-intro">
         <div>

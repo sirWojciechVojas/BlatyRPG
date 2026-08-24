@@ -4,9 +4,7 @@ import { authApiClient } from "@/lib/auth/authApiClient";
 import { authSession } from "@/lib/auth/authSession";
 import { campaignApiClient } from "@/lib/campaign/campaignApiClient";
 import { gameCatalogApiClient } from "@/lib/catalog/gameCatalogApiClient";
-import { availableLocales, setLocale } from "@/i18n";
-import logo from "@/assets/app-ui/img/BlatyRPG-logo.png";
-import background from "@/assets/app-ui/img/bg2.jpg";
+import background from "@/assets/app-ui/img/background.jpg";
 
 const sortCampaigns = (campaigns) =>
   [...campaigns].sort(
@@ -19,7 +17,6 @@ export default {
   name: "DashboardHomeView",
   components: { CampaignCard, CampaignCreateForm },
   data: () => ({
-    logo,
     session: null,
     campaigns: [],
     games: [],
@@ -29,24 +26,10 @@ export default {
     dashboardError: "",
     creationError: "",
     unsubscribeAuth: null,
-    locales: availableLocales,
   }),
   computed: {
-    currentLocale: {
-      get() {
-        return typeof this.$i18n.locale === "string"
-          ? this.$i18n.locale
-          : this.$i18n.locale.value;
-      },
-      set(locale) {
-        setLocale(locale);
-      },
-    },
     displayName() {
       return this.session?.user?.username || this.session?.user?.email || "";
-    },
-    isAdmin() {
-      return this.session?.user?.role === "admin";
     },
     styleVars() {
       return { "--dashboard-background": `url("${background}")` };

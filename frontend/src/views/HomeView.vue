@@ -2,7 +2,10 @@
   <div class="home-page" :style="styleVars">
     <header
       class="topbar"
-      :class="{ 'topbar--menu-open': menuOpen }"
+      :class="{
+        'topbar--menu-open': menuOpen,
+        'topbar--authenticated': isAuthenticated,
+      }"
       @keydown.esc="closeMenu"
     >
       <button type="button" class="brand" @click="selectSection('hero')">
@@ -23,18 +26,20 @@
           {{ $t(link.label) }}
         </button>
       </nav>
-      <div class="topbar-actions">
+      <div
+        class="topbar-actions"
+        :class="{ 'topbar-actions--authenticated': isAuthenticated }"
+      >
         <router-link class="ghost-link" :to="{ name: 'dice' }">
           {{ $t("landing.nav.dice") }}
         </router-link>
-        <template v-if="isAuthenticated">
-          <router-link class="ghost-link" :to="{ name: 'profile' }">
-            {{ $t("landing.nav.userPanel") }}
-          </router-link>
-          <router-link class="cta-btn small" :to="authenticatedPrimaryRoute">
-            {{ $t(authenticatedPrimaryLabel) }}
-          </router-link>
-        </template>
+        <UserAccountMenu
+          v-if="isAuthenticated"
+          :session="session"
+          :is-admin="isAdmin"
+          :logging-out="loggingOut"
+          @logout="logout"
+        />
         <template v-else>
           <router-link class="ghost-link" :to="{ name: 'login' }">
             {{ $t("landing.nav.signIn") }}
@@ -76,19 +81,7 @@
             <router-link :to="{ name: 'dice' }" @click="closeMenu">
               {{ $t("landing.nav.dice") }}
             </router-link>
-            <template v-if="isAuthenticated">
-              <router-link :to="{ name: 'profile' }" @click="closeMenu">
-                {{ $t("landing.nav.userPanel") }}
-              </router-link>
-              <router-link
-                class="cta-btn"
-                :to="authenticatedPrimaryRoute"
-                @click="closeMenu"
-              >
-                {{ $t(authenticatedPrimaryLabel) }}
-              </router-link>
-            </template>
-            <template v-else>
+            <template v-if="!isAuthenticated">
               <router-link :to="{ name: 'login' }" @click="closeMenu">
                 {{ $t("landing.nav.signIn") }}
               </router-link>
