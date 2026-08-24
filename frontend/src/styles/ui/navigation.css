@@ -164,7 +164,17 @@
 }
 
 #app.ui-system-active .app-navigation--overlay {
+  background-color: #0a0807;
+  background-image:
+    linear-gradient(180deg, rgba(10, 8, 7, 0.82), rgba(10, 8, 7, 0.6)),
+    url("../../assets/app-ui/gfx/navbar-bg.jpg");
+  background-position: center top;
+  background-size: cover;
+}
+
+#app .app-navigation--overlay {
   position: fixed;
+  z-index: 30;
   top: var(--ui-space-3);
   right: var(--ui-space-3);
   left: auto;
@@ -173,11 +183,51 @@
   max-width: calc(100vw - 1rem);
   min-height: var(--ui-control-height);
   padding: var(--ui-space-1) var(--ui-space-2);
-  border: var(--ui-border);
+  border: 1px solid var(--app-nav-border);
   border-radius: var(--ui-radius-md);
-  background: color-mix(in srgb, var(--ui-color-canvas) 90%, transparent);
-  box-shadow: var(--ui-shadow-sm);
+  background-color: #0a0807;
+  background-image:
+    linear-gradient(180deg, rgba(10, 8, 7, 0.9), rgba(10, 8, 7, 0.74)),
+    url("../../assets/app-ui/gfx/navbar-bg.jpg");
+  background-position: center top;
+  background-size: cover;
+  color: var(--app-nav-muted);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  font-family: "EB Garamond", Garamond, "Times New Roman", serif;
   backdrop-filter: blur(10px);
+}
+
+#app .app-navigation--overlay .app-nav-links,
+#app .app-navigation--overlay .app-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+#app .app-navigation--overlay .app-nav-links > a,
+#app .app-navigation--overlay .app-nav-action-link {
+  padding: 7px 9px;
+  border-radius: 6px;
+  color: var(--app-nav-muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+#app .app-navigation--overlay .locale-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--app-nav-muted);
+  font-size: 0.72rem;
+}
+
+#app .app-navigation--overlay .locale-switch select {
+  min-height: 32px;
+  border: 1px solid var(--app-nav-border);
+  border-radius: 6px;
+  background: rgba(18, 12, 10, 0.72);
+  color: var(--app-nav-ink);
 }
 
 #app .app-navigation--overlay .app-nav-brand {

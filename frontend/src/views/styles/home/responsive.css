@@ -17,7 +17,7 @@
     grid-column: 3;
   }
 
-  .home-page .topbar-actions--authenticated > .ghost-link {
+  .home-page .topbar--authenticated .mobile-dice-link {
     display: none;
   }
 
@@ -106,6 +106,18 @@
   .home-page .topbar {
     min-height: 50px;
     padding-inline: 10px;
+  }
+
+  .home-page .topbar-actions--authenticated > .ghost-link {
+    display: none;
+  }
+
+  .home-page .topbar--authenticated .mobile-dice-link {
+    display: inline-flex;
+  }
+
+  .home-page .landing-locale > span {
+    display: none;
   }
 
   .home-page .brand-sub {

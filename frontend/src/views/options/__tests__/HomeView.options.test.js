@@ -42,6 +42,19 @@ describe("HomeView landing navigation", () => {
     );
   });
 
+  it("keeps language, 3D dice and the navbar background in navigation", () => {
+    const state = options.data();
+    const template = readFileSync(
+      resolve(process.cwd(), "src/views/HomeView.vue"),
+      "utf8",
+    );
+
+    expect(state.locales.map(({ code }) => code)).toEqual(["pl", "en"]);
+    expect(template).toContain('class="landing-locale"');
+    expect(template).toContain("nav.diceRoller");
+    expect(state.assets.navbar).toBeTruthy();
+  });
+
   it("detects an authenticated account for the shared dropdown menu", () => {
     expect(
       options.computed.isAuthenticated.call({

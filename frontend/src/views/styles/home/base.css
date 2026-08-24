@@ -139,6 +139,33 @@
   justify-content: flex-end;
 }
 
+.home-page .landing-locale {
+  display: inline-flex;
+  min-height: 34px;
+  align-items: center;
+  gap: 7px;
+  color: var(--landing-muted);
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.home-page .landing-locale select {
+  min-height: 32px;
+  padding: 4px 9px;
+  border: 1px solid var(--landing-border);
+  border-radius: 6px;
+  background: rgba(18, 12, 10, 0.72);
+  color: var(--landing-ink);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.home-page .landing-locale select:focus-visible {
+  outline: 2px solid var(--landing-accent-bright);
+  outline-offset: 2px;
+}
+
 .home-page .menu-toggle,
 .home-page .mobile-menu {
   display: none;

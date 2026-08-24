@@ -31,8 +31,20 @@
         :class="{ 'topbar-actions--authenticated': isAuthenticated }"
       >
         <router-link class="ghost-link" :to="{ name: 'dice' }">
-          {{ $t("landing.nav.dice") }}
+          {{ $t("nav.diceRoller") }}
         </router-link>
+        <label class="landing-locale">
+          <span>{{ $t("nav.language") }}</span>
+          <select v-model="currentLocale" :aria-label="$t('nav.language')">
+            <option
+              v-for="locale in locales"
+              :key="locale.code"
+              :value="locale.code"
+            >
+              {{ locale.label }}
+            </option>
+          </select>
+        </label>
         <UserAccountMenu
           v-if="isAuthenticated"
           :session="session"
@@ -78,10 +90,29 @@
             </button>
           </nav>
           <div class="mobile-menu-actions">
-            <router-link :to="{ name: 'dice' }" @click="closeMenu">
-              {{ $t("landing.nav.dice") }}
+            <router-link
+              class="mobile-dice-link"
+              :to="{ name: 'dice' }"
+              @click="closeMenu"
+            >
+              {{ $t("nav.diceRoller") }}
             </router-link>
             <template v-if="!isAuthenticated">
+              <label class="landing-locale landing-locale--mobile">
+                <span>{{ $t("nav.language") }}</span>
+                <select
+                  v-model="currentLocale"
+                  :aria-label="$t('nav.language')"
+                >
+                  <option
+                    v-for="locale in locales"
+                    :key="locale.code"
+                    :value="locale.code"
+                  >
+                    {{ locale.label }}
+                  </option>
+                </select>
+              </label>
               <router-link :to="{ name: 'login' }" @click="closeMenu">
                 {{ $t("landing.nav.signIn") }}
               </router-link>

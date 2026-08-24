@@ -28,4 +28,14 @@ describe("application navigation", () => {
     );
     expect(navigation).not.toMatch(/\.app-navigation\s+a\s*\{/);
   });
+
+  it("keeps the shared background and 3D Dice label on every navbar", () => {
+    const navigation = read("src/styles/ui/navigation.css");
+    const polish = JSON.parse(read("src/i18n/locales/pl.json"));
+    const english = JSON.parse(read("src/i18n/locales/en.json"));
+
+    expect(navigation).toContain("navbar-bg.jpg");
+    expect(polish.nav.diceRoller).toBe("Kości 3D");
+    expect(english.nav.diceRoller).toBe("3D Dice");
+  });
 });

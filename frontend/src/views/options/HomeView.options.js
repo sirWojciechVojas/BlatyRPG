@@ -7,6 +7,7 @@ import LandingPlansSection from "@/components/home/LandingPlansSection.vue";
 import LandingStatsSection from "@/components/home/LandingStatsSection.vue";
 import LandingUspStrip from "@/components/home/LandingUspStrip.vue";
 import UserAccountMenu from "@/components/navigation/UserAccountMenu.vue";
+import { availableLocales, setLocale } from "@/i18n";
 import { subscriptionPlanApiClient } from "@/lib/subscription/subscriptionPlanApiClient";
 import { authApiClient } from "@/lib/auth/authApiClient";
 import { authSession } from "@/lib/auth/authSession";
@@ -36,6 +37,7 @@ export default {
     session: authSession.read(),
     unsubscribeAuth: null,
     loggingOut: false,
+    locales: availableLocales,
     sectionLinks: [
       { target: "features", label: "landing.nav.features" },
       { target: "gallery", label: "landing.nav.gallery" },
@@ -49,6 +51,16 @@ export default {
     plansError: "",
   }),
   computed: {
+    currentLocale: {
+      get() {
+        return typeof this.$i18n.locale === "string"
+          ? this.$i18n.locale
+          : this.$i18n.locale.value;
+      },
+      set(locale) {
+        setLocale(locale);
+      },
+    },
     isAuthenticated() {
       return Boolean(this.session?.user);
     },
