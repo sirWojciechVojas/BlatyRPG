@@ -51,6 +51,7 @@
         "height": "Height",
         "padding": "Map padding",
         "backgroundColor": "Background color",
+        "darknessLevel": "Darkness level",
         "gridType": "Grid type",
         "gridSize": "Cell size",
         "gridDistance": "Cell distance",
@@ -103,6 +104,16 @@
       "toggleSecret": "Toggle secret door",
       "delete": "Delete segment",
       "deleteConfirm": "Delete the selected segment?"
+    },
+    "light": {
+      "color": "Light color",
+      "bright": "Bright light radius",
+      "dim": "Dim light radius",
+      "intensity": "Intensity",
+      "enabled": "Enable or disable light",
+      "hidden": "Hide source marker",
+      "delete": "Delete light source",
+      "deleteConfirm": "Delete the selected light source?"
     },
     "table": {
       "header": {

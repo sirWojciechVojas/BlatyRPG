@@ -11,6 +11,10 @@ export const createVttState = () => ({
   wallCapabilitiesByScene: {},
   selectedWallId: null,
   wallPhase: "idle",
+  lightsByScene: {},
+  lightCapabilitiesByScene: {},
+  selectedLightId: null,
+  lightPhase: "idle",
   capabilities: {
     canManage: false,
     canViewHidden: false,

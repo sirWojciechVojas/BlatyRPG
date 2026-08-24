@@ -46,6 +46,10 @@ export const normalizeScene = (source) => {
     backgroundColor: String(
       read(source, "background_color", "backgroundColor") || "#20242b",
     ),
+    darknessLevel: numberOr(
+      read(source, "darkness_level", "darknessLevel"),
+      0.2,
+    ),
     isVisible: read(source, "is_visible", "isVisible") !== false,
     sortOrder: numberOr(read(source, "sort_order", "sortOrder"), 0),
     revision: numberOr(source.revision, 0),
@@ -78,6 +82,7 @@ const WRITE_FIELDS = [
   ["gridColor", "grid_color"],
   ["gridOpacity", "grid_opacity"],
   ["backgroundColor", "background_color"],
+  ["darknessLevel", "darkness_level"],
   ["isVisible", "is_visible"],
   ["sortOrder", "sort_order"],
 ];

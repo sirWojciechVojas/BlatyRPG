@@ -53,6 +53,7 @@ export const implementedSceneTool = (id) =>
     "templates",
     "walls",
     "doors",
+    "lights",
     "grid",
   ].includes(id);
 

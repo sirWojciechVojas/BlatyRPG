@@ -70,6 +70,19 @@
         <span>{{ $t("vtt.scene.fields.backgroundColor") }}</span>
         <input v-model="form.backgroundColor" type="color" />
       </label>
+      <label class="scene-field scene-field--wide">
+        <span>
+          {{ $t("vtt.scene.fields.darknessLevel") }}:
+          {{ Math.round(form.darknessLevel * 100) }}%
+        </span>
+        <input
+          v-model.number="form.darknessLevel"
+          type="range"
+          min="0"
+          max="1"
+          step="0.05"
+        />
+      </label>
 
       <fieldset class="scene-settings__group">
         <legend>{{ $t("vtt.scene.settings.grid") }}</legend>
@@ -203,6 +216,7 @@ const emptyScene = () => ({
   height: 1080,
   padding: 0,
   backgroundColor: "#20242b",
+  darknessLevel: 0.2,
   gridType: GRID_TYPES.SQUARE,
   gridSize: 100,
   gridDistance: 5,

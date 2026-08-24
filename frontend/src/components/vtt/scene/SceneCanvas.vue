@@ -69,6 +69,18 @@
         <p v-if="backgroundFailed" class="scene-canvas__image-error">
           {{ $t("vtt.scene.workspace.backgroundError") }}
         </p>
+        <SceneLightLayer
+          :scene="scene"
+          :lights="lights"
+          :active-tool="activeTool"
+          :selected-id="selectedLightId"
+          :can-manage="canManageLights"
+          :busy="lightBusy"
+          @select="$emit('light-select', $event)"
+          @create="$emit('light-create', $event)"
+          @update="$emit('light-update', $event)"
+          @delete="$emit('light-delete', $event)"
+        />
         <SceneWallLayer
           :scene="scene"
           :walls="walls"
@@ -103,12 +115,18 @@ import { buildGridPattern } from "@/lib/vtt/grid";
 import { canvasDropPosition, readDroppedActor } from "@/lib/vtt/tokenDrop";
 import SceneTokenLayer from "@/components/vtt/token/SceneTokenLayer.vue";
 import SceneWallLayer from "@/components/vtt/wall/SceneWallLayer.vue";
+import SceneLightLayer from "@/components/vtt/light/SceneLightLayer.vue";
 import SceneMeasurementOverlay from "./SceneMeasurementOverlay.vue";
 import { sceneCanvasCameraMethods } from "./sceneCanvasCameraMethods";
 
 export default {
   name: "SceneCanvas",
-  components: { SceneMeasurementOverlay, SceneTokenLayer, SceneWallLayer },
+  components: {
+    SceneLightLayer,
+    SceneMeasurementOverlay,
+    SceneTokenLayer,
+    SceneWallLayer,
+  },
   props: {
     scene: { type: Object, default: null },
     activeTool: { type: String, default: "select" },
@@ -120,6 +138,10 @@ export default {
     selectedWallId: { type: [Number, String], default: null },
     canManageWalls: { type: Boolean, default: false },
     wallBusy: { type: Boolean, default: false },
+    lights: { type: Array, default: () => [] },
+    selectedLightId: { type: [Number, String], default: null },
+    canManageLights: { type: Boolean, default: false },
+    lightBusy: { type: Boolean, default: false },
   },
   emits: [
     "camera-change",
@@ -133,6 +155,10 @@ export default {
     "wall-create",
     "wall-update",
     "wall-delete",
+    "light-select",
+    "light-create",
+    "light-update",
+    "light-delete",
   ],
   data() {
     return {

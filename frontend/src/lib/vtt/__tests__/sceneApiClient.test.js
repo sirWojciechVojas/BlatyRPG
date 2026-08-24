@@ -11,6 +11,7 @@ const apiScene = {
   height: 900,
   grid_type: "hex_pointy",
   grid_size: 72,
+  darkness_level: "0.650",
   revision: 3,
 };
 
@@ -52,6 +53,7 @@ describe("sceneApiClient", () => {
       backgroundUrl: "https://example.test/ruins.webp",
       gridType: "hex_pointy",
       gridSize: 72,
+      darknessLevel: 0.65,
     });
   });
 

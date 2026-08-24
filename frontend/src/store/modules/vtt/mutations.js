@@ -16,6 +16,10 @@ export const vttMutations = {
     state.wallCapabilitiesByScene = {};
     state.selectedWallId = null;
     state.wallPhase = "idle";
+    state.lightsByScene = {};
+    state.lightCapabilitiesByScene = {};
+    state.selectedLightId = null;
+    state.lightPhase = "idle";
     state.capabilities = {
       canManage: false,
       canViewHidden: false,
@@ -45,6 +49,7 @@ export const vttMutations = {
     state.selectedSceneId = sceneId;
     state.selectedTokenId = null;
     state.selectedWallId = null;
+    state.selectedLightId = null;
   },
   RECEIVE_TOKENS(state, { sceneId, items, capabilities }) {
     state.tokensByScene = { ...state.tokensByScene, [String(sceneId)]: items };
@@ -124,6 +129,46 @@ export const vttMutations = {
   },
   WALL_FAILED(state, error) {
     state.wallPhase = "error";
+    state.error = error;
+  },
+  RECEIVE_LIGHTS(state, { sceneId, items, capabilities }) {
+    const key = String(sceneId);
+    state.lightsByScene = { ...state.lightsByScene, [key]: items };
+    state.lightCapabilitiesByScene = {
+      ...state.lightCapabilitiesByScene,
+      [key]: capabilities,
+    };
+    state.lightPhase = "ready";
+    if (!items.some((light) => light.id === state.selectedLightId)) {
+      state.selectedLightId = null;
+    }
+  },
+  UPSERT_LIGHT(state, light) {
+    const key = String(light.sceneId);
+    const items = [...(state.lightsByScene[key] || [])];
+    const index = items.findIndex((item) => item.id === light.id);
+    if (index < 0) items.push(light);
+    else items.splice(index, 1, light);
+    state.lightsByScene = { ...state.lightsByScene, [key]: items };
+  },
+  REMOVE_LIGHT(state, { sceneId, lightId }) {
+    const key = String(sceneId);
+    state.lightsByScene = {
+      ...state.lightsByScene,
+      [key]: (state.lightsByScene[key] || []).filter(
+        (light) => light.id !== lightId,
+      ),
+    };
+    if (state.selectedLightId === lightId) state.selectedLightId = null;
+  },
+  SELECT_LIGHT(state, lightId) {
+    state.selectedLightId = lightId;
+  },
+  SET_LIGHT_PHASE(state, phase) {
+    state.lightPhase = phase;
+  },
+  LIGHT_FAILED(state, error) {
+    state.lightPhase = "error";
     state.error = error;
   },
   UPSERT_SCENE(state, scene) {

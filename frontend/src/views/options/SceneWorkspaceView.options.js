@@ -17,11 +17,13 @@ import {
 import { tableWindowMethods } from "@/components/vtt/table/tableWindowMethods";
 import { tableTokenMethods } from "@/components/vtt/token/tableTokenMethods";
 import { tableWallMethods } from "@/components/vtt/wall/tableWallMethods";
+import { tableLightMethods } from "@/components/vtt/light/tableLightMethods";
 import {
   IMPLEMENTED_TABLE_UTILITIES,
   utilityById,
 } from "@/components/vtt/table/tableUtilities";
 import { ensureVttStoreModule } from "@/store/modules/loadVttModule";
+import { sceneErrorMessage } from "./sceneErrorMessage";
 
 const emptyState = () => ({
   scenes: [],
@@ -101,11 +103,17 @@ export default {
     selectedSceneWalls() {
       return this.$store.getters["vtt/selectedSceneWalls"] || [];
     },
+    selectedSceneLights() {
+      return this.$store.getters["vtt/selectedSceneLights"] || [];
+    },
     canCreateToken() {
       return this.$store.getters["vtt/canCreateToken"] === true;
     },
     canManageWalls() {
       return this.$store.getters["vtt/canManageWalls"] === true;
+    },
+    canManageLights() {
+      return this.$store.getters["vtt/canManageLights"] === true;
     },
     canManage() {
       return this.$store.getters["vtt/canManage"] === true;
@@ -121,6 +129,9 @@ export default {
     },
     wallBusy() {
       return ["loading", "saving"].includes(this.state.wallPhase);
+    },
+    lightBusy() {
+      return ["loading", "saving"].includes(this.state.lightPhase);
     },
     initialLoading() {
       return this.state.phase === "loading" && !this.state.scenes.length;
@@ -146,24 +157,7 @@ export default {
       return tableHotbarActions(this.$t, this.canManage);
     },
     errorMessage() {
-      if (this.state.error?.network) return this.$t("vtt.scene.errors.network");
-      if (this.state.error?.status === 409)
-        return this.$t("vtt.scene.errors.conflict");
-      const details = this.state.error?.details;
-      if (this.state.error?.status === 422 && details) {
-        const fields = Object.keys(details).map((field) => {
-          const camel = field.replace(/_([a-z])/g, (_match, char) =>
-            char.toUpperCase(),
-          );
-          const key = `vtt.scene.fields.${camel}`;
-          const label = this.$t(key);
-          return label === key ? field : label;
-        });
-        return this.$t("vtt.scene.errors.validation", {
-          fields: fields.join(", "),
-        });
-      }
-      return this.$t("vtt.scene.errors.generic");
+      return sceneErrorMessage(this.$t, this.state.error);
     },
   },
   watch: {
@@ -185,6 +179,7 @@ export default {
     ...tableWindowMethods,
     ...tableTokenMethods,
     ...tableWallMethods,
+    ...tableLightMethods,
     async loadCampaign() {
       this.activePanelId = this.$route.hash === "#campaign-chat" ? "chat" : "";
       this.settingsOpen = false;

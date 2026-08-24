@@ -51,6 +51,7 @@
         "height": "Wysokość",
         "padding": "Margines mapy",
         "backgroundColor": "Kolor tła",
+        "darknessLevel": "Poziom ciemności",
         "gridType": "Typ siatki",
         "gridSize": "Rozmiar pola",
         "gridDistance": "Odległość pola",
@@ -103,6 +104,16 @@
       "toggleSecret": "Przełącz sekretne drzwi",
       "delete": "Usuń segment",
       "deleteConfirm": "Czy na pewno usunąć wybrany segment?"
+    },
+    "light": {
+      "color": "Kolor światła",
+      "bright": "Zasięg jasnego światła",
+      "dim": "Zasięg półmroku",
+      "intensity": "Intensywność",
+      "enabled": "Włącz lub wyłącz światło",
+      "hidden": "Ukryj znacznik źródła",
+      "delete": "Usuń źródło światła",
+      "deleteConfirm": "Czy na pewno usunąć wybrane źródło światła?"
     },
     "table": {
       "header": {

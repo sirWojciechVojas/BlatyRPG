@@ -82,6 +82,10 @@
           :selected-wall-id="state.selectedWallId"
           :can-manage-walls="canManageWalls"
           :wall-busy="wallBusy"
+          :lights="selectedSceneLights"
+          :selected-light-id="state.selectedLightId"
+          :can-manage-lights="canManageLights"
+          :light-busy="lightBusy"
           @camera-change="zoomPercent = $event.zoomPercent"
           @token-select="selectToken"
           @token-move="moveToken"
@@ -93,6 +97,10 @@
           @wall-create="createWall"
           @wall-update="updateWall"
           @wall-delete="deleteWall"
+          @light-select="selectLight"
+          @light-create="createLight"
+          @light-update="updateLight"
+          @light-delete="deleteLight"
         />
       </section>
 
