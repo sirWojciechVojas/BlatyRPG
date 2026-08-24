@@ -2,7 +2,6 @@ import { randomUUID } from "node:crypto";
 import { WebSocket } from "ws";
 import { BackendChatClient } from "./backend-chat-client.js";
 import { BackendTokenClient } from "./backend-token-client.js";
-import { BackendWallClient } from "./backend-wall-client.js";
 import { createChatHandler } from "./chat-handler.js";
 import { createHttpTransport } from "./http-transport.js";
 import { routeRealtimeFeature } from "./feature-router.js";
@@ -18,9 +17,9 @@ import {
 } from "./protocol.js";
 import { FixedWindowRateLimiter } from "./rate-limiter.js";
 import { RoomRegistry } from "./room-registry.js";
+import { createSceneFeatureHandlers } from "./scene-feature-handlers.js";
 import { TicketError, TicketVerifier } from "./ticket-verifier.js";
 import { createTokenHandler } from "./token-handler.js";
-import { createWallHandler } from "./wall-handler.js";
 
 const closeReason = (value) => String(value || "connection_closed").slice(0, 100);
 
@@ -93,12 +92,13 @@ export const createRealtimeServer = (config, dependencies = {}) => {
     onAuthenticationFailure: (session) =>
       closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized"),
   });
-  const walls = createWallHandler({
-    backend: dependencies.wallBackend || new BackendWallClient(config),
+  const sceneFeatures = createSceneFeatureHandlers(
+    config,
+    dependencies,
     rooms,
-    onAuthenticationFailure: (session) =>
+    (session) =>
       closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized"),
-  });
+  );
 
   const sessionEvent = (session, type, payload = {}) =>
     createServerEvent({
@@ -182,7 +182,7 @@ export const createRealtimeServer = (config, dependencies = {}) => {
 
   const handleAuthenticatedMessage = (session, message) => {
     const parsed = parseAuthenticatedMessage(message);
-    if (routeRealtimeFeature({ chat, tokens, walls }, session, parsed)) return;
+    if (routeRealtimeFeature({ chat, tokens, ...sceneFeatures }, session, parsed)) return;
     if (parsed.type === "sync.request") {
       sendPresenceSnapshot(session, parsed.lastSequence, parsed.requestId, "sync.snapshot");
       return;

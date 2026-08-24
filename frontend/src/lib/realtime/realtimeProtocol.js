@@ -41,17 +41,23 @@ export const tokenMoveMessage = (payload) => ({
   y: Number(payload.y),
 });
 
-export const wallChangeMessage = (payload) => ({
+export const sceneElementChangeMessage = (resource, payload) => ({
   v: REALTIME_VERSION,
-  type: "wall.change",
+  type: `${resource}.change`,
   requestId: String(payload.requestId),
   operation: String(payload.operation),
   sceneId: Number(payload.sceneId),
-  ...(payload.wallId
-    ? { wallId: Number(payload.wallId), revision: Number(payload.revision) }
+  ...(payload[`${resource}Id`]
+    ? {
+        [`${resource}Id`]: Number(payload[`${resource}Id`]),
+        revision: Number(payload.revision),
+      }
     : {}),
   ...(payload.changes ? { changes: { ...payload.changes } } : {}),
 });
+
+export const wallChangeMessage = (payload) =>
+  sceneElementChangeMessage("wall", payload);
 
 export const chatSendMessage = ({ requestId, clientNonce, body }) => ({
   v: REALTIME_VERSION,

@@ -6,9 +6,9 @@ import {
   leaveMessage,
   syncRequestMessage,
   tokenMoveMessage,
-  wallChangeMessage,
 } from "./realtimeProtocol";
 import { createRealtimeEventRouter } from "./realtimeEventRouter";
+import { sceneElementTransport } from "./realtimeSceneElementTransport";
 import { createRealtimeTimers } from "./realtimeTimers";
 import { createReconnectBudget } from "./reconnectBudget";
 import {
@@ -287,7 +287,7 @@ export const createRealtimeSession = (options = {}) => {
     retry,
     sendChat: chat.sendMessage,
     moveToken: (payload) => authenticated && send(tokenMoveMessage(payload)),
-    changeWall: (payload) => authenticated && send(wallChangeMessage(payload)),
+    ...sceneElementTransport(() => authenticated, send),
     syncChat: chat.sync,
     snapshot: () => ({
       campaignId,

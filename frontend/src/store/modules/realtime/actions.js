@@ -8,6 +8,10 @@ import {
   routeRealtimeTokenEvent,
 } from "./tokenActions";
 import {
+  createRealtimeLightActions,
+  routeRealtimeLightEvent,
+} from "./lightActions";
+import {
   createRealtimeWallActions,
   routeRealtimeWallEvent,
 } from "./wallActions";
@@ -42,6 +46,7 @@ export const createRealtimeActions = (
         routeRealtimeChatEvent(context, ensureSession(context), event);
         routeRealtimeTokenEvent(context, event);
         routeRealtimeWallEvent(context, event);
+        routeRealtimeLightEvent(context, event);
       },
       onSequenceGap: ({ expected }) =>
         context.commit("SET_LAST_SEQUENCE", expected - 1),
@@ -58,6 +63,7 @@ export const createRealtimeActions = (
     ...createRealtimeChatActions(ensureSession),
     ...createRealtimeTokenActions(ensureSession),
     ...createRealtimeWallActions(ensureSession),
+    ...createRealtimeLightActions(ensureSession),
     connect(context, campaignId) {
       const id = Number(campaignId);
       if (context.state.campaignId !== id) {

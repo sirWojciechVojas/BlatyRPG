@@ -37,6 +37,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
     $routes->post('internal/realtime/campaigns/(:num)/chat/send', 'InternalRealtimeChatController::send/$1');
     $routes->post('internal/realtime/campaigns/(:num)/tokens/move', 'InternalRealtimeTokenController::move/$1');
     $routes->post('internal/realtime/campaigns/(:num)/walls/change', 'InternalRealtimeWallController::change/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/lights/change', 'InternalRealtimeLightController::change/$1');
 
     // ----------------------------------------
     // AUTH (PUBLIC)
