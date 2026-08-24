@@ -6,6 +6,7 @@ use App\Models\SceneTokenModel;
 use App\Services\Scene\SceneResourceAccessService;
 use App\Services\Scene\SceneException;
 use App\Services\Scene\SceneService;
+use App\Services\Wall\WallCollisionService;
 use CodeIgniter\Database\BaseConnection;
 
 final class SceneTokenService
@@ -17,6 +18,7 @@ final class SceneTokenService
     private $sceneAccess;
     private $access;
     private $validator;
+    private $collisions;
 
     public function __construct(
         ?BaseConnection $db = null,
@@ -24,7 +26,8 @@ final class SceneTokenService
         ?SceneService $scenes = null,
         ?SceneResourceAccessService $sceneAccess = null,
         ?TokenAccessService $access = null,
-        ?TokenPayloadValidator $validator = null
+        ?TokenPayloadValidator $validator = null,
+        ?WallCollisionService $collisions = null
     ) {
         $this->db = $db ?: \Config\Database::connect();
         $this->tokens = $tokens ?: new SceneTokenModel($this->db);
@@ -32,6 +35,7 @@ final class SceneTokenService
         $this->sceneAccess = $sceneAccess ?: new SceneResourceAccessService();
         $this->access = $access ?: new TokenAccessService();
         $this->validator = $validator ?: new TokenPayloadValidator();
+        $this->collisions = $collisions ?: new WallCollisionService($this->db);
     }
 
     public function list(int $campaignId, int $sceneId, array $auth): array
@@ -92,6 +96,7 @@ final class SceneTokenService
         if (array_key_exists('character_id', $validated['data'])) {
             $this->access->assertCharacterInCampaign($campaignId, $validated['data']['character_id']);
         }
+        $this->assertMovementAllowed($campaignId, $sceneId, $row, $validated['data']);
         $this->writeRevision($campaignId, $sceneId, $tokenId, $validated['revision'], $validated['data']);
         $token = $this->present($campaignId, $sceneId, $tokenId, $auth);
         return [
@@ -166,6 +171,32 @@ final class SceneTokenService
     {
         if (empty($validated['valid'])) {
             throw new TokenException('validation_failed', 'Token payload is invalid.', 422, $validated['errors']);
+        }
+    }
+
+    private function assertMovementAllowed(
+        int $campaignId,
+        int $sceneId,
+        array $token,
+        array $changes
+    ): void {
+        if (!array_key_exists('x', $changes) && !array_key_exists('y', $changes)) return;
+        $width = (float) ($changes['width'] ?? $token['width']);
+        $height = (float) ($changes['height'] ?? $token['height']);
+        $start = [
+            'x' => (float) $token['x'] + (float) $token['width'] / 2,
+            'y' => (float) $token['y'] + (float) $token['height'] / 2,
+        ];
+        $end = [
+            'x' => (float) ($changes['x'] ?? $token['x']) + $width / 2,
+            'y' => (float) ($changes['y'] ?? $token['y']) + $height / 2,
+        ];
+        if ($this->collisions->blocksSceneMovement($campaignId, $sceneId, $start, $end)) {
+            throw new TokenException(
+                'movement_blocked',
+                'Token movement is blocked by a wall or closed door.',
+                422
+            );
         }
     }
 
