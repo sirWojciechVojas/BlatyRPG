@@ -45,4 +45,5 @@ export const TABLE_SCENE_TOOLS = Object.freeze([
   { id: "grid", icon: "grid", labelKey: "vtt.table.tools.grid", gmOnly: true },
 ]);
 
-export const implementedSceneTool = (id) => ["select", "grid"].includes(id);
+export const implementedSceneTool = (id) =>
+  ["select", "tokens", "grid"].includes(id);

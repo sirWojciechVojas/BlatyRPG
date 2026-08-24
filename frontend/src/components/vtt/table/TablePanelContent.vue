@@ -3,6 +3,7 @@
     v-if="panelId === 'chat'"
     :id="`campaign-chat-${instanceId}`"
     :campaign-id="campaignId"
+    :can-create-token="canCreateToken"
     embedded
   />
 
@@ -85,6 +86,7 @@ export default {
     realtimeStatus: { type: String, default: "disconnected" },
     canManage: { type: Boolean, default: false },
     canOpenShop: { type: Boolean, default: false },
+    canCreateToken: { type: Boolean, default: false },
     busy: { type: Boolean, default: false },
   },
   emits: [

@@ -8,6 +8,10 @@ export const vttMutations = {
     state.scenes = [];
     state.activeSceneId = null;
     state.selectedSceneId = null;
+    state.tokensByScene = {};
+    state.tokenCapabilitiesByScene = {};
+    state.selectedTokenId = null;
+    state.tokenPhase = "idle";
     state.capabilities = {
       canManage: false,
       canViewHidden: false,
@@ -35,6 +39,47 @@ export const vttMutations = {
   },
   SELECT_SCENE(state, sceneId) {
     state.selectedSceneId = sceneId;
+    state.selectedTokenId = null;
+  },
+  RECEIVE_TOKENS(state, { sceneId, items, capabilities }) {
+    state.tokensByScene = { ...state.tokensByScene, [String(sceneId)]: items };
+    state.tokenCapabilitiesByScene = {
+      ...state.tokenCapabilitiesByScene,
+      [String(sceneId)]: capabilities,
+    };
+    state.tokenPhase = "ready";
+    if (!items.some((token) => token.id === state.selectedTokenId)) {
+      state.selectedTokenId = null;
+    }
+  },
+  UPSERT_TOKEN(state, token) {
+    const key = String(token.sceneId);
+    const items = [...(state.tokensByScene[key] || [])];
+    const index = items.findIndex((item) => item.id === token.id);
+    if (index < 0) items.push(token);
+    else items.splice(index, 1, token);
+    state.tokensByScene = { ...state.tokensByScene, [key]: items };
+  },
+  REMOVE_TOKEN(state, { sceneId, tokenId }) {
+    const key = String(sceneId);
+    state.tokensByScene = {
+      ...state.tokensByScene,
+      [key]: (state.tokensByScene[key] || []).filter(
+        (token) => token.id !== tokenId,
+      ),
+    };
+    if (state.selectedTokenId === tokenId) state.selectedTokenId = null;
+  },
+  SELECT_TOKEN(state, tokenId) {
+    state.selectedTokenId = tokenId;
+  },
+  SET_TOKEN_PHASE(state, phase) {
+    state.tokenPhase = phase;
+  },
+  TOKEN_FAILED(state, error) {
+    state.tokenPhase = "error";
+    state.error = error;
+    state.unauthorized = error.status === 401 || error.status === 403;
   },
   UPSERT_SCENE(state, scene) {
     if (!scene) return;

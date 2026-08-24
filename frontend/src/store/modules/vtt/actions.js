@@ -29,8 +29,8 @@ const assertCanManage = (state) => {
   if (!state.capabilities.canManage) throw forbiddenError();
 };
 
-export const createVttActions = (api) => ({
-  async initialize({ state, commit }) {
+export const createVttActions = (api, tokenApi) => ({
+  async initialize({ state, commit, dispatch }) {
     const requestId = startRequest(state, commit, "loading");
     try {
       const collection = await api.list(state.campaignId);
@@ -43,11 +43,12 @@ export const createVttActions = (api) => ({
         commit("SET_CAPABILITIES", snapshot.capabilities);
       }
       commit("REQUEST_READY", requestId);
+      await dispatch("loadTokens");
     } catch (error) {
       if (state.requestId === requestId) failRequest(commit, requestId, error);
     }
   },
-  async selectScene({ state, commit }, sceneId) {
+  async selectScene({ state, commit, dispatch }, sceneId) {
     commit("SELECT_SCENE", sceneId);
     const requestId = startRequest(state, commit, "loading");
     try {
@@ -56,6 +57,7 @@ export const createVttActions = (api) => ({
       commit("UPSERT_SCENE", snapshot.scene);
       commit("SET_CAPABILITIES", snapshot.capabilities);
       commit("REQUEST_READY", requestId);
+      await dispatch("loadTokens");
     } catch (error) {
       if (state.requestId === requestId) failRequest(commit, requestId, error);
     }
@@ -141,6 +143,71 @@ export const createVttActions = (api) => ({
       return result.scene;
     } catch (error) {
       return failRequest(commit, requestId, error);
+    }
+  },
+  async loadTokens({ state, commit }) {
+    const sceneId = state.selectedSceneId;
+    if (sceneId === null || typeof tokenApi?.list !== "function") return;
+    commit("SET_TOKEN_PHASE", "loading");
+    try {
+      const result = await tokenApi.list(state.campaignId, sceneId);
+      if (state.selectedSceneId !== sceneId) return;
+      commit("RECEIVE_TOKENS", { sceneId, ...result });
+    } catch (error) {
+      commit("TOKEN_FAILED", normalizedError(error));
+      throw error;
+    }
+  },
+  async createToken({ state, commit }, draft) {
+    const sceneId = state.selectedSceneId;
+    if (sceneId === null || typeof tokenApi?.create !== "function") return null;
+    commit("SET_TOKEN_PHASE", "saving");
+    try {
+      const token = await tokenApi.create(state.campaignId, sceneId, draft);
+      if (state.selectedSceneId === sceneId) {
+        commit("UPSERT_TOKEN", token);
+        commit("SELECT_TOKEN", token.id);
+      }
+      commit("SET_TOKEN_PHASE", "ready");
+      return token;
+    } catch (error) {
+      commit("TOKEN_FAILED", normalizedError(error));
+      throw error;
+    }
+  },
+  async updateToken({ state, commit }, { token, changes }) {
+    if (!token || typeof tokenApi?.update !== "function") return null;
+    commit("SET_TOKEN_PHASE", "saving");
+    try {
+      const updated = await tokenApi.update(
+        state.campaignId,
+        token.sceneId,
+        token.id,
+        { ...changes, revision: token.revision },
+      );
+      commit("UPSERT_TOKEN", updated);
+      commit("SET_TOKEN_PHASE", "ready");
+      return updated;
+    } catch (error) {
+      commit("TOKEN_FAILED", normalizedError(error));
+      throw error;
+    }
+  },
+  async deleteToken({ state, commit }, token) {
+    if (!token || typeof tokenApi?.remove !== "function") return;
+    commit("SET_TOKEN_PHASE", "saving");
+    try {
+      await tokenApi.remove(
+        state.campaignId,
+        token.sceneId,
+        token.id,
+        token.revision,
+      );
+      commit("REMOVE_TOKEN", { sceneId: token.sceneId, tokenId: token.id });
+      commit("SET_TOKEN_PHASE", "ready");
+    } catch (error) {
+      commit("TOKEN_FAILED", normalizedError(error));
+      throw error;
     }
   },
 });

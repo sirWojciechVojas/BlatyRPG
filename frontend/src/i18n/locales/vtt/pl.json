@@ -81,6 +81,14 @@
         "validation": "Popraw pola: {fields}."
       }
     },
+    "token": {
+      "dragActor": "Przeciągnij postać na mapę, aby utworzyć token",
+      "rotateLeft": "Obróć w lewo",
+      "rotateRight": "Obróć w prawo",
+      "openActor": "Otwórz kartę postaci",
+      "delete": "Usuń token",
+      "deleteConfirm": "Czy na pewno usunąć token „{name}”?"
+    },
     "table": {
       "header": {
         "kicker": "Stół kampanii",

@@ -3,6 +3,10 @@ export const createVttState = () => ({
   scenes: [],
   activeSceneId: null,
   selectedSceneId: null,
+  tokensByScene: {},
+  tokenCapabilitiesByScene: {},
+  selectedTokenId: null,
+  tokenPhase: "idle",
   capabilities: {
     canManage: false,
     canViewHidden: false,

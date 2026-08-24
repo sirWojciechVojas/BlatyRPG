@@ -17,6 +17,8 @@
     @pointermove="movePan"
     @pointerup="endPan"
     @pointercancel="endPan"
+    @dragover.prevent
+    @drop.prevent="dropActor"
   >
     <p v-if="!scene" class="scene-canvas__empty">
       {{ $t("vtt.scene.workspace.noScene") }}
@@ -62,6 +64,17 @@
         <p v-if="backgroundFailed" class="scene-canvas__image-error">
           {{ $t("vtt.scene.workspace.backgroundError") }}
         </p>
+        <SceneTokenLayer
+          :tokens="tokens"
+          :selected-id="selectedTokenId"
+          :scale="camera.scale"
+          :busy="tokenBusy"
+          @select="$emit('token-select', $event)"
+          @move="$emit('token-move', $event)"
+          @update="$emit('token-update', $event)"
+          @delete="$emit('token-delete', $event)"
+          @open-actor="$emit('open-actor', $event)"
+        />
       </div>
     </div>
   </section>
@@ -70,14 +83,29 @@
 <script>
 import { getCurrentInstance, nextTick } from "vue";
 import { buildGridPattern, clamp } from "@/lib/vtt/grid";
+import { canvasDropPosition, readDroppedActor } from "@/lib/vtt/tokenDrop";
+import SceneTokenLayer from "@/components/vtt/token/SceneTokenLayer.vue";
 
 export default {
   name: "SceneCanvas",
+  components: { SceneTokenLayer },
   props: {
     scene: { type: Object, default: null },
     activeTool: { type: String, default: "select" },
+    tokens: { type: Array, default: () => [] },
+    selectedTokenId: { type: [Number, String], default: null },
+    tokenBusy: { type: Boolean, default: false },
+    canCreateToken: { type: Boolean, default: false },
   },
-  emits: ["camera-change"],
+  emits: [
+    "camera-change",
+    "token-select",
+    "token-move",
+    "token-update",
+    "token-delete",
+    "token-create",
+    "open-actor",
+  ],
   data() {
     return {
       camera: { x: 0, y: 0, scale: 1 },
@@ -254,6 +282,18 @@ export default {
       this.pointer = null;
       event.currentTarget.releasePointerCapture?.(event.pointerId);
       this.emitCamera();
+    },
+    dropActor(event) {
+      if (!this.scene || !this.canCreateToken) return;
+      const actor = readDroppedActor(event.dataTransfer);
+      if (!actor) return;
+      const position = canvasDropPosition(
+        event,
+        this.$refs.viewport,
+        this.camera,
+        this.mapDimensions.padding,
+      );
+      this.$emit("token-create", { actor, ...position });
     },
   },
 };

@@ -74,7 +74,17 @@
           ref="canvas"
           :scene="selectedScene"
           :active-tool="activeSceneTool"
+          :tokens="selectedSceneTokens"
+          :selected-token-id="state.selectedTokenId"
+          :token-busy="tokenBusy"
+          :can-create-token="canCreateToken"
           @camera-change="zoomPercent = $event.zoomPercent"
+          @token-select="selectToken"
+          @token-move="moveToken"
+          @token-update="updateToken"
+          @token-delete="deleteToken"
+          @token-create="createToken"
+          @open-actor="openActor"
         />
       </section>
 
@@ -108,6 +118,7 @@
           :realtime-status="realtime.status"
           :can-manage="canManage"
           :can-open-shop="canOpenShop"
+          :can-create-token="canCreateToken"
           :busy="busy"
           @select-scene="selectScene"
           @create-scene="openCreate"
@@ -159,6 +170,7 @@
           :realtime-status="realtime.status"
           :can-manage="canManage"
           :can-open-shop="canOpenShop"
+          :can-create-token="canCreateToken"
           :busy="busy"
           @select-scene="selectScene"
           @create-scene="openCreate"

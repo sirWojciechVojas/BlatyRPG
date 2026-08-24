@@ -14,6 +14,7 @@ import {
   tableHotbarActions,
 } from "@/components/vtt/table/tableHotbar";
 import { tableWindowMethods } from "@/components/vtt/table/tableWindowMethods";
+import { tableTokenMethods } from "@/components/vtt/token/tableTokenMethods";
 import {
   IMPLEMENTED_TABLE_UTILITIES,
   utilityById,
@@ -92,6 +93,12 @@ export default {
     selectedScene() {
       return this.$store.getters["vtt/selectedScene"] || null;
     },
+    selectedSceneTokens() {
+      return this.$store.getters["vtt/selectedSceneTokens"] || [];
+    },
+    canCreateToken() {
+      return this.$store.getters["vtt/canCreateToken"] === true;
+    },
     canManage() {
       return this.$store.getters["vtt/canManage"] === true;
     },
@@ -100,6 +107,9 @@ export default {
     },
     busy() {
       return ["loading", "saving"].includes(this.state.phase);
+    },
+    tokenBusy() {
+      return ["loading", "saving"].includes(this.state.tokenPhase);
     },
     initialLoading() {
       return this.state.phase === "loading" && !this.state.scenes.length;
@@ -162,6 +172,7 @@ export default {
   },
   methods: {
     ...tableWindowMethods,
+    ...tableTokenMethods,
     async loadCampaign() {
       this.activePanelId = this.$route.hash === "#campaign-chat" ? "chat" : "";
       this.settingsOpen = false;

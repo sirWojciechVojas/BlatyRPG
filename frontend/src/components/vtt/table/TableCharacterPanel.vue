@@ -29,6 +29,9 @@
         :key="character.id"
         type="button"
         :class="{ selected: character.id === selectedId }"
+        :draggable="canCreateToken"
+        :title="canCreateToken ? $t('vtt.token.dragActor') : ''"
+        @dragstart="dragCharacter($event, character)"
         @click="selectCharacter(character.id)"
       >
         <img :src="avatar(character)" alt="" />
@@ -66,11 +69,15 @@ import CharacterSheetEditor from "@/components/characters/CharacterSheetEditor.v
 import { characterApiClient } from "@/lib/character/characterApiClient";
 import { characterErrorKey } from "@/lib/character/characterErrorKey";
 import { resolveCharacterAvatar } from "@/lib/trade/characterAvatar";
+import { TOKEN_ACTOR_MIME } from "@/lib/vtt/tokenDrop";
 
 export default {
   name: "TableCharacterPanel",
   components: { CharacterSheetEditor },
-  props: { campaignId: { type: [Number, String], required: true } },
+  props: {
+    campaignId: { type: [Number, String], required: true },
+    canCreateToken: { type: Boolean, default: false },
+  },
   emits: ["changed"],
   data: () => ({
     characters: [],
@@ -216,6 +223,21 @@ export default {
       return [details.race, details.profession, details.class]
         .filter(Boolean)
         .join(" · ");
+    },
+    dragCharacter(event, character) {
+      if (!this.canCreateToken) {
+        event.preventDefault();
+        return;
+      }
+      event.dataTransfer.effectAllowed = "copy";
+      event.dataTransfer.setData(
+        TOKEN_ACTOR_MIME,
+        JSON.stringify({
+          id: character.id,
+          name: character.name,
+          imageUrl: this.avatar(character),
+        }),
+      );
     },
   },
 };

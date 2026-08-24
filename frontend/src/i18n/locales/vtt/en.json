@@ -81,6 +81,14 @@
         "validation": "Correct these fields: {fields}."
       }
     },
+    "token": {
+      "dragActor": "Drag the character onto the map to create a token",
+      "rotateLeft": "Rotate left",
+      "rotateRight": "Rotate right",
+      "openActor": "Open character sheet",
+      "delete": "Delete token",
+      "deleteConfirm": "Are you sure you want to delete the “{name}” token?"
+    },
     "table": {
       "header": {
         "kicker": "Campaign table",
