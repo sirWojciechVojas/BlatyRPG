@@ -46,4 +46,4 @@ export const TABLE_SCENE_TOOLS = Object.freeze([
 ]);
 
 export const implementedSceneTool = (id) =>
-  ["select", "tokens", "grid"].includes(id);
+  ["select", "tokens", "measure", "templates", "grid"].includes(id);

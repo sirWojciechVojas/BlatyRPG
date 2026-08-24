@@ -89,6 +89,11 @@
       "delete": "Delete token",
       "deleteConfirm": "Are you sure you want to delete the “{name}” token?"
     },
+    "measurement": {
+      "circle": "Circular area",
+      "cone": "60° cone",
+      "rectangle": "Rectangular area"
+    },
     "table": {
       "header": {
         "kicker": "Campaign table",

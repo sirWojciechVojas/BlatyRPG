@@ -89,6 +89,11 @@
       "delete": "Usuń token",
       "deleteConfirm": "Czy na pewno usunąć token „{name}”?"
     },
+    "measurement": {
+      "circle": "Okrągły obszar",
+      "cone": "Stożek 60°",
+      "rectangle": "Prostokątny obszar"
+    },
     "table": {
       "header": {
         "kicker": "Stół kampanii",
