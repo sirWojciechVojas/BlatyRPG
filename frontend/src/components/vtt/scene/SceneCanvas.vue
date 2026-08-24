@@ -72,6 +72,7 @@
         <SceneLightLayer
           :scene="scene"
           :lights="lights"
+          :walls="walls"
           :active-tool="activeTool"
           :selected-id="selectedLightId"
           :can-manage="canManageLights"

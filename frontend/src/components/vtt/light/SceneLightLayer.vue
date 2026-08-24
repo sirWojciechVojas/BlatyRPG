@@ -10,7 +10,13 @@
     >
       <defs>
         <template v-for="light in activeLights" :key="`defs-${light.id}`">
-          <radialGradient :id="maskId(light)" gradientUnits="objectBoundingBox">
+          <radialGradient
+            :id="maskId(light)"
+            gradientUnits="userSpaceOnUse"
+            :cx="light.x"
+            :cy="light.y"
+            :r="light.dimRadius"
+          >
             <stop
               offset="0%"
               stop-color="#000"
@@ -21,9 +27,15 @@
               stop-color="#000"
               :stop-opacity="light.intensity"
             />
-            <stop offset="100%" stop-color="#fff" />
+            <stop offset="100%" stop-color="#fff" stop-opacity="0" />
           </radialGradient>
-          <radialGradient :id="glowId(light)">
+          <radialGradient
+            :id="glowId(light)"
+            gradientUnits="userSpaceOnUse"
+            :cx="light.x"
+            :cy="light.y"
+            :r="light.dimRadius"
+          >
             <stop
               offset="0%"
               :stop-color="light.color"
@@ -34,12 +46,10 @@
         </template>
         <mask :id="darknessMaskId" mask-type="luminance">
           <rect width="100%" height="100%" fill="#fff" />
-          <circle
+          <path
             v-for="light in activeLights"
             :key="`mask-${light.id}`"
-            :cx="light.x"
-            :cy="light.y"
-            :r="light.dimRadius"
+            :d="lightPath(light)"
             :fill="`url(#${maskId(light)})`"
           />
         </mask>
@@ -51,12 +61,10 @@
         :fill-opacity="darkness"
         :mask="`url(#${darknessMaskId})`"
       />
-      <circle
+      <path
         v-for="light in activeLights"
         :key="`glow-${light.id}`"
-        :cx="light.x"
-        :cy="light.y"
-        :r="light.dimRadius"
+        :d="lightPath(light)"
         :fill="`url(#${glowId(light)})`"
       />
     </svg>
@@ -107,6 +115,7 @@
 <script>
 import { getCurrentInstance } from "vue";
 import { wallPoint } from "@/lib/vtt/wallGeometry";
+import { lightPolygonPath } from "@/lib/vtt/lightGeometry";
 import LightHud from "./LightHud.vue";
 
 export default {
@@ -115,6 +124,7 @@ export default {
   props: {
     scene: { type: Object, required: true },
     lights: { type: Array, default: () => [] },
+    walls: { type: Array, default: () => [] },
     activeTool: { type: String, default: "select" },
     selectedId: { type: [Number, String], default: null },
     canManage: { type: Boolean, default: false },
@@ -130,6 +140,14 @@ export default {
     },
     activeLights() {
       return this.lights.filter((light) => light.enabled);
+    },
+    lightPaths() {
+      return Object.fromEntries(
+        this.activeLights.map((light) => [
+          light.id,
+          lightPolygonPath(light, this.walls, this.scene),
+        ]),
+      );
     },
     selectedLight() {
       return this.lights.find((light) => light.id === this.selectedId) || null;
@@ -156,6 +174,9 @@ export default {
     },
     glowId(light) {
       return `light-glow-${this.uid}-${light.id}`;
+    },
+    lightPath(light) {
+      return this.lightPaths[light.id] || "";
     },
     brightOffset(light) {
       return `${Math.min(100, (light.brightRadius / Math.max(1, light.dimRadius)) * 100)}%`;
