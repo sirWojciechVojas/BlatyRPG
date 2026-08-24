@@ -10,6 +10,13 @@
     }"
     aria-label="Blaty RPG"
   >
+    <router-link class="app-nav-brand" :to="{ name: 'landing' }">
+      <img :src="appLogo" alt="" />
+      <span>
+        <strong>{{ $t("landing.brand.title") }}</strong>
+        <small>{{ $t("landing.brand.subtitle") }}</small>
+      </span>
+    </router-link>
     <router-link :to="{ name: 'landing' }">{{ $t("nav.home") }}</router-link>
     <span class="nav-sep" aria-hidden="true">|</span>
     <router-link :to="{ name: 'about' }">{{ $t("nav.about") }}</router-link>
@@ -70,6 +77,7 @@ import ShopAccessModeSelector from "@/components/shop/ShopAccessModeSelector.vue
 import UserAccountMenu from "@/components/navigation/UserAccountMenu.vue";
 import { authApiClient } from "@/lib/auth/authApiClient";
 import { authSession } from "@/lib/auth/authSession";
+import appLogo from "@/assets/app-ui/img/BlatyRPG-logo.png";
 import {
   UI_ROOT_CLASS_NAMES,
   resolveRouteUi,
@@ -78,15 +86,14 @@ import {
 export default {
   name: "AppRoot",
   components: { ShopAccessModeSelector, UserAccountMenu },
-
   data() {
     return {
       localization: {},
+      appLogo,
       locales: availableLocales,
       session: authSession.read(),
       loggingOut: false,
       unsubscribeAuth: null,
-      // Nazwa aplikacji (fallback do tytułu zakładki)
       appTitle:
         typeof process !== "undefined" &&
         process.env &&
@@ -105,7 +112,6 @@ export default {
     this.unsubscribeAuth?.();
   },
   watch: {
-    // Ustawia tytuł zakładki na podstawie meta.title w routach
     $route: {
       immediate: true,
       handler(to) {
@@ -171,7 +177,6 @@ export default {
       if (typeof document === "undefined") {
         return [];
       }
-
       return [document.body, document.getElementById("app")].filter(Boolean);
     },
     clearUiRootState() {
@@ -183,11 +188,9 @@ export default {
     syncUiRootState(route) {
       const routeUi = resolveRouteUi(route);
       this.clearUiRootState();
-
       if (!routeUi.enabled) {
         return;
       }
-
       const classes = routeUiRootClasses(routeUi);
       this.uiRootElements().forEach((element) => {
         element.classList.add(...classes);
@@ -206,9 +209,9 @@ export default {
   text-align: center;
   color: #2c3e50;
 }
-
 .app-navigation {
-  padding: 30px;
+  min-height: 56px;
+  padding: 6px clamp(12px, 3vw, 42px);
 }
 
 .app-navigation a {
@@ -277,10 +280,10 @@ export default {
   box-sizing: border-box;
   display: flex;
   width: 100%;
-  min-height: 64px;
+  min-height: 56px;
   align-items: center;
   justify-content: flex-end;
-  padding: 10px 16px;
+  padding: 6px clamp(12px, 3vw, 42px);
   overflow-x: auto;
   color: #edf0f5;
   white-space: nowrap;
