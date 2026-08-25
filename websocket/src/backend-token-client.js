@@ -55,6 +55,14 @@ const token = (value) => {
     height: coordinate(value.height) ?? 100,
     rotation: coordinate(value.rotation) ?? 0,
     facing: coordinate(value.facing ?? value.rotation) ?? 0,
+    movementRange: Math.max(0, coordinate(value.movementRange) ?? 6),
+    movementSpent: Math.max(0, coordinate(value.movementSpent) ?? 0),
+    movementPoints: Math.max(0, coordinate(value.movementPoints) ?? 0),
+    movementResetMode: ["turn", "round", "manual"].includes(
+      value.movementResetMode,
+    )
+      ? value.movementResetMode
+      : "turn",
     elevation: coordinate(value.elevation) ?? 0,
     revision,
     hidden: value.hidden === true,
@@ -90,6 +98,7 @@ export class BackendTokenClient {
           revision: payload.revision,
           x: payload.x,
           y: payload.y,
+          waypoints: payload.waypoints,
         }),
         signal: AbortSignal.timeout(this.timeoutMs),
       });

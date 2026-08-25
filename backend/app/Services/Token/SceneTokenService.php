@@ -16,6 +16,7 @@ final class SceneTokenService
     private const MANAGER_FIELDS = [
         'visible_to_json', 'controlled_by_json',
         'editable_by_json', 'observer_by_json', 'rotation_handle_enabled', 'facing_handle_enabled',
+        'movement_range', 'movement_spent', 'movement_reset_mode',
     ];
     private $db;
     private $tokens;
@@ -95,7 +96,8 @@ final class SceneTokenService
         int $sceneId,
         int $tokenId,
         array $auth,
-        array $payload
+        array $payload,
+        array $movementRoute = []
     ): array {
         [$scene, $capabilities] = $this->sceneContext($campaignId, $sceneId, $auth);
         $row = $this->find($campaignId, $sceneId, $tokenId);
@@ -127,7 +129,10 @@ final class SceneTokenService
         if ($canManage) {
             $this->access->assertPermissionUsersInCampaign($campaignId, $validated['data']);
         }
-        $this->assertMovementAllowed($campaignId, $sceneId, $row, $validated['data']);
+        $movement = (new TokenMovementService($this->collisions, $this->grid))->apply(
+            $campaignId, $sceneId, $scene, $row, $validated['data'], $movementRoute, $canManage
+        );
+        $validated['data'] = array_merge($validated['data'], $movement);
         $syncResources = array_key_exists('bars_json', $validated['data']);
         if ($syncResources) $this->db->transBegin();
         try {
@@ -235,31 +240,6 @@ final class SceneTokenService
         }
     }
 
-    private function assertMovementAllowed(
-        int $campaignId,
-        int $sceneId,
-        array $token,
-        array $changes
-    ): void {
-        if (!array_key_exists('x', $changes) && !array_key_exists('y', $changes)) return;
-        $width = (float) ($changes['width'] ?? $token['width']);
-        $height = (float) ($changes['height'] ?? $token['height']);
-        $start = [
-            'x' => (float) $token['x'] + (float) $token['width'] / 2,
-            'y' => (float) $token['y'] + (float) $token['height'] / 2,
-        ];
-        $end = [
-            'x' => (float) ($changes['x'] ?? $token['x']) + $width / 2,
-            'y' => (float) ($changes['y'] ?? $token['y']) + $height / 2,
-        ];
-        if ($this->collisions->blocksSceneMovement($campaignId, $sceneId, $start, $end)) {
-            throw new TokenException(
-                'movement_blocked',
-                'Token movement is blocked by a wall or closed door.',
-                422
-            );
-        }
-    }
     private function snapCreateData(array $scene, array $data): array
     {
         $defaultSize = max(1.0, (float) ($scene['grid_size'] ?? 100));

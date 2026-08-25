@@ -46,6 +46,21 @@ const coordinate = (value, code) => {
   return value;
 };
 
+const waypoints = (value) => {
+  if (value === undefined) return [];
+  if (!Array.isArray(value) || value.length > 20) {
+    throw new ProtocolError("token_waypoints_invalid");
+  }
+  return value.map((point) => {
+    if (!plainObject(point)) throw new ProtocolError("token_waypoints_invalid");
+    exactKeys(point, ["x", "y"]);
+    return {
+      x: coordinate(point.x, "token_waypoint_x_invalid"),
+      y: coordinate(point.y, "token_waypoint_y_invalid"),
+    };
+  });
+};
+
 const requiredRequestId = (value) => {
   const normalized = requestId(value);
   if (!normalized) throw new ProtocolError("request_id_required");
@@ -122,6 +137,7 @@ export const parseAuthenticatedMessage = (message) => {
   if (message.type === "token.move") {
     exactKeys(message, [
       "v", "type", "requestId", "sceneId", "tokenId", "revision", "x", "y",
+      "waypoints",
     ]);
     const sceneId = positiveRevision(message.sceneId, "scene_id_invalid");
     const tokenId = positiveRevision(message.tokenId, "token_id_invalid");
@@ -137,6 +153,7 @@ export const parseAuthenticatedMessage = (message) => {
       revision,
       x: coordinate(message.x, "token_x_invalid"),
       y: coordinate(message.y, "token_y_invalid"),
+      waypoints: waypoints(message.waypoints),
     };
   }
   if (message.type === "chat.send") {

@@ -27,6 +27,27 @@ export const normalizeToken = (source = {}) => ({
     source.rotation_handle_enabled === 1,
   facingHandleEnabled:
     source.facingHandleEnabled === true || source.facing_handle_enabled === 1,
+  movementRange: Math.max(
+    0,
+    number(source.movementRange ?? source.movement_range, 6),
+  ),
+  movementSpent: Math.max(
+    0,
+    number(source.movementSpent ?? source.movement_spent),
+  ),
+  movementPoints: Math.max(
+    0,
+    number(
+      source.movementPoints ?? source.movement_points,
+      number(source.movementRange ?? source.movement_range, 6) -
+        number(source.movementSpent ?? source.movement_spent),
+    ),
+  ),
+  movementResetMode: ["turn", "round", "manual"].includes(
+    source.movementResetMode ?? source.movement_reset_mode,
+  )
+    ? (source.movementResetMode ?? source.movement_reset_mode)
+    : "turn",
   elevation: number(source.elevation),
   disposition: String(source.disposition || "neutral"),
   hidden: source.hidden === true || source.hidden === 1,
@@ -75,6 +96,9 @@ export const tokenWritePayload = (changes = {}, includeRevision = false) => {
     "facing",
     "rotationHandleEnabled",
     "facingHandleEnabled",
+    "movementRange",
+    "movementSpent",
+    "movementResetMode",
     "elevation",
     "disposition",
     "hidden",
@@ -85,6 +109,7 @@ export const tokenWritePayload = (changes = {}, includeRevision = false) => {
     "observerBy",
     "statuses",
     "resources",
+    "waypoints",
   ];
   const payload = {};
   allowed.forEach((key) => {

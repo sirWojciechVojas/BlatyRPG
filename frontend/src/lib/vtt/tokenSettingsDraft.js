@@ -32,6 +32,13 @@ export const createTokenSettingsDraft = (token, gridSize) => {
     facing: normalizeTokenAngle(token.facing, token.rotation),
     rotationHandleEnabled: token.rotationHandleEnabled === true,
     facingHandleEnabled: token.facingHandleEnabled === true,
+    movementRange: Math.max(0, finite(token.movementRange, 6)),
+    movementSpent: Math.max(0, finite(token.movementSpent)),
+    movementResetMode: ["turn", "round", "manual"].includes(
+      token.movementResetMode,
+    )
+      ? token.movementResetMode
+      : "turn",
     elevation: finite(token.elevation),
     disposition: String(token.disposition || "neutral"),
     hidden: token.hidden === true,
@@ -68,6 +75,13 @@ export const tokenSettingsPayload = (draft, gridSize, canManage) => {
     observerBy: scope(draft.observerBy, "gm"),
     rotationHandleEnabled: draft.rotationHandleEnabled === true,
     facingHandleEnabled: draft.facingHandleEnabled === true,
+    movementRange: clamped(draft.movementRange, 0, 10000),
+    movementSpent: clamped(draft.movementSpent, 0, 10000),
+    movementResetMode: ["turn", "round", "manual"].includes(
+      draft.movementResetMode,
+    )
+      ? draft.movementResetMode
+      : "turn",
   };
 };
 

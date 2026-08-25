@@ -1,5 +1,10 @@
 <template>
-  <div v-if="indicator" class="token-drag-indicator" aria-hidden="true">
+  <div
+    v-if="indicator"
+    class="token-drag-indicator"
+    :class="{ 'token-drag-indicator--exceeded': indicator.exceeded }"
+    aria-hidden="true"
+  >
     <svg :viewBox="`0 0 ${scene.width} ${scene.height}`">
       <defs>
         <filter :id="glowId" x="-60%" y="-60%" width="220%" height="220%">
@@ -10,19 +15,21 @@
           </feMerge>
         </filter>
       </defs>
-      <line
+      <polyline
         class="token-drag-indicator__trail-glow"
-        :x1="indicator.start.x"
-        :y1="indicator.start.y"
-        :x2="indicator.end.x"
-        :y2="indicator.end.y"
+        :points="indicator.polyline"
       />
-      <line
+      <polyline
         class="token-drag-indicator__trail"
-        :x1="indicator.start.x"
-        :y1="indicator.start.y"
-        :x2="indicator.end.x"
-        :y2="indicator.end.y"
+        :points="indicator.polyline"
+      />
+      <circle
+        v-for="(waypoint, index) in indicator.waypoints"
+        :key="index"
+        class="token-drag-indicator__waypoint"
+        :cx="waypoint.x"
+        :cy="waypoint.y"
+        :r="Math.max(6, indicator.radius * 0.12)"
       />
       <circle
         class="token-drag-indicator__origin-ring"

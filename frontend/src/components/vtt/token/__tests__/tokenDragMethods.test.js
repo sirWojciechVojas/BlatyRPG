@@ -70,6 +70,8 @@ describe("token pointer drag", () => {
       token,
       x: 200,
       y: 100,
+      waypoints: [],
+      cost: 1,
     });
     expect(vm.holdTokenPosition).toHaveBeenCalledWith(token, {
       x: 200,
@@ -77,6 +79,49 @@ describe("token pointer drag", () => {
     });
     expect(captureTarget.releasePointerCapture).toHaveBeenCalledWith(4);
     expect(vm.drag).toBeNull();
+  });
+
+  it("adds waypoints and blocks a player route above the movement limit", () => {
+    const vm = context();
+    const token = {
+      id: 9,
+      x: 0,
+      y: 0,
+      width: 100,
+      height: 100,
+      movementRange: 1,
+      movementSpent: 0,
+      locked: false,
+      capabilities: { canControl: true, canManage: false },
+    };
+    vm.startDrag(
+      {
+        pointerId: 3,
+        button: 0,
+        clientX: 0,
+        clientY: 0,
+        currentTarget: target(),
+        preventDefault: vi.fn(),
+      },
+      token,
+    );
+    window.dispatchEvent(
+      pointer("pointermove", { pointerId: 3, clientX: 100, clientY: 100 }),
+    );
+    window.dispatchEvent(pointer("keydown", { key: " " }));
+    window.dispatchEvent(
+      pointer("pointerup", { pointerId: 3, clientX: 300, clientY: 100 }),
+    );
+
+    expect(vm.$emit).toHaveBeenCalledWith(
+      "movement-limit",
+      expect.objectContaining({
+        token,
+        waypoints: [{ x: 100, y: 100 }],
+        movement: expect.objectContaining({ cost: 3, exceeded: true }),
+      }),
+    );
+    expect(vm.holdTokenPosition).not.toHaveBeenCalled();
   });
 
   it("does not drag a token without control permission", () => {

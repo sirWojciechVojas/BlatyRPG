@@ -5,12 +5,16 @@ namespace App\Services\Token;
 final class TokenPayloadValidator
 {
     private const TEXT_LIMITS = ['name' => 150, 'imageUrl' => 2048];
-    private const NUMBERS = ['x', 'y', 'width', 'height', 'rotation', 'facing', 'elevation'];
+    private const NUMBERS = [
+        'x', 'y', 'width', 'height', 'rotation', 'facing', 'elevation',
+        'movementRange', 'movementSpent',
+    ];
     private const DISPOSITIONS = ['friendly', 'neutral', 'hostile', 'secret'];
     private const WRITABLE = [
         'characterId', 'name', 'imageUrl', 'x', 'y', 'width', 'height',
         'rotation', 'facing', 'elevation', 'disposition', 'hidden', 'locked',
         'rotationHandleEnabled', 'facingHandleEnabled',
+        'movementRange', 'movementSpent', 'movementResetMode',
         'visibleTo', 'controlledBy', 'editableBy', 'observerBy',
         'statuses', 'resources',
     ];
@@ -71,7 +75,7 @@ final class TokenPayloadValidator
                 $result['errors'][$field] = 'A finite number is required.';
             } else {
                 $value = (float) $payload[$field];
-                $result['data'][$field] = in_array($field, ['rotation', 'facing'], true)
+                $result['data'][$this->snake($field)] = in_array($field, ['rotation', 'facing'], true)
                     ? $this->angle($value)
                     : $value;
             }
@@ -79,6 +83,13 @@ final class TokenPayloadValidator
         foreach (['width', 'height'] as $field) {
             if (isset($result['data'][$field]) && ($result['data'][$field] < 1 || $result['data'][$field] > 10000)) {
                 $result['errors'][$field] = 'Size must be between 1 and 10000.';
+            }
+        }
+        foreach (['movementRange', 'movementSpent'] as $field) {
+            $databaseField = $this->snake($field);
+            if (isset($result['data'][$databaseField])
+                && ($result['data'][$databaseField] < 0 || $result['data'][$databaseField] > 10000)) {
+                $result['errors'][$field] = 'Movement must be between 0 and 10000.';
             }
         }
         $this->optionalId($payload, 'characterId', $result);
@@ -92,6 +103,12 @@ final class TokenPayloadValidator
             $value = strtolower(trim((string) $payload['disposition']));
             if (!in_array($value, self::DISPOSITIONS, true)) $result['errors']['disposition'] = 'Disposition is invalid.';
             else $result['data']['disposition'] = $value;
+        }
+        if (array_key_exists('movementResetMode', $payload)) {
+            $value = strtolower(trim((string) $payload['movementResetMode']));
+            if (!in_array($value, ['turn', 'round', 'manual'], true)) {
+                $result['errors']['movementResetMode'] = 'Movement reset mode is invalid.';
+            } else $result['data']['movement_reset_mode'] = $value;
         }
         foreach (self::PERMISSIONS as $field => $databaseField) {
             if (!array_key_exists($field, $payload)) continue;

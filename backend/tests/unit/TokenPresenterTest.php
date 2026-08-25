@@ -22,6 +22,9 @@ final class TokenPresenterTest extends CIUnitTestCase
             'facing' => 90,
             'rotation_handle_enabled' => 1,
             'facing_handle_enabled' => 0,
+            'movement_range' => 8,
+            'movement_spent' => 2.5,
+            'movement_reset_mode' => 'round',
             'elevation' => 0,
             'disposition' => 'friendly',
             'hidden' => 0,
@@ -40,6 +43,10 @@ final class TokenPresenterTest extends CIUnitTestCase
         $this->assertTrue($token['locked']);
         $this->assertTrue($token['rotationHandleEnabled']);
         $this->assertFalse($token['facingHandleEnabled']);
+        $this->assertSame(8.0, $token['movementRange']);
+        $this->assertSame(2.5, $token['movementSpent']);
+        $this->assertSame(5.5, $token['movementPoints']);
+        $this->assertSame('round', $token['movementResetMode']);
         $this->assertTrue($token['capabilities']['canControl']);
         $this->assertTrue($token['capabilities']['canObserve']);
         $this->assertSame(['mode' => 'users', 'userIds' => [8]], $token['visibleTo']);

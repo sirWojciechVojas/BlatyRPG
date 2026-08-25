@@ -12,6 +12,7 @@ test("validates token movement without accepting client campaign scope", () => {
     revision: 3,
     x: 120.5,
     y: 240,
+    waypoints: [{ x: 180, y: 200 }],
   };
   assert.deepEqual(parseAuthenticatedMessage(move), {
     type: "token.move",
@@ -21,6 +22,7 @@ test("validates token movement without accepting client campaign scope", () => {
     revision: 3,
     x: 120.5,
     y: 240,
+    waypoints: [{ x: 180, y: 200 }],
   });
   assert.throws(
     () => parseAuthenticatedMessage({ ...move, campaignId: 99 }),
@@ -29,5 +31,10 @@ test("validates token movement without accepting client campaign scope", () => {
   assert.throws(
     () => parseAuthenticatedMessage({ ...move, x: Number.POSITIVE_INFINITY }),
     (error) => error instanceof ProtocolError && error.code === "token_x_invalid",
+  );
+  assert.throws(
+    () => parseAuthenticatedMessage({ ...move, waypoints: [{ x: 1 }] }),
+    (error) =>
+      error instanceof ProtocolError && error.code === "token_waypoint_y_invalid",
   );
 });

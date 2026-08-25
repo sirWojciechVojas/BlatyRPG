@@ -30,7 +30,7 @@ class InternalRealtimeTokenController extends BaseController
         try {
             $id = $this->positiveId($campaignId);
             $payload = $this->jsonPayload();
-            $this->exactKeys($payload, ['sceneId', 'tokenId', 'revision', 'x', 'y']);
+            $this->exactKeys($payload, ['sceneId', 'tokenId', 'revision', 'x', 'y', 'waypoints']);
             return $this->respond($this->tokens->update(
                 $id,
                 $this->positiveId($payload['sceneId'] ?? null),
@@ -44,7 +44,8 @@ class InternalRealtimeTokenController extends BaseController
                     'revision' => $payload['revision'] ?? null,
                     'x' => $payload['x'] ?? null,
                     'y' => $payload['y'] ?? null,
-                ]
+                ],
+                $payload['waypoints'] ?? []
             ));
         } catch (CampaignException $exception) {
             return $this->failure($exception);

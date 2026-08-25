@@ -153,7 +153,15 @@ export default {
     scale: { type: Number, default: 1 },
     busy: { type: Boolean, default: false },
   },
-  emits: ["select", "move", "update", "target", "delete", "open-actor"],
+  emits: [
+    "select",
+    "move",
+    "movement-limit",
+    "update",
+    "target",
+    "delete",
+    "open-actor",
+  ],
   data: () => ({
     drag: null,
     preview: {},
@@ -210,6 +218,7 @@ export default {
         this.scene,
         this.drag.token,
         this.preview[this.drag.token.id] || this.drag.token,
+        this.drag.waypoints,
       );
     },
   },

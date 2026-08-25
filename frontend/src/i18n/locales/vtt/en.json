@@ -84,7 +84,7 @@
     },
     "token": {
       "dragActor": "Drag the character onto the map to create a token",
-      "dragging": "Moving: {name} · {distance}",
+      "dragging": "Moving: {name} · {distance} · {movement}",
       "dropActor": "Drop token: {name}",
       "rotateLeft": "Rotate left",
       "rotateRight": "Rotate right",
@@ -144,9 +144,22 @@
         "sizePresets": "Quick size relative to grid",
         "tabs": {
           "general": "General",
+          "movement": "Movement",
           "resources": "Resources",
           "permissions": "Permissions"
         }
+      },
+      "movement": {
+        "title": "Movement points",
+        "description": "Cost is calculated in active grid cells.",
+        "range": "MP limit",
+        "spent": "Used MP",
+        "resetMode": "Automatic reset",
+        "turn": "New turn",
+        "round": "New round",
+        "manual": "Manual only",
+        "reset": "Reset MP",
+        "waypointHint": "Space: route point · Backspace: remove point"
       },
       "permissions": {
         "title": "Permissions",

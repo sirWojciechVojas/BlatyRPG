@@ -84,7 +84,7 @@
     },
     "token": {
       "dragActor": "Przeciągnij postać na mapę, aby utworzyć token",
-      "dragging": "Przesuwasz: {name} · {distance}",
+      "dragging": "Przesuwasz: {name} · {distance} · {movement}",
       "dropActor": "Upuść token: {name}",
       "rotateLeft": "Obróć w lewo",
       "rotateRight": "Obróć w prawo",
@@ -144,9 +144,22 @@
         "sizePresets": "Szybki rozmiar względem siatki",
         "tabs": {
           "general": "Podstawowe",
+          "movement": "Ruch",
           "resources": "Zasoby",
           "permissions": "Uprawnienia"
         }
+      },
+      "movement": {
+        "title": "Punkty ruchu",
+        "description": "Koszt jest liczony w polach aktywnej siatki.",
+        "range": "Limit PR",
+        "spent": "Wykorzystane PR",
+        "resetMode": "Automatyczny reset",
+        "turn": "Nowa tura",
+        "round": "Nowa runda",
+        "manual": "Tylko ręcznie",
+        "reset": "Resetuj PR",
+        "waypointHint": "Spacja: punkt trasy · Backspace: usuń punkt"
       },
       "permissions": {
         "title": "Uprawnienia",

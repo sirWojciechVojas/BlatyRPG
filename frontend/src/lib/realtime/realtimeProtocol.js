@@ -39,6 +39,12 @@ export const tokenMoveMessage = (payload) => ({
   revision: Number(payload.revision),
   x: Number(payload.x),
   y: Number(payload.y),
+  waypoints: Array.isArray(payload.waypoints)
+    ? payload.waypoints.slice(0, 20).map((point) => ({
+        x: Number(point.x),
+        y: Number(point.y),
+      }))
+    : [],
 });
 
 export const sceneElementChangeMessage = (resource, payload) => ({

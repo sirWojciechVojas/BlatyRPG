@@ -26,6 +26,12 @@ final class TokenPresenter
             'facing' => (float) ($row['facing'] ?? $row['rotation']),
             'rotationHandleEnabled' => !empty($row['rotation_handle_enabled']),
             'facingHandleEnabled' => !empty($row['facing_handle_enabled']),
+            'movementRange' => (float) ($row['movement_range'] ?? 6),
+            'movementSpent' => (float) ($row['movement_spent'] ?? 0),
+            'movementPoints' => max(0.0, round(
+                (float) ($row['movement_range'] ?? 6) - (float) ($row['movement_spent'] ?? 0), 3
+            )),
+            'movementResetMode' => (string) ($row['movement_reset_mode'] ?? 'turn'),
             'elevation' => (float) $row['elevation'],
             'disposition' => (string) $row['disposition'],
             'hidden' => (bool) $row['hidden'],

@@ -22,6 +22,9 @@ test("forwards token moves using authoritative session scope", async () => {
           x: 30,
           y: 40,
           rotation: 90,
+          movementRange: 8,
+          movementSpent: 3,
+          movementPoints: 5,
           visibleTo: { mode: "users", userIds: [2, "4", 2] },
           revision: 4,
         },
@@ -32,14 +35,17 @@ test("forwards token moves using authoritative session scope", async () => {
 
   const result = await client.move(session, {
     sceneId: 4, tokenId: 9, revision: 3, x: 30, y: 40,
+    waypoints: [{ x: 20, y: 30 }],
   });
   assert.equal(call.url, "http://backend.internal/api/internal/realtime/campaigns/7/tokens/move");
   assert.equal(call.options.headers.Authorization, "Realtime secret-ticket");
   assert.deepEqual(JSON.parse(call.options.body), {
     sceneId: 4, tokenId: 9, revision: 3, x: 30, y: 40,
+    waypoints: [{ x: 20, y: 30 }],
   });
   assert.equal(result.token.revision, 4);
   assert.equal(result.token.facing, 90);
+  assert.equal(result.token.movementPoints, 5);
   assert.deepEqual(result.token.visibleTo, { mode: "users", userIds: [2, 4] });
   assert.equal(result.publishToPlayers, true);
 });

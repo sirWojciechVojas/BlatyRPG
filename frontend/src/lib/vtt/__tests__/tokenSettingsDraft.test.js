@@ -36,6 +36,9 @@ describe("tokenSettingsDraft", () => {
         height: 100,
         visibleTo: { mode: "users", userIds: [8] },
         rotationHandleEnabled: true,
+        movementRange: 8,
+        movementSpent: 2,
+        movementResetMode: "round",
         resources: { bubbles: [{ enabled: true, value: 3 }] },
       },
       100,
@@ -48,6 +51,9 @@ describe("tokenSettingsDraft", () => {
     expect(payload.visibleTo).toEqual({ mode: "users", userIds: [8] });
     expect(payload.rotationHandleEnabled).toBe(true);
     expect(payload.facingHandleEnabled).toBe(false);
+    expect(payload.movementRange).toBe(8);
+    expect(payload.movementSpent).toBe(2);
+    expect(payload.movementResetMode).toBe("round");
     expect(payload.resources.bubbles[0]).toMatchObject({
       enabled: true,
       value: 3,
@@ -61,6 +67,9 @@ describe("tokenSettingsDraft", () => {
     );
     expect(tokenSettingsPayload(draft, 80, false)).not.toHaveProperty(
       "rotationHandleEnabled",
+    );
+    expect(tokenSettingsPayload(draft, 80, false)).not.toHaveProperty(
+      "movementRange",
     );
   });
 

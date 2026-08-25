@@ -15,6 +15,9 @@ const apiToken = {
   facing: "-15.000",
   rotationHandleEnabled: true,
   facingHandleEnabled: false,
+  movementRange: "8.000",
+  movementSpent: "2.500",
+  movementResetMode: "round",
   visibleTo: { mode: "users", userIds: [7, 4] },
   controlledBy: { mode: "everyone", userIds: [] },
   editableBy: { mode: "gm", userIds: [] },
@@ -51,6 +54,10 @@ describe("tokenApiClient", () => {
       facing: 345,
       rotationHandleEnabled: true,
       facingHandleEnabled: false,
+      movementRange: 8,
+      movementSpent: 2.5,
+      movementPoints: 5.5,
+      movementResetMode: "round",
       visibleTo: { mode: "users", userIds: [4, 7] },
       controlledBy: { mode: "everyone", userIds: [] },
       capabilities: {
@@ -76,6 +83,7 @@ describe("tokenApiClient", () => {
       statuses: ["poisoned", "stunned"],
       observerBy: { mode: "users", userIds: [12] },
       resources: apiToken.resources,
+      waypoints: [{ x: 200, y: 300 }],
       revision: 3,
     });
     expect(request).toHaveBeenCalledWith("/campaigns/7/scenes/4/tokens/9", {
@@ -92,6 +100,7 @@ describe("tokenApiClient", () => {
             expect.objectContaining({ label: "HP", value: 8, max: 10 }),
           ]),
         }),
+        waypoints: [{ x: 200, y: 300 }],
         revision: 3,
       },
     });

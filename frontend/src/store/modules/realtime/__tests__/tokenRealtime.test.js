@@ -25,6 +25,7 @@ describe("realtime token synchronization", () => {
       revision: 3,
       x: 120.5,
       y: 240,
+      waypoints: [],
     });
   });
 
@@ -56,6 +57,7 @@ describe("realtime token synchronization", () => {
         token: { id: 9, sceneId: 4, revision: 3 },
         x: 50,
         y: 60,
+        waypoints: [],
       },
     );
     expect(sent).toBe(true);

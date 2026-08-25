@@ -42,6 +42,11 @@
         </button>
       </header>
 
+      <div class="token-hud__movement" :class="{ depleted: movementLeft <= 0 }">
+        <small>PR</small>
+        <b>{{ movementLeft }} / {{ movementRange }}</b>
+      </div>
+
       <div v-if="hasResources" class="token-hud__resources">
         <div v-if="activeResources.bubbles.length" class="token-hud__values">
           <span
@@ -215,6 +220,12 @@ export default {
         this.activeResources.bars.length > 0 ||
         this.activeResources.bubbles.length > 0
       );
+    },
+    movementRange() {
+      return Math.max(0, Number(this.token.movementRange) || 0);
+    },
+    movementLeft() {
+      return Math.max(0, Number(this.token.movementPoints) || 0);
     },
   },
   methods: {

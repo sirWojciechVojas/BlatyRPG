@@ -31,14 +31,19 @@ export const tableTokenMethods = {
       })
       .catch(() => {});
   },
-  async moveToken({ token, x, y }) {
+  async moveToken({ token, x, y, waypoints = [] }) {
     let sent = false;
     try {
-      sent = await this.$store.dispatch("realtime/moveToken", { token, x, y });
+      sent = await this.$store.dispatch("realtime/moveToken", {
+        token,
+        x,
+        y,
+        waypoints,
+      });
     } catch (_error) {
       sent = false;
     }
-    if (!sent) this.updateToken({ token, changes: { x, y } });
+    if (!sent) this.updateToken({ token, changes: { x, y, waypoints } });
   },
   async updateToken({ token, changes }) {
     try {

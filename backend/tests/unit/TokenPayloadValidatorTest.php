@@ -20,6 +20,9 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
             'facing' => -15,
             'rotationHandleEnabled' => true,
             'facingHandleEnabled' => false,
+            'movementRange' => 8.5,
+            'movementSpent' => 2,
+            'movementResetMode' => 'round',
             'visibleTo' => ['mode' => 'users', 'userIds' => [7, '4', 7]],
             'controlledBy' => ['mode' => 'everyone', 'userIds' => []],
             'statuses' => ['poisoned', 'stunned', 'poisoned'],
@@ -40,6 +43,9 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
         $this->assertSame(345.0, $result['data']['facing']);
         $this->assertSame(1, $result['data']['rotation_handle_enabled']);
         $this->assertSame(0, $result['data']['facing_handle_enabled']);
+        $this->assertSame(8.5, $result['data']['movement_range']);
+        $this->assertSame(2.0, $result['data']['movement_spent']);
+        $this->assertSame('round', $result['data']['movement_reset_mode']);
         $this->assertSame(
             ['mode' => 'users', 'userIds' => [4, 7]],
             $result['data']['visible_to_json']
@@ -112,5 +118,18 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
 
         $this->assertFalse($result['valid']);
         $this->assertArrayHasKey('editableBy', $result['errors']);
+    }
+
+    public function testRejectsInvalidMovementConfiguration(): void
+    {
+        $result = (new TokenPayloadValidator())->update([
+            'revision' => 2,
+            'movementRange' => -1,
+            'movementResetMode' => 'session',
+        ]);
+
+        $this->assertFalse($result['valid']);
+        $this->assertArrayHasKey('movementRange', $result['errors']);
+        $this->assertArrayHasKey('movementResetMode', $result['errors']);
     }
 }

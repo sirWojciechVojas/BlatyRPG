@@ -1,4 +1,5 @@
 import { snapTokenPosition } from "@/lib/vtt/grid";
+import { tokenMovementPreview } from "@/lib/vtt/tokenMovement";
 
 const pointerValue = (event, field) => {
   const value = Number(event?.[field]);
@@ -9,6 +10,7 @@ const removeListeners = (vm) => {
   window.removeEventListener("pointermove", vm.moveDrag);
   window.removeEventListener("pointerup", vm.finishDrag);
   window.removeEventListener("pointercancel", vm.cancelDrag);
+  window.removeEventListener("keydown", vm.modifyDragRoute);
 };
 
 const releasePointer = (drag) => {
@@ -43,11 +45,14 @@ export const tokenDragMethods = {
       target: event.currentTarget,
       clientX: pointerValue(event, "clientX"),
       clientY: pointerValue(event, "clientY"),
+      waypoints: [],
+      movement: null,
     };
     event.currentTarget.setPointerCapture?.(event.pointerId);
     window.addEventListener("pointermove", this.moveDrag);
     window.addEventListener("pointerup", this.finishDrag);
     window.addEventListener("pointercancel", this.cancelDrag);
+    window.addEventListener("keydown", this.modifyDragRoute);
     event.preventDefault();
   },
   moveDrag(event) {
@@ -69,16 +74,64 @@ export const tokenDragMethods = {
       ...this.preview,
       [this.drag.token.id]: position,
     };
+    this.drag.movement = tokenMovementPreview(
+      this.scene,
+      this.drag.token,
+      position,
+      this.drag.waypoints,
+    );
+  },
+  modifyDragRoute(event) {
+    if (
+      !this.drag ||
+      ![" ", "Backspace", "Delete", "Escape"].includes(event.key)
+    ) {
+      return;
+    }
+    event.preventDefault();
+    if (event.key === "Escape") {
+      this.cancelDrag();
+      return;
+    }
+    if (event.key === " ") {
+      const position = this.preview[this.drag.token.id];
+      const previous = this.drag.waypoints.at(-1);
+      if (
+        position &&
+        (!previous || previous.x !== position.x || previous.y !== position.y)
+      ) {
+        this.drag.waypoints.push({ ...position });
+      }
+    } else {
+      this.drag.waypoints.pop();
+    }
+    const position = this.preview[this.drag.token.id] || this.drag.token;
+    this.drag.movement = tokenMovementPreview(
+      this.scene,
+      this.drag.token,
+      position,
+      this.drag.waypoints,
+    );
   },
   finishDrag(event) {
     if (!this.drag || event.pointerId !== this.drag.id) return;
     this.moveDrag(event);
-    const { token } = this.drag;
+    const { token, waypoints, movement } = this.drag;
     const position = this.preview[token.id];
     this.clearDrag();
     if (position && (position.x !== token.x || position.y !== token.y)) {
+      if (movement?.exceeded && !token.capabilities?.canManage) {
+        this.$emit("movement-limit", { token, position, waypoints, movement });
+        return;
+      }
       this.holdTokenPosition?.(token, position);
-      this.$emit("move", { token, x: position.x, y: position.y });
+      this.$emit("move", {
+        token,
+        x: position.x,
+        y: position.y,
+        waypoints,
+        cost: movement?.cost || 0,
+      });
     }
   },
   cancelDrag(event) {

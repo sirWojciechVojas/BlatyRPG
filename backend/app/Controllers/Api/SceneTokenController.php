@@ -35,13 +35,19 @@ class SceneTokenController extends CampaignApiController
 
     public function update($campaignId = null, $sceneId = null, $tokenId = null)
     {
-        return $this->execute(fn (): array => $this->tokens->update(
-            $this->positiveId($campaignId),
-            $this->positiveId($sceneId),
-            $this->positiveId($tokenId),
-            $this->auth(),
-            $this->jsonPayload()
-        ));
+        return $this->execute(function () use ($campaignId, $sceneId, $tokenId): array {
+            $payload = $this->jsonPayload();
+            $waypoints = $payload['waypoints'] ?? [];
+            unset($payload['waypoints']);
+            return $this->tokens->update(
+                $this->positiveId($campaignId),
+                $this->positiveId($sceneId),
+                $this->positiveId($tokenId),
+                $this->auth(),
+                $payload,
+                $waypoints
+            );
+        });
     }
 
     public function delete($campaignId = null, $sceneId = null, $tokenId = null)

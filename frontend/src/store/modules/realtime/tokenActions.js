@@ -17,7 +17,7 @@ export const routeRealtimeTokenEvent = (context, event) => {
 };
 
 export const createRealtimeTokenActions = (ensureSession) => ({
-  moveToken(context, { token, x, y }) {
+  moveToken(context, { token, x, y, waypoints = [] }) {
     if (!token?.id || !token?.sceneId || !token?.revision) return false;
     return ensureSession(context).moveToken({
       requestId: `token-move-${++requestSerial}`,
@@ -26,6 +26,7 @@ export const createRealtimeTokenActions = (ensureSession) => ({
       revision: token.revision,
       x: Number(x),
       y: Number(y),
+      waypoints,
     });
   },
 });
