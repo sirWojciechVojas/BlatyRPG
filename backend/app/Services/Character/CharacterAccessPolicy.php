@@ -9,16 +9,28 @@ final class CharacterAccessPolicy
 {
     public function campaign(array $auth, array $campaign, ?array $membership): array
     {
-        $denied = ['canAccess' => false, 'canManageAll' => false];
+        $denied = [
+            'canAccess' => false,
+            'canManageAll' => false,
+            'canCreateCharacters' => false,
+        ];
         $userId = (int) ($auth['user_id'] ?? 0);
         if ($userId < 1 || !empty($auth['anonymous'])) {
             return $denied;
         }
         if (strtolower((string) ($auth['role'] ?? '')) === 'admin') {
-            return ['canAccess' => true, 'canManageAll' => true];
+            return [
+                'canAccess' => true,
+                'canManageAll' => true,
+                'canCreateCharacters' => false,
+            ];
         }
         if ((int) ($campaign['game_master_id'] ?? 0) === $userId) {
-            return ['canAccess' => true, 'canManageAll' => true];
+            return [
+                'canAccess' => true,
+                'canManageAll' => true,
+                'canCreateCharacters' => true,
+            ];
         }
         if (!$membership || empty($membership['is_active'])) {
             return $denied;
@@ -35,6 +47,7 @@ final class CharacterAccessPolicy
         return [
             'canAccess' => $this->permission($permissions, 'view_characters', true),
             'canManageAll' => $this->permission($permissions, 'manage_characters', $role === 'gm'),
+            'canCreateCharacters' => $role === 'gm',
         ];
     }
 

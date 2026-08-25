@@ -93,7 +93,9 @@ final class CharacterDirectoryService
         return [
             'count' => count($items),
             'items' => $items,
-            'capabilities' => ['canCreate' => !empty($context['canManageAll'])],
+            'capabilities' => [
+                'canCreate' => !empty($context['canCreateCharacters']),
+            ],
         ];
     }
 
@@ -142,8 +144,8 @@ final class CharacterDirectoryService
         }
         $data = $validated['data'];
         $context = $this->campaignContext($auth, (int) $data['campaign_id']);
-        if (empty($context['canManageAll'])) {
-            throw new CharacterException('forbidden', 'Only a campaign manager can create characters.', 403);
+        if (empty($context['canCreateCharacters'])) {
+            throw new CharacterException('forbidden', 'Only a campaign GM can create characters.', 403);
         }
         $this->catalog->assertActiveGame((int) $data['system_id'], (int) $data['universe_id']);
         $data['user_id'] = null;

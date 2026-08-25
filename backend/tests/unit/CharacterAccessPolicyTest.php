@@ -31,6 +31,7 @@ final class CharacterAccessPolicyTest extends CIUnitTestCase
         $this->assertTrue($access['canView']);
         $this->assertTrue($access['canEdit']);
         $this->assertTrue($access['canDelete']);
+        $this->assertTrue($campaign['canCreateCharacters']);
     }
 
     public function testPlayerSeesOnlyOwnedOrClaimedCharacter(): void
@@ -91,5 +92,45 @@ final class CharacterAccessPolicyTest extends CIUnitTestCase
         $this->assertTrue($access['canView']);
         $this->assertFalse($access['canEdit']);
         $this->assertFalse($access['canDelete']);
+    }
+
+    public function testAdministratorDoesNotReceiveGmCharacterCreation(): void
+    {
+        $access = $this->policy->campaign(
+            ['user_id' => 1, 'role' => 'admin', 'anonymous' => false],
+            ['game_master_id' => 7],
+            null
+        );
+
+        $this->assertTrue($access['canManageAll']);
+        $this->assertFalse($access['canCreateCharacters']);
+    }
+
+    public function testAssistantPermissionDoesNotGrantGmCharacterCreation(): void
+    {
+        $access = $this->policy->campaign(
+            ['user_id' => 8, 'role' => 'user', 'anonymous' => false],
+            ['game_master_id' => 7],
+            [
+                'user_id' => 8,
+                'role' => 'assistant',
+                'is_active' => 1,
+                'permissions_json' => ['manage_characters' => true],
+            ]
+        );
+
+        $this->assertTrue($access['canManageAll']);
+        $this->assertFalse($access['canCreateCharacters']);
+    }
+
+    public function testActiveGmMemberCanCreateCharacters(): void
+    {
+        $access = $this->policy->campaign(
+            ['user_id' => 8, 'role' => 'user', 'anonymous' => false],
+            ['game_master_id' => 7],
+            ['user_id' => 8, 'role' => 'gm', 'is_active' => 1]
+        );
+
+        $this->assertTrue($access['canCreateCharacters']);
     }
 }
