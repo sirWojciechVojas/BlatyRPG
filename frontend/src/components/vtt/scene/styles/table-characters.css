@@ -57,6 +57,69 @@
   box-shadow: inset 2px 0 var(--ui-color-accent, #d4a24c);
 }
 
+.table-character-panel__browser > button.is-dragging {
+  position: relative;
+  color: #fff2c4;
+  background: linear-gradient(90deg, rgb(221 147 43 / 28%), transparent);
+  box-shadow: inset 3px 0 #ffd16b, 0 0 16px rgb(227 145 37 / 24%);
+}
+
+.table-character-panel__browser > button.is-dragging img {
+  border: 2px solid #ffe29a;
+  box-shadow: 0 0 12px #e9942c;
+  animation: actor-drag-source 0.7s ease-in-out infinite alternate;
+}
+
+.actor-drag-image {
+  position: fixed;
+  z-index: 2147483647;
+  top: 0;
+  left: 0;
+  display: grid;
+  width: 76px;
+  height: 76px;
+  place-items: center;
+  color: #271505;
+  background: radial-gradient(circle at 35% 25%, #fff0ad, #a8531c);
+  border: 3px solid #fff0a8;
+  border-radius: 50%;
+  box-shadow: 0 0 0 7px rgb(255 189 63 / 40%), 0 0 25px #ff962f;
+}
+
+.actor-drag-image img,
+.actor-drag-image > span {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.actor-drag-image > span {
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+}
+
+.actor-drag-image strong {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  max-width: 180px;
+  padding: 4px 8px;
+  overflow: hidden;
+  color: #291705;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: #f3bd61;
+  border-radius: 999px;
+  transform: translateX(-50%);
+}
+
+@keyframes actor-drag-source {
+  to { filter: brightness(1.2); scale: 1.1; }
+}
+
 .table-character-panel__browser img {
   width: 2rem;
   height: 2rem;

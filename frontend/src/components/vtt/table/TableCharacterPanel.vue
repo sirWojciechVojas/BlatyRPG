@@ -28,10 +28,14 @@
         v-else
         :key="character.id"
         type="button"
-        :class="{ selected: character.id === selectedId }"
+        :class="{
+          selected: character.id === selectedId,
+          'is-dragging': character.id === draggedCharacterId,
+        }"
         :draggable="canCreateToken"
         :title="canCreateToken ? $t('vtt.token.dragActor') : ''"
         @dragstart="dragCharacter($event, character)"
+        @dragend="finishCharacterDrag"
         @click="selectCharacter(character.id)"
       >
         <img :src="avatar(character)" alt="" />
@@ -69,7 +73,7 @@ import CharacterSheetEditor from "@/components/characters/CharacterSheetEditor.v
 import { characterApiClient } from "@/lib/character/characterApiClient";
 import { characterErrorKey } from "@/lib/character/characterErrorKey";
 import { resolveCharacterAvatar } from "@/lib/trade/characterAvatar";
-import { TOKEN_ACTOR_MIME } from "@/lib/vtt/tokenDrop";
+import { beginActorDrag, endActorDrag } from "@/lib/vtt/actorDragSession";
 
 export default {
   name: "TableCharacterPanel",
@@ -91,6 +95,7 @@ export default {
     loadError: "",
     saveError: "",
     notice: "",
+    draggedCharacterId: null,
     listRequestSequence: 0,
     sheetRequestSequence: 0,
   }),
@@ -113,6 +118,7 @@ export default {
   beforeUnmount() {
     this.listRequestSequence += 1;
     this.sheetRequestSequence += 1;
+    endActorDrag();
   },
   methods: {
     resetAndLoad() {
@@ -231,15 +237,17 @@ export default {
         event.preventDefault();
         return;
       }
-      event.dataTransfer.effectAllowed = "copy";
-      event.dataTransfer.setData(
-        TOKEN_ACTOR_MIME,
-        JSON.stringify({
-          id: character.id,
-          name: character.name,
-          imageUrl: this.avatar(character),
-        }),
-      );
+      const actor = beginActorDrag(event.dataTransfer, {
+        id: character.id,
+        name: character.name,
+        imageUrl: this.avatar(character),
+      });
+      if (!actor) event.preventDefault();
+      else this.draggedCharacterId = actor.id;
+    },
+    finishCharacterDrag() {
+      this.draggedCharacterId = null;
+      endActorDrag();
     },
   },
 };

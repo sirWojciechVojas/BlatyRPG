@@ -17,7 +17,8 @@
     @pointermove="movePan"
     @pointerup="endPan"
     @pointercancel="endPan"
-    @dragover.prevent
+    @dragover.prevent="previewDrop"
+    @dragleave="leaveDropPreview"
     @drop.prevent="dropContent"
   >
     <SceneMeasurementOverlay
@@ -119,6 +120,11 @@
           @delete="$emit('token-delete', $event)"
           @open-actor="$emit('open-actor', $event)"
         />
+        <TokenDropPreview
+          :scene="scene"
+          :preview="actorDropPreview"
+          :scale="camera.scale"
+        />
       </div>
     </div>
   </section>
@@ -132,6 +138,7 @@ import SceneWallLayer from "@/components/vtt/wall/SceneWallLayer.vue";
 import SceneLightLayer from "@/components/vtt/light/SceneLightLayer.vue";
 import SceneTileLayer from "@/components/vtt/tile/SceneTileLayer.vue";
 import SceneMeasurementOverlay from "./SceneMeasurementOverlay.vue";
+import TokenDropPreview from "@/components/vtt/token/TokenDropPreview.vue";
 import { sceneCanvasCameraMethods } from "./sceneCanvasCameraMethods";
 import { sceneCanvasDropMethods } from "./sceneCanvasDropMethods";
 
@@ -141,6 +148,7 @@ export default {
     SceneLightLayer,
     SceneMeasurementOverlay,
     SceneTokenLayer,
+    TokenDropPreview,
     SceneTileLayer,
     SceneWallLayer,
   },
@@ -195,6 +203,7 @@ export default {
       hasFitted: false,
       viewportSize: { width: 0, height: 0 },
       patternId: `scene-grid-${getCurrentInstance().uid}`,
+      actorDropPreview: null,
     };
   },
   computed: {
@@ -239,6 +248,7 @@ export default {
     },
   },
   mounted() {
+    window.addEventListener("dragend", this.clearDropPreview);
     if (typeof ResizeObserver !== "undefined") {
       this.resizeObserver = new ResizeObserver(([entry]) => {
         this.resizeViewport(entry.contentRect.width, entry.contentRect.height);
@@ -248,6 +258,7 @@ export default {
     nextTick(this.fit);
   },
   beforeUnmount() {
+    window.removeEventListener("dragend", this.clearDropPreview);
     this.resizeObserver?.disconnect();
   },
   methods: {

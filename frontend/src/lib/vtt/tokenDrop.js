@@ -3,7 +3,8 @@ export const TOKEN_ACTOR_MIME = "application/x-blatyrpg-actor";
 export const readDroppedActor = (dataTransfer) => {
   try {
     const value = JSON.parse(dataTransfer?.getData(TOKEN_ACTOR_MIME) || "");
-    return value && Number(value.id) > 0 ? value : null;
+    const id = Number(value?.id);
+    return Number.isSafeInteger(id) && id > 0 ? { ...value, id } : null;
   } catch (_error) {
     return null;
   }

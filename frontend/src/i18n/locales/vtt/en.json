@@ -85,6 +85,7 @@
     "token": {
       "dragActor": "Drag the character onto the map to create a token",
       "dragging": "Moving: {name} · {distance}",
+      "dropActor": "Drop token: {name}",
       "rotateLeft": "Rotate left",
       "rotateRight": "Rotate right",
       "openActor": "Open character sheet",
