@@ -77,6 +77,20 @@ describe("VTT grid geometry", () => {
     );
   });
 
+  it("centers a legacy token inside the rendered pointy hex", () => {
+    const position = snapTokenPosition(
+      { gridType: GRID_TYPES.HEX_POINTY, gridSize: 100 },
+      { x: 1997, y: 299 },
+      { width: 100, height: 100 },
+    );
+
+    expect(position).toEqual({ x: 1950, y: 296.41 });
+    expect({ x: position.x + 50, y: position.y + 50 }).toEqual({
+      x: 2000,
+      y: 346.41,
+    });
+  });
+
   it("preserves free movement on gridless scenes", () => {
     expect(
       snapTokenPosition(
