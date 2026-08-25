@@ -20,9 +20,19 @@
             <input
               type="checkbox"
               :checked="bar.enabled"
+              :disabled="bar.movementSource"
               @change="update('bars', index, 'enabled', $event.target.checked)"
             />
             {{ $t("vtt.token.resources.bar", { number: index + 1 }) }}
+          </label>
+          <label class="token-resource-settings__movement-source">
+            <input
+              type="checkbox"
+              :checked="bar.movementSource"
+              :disabled="!canManage"
+              @change="setMovementSource(index, $event.target.checked)"
+            />
+            {{ $t("vtt.token.resources.movementSource") }}
           </label>
         </legend>
         <input
@@ -42,7 +52,7 @@
           type="number"
           step="any"
           :title="$t('vtt.token.resources.value')"
-          :disabled="isMovementBar(bar, index)"
+          :disabled="resourceLocked('bars', index)"
           @input="updateNumber('bars', index, 'value', $event.target.value)"
         />
         <input
@@ -50,14 +60,14 @@
           type="number"
           step="any"
           :title="$t('vtt.token.resources.maximum')"
-          :disabled="isMovementBar(bar, index)"
+          :disabled="resourceLocked('bars', index)"
           @input="updateNumber('bars', index, 'max', $event.target.value)"
         />
         <input
           :value="bar.attributePath"
           :list="attributeListId"
           :placeholder="$t('vtt.token.resources.valuePath')"
-          :disabled="isMovementBar(bar, index)"
+          :disabled="resourceLocked('bars', index)"
           @change="
             bind('bars', index, 'attributePath', 'value', $event.target.value)
           "
@@ -66,7 +76,7 @@
           :value="bar.maxAttributePath"
           :list="attributeListId"
           :placeholder="$t('vtt.token.resources.maxPath')"
-          :disabled="isMovementBar(bar, index)"
+          :disabled="resourceLocked('bars', index)"
           @change="
             bind('bars', index, 'maxAttributePath', 'max', $event.target.value)
           "
@@ -101,6 +111,7 @@
           type="number"
           step="any"
           :title="$t('vtt.token.resources.value')"
+          :disabled="resourceLocked('bubbles', index)"
           @input="updateNumber('bubbles', index, 'value', $event.target.value)"
         />
         <select
@@ -115,10 +126,26 @@
             {{ $t(`vtt.token.resourcePositions.${position}`) }}
           </option>
         </select>
+        <select
+          :value="bubble.linkedBarIndex ?? ''"
+          :disabled="!canManage"
+          :title="$t('vtt.token.resources.linkedBar')"
+          @change="linkBubble(index, $event.target.value)"
+        >
+          <option value="">{{ $t("vtt.token.resources.noLinkedBar") }}</option>
+          <option
+            v-for="option in barOptions"
+            :key="option.index"
+            :value="option.index"
+          >
+            {{ option.label }}
+          </option>
+        </select>
         <input
           :value="bubble.attributePath"
           :list="attributeListId"
           :placeholder="$t('vtt.token.resources.valuePath')"
+          :disabled="bubble.linkedBarIndex !== null"
           @change="
             bind(
               'bubbles',
@@ -144,6 +171,8 @@ import {
   cloneTokenResources,
   normalizeTokenResources,
   numericActorAttributes,
+  synchronizeTokenResourceLinks,
+  updateLinkedTokenBubble,
 } from "@/lib/vtt/tokenResources";
 import TokenResourcePositionPicker from "./TokenResourcePositionPicker.vue";
 
@@ -154,6 +183,7 @@ export default {
     modelValue: { type: Object, default: () => ({}) },
     actor: { type: Object, default: null },
     barPosition: { type: String, default: "below" },
+    canManage: { type: Boolean, default: false },
   },
   emits: ["update:modelValue", "update:barPosition"],
   data: () => ({
@@ -176,15 +206,28 @@ export default {
     attributeListId() {
       return `token-resource-attributes-${this.actor?.id || "none"}`;
     },
+    barOptions() {
+      return this.normalized.bars.map((bar, index) => ({
+        index,
+        label: `${this.$t("vtt.token.resources.bar", { number: index + 1 })} · ${bar.label || "—"}`,
+      }));
+    },
   },
   methods: {
-    isMovementBar(bar, index) {
-      return index === 1 && bar.label.toLocaleUpperCase() === "PR";
+    resourceLocked(group, index) {
+      if (this.canManage) return false;
+      if (group === "bars") return this.normalized.bars[index].movementSource;
+      const linked = this.normalized.bubbles[index].linkedBarIndex;
+      return linked !== null && this.normalized.bars[linked].movementSource;
     },
     update(group, index, field, value) {
       const next = cloneTokenResources(this.modelValue);
       next[group][index][field] = value;
-      this.$emit("update:modelValue", next);
+      const synchronized =
+        group === "bubbles" && field === "value"
+          ? updateLinkedTokenBubble(next, index)
+          : synchronizeTokenResourceLinks(next);
+      this.$emit("update:modelValue", synchronized);
     },
     updateNumber(group, index, field, value) {
       const number = Number(value);
@@ -195,7 +238,24 @@ export default {
       next[group][index][field] = path.trim();
       const attribute = this.attributes.find((item) => item.path === path);
       if (attribute) next[group][index][valueField] = attribute.value;
-      this.$emit("update:modelValue", next);
+      this.$emit("update:modelValue", synchronizeTokenResourceLinks(next));
+    },
+    setMovementSource(index, enabled) {
+      if (!this.canManage) return;
+      const next = cloneTokenResources(this.modelValue);
+      next.bars.forEach((bar, barIndex) => {
+        bar.movementSource = enabled && barIndex === index;
+      });
+      if (enabled) next.bars[index].enabled = true;
+      this.$emit("update:modelValue", synchronizeTokenResourceLinks(next));
+    },
+    linkBubble(index, value) {
+      if (!this.canManage) return;
+      const next = cloneTokenResources(this.modelValue);
+      const linkedBarIndex = value === "" ? null : Number(value);
+      next.bubbles[index].linkedBarIndex = linkedBarIndex;
+      if (linkedBarIndex !== null) next.bubbles[index].attributePath = "";
+      this.$emit("update:modelValue", synchronizeTokenResourceLinks(next));
     },
   },
 };

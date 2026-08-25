@@ -77,6 +77,7 @@
         :resources="token.resources"
         :bar-position="token.resourceBarPosition"
         :editable="resourceEditable(token)"
+        :can-manage-movement="token.capabilities.canManage"
         @update="updateTokenResources(token, $event)"
       />
       <TokenHud

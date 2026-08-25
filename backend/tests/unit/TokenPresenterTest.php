@@ -59,6 +59,7 @@ final class TokenPresenterTest extends CIUnitTestCase
         $this->assertSame('#d95d55', $token['resources']['bars'][0]['color']);
         $this->assertSame('PR', $token['resources']['bars'][1]['label']);
         $this->assertSame('#4caf72', $token['resources']['bars'][1]['color']);
+        $this->assertTrue($token['resources']['bars'][1]['movementSource']);
         $this->assertSame(5.5, $token['resources']['bars'][1]['value']);
         $this->assertSame(8.0, $token['resources']['bars'][1]['max']);
         $this->assertSame(2.0, $token['resources']['bubbles'][0]['value']);

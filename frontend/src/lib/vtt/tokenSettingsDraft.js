@@ -1,6 +1,10 @@
 import { normalizeTokenAngle } from "./tokenFacing";
 import { normalizeTokenPermissionScope } from "./tokenPermissions";
-import { cloneTokenResources } from "./tokenResources";
+import {
+  cloneTokenResources,
+  tokenMovementResourceState,
+  tokenResourcesWithMovement,
+} from "./tokenResources";
 import { normalizeTokenResourceBarPosition } from "./tokenResourcePosition";
 
 const finite = (value, fallback = 0) => {
@@ -24,6 +28,8 @@ export const TOKEN_SIZE_PRESETS = Object.freeze([
 
 export const createTokenSettingsDraft = (token, gridSize) => {
   const size = Math.max(1, finite(gridSize, 100));
+  const movementRange = Math.max(0, finite(token.movementRange, 6));
+  const movementSpent = Math.max(0, finite(token.movementSpent));
   return {
     name: String(token.name || ""),
     imageUrl: String(token.imageUrl || ""),
@@ -37,8 +43,8 @@ export const createTokenSettingsDraft = (token, gridSize) => {
     resourceBarPosition: normalizeTokenResourceBarPosition(
       token.resourceBarPosition,
     ),
-    movementRange: Math.max(0, finite(token.movementRange, 6)),
-    movementSpent: Math.max(0, finite(token.movementSpent)),
+    movementRange,
+    movementSpent,
     movementResetMode: ["turn", "round", "manual"].includes(
       token.movementResetMode,
     )
@@ -52,12 +58,22 @@ export const createTokenSettingsDraft = (token, gridSize) => {
     controlledBy: scope(token.controlledBy, "inherit"),
     editableBy: scope(token.editableBy, "gm"),
     observerBy: scope(token.observerBy, "inherit"),
-    resources: cloneTokenResources(token.resources),
+    resources: tokenResourcesWithMovement(
+      token.resources,
+      movementRange,
+      Math.max(0, movementRange - movementSpent),
+    ),
   };
 };
 
 export const tokenSettingsPayload = (draft, gridSize, canManage) => {
   const size = Math.max(1, finite(gridSize, 100));
+  const resources = cloneTokenResources(draft.resources);
+  const movement = tokenMovementResourceState(
+    resources,
+    draft.movementRange,
+    draft.movementSpent,
+  );
   const payload = {
     name: String(draft.name || "").trim(),
     imageUrl: String(draft.imageUrl || "").trim(),
@@ -70,7 +86,7 @@ export const tokenSettingsPayload = (draft, gridSize, canManage) => {
     resourceBarPosition: normalizeTokenResourceBarPosition(
       draft.resourceBarPosition,
     ),
-    resources: cloneTokenResources(draft.resources),
+    resources,
   };
   if (!canManage) return payload;
   return {
@@ -84,8 +100,8 @@ export const tokenSettingsPayload = (draft, gridSize, canManage) => {
     rotationHandleEnabled: draft.rotationHandleEnabled === true,
     facingHandleEnabled: draft.facingHandleEnabled === true,
     showInfoUnselected: draft.showInfoUnselected === true,
-    movementRange: clamped(draft.movementRange, 0, 10000),
-    movementSpent: clamped(draft.movementSpent, 0, 10000),
+    movementRange: clamped(movement.range, 0, 10000),
+    movementSpent: clamped(movement.spent, 0, 10000),
     movementResetMode: ["turn", "round", "manual"].includes(
       draft.movementResetMode,
     )

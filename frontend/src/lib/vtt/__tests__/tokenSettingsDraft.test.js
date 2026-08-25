@@ -84,6 +84,22 @@ describe("tokenSettingsDraft", () => {
     );
   });
 
+  it("derives available movement from the configured resource bar", () => {
+    const draft = createTokenSettingsDraft(
+      { name: "Runner", movementRange: 8, movementSpent: 2 },
+      100,
+    );
+    draft.resources.bubbles[0].linkedBarIndex = 1;
+    draft.resources.bubbles[0].value = 3;
+    draft.resources.bars[1].value = 3;
+
+    const payload = tokenSettingsPayload(draft, 100, true);
+
+    expect(payload.movementRange).toBe(8);
+    expect(payload.movementSpent).toBe(5);
+    expect(payload.resources.bubbles[0].linkedBarIndex).toBe(1);
+  });
+
   it("keeps the compact panel inside the viewport", () => {
     expect(
       tokenSettingsPosition(

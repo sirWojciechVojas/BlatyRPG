@@ -131,22 +131,20 @@ final class SceneTokenService
         if ($canManage) {
             $this->access->assertPermissionUsersInCampaign($campaignId, $validated['data']);
         }
-        $movement = (new TokenMovementService($this->collisions, $this->grid))->apply(
-            $campaignId, $sceneId, $scene, $row, $validated['data'], $movementRoute, $canManage
-        );
-        $validated['data'] = array_merge($validated['data'], $movement);
-        $syncResources = array_key_exists('bars_json', $validated['data']);
-        if ($syncResources) $this->db->transBegin();
+        $resources = new TokenResourceMovementService($this->db);
+        $transactional = $resources->touches($validated['data']);
+        if ($transactional) $this->db->transBegin();
         try {
-            if ($syncResources) {
-                $validated['data']['bars_json'] = (new TokenResourceSyncService($this->db))->fromToken(
-                    $campaignId,
-                    $validated['data']['character_id'] ?? $row['character_id'] ?? null,
-                    array_key_exists('character_id', $validated['data'])
-                        ? [] : (array) ($row['bars_json'] ?? []),
-                    $validated['data']['bars_json']
-                );
-            }
+            $validated['data'] = $resources->prepare(
+                $campaignId, $row, $validated['data'], $canManage
+            );
+            $movement = (new TokenMovementService($this->collisions, $this->grid))->apply(
+                $campaignId, $sceneId, $scene, $row,
+                $validated['data'], $movementRoute, $canManage
+            );
+            $validated['data'] = $resources->finish(
+                $campaignId, $row, array_merge($validated['data'], $movement)
+            );
             $this->writeRevision(
                 $campaignId,
                 $sceneId,
@@ -154,9 +152,9 @@ final class SceneTokenService
                 $validated['revision'],
                 $validated['data']
             );
-            if ($syncResources) $this->db->transCommit();
+            if ($transactional) $this->db->transCommit();
         } catch (\Throwable $exception) {
-            if ($syncResources) $this->db->transRollback();
+            if ($transactional) $this->db->transRollback();
             throw $exception;
         }
         $token = $this->present($campaignId, $sceneId, $tokenId, $auth);

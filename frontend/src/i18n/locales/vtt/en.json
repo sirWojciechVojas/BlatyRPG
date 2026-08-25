@@ -164,6 +164,7 @@
         "round": "New round",
         "manual": "Manual only",
         "reset": "Reset MP",
+        "resourceSource": "MP source: bar {bar}",
         "waypointHint": "Space: route point · Backspace: remove point"
       },
       "permissions": {
@@ -208,6 +209,9 @@
         "maximum": "Maximum",
         "valuePath": "Value attribute, e.g. attributes.actual.hp",
         "maxPath": "Maximum attribute",
+        "movementSource": "MP source",
+        "linkedBar": "Bar controlled by this bubble",
+        "noLinkedBar": "No linked bar",
         "barPosition": "Bar placement",
         "barPositionHint": "Choose where the complete stack sits relative to the token.",
         "editBubble": "Click to change: {label}",

@@ -45,11 +45,29 @@ final class TokenResourceSyncService
         $tokens = $this->db->table('scene_tokens')->where('character_id', $characterId)
             ->where('deleted_at', null)->get()->getResultArray();
         foreach ($tokens as $token) {
-            $resources = $this->decode($token['bars_json'] ?? null);
+            $resources = TokenMovementResource::fromMovement(
+                $this->decode($token['bars_json'] ?? null),
+                (float) ($token['movement_range'] ?? 6),
+                (float) ($token['movement_spent'] ?? 0)
+            );
             $sync = TokenResourceBinding::actorToToken($resources, $characterData);
-            if (!$sync['changed']) continue;
-            $encoded = json_encode($sync['resources'], JSON_UNESCAPED_UNICODE);
-            $ok = $this->db->table('scene_tokens')->set('bars_json', $encoded)
+            $movement = TokenMovementResource::fromResources(
+                $sync['resources'],
+                (float) ($token['movement_range'] ?? 6),
+                (float) ($token['movement_spent'] ?? 0)
+            );
+            $movementChanged = $movement['sourceIndex'] !== null && (
+                $movement['range'] !== (float) ($token['movement_range'] ?? 6)
+                || $movement['spent'] !== (float) ($token['movement_spent'] ?? 0)
+            );
+            if (!$sync['changed'] && !$movementChanged) continue;
+            $encoded = json_encode($movement['resources'], JSON_UNESCAPED_UNICODE);
+            $builder = $this->db->table('scene_tokens')->set('bars_json', $encoded);
+            if ($movement['sourceIndex'] !== null) {
+                $builder->set('movement_range', $movement['range'])
+                    ->set('movement_spent', $movement['spent']);
+            }
+            $ok = $builder
                 ->set('revision', 'revision + 1', false)
                 ->set('updated_at', date('Y-m-d H:i:s'))
                 ->where('id', (int) $token['id'])

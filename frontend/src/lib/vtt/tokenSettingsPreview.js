@@ -1,4 +1,9 @@
 import { normalizeTokenResourceBarPosition } from "./tokenResourcePosition";
+import {
+  synchronizeTokenResourceLinks,
+  tokenMovementResourceState,
+  tokenResourcesWithMovement,
+} from "./tokenResources";
 
 const finite = (value, fallback = 0) => {
   const number = Number(value);
@@ -20,8 +25,20 @@ export const tokenPreviewMetrics = (draft = {}, availableSize = 172) => {
 };
 
 export const tokenSettingsPreview = (draft = {}, token = {}) => {
-  const movementRange = Math.max(0, finite(draft.movementRange, 6));
-  const movementSpent = Math.max(0, finite(draft.movementSpent));
+  const fallbackRange = Math.max(0, finite(draft.movementRange, 6));
+  const fallbackSpent = Math.max(0, finite(draft.movementSpent));
+  const resources = draft.resources
+    ? synchronizeTokenResourceLinks(draft.resources)
+    : tokenResourcesWithMovement(
+        token.resources,
+        fallbackRange,
+        Math.max(0, fallbackRange - fallbackSpent),
+      );
+  const movement = tokenMovementResourceState(
+    resources,
+    fallbackRange,
+    fallbackSpent,
+  );
   return {
     ...token,
     name: String(draft.name || token.name || ""),
@@ -38,9 +55,9 @@ export const tokenSettingsPreview = (draft = {}, token = {}) => {
     elevation: finite(draft.elevation),
     hidden: draft.hidden === true,
     locked: draft.locked === true,
-    movementRange,
-    movementSpent,
-    movementPoints: Math.max(0, movementRange - movementSpent),
-    resources: draft.resources || token.resources || {},
+    movementRange: movement.range,
+    movementSpent: movement.spent,
+    movementPoints: movement.remaining,
+    resources,
   };
 };

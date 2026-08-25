@@ -164,6 +164,7 @@
         "round": "Nowa runda",
         "manual": "Tylko ręcznie",
         "reset": "Resetuj PR",
+        "resourceSource": "Źródło PR: pasek {bar}",
         "waypointHint": "Spacja: punkt trasy · Backspace: usuń punkt"
       },
       "permissions": {
@@ -208,6 +209,9 @@
         "maximum": "Maksimum",
         "valuePath": "Atrybut wartości, np. attributes.actual.hp",
         "maxPath": "Atrybut maksimum",
+        "movementSource": "Źródło PR",
+        "linkedBar": "Pasek sterowany przez balonik",
+        "noLinkedBar": "Bez powiązanego paska",
         "barPosition": "Położenie pasków",
         "barPositionHint": "Wybierz pozycję całego stosu względem tokena.",
         "editBubble": "Kliknij, aby zmienić: {label}",

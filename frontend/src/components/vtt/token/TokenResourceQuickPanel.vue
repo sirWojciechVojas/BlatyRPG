@@ -14,25 +14,29 @@
         }}</span
       >
       <input
-        v-model.number="draft.bars[bar.index].value"
+        :value="draft.bars[bar.index].value"
         type="number"
         step="any"
-        :disabled="isMovementBar(bar)"
+        :disabled="isMovementBar(bar) && !canManageMovement"
+        @input="syncBar(bar.index, 'value', $event.target.value)"
       />
       <b>/</b>
       <input
-        v-model.number="draft.bars[bar.index].max"
+        :value="draft.bars[bar.index].max"
         type="number"
         step="any"
-        :disabled="isMovementBar(bar)"
+        :disabled="isMovementBar(bar) && !canManageMovement"
+        @input="syncBar(bar.index, 'max', $event.target.value)"
       />
     </label>
     <label v-for="bubble in active.bubbles" :key="`bubble-${bubble.index}`">
       <span>{{ bubble.item.label || `#${bubble.index + 1}` }}</span>
       <input
-        v-model.number="draft.bubbles[bubble.index].value"
+        :value="draft.bubbles[bubble.index].value"
         type="number"
         step="any"
+        :disabled="bubbleLocked(bubble)"
+        @input="syncBubble(bubble.index, $event.target.value)"
       />
     </label>
     <footer v-if="active.bars.length || active.bubbles.length">
@@ -49,13 +53,15 @@
 <script>
 import {
   cloneTokenResources,
-  normalizeTokenResources,
+  synchronizeTokenResourceLinks,
+  updateLinkedTokenBubble,
 } from "@/lib/vtt/tokenResources";
 
 export default {
   name: "TokenResourceQuickPanel",
   props: {
     resources: { type: Object, default: () => ({}) },
+    canManageMovement: { type: Boolean, default: false },
   },
   emits: ["save", "close"],
   data() {
@@ -75,10 +81,26 @@ export default {
   },
   methods: {
     isMovementBar(bar) {
-      return bar.index === 1 && bar.item.label.toLocaleUpperCase() === "PR";
+      return bar.item.movementSource;
+    },
+    bubbleLocked(bubble) {
+      const linked = bubble.item.linkedBarIndex;
+      return (
+        linked !== null &&
+        this.draft.bars[linked].movementSource &&
+        !this.canManageMovement
+      );
+    },
+    syncBar(index, field, value) {
+      this.draft.bars[index][field] = Number(value) || 0;
+      this.draft = synchronizeTokenResourceLinks(this.draft);
+    },
+    syncBubble(index, value) {
+      this.draft.bubbles[index].value = Number(value) || 0;
+      this.draft = updateLinkedTokenBubble(this.draft, index);
     },
     save() {
-      this.$emit("save", normalizeTokenResources(this.draft));
+      this.$emit("save", synchronizeTokenResourceLinks(this.draft));
     },
   },
 };

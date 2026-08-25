@@ -1,6 +1,13 @@
 const BAR_DEFAULTS = [
   { enabled: true, label: "HP", value: 0, max: 0, color: "#d95d55" },
-  { enabled: true, label: "PR", value: 6, max: 6, color: "#4caf72" },
+  {
+    enabled: true,
+    label: "PR",
+    value: 6,
+    max: 6,
+    color: "#4caf72",
+    movementSource: true,
+  },
   { enabled: false, label: "", value: 0, max: 0, color: "#4f91d9" },
   { enabled: false, label: "", value: 0, max: 0, color: "#d5a64f" },
 ];
@@ -40,6 +47,10 @@ const bar = (source, index = 0) => {
       : fallback.color,
     attributePath: path(value.attributePath),
     maxAttributePath: path(value.maxAttributePath),
+    movementSource:
+      typeof value.movementSource === "boolean"
+        ? value.movementSource
+        : fallback.movementSource === true,
   };
 };
 
@@ -58,6 +69,9 @@ const bubble = (source = {}, index = 0) => ({
     ? source.position
     : BUBBLE_POSITIONS[index],
   attributePath: path(source.attributePath),
+  linkedBarIndex: [0, 1, 2, 3].includes(source.linkedBarIndex)
+    ? source.linkedBarIndex
+    : null,
 });
 
 const legacyEmptyBars = (bars) =>
@@ -78,29 +92,94 @@ export const normalizeTokenResources = (source = {}) => {
   const suppliedBars = Array.isArray(source.bars) ? source.bars : [];
   const bars = legacyEmptyBars(suppliedBars) ? [] : suppliedBars;
   const bubbles = Array.isArray(source.bubbles) ? source.bubbles : [];
+  let movementSourceClaimed = false;
+  const normalizedBars = BAR_DEFAULTS.map((_, index) =>
+    bar(bars[index], index),
+  ).map((item) => {
+    const movementSource = item.movementSource && !movementSourceClaimed;
+    if (movementSource) movementSourceClaimed = true;
+    return {
+      ...item,
+      movementSource,
+      enabled: movementSource ? true : item.enabled,
+    };
+  });
   return {
-    bars: BAR_DEFAULTS.map((_, index) => bar(bars[index], index)),
+    bars: normalizedBars,
     bubbles: BUBBLE_POSITIONS.map((_, index) => bubble(bubbles[index], index)),
   };
 };
 
 export const tokenDisplayResourceBars = (token = {}) => {
-  const resources = normalizeTokenResources(token.resources);
   const range = Math.max(0, finite(token.movementRange, 6));
-  const remaining = Math.max(
-    0,
-    finite(
-      token.movementPoints,
-      range - Math.max(0, finite(token.movementSpent)),
-    ),
+  const spent = Math.max(0, finite(token.movementSpent));
+  const resources = tokenResourcesWithMovement(
+    token.resources,
+    range,
+    Math.max(0, finite(token.movementPoints, range - spent)),
   );
-  return resources.bars
-    .map((item, index) =>
-      index === 1 && item.label.toLocaleUpperCase() === "PR"
-        ? { ...item, value: remaining, max: range }
-        : item,
-    )
-    .filter(({ enabled }) => enabled);
+  return resources.bars.filter(({ enabled }) => enabled);
+};
+
+export const tokenMovementResourceIndex = (resources) =>
+  normalizeTokenResources(resources).bars.findIndex(
+    ({ movementSource }) => movementSource,
+  );
+
+export const synchronizeTokenResourceLinks = (resources) => {
+  const normalized = normalizeTokenResources(resources);
+  normalized.bubbles.forEach((bubble) => {
+    if (bubble.linkedBarIndex !== null) {
+      bubble.value = normalized.bars[bubble.linkedBarIndex].value;
+    }
+  });
+  return normalized;
+};
+
+export const updateLinkedTokenBubble = (resources, bubbleIndex) => {
+  const normalized = normalizeTokenResources(resources);
+  const bubble = normalized.bubbles[bubbleIndex];
+  if (bubble?.linkedBarIndex !== null && bubble?.linkedBarIndex !== undefined) {
+    normalized.bars[bubble.linkedBarIndex].value = bubble.value;
+  }
+  return synchronizeTokenResourceLinks(normalized);
+};
+
+export const tokenResourcesWithMovement = (resources, range, remaining) => {
+  const normalized = normalizeTokenResources(resources);
+  const index = normalized.bars.findIndex(
+    ({ movementSource }) => movementSource,
+  );
+  if (index < 0) return synchronizeTokenResourceLinks(normalized);
+  const maximum = Math.max(0, finite(range, normalized.bars[index].max));
+  normalized.bars[index].max = maximum;
+  normalized.bars[index].value = Math.min(
+    maximum,
+    Math.max(0, finite(remaining, normalized.bars[index].value)),
+  );
+  return synchronizeTokenResourceLinks(normalized);
+};
+
+export const tokenMovementResourceState = (
+  resources,
+  fallbackRange = 6,
+  fallbackSpent = 0,
+) => {
+  const normalized = normalizeTokenResources(resources);
+  const index = normalized.bars.findIndex(
+    ({ movementSource }) => movementSource,
+  );
+  if (index < 0) {
+    const range = Math.max(0, finite(fallbackRange, 6));
+    const spent = Math.max(0, finite(fallbackSpent));
+    return { index, range, spent, remaining: Math.max(0, range - spent) };
+  }
+  const range = Math.max(0, finite(normalized.bars[index].max));
+  const remaining = Math.min(
+    range,
+    Math.max(0, finite(normalized.bars[index].value)),
+  );
+  return { index, range, remaining, spent: range - remaining };
 };
 
 export const cloneTokenResources = (resources) =>

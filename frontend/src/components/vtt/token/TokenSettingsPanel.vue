@@ -65,6 +65,7 @@
             v-model="draft.resources"
             :actor="actor"
             :bar-position="draft.resourceBarPosition"
+            :can-manage="canManage"
             @update:bar-position="draft.resourceBarPosition = $event"
           />
 

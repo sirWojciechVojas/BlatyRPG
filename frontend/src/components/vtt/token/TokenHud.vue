@@ -84,6 +84,7 @@
       <TokenResourceQuickPanel
         v-if="resourceOpen"
         :resources="token.resources"
+        :can-manage-movement="token.capabilities.canManage"
         @save="saveResources"
         @close="resourceOpen = false"
       />

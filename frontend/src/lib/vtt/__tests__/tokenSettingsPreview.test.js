@@ -43,4 +43,20 @@ describe("tokenSettingsPreview", () => {
       height: 86,
     });
   });
+
+  it("previews movement supplied by a linked resource", () => {
+    const preview = tokenSettingsPreview({
+      resources: {
+        bars: [undefined, { movementSource: true, value: 2, max: 7 }],
+        bubbles: [{ enabled: true, value: 2, linkedBarIndex: 1 }],
+      },
+    });
+
+    expect(preview).toMatchObject({
+      movementRange: 7,
+      movementSpent: 5,
+      movementPoints: 2,
+    });
+    expect(preview.resources.bubbles[0].value).toBe(2);
+  });
 });

@@ -5,6 +5,8 @@ import {
   numericActorAttributes,
   tokenBarPercent,
   tokenDisplayResourceBars,
+  tokenMovementResourceState,
+  updateLinkedTokenBubble,
 } from "@/lib/vtt/tokenResources";
 
 describe("tokenResources", () => {
@@ -27,7 +29,12 @@ describe("tokenResources", () => {
     const resources = normalizeTokenResources();
     expect(resources.bars.slice(0, 2)).toMatchObject([
       { enabled: true, label: "HP", color: "#d95d55" },
-      { enabled: true, label: "PR", color: "#4caf72" },
+      {
+        enabled: true,
+        label: "PR",
+        color: "#4caf72",
+        movementSource: true,
+      },
     ]);
     expect(
       tokenDisplayResourceBars({
@@ -36,6 +43,38 @@ describe("tokenResources", () => {
         movementSpent: 2.5,
       })[1],
     ).toMatchObject({ label: "PR", value: 5.5, max: 8 });
+  });
+
+  it("uses a linked bubble as movement bar input", () => {
+    const resources = normalizeTokenResources({
+      bars: [undefined, { value: 6, max: 8, movementSource: true }],
+      bubbles: [{ enabled: true, value: 3, linkedBarIndex: 1 }],
+    });
+    resources.bubbles[0].value = 3;
+    const linked = updateLinkedTokenBubble(resources, 0);
+
+    expect(linked.bars[1].value).toBe(3);
+    expect(tokenMovementResourceState(linked)).toEqual({
+      index: 1,
+      range: 8,
+      remaining: 3,
+      spent: 5,
+    });
+  });
+
+  it("keeps the selected movement bar visible and unique", () => {
+    const resources = normalizeTokenResources({
+      bars: [
+        { enabled: false, movementSource: true },
+        { enabled: true, movementSource: true },
+      ],
+    });
+
+    expect(resources.bars[0]).toMatchObject({
+      enabled: true,
+      movementSource: true,
+    });
+    expect(resources.bars[1].movementSource).toBe(false);
   });
 
   it("upgrades the previous empty bar defaults", () => {

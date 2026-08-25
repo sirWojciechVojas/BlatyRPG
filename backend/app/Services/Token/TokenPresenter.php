@@ -15,10 +15,11 @@ final class TokenPresenter
         $movementRange = (float) ($row['movement_range'] ?? 6);
         $movementSpent = (float) ($row['movement_spent'] ?? 0);
         $movementPoints = max(0.0, round($movementRange - $movementSpent, 3));
-        if (strtoupper((string) ($resources['bars'][1]['label'] ?? '')) === 'PR') {
-            $resources['bars'][1]['value'] = $movementPoints;
-            $resources['bars'][1]['max'] = $movementRange;
-        }
+        $resources = TokenMovementResource::fromMovement(
+            $resources,
+            $movementRange,
+            $movementSpent
+        );
         return [
             'id' => (int) $row['id'],
             'sceneId' => (int) $row['scene_id'],

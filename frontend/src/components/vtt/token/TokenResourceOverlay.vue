@@ -11,11 +11,11 @@
       :class="[
         `token-resource-bubble--${entry.item.position}`,
         `token-resource-bubble--slot-${entry.index + 1}`,
-        { 'token-resource-bubble--editable': editable },
+        { 'token-resource-bubble--editable': entryEditable(entry) },
       ]"
-      :role="editable ? 'button' : undefined"
-      :tabindex="editable ? 0 : undefined"
-      :title="editTitle(entry.item)"
+      :role="entryEditable(entry) ? 'button' : undefined"
+      :tabindex="entryEditable(entry) ? 0 : undefined"
+      :title="editTitle(entry)"
       @pointerdown.stop
       @click.stop="startEdit(entry)"
       @keydown.enter.stop.prevent="startEdit(entry)"
@@ -43,6 +43,7 @@
 import {
   cloneTokenResources,
   normalizeTokenResources,
+  updateLinkedTokenBubble,
 } from "@/lib/vtt/tokenResources";
 import { tokenResourceBubbleOffsets } from "@/lib/vtt/tokenResourcePosition";
 
@@ -52,6 +53,7 @@ export default {
     resources: { type: Object, default: () => ({}) },
     editable: { type: Boolean, default: false },
     barPosition: { type: String, default: "below" },
+    canManageMovement: { type: Boolean, default: false },
   },
   emits: ["update"],
   data: () => ({ editingIndex: null, draftValue: "" }),
@@ -76,14 +78,24 @@ export default {
     },
   },
   methods: {
-    editTitle(bubble) {
-      if (!this.editable) return bubble.label || String(bubble.value);
+    entryEditable(entry) {
+      if (!this.editable) return false;
+      const linked = entry.item.linkedBarIndex;
+      if (linked === null || linked === undefined) return true;
+      const bars = normalizeTokenResources(this.resources).bars;
+      return !bars[linked].movementSource || this.canManageMovement;
+    },
+    editTitle(entry) {
+      const bubble = entry.item;
+      if (!this.entryEditable(entry))
+        return bubble.label || String(bubble.value);
       return this.$t("vtt.token.resources.editBubble", {
         label: bubble.label || this.$t("vtt.token.resources.value"),
       });
     },
     startEdit(entry) {
-      if (!this.editable || this.editingIndex === entry.index) return;
+      if (!this.entryEditable(entry) || this.editingIndex === entry.index)
+        return;
       this.editingIndex = entry.index;
       this.draftValue = String(entry.item.value);
       this.$nextTick(() => {
@@ -98,8 +110,9 @@ export default {
       const index = this.editingIndex;
       this.editingIndex = null;
       if (!Number.isFinite(value)) return;
-      const next = cloneTokenResources(this.resources);
+      let next = cloneTokenResources(this.resources);
       next.bubbles[index].value = value;
+      next = updateLinkedTokenBubble(next, index);
       this.$emit("update", next);
     },
     cancelEdit() {

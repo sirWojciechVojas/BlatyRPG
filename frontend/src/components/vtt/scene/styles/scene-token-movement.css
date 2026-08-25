@@ -61,6 +61,16 @@
   white-space: nowrap;
 }
 
+.token-movement-settings__source {
+  width: max-content;
+  padding: 2px 5px;
+  color: #9ad5aa;
+  font-size: 8px;
+  background: rgb(48 92 59 / 24%);
+  border: 1px solid rgb(91 158 108 / 42%);
+  border-radius: 3px;
+}
+
 .token-movement-settings__meter {
   height: 7px;
   overflow: hidden;

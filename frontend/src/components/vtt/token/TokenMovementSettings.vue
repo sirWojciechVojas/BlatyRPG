@@ -8,6 +8,14 @@
       <strong>{{ remaining }} / {{ range }} PR</strong>
     </header>
 
+    <small v-if="movement.index >= 0" class="token-movement-settings__source">
+      {{
+        $t("vtt.token.movement.resourceSource", {
+          bar: movement.index + 1,
+        })
+      }}
+    </small>
+
     <div class="token-movement-settings__meter">
       <i :style="{ width: `${percent}%` }" />
     </div>
@@ -16,7 +24,7 @@
       <label>
         <span>{{ $t("vtt.token.movement.range") }}</span>
         <input
-          :value="modelValue.movementRange"
+          :value="range"
           type="number"
           min="0"
           max="10000"
@@ -28,7 +36,7 @@
       <label>
         <span>{{ $t("vtt.token.movement.spent") }}</span>
         <input
-          :value="modelValue.movementSpent"
+          :value="spent"
           type="number"
           min="0"
           max="10000"
@@ -61,6 +69,12 @@
 </template>
 
 <script>
+import {
+  cloneTokenResources,
+  tokenMovementResourceState,
+  tokenResourcesWithMovement,
+} from "@/lib/vtt/tokenResources";
+
 export default {
   name: "TokenMovementSettings",
   props: {
@@ -69,11 +83,18 @@ export default {
   },
   emits: ["update:modelValue"],
   computed: {
+    movement() {
+      return tokenMovementResourceState(
+        this.modelValue.resources,
+        this.modelValue.movementRange,
+        this.modelValue.movementSpent,
+      );
+    },
     range() {
-      return Math.max(0, Number(this.modelValue.movementRange) || 0);
+      return this.movement.range;
     },
     spent() {
-      return Math.max(0, Number(this.modelValue.movementSpent) || 0);
+      return this.movement.spent;
     },
     remaining() {
       return Math.max(0, this.range - this.spent);
@@ -86,7 +107,24 @@ export default {
   },
   methods: {
     change(key, value) {
-      this.$emit("update:modelValue", { ...this.modelValue, [key]: value });
+      if (key === "movementResetMode") {
+        this.$emit("update:modelValue", { ...this.modelValue, [key]: value });
+        return;
+      }
+      const number = Math.max(0, Number(value) || 0);
+      const range = key === "movementRange" ? number : this.range;
+      const spent = key === "movementSpent" ? number : this.spent;
+      const next = { ...this.modelValue, [key]: number };
+      if (this.movement.index >= 0) {
+        next.movementRange = range;
+        next.movementSpent = spent;
+        next.resources = tokenResourcesWithMovement(
+          cloneTokenResources(this.modelValue.resources),
+          range,
+          Math.max(0, range - spent),
+        );
+      }
+      this.$emit("update:modelValue", next);
     },
   },
 };

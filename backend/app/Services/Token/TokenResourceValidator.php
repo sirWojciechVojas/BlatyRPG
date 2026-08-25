@@ -5,10 +5,10 @@ namespace App\Services\Token;
 final class TokenResourceValidator
 {
     private const BAR_DEFAULTS = [
-        ['enabled' => true, 'label' => 'HP', 'value' => 0, 'max' => 0, 'color' => '#d95d55'],
-        ['enabled' => true, 'label' => 'PR', 'value' => 6, 'max' => 6, 'color' => '#4caf72'],
-        ['enabled' => false, 'label' => '', 'value' => 0, 'max' => 0, 'color' => '#4f91d9'],
-        ['enabled' => false, 'label' => '', 'value' => 0, 'max' => 0, 'color' => '#d5a64f'],
+        ['enabled' => true, 'label' => 'HP', 'value' => 0, 'max' => 0, 'color' => '#d95d55', 'movementSource' => false],
+        ['enabled' => true, 'label' => 'PR', 'value' => 6, 'max' => 6, 'color' => '#4caf72', 'movementSource' => true],
+        ['enabled' => false, 'label' => '', 'value' => 0, 'max' => 0, 'color' => '#4f91d9', 'movementSource' => false],
+        ['enabled' => false, 'label' => '', 'value' => 0, 'max' => 0, 'color' => '#d5a64f', 'movementSource' => false],
     ];
     private const LEGACY_BAR_COLORS = ['#4caf72', '#d95d55', '#4f91d9', '#d5a64f'];
     private const POSITIONS = [
@@ -32,6 +32,16 @@ final class TokenResourceValidator
         }
         if (self::legacyEmptyBars($bars)) $bars = [];
         $result = self::defaults();
+        $explicitSources = array_filter($bars, static fn ($bar): bool =>
+            is_array($bar) && ($bar['movementSource'] ?? null) === true
+        );
+        if (count($explicitSources) > 1) {
+            return self::invalid('Only one bar may control movement points.');
+        }
+        if ($explicitSources) {
+            foreach ($result['bars'] as &$bar) $bar['movementSource'] = false;
+            unset($bar);
+        }
         foreach ($bars as $index => $bar) {
             $parsed = self::bar($bar, $index);
             if (!$parsed['valid']) return $parsed;
@@ -66,18 +76,29 @@ final class TokenResourceValidator
     {
         $allowed = [
             'enabled', 'label', 'value', 'max', 'color',
-            'attributePath', 'maxAttributePath',
+            'attributePath', 'maxAttributePath', 'movementSource',
         ];
         if (!is_array($value) || array_diff(array_keys($value), $allowed)) {
             return self::invalid('A bar contains an unsupported field.');
         }
         $default = self::defaults()['bars'][$index];
-        return self::entry($value, $default, ['attributePath', 'maxAttributePath']);
+        $parsed = self::entry($value, $default, ['attributePath', 'maxAttributePath']);
+        if (!$parsed['valid']) return $parsed;
+        $movementSource = $value['movementSource'] ?? $default['movementSource'];
+        if (!is_bool($movementSource)) {
+            return self::invalid('Movement source must be boolean.');
+        }
+        $parsed['data']['movementSource'] = $movementSource;
+        if ($movementSource) $parsed['data']['enabled'] = true;
+        return $parsed;
     }
 
     private static function bubble($value, int $index): array
     {
-        $allowed = ['enabled', 'label', 'value', 'position', 'attributePath'];
+        $allowed = [
+            'enabled', 'label', 'value', 'position', 'attributePath',
+            'linkedBarIndex',
+        ];
         if (!is_array($value) || array_diff(array_keys($value), $allowed)) {
             return self::invalid('A bubble contains an unsupported field.');
         }
@@ -89,6 +110,14 @@ final class TokenResourceValidator
             return self::invalid('A bubble position is invalid.');
         }
         $parsed['data']['position'] = $position;
+        $linked = $value['linkedBarIndex'] ?? $default['linkedBarIndex'];
+        if ($linked !== null && (!is_int($linked) || $linked < 0 || $linked > 3)) {
+            return self::invalid('A linked bar index is invalid.');
+        }
+        if ($linked !== null && $parsed['data']['attributePath'] !== '') {
+            return self::invalid('A linked bubble cannot also bind an actor attribute.');
+        }
+        $parsed['data']['linkedBarIndex'] = $linked;
         return $parsed;
     }
 
@@ -173,6 +202,7 @@ final class TokenResourceValidator
             $bubbles[] = [
                 'enabled' => false, 'label' => '', 'value' => 0,
                 'position' => $position, 'attributePath' => '',
+                'linkedBarIndex' => null,
             ];
         }
         return ['bars' => $bars, 'bubbles' => $bubbles];

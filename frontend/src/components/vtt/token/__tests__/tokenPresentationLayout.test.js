@@ -52,6 +52,16 @@ describe("token presentation layout", () => {
     );
   });
 
+  it("offers explicit movement and bar linkage controls", () => {
+    const resources = template("TokenResourceSettings");
+
+    expect(resources).toContain("bar.movementSource");
+    expect(resources).toContain("bubble.linkedBarIndex");
+    expect(template("TokenMovementSettings")).toContain(
+      "movement.resourceSource",
+    );
+  });
+
   it("renders the unsaved token draft with shared resource visuals", () => {
     const panel = template("TokenSettingsPanel");
     const preview = template("TokenSettingsPreview");

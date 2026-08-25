@@ -156,11 +156,18 @@
   grid-template-columns: 1fr;
 }
 .token-resource-settings legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   width: auto;
   margin: 0;
   padding: 0 3px;
   color: #cbb18a;
   font-size: 8px;
+}
+
+.token-resource-settings__movement-source {
+  color: #74c88f;
 }
 .token-resource-settings legend label {
   display: flex;

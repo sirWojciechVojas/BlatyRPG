@@ -7,6 +7,7 @@ import {
   cloneTokenResources,
   normalizeTokenResources,
   tokenBarPercent,
+  updateLinkedTokenBubble,
 } from "@/lib/vtt/tokenResources";
 import { tokenResourceBubbleOffsets } from "@/lib/vtt/tokenResourcePosition";
 
@@ -29,6 +30,7 @@ const loadComponent = () => {
     "normalizeTokenResources",
     "tokenBarPercent",
     "tokenResourceBubbleOffsets",
+    "updateLinkedTokenBubble",
     executable,
   )(
     activeTokenResources,
@@ -36,6 +38,7 @@ const loadComponent = () => {
     normalizeTokenResources,
     tokenBarPercent,
     tokenResourceBubbleOffsets,
+    updateLinkedTokenBubble,
   );
 };
 
@@ -46,6 +49,7 @@ describe("TokenResourceOverlay", () => {
     const selected = vi.fn();
     const context = {
       editable: true,
+      canManageMovement: false,
       editingIndex: null,
       draftValue: "",
       resources: {
@@ -57,6 +61,8 @@ describe("TokenResourceOverlay", () => {
       $nextTick: (callback) => callback(),
       $emit: emitted,
     };
+    context.entryEditable = (entry) =>
+      component.methods.entryEditable.call(context, entry);
 
     component.methods.startEdit.call(context, { index: 0, item: { value: 2 } });
     expect(context.editingIndex).toBe(0);
@@ -72,6 +78,51 @@ describe("TokenResourceOverlay", () => {
         ]),
       }),
     );
+  });
+
+  it("lets a GM set the movement bar through a linked bubble", () => {
+    const component = loadComponent();
+    const emitted = vi.fn();
+    const resources = normalizeTokenResources({
+      bubbles: [{ enabled: true, value: 6, linkedBarIndex: 1 }],
+    });
+    const context = {
+      editable: true,
+      canManageMovement: true,
+      editingIndex: 0,
+      draftValue: "3",
+      resources,
+      $emit: emitted,
+    };
+
+    component.methods.commitEdit.call(context);
+
+    expect(emitted).toHaveBeenCalledWith(
+      "update",
+      expect.objectContaining({
+        bars: expect.arrayContaining([
+          expect.objectContaining({ label: "PR", value: 3 }),
+        ]),
+        bubbles: expect.arrayContaining([
+          expect.objectContaining({ linkedBarIndex: 1, value: 3 }),
+        ]),
+      }),
+    );
+  });
+
+  it("keeps a player from manually replenishing linked movement", () => {
+    const component = loadComponent();
+    const context = {
+      editable: true,
+      canManageMovement: false,
+      resources: normalizeTokenResources(),
+    };
+
+    expect(
+      component.methods.entryEditable.call(context, {
+        item: { linkedBarIndex: 1 },
+      }),
+    ).toBe(false);
   });
 
   it("keeps bubbles clear of bars rendered on the same side", () => {
