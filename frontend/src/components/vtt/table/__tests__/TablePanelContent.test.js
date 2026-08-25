@@ -16,5 +16,6 @@ describe("TablePanelContent", () => {
     expect(descriptor.template.content).toContain(
       ':can-create-token="canCreateToken"',
     );
+    expect(descriptor.template.content).toContain(':campaign="campaign"');
   });
 });

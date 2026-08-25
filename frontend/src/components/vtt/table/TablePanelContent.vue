@@ -26,6 +26,7 @@
   <TableCharacterPanel
     v-else-if="panelId === 'characters'"
     :campaign-id="campaignId"
+    :campaign="campaign"
     :can-create-token="canCreateToken"
     @changed="$emit('character-changed', $event)"
   />

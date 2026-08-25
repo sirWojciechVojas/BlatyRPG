@@ -1,51 +1,36 @@
 import { characterApiClient } from "@/lib/character/characterApiClient";
-import { characterCatalogApiClient } from "@/lib/character/characterCatalogApiClient";
 import { characterErrorKey } from "@/lib/character/characterErrorKey";
 
 const campaignIdOf = (vm) => Number(vm.campaignId) || null;
 
 export const tableCharacterCreationMethods = {
-  configureCharacterCreation(result, sequence) {
+  configureCharacterCreation(result) {
     this.canCreate = result.capabilities.canCreate === true;
-    if (!this.canCreate) {
-      this.showingCreate = false;
-      this.games = [];
-      return;
-    }
-    if (!this.games.length) this.loadCreationCatalog(sequence);
+    if (!this.canCreate) this.showingCreate = false;
   },
-  async loadCreationCatalog(sequence = this.listRequestSequence) {
-    if (!this.canCreate || this.catalogLoading) return;
-    const campaignId = campaignIdOf(this);
-    this.catalogLoading = true;
-    this.createError = "";
-    try {
-      const games = await characterCatalogApiClient.listGames();
-      if (this.isCurrentCatalog(sequence, campaignId)) this.games = games;
-    } catch (error) {
-      if (this.isCurrentCatalog(sequence, campaignId)) {
-        this.createError = this.$t(characterErrorKey(error, "catalog"));
-      }
-    } finally {
-      if (this.isCurrentCatalog(sequence, campaignId)) {
-        this.catalogLoading = false;
-      }
-    }
-  },
-  async openCreate() {
+  openCreate() {
     if (!this.canCreate || this.creating) return;
+    this.createError = "";
     this.showingCreate = true;
-    if (!this.games.length) await this.loadCreationCatalog();
   },
   async createCharacter(draft) {
     if (!this.canCreate || this.creating) return;
     const campaignId = campaignIdOf(this);
-    if (!campaignId) return;
+    const systemId = Number(this.campaign?.systemId) || null;
+    const universeId = Number(this.campaign?.universeId) || null;
+    if (!campaignId || !systemId || !universeId) {
+      this.createError = this.$t("characters.errors.campaign_game");
+      return;
+    }
     const sequence = ++this.createRequestSequence;
     this.creating = true;
     this.createError = "";
     try {
-      const character = await characterApiClient.create(campaignId, draft);
+      const character = await characterApiClient.create(campaignId, {
+        ...draft,
+        systemId,
+        universeId,
+      });
       if (!this.isCurrentCreate(sequence, campaignId)) return;
       this.replaceCharacter(character);
       this.selectedId = character.id;
@@ -61,11 +46,6 @@ export const tableCharacterCreationMethods = {
       if (sequence === this.createRequestSequence) this.creating = false;
     }
   },
-  isCurrentCatalog(sequence, campaignId) {
-    return (
-      sequence === this.listRequestSequence && campaignId === campaignIdOf(this)
-    );
-  },
   isCurrentCreate(sequence, campaignId) {
     return (
       sequence === this.createRequestSequence &&
@@ -77,8 +57,6 @@ export const tableCharacterCreationMethods = {
     this.canCreate = false;
     this.showingCreate = false;
     this.creating = false;
-    this.catalogLoading = false;
     this.createError = "";
-    this.games = [];
   },
 };

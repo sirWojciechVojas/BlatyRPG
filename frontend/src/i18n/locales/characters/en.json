@@ -91,6 +91,7 @@
       "json_object_required": "The JSON root must be an object.",
       "name": "The character name must have at least 2 characters.",
       "catalog": "The system and universe catalog could not be loaded.",
+      "campaign_game": "The campaign does not have a valid system and world configured.",
       "create": "The character could not be created.",
       "delete": "The character could not be deleted."
     },
@@ -98,6 +99,7 @@
       "eyebrow": "New actor",
       "title": "Create a character or NPC",
       "description": "Choose an active system and universe from the application catalog.",
+      "campaignContext": "The system and world will be inherited from the “{name}” campaign.",
       "chooseGame": "Choose a game",
       "noGames": "There are no active games in the catalog."
     },

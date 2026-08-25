@@ -91,6 +91,7 @@
       "json_object_required": "Główną wartością JSON musi być obiekt.",
       "name": "Imię postaci musi mieć co najmniej 2 znaki.",
       "catalog": "Nie udało się pobrać katalogu systemów i uniwersów.",
+      "campaign_game": "Kampania nie ma poprawnie ustawionego systemu i świata.",
       "create": "Nie udało się utworzyć postaci.",
       "delete": "Nie udało się usunąć postaci."
     },
@@ -98,6 +99,7 @@
       "eyebrow": "Nowy aktor",
       "title": "Utwórz postać lub NPC",
       "description": "Wybierz aktywny system i uniwersum z katalogu aplikacji.",
+      "campaignContext": "System i świat zostaną odziedziczone z kampanii „{name}”.",
       "chooseGame": "Wybierz grę",
       "noGames": "Brak aktywnych gier w katalogu."
     },

@@ -64,7 +64,15 @@
       <p v-if="loadError" class="table-character-panel__error" role="alert">
         {{ loadError }}
       </p>
-      <p v-if="loadingSheet" class="table-character-panel__loading">
+      <TableCharacterCreateForm
+        v-if="showingCreate && canCreate"
+        :campaign="campaign"
+        :busy="creating"
+        :error="createError"
+        @cancel="showingCreate = false"
+        @create="createCharacter"
+      />
+      <p v-else-if="loadingSheet" class="table-character-panel__loading">
         {{ $t("characters.loading.sheet") }}
       </p>
       <CharacterSheetEditor
@@ -76,31 +84,24 @@
         @delete="deleteCharacter"
       />
     </div>
-    <CharacterCreateDialog
-      v-if="showingCreate && canCreate"
-      :games="games"
-      :busy="creating || catalogLoading"
-      :error="createError"
-      @close="showingCreate = false"
-      @create="createCharacter"
-    />
   </section>
 </template>
 
 <script>
-import CharacterCreateDialog from "@/components/characters/CharacterCreateDialog.vue";
 import CharacterSheetEditor from "@/components/characters/CharacterSheetEditor.vue";
 import { characterApiClient } from "@/lib/character/characterApiClient";
 import { characterErrorKey } from "@/lib/character/characterErrorKey";
 import { resolveCharacterAvatar } from "@/lib/trade/characterAvatar";
 import { beginActorDrag, endActorDrag } from "@/lib/vtt/actorDragSession";
+import TableCharacterCreateForm from "./TableCharacterCreateForm.vue";
 import { tableCharacterCreationMethods } from "./tableCharacterCreationMethods";
 
 export default {
   name: "TableCharacterPanel",
-  components: { CharacterCreateDialog, CharacterSheetEditor },
+  components: { CharacterSheetEditor, TableCharacterCreateForm },
   props: {
     campaignId: { type: [Number, String], required: true },
+    campaign: { type: Object, required: true },
     canCreateToken: { type: Boolean, default: false },
   },
   emits: ["changed"],
@@ -116,11 +117,9 @@ export default {
     loadError: "",
     saveError: "",
     notice: "",
-    games: [],
     canCreate: false,
     showingCreate: false,
     creating: false,
-    catalogLoading: false,
     createError: "",
     draggedCharacterId: null,
     listRequestSequence: 0,
@@ -170,7 +169,7 @@ export default {
         });
         if (sequence !== this.listRequestSequence) return;
         this.characters = result.characters;
-        this.configureCharacterCreation(result, sequence);
+        this.configureCharacterCreation(result);
         const nextId = this.selectedId || this.characters[0]?.id;
         if (nextId) await this.selectCharacter(nextId);
       } catch (error) {
