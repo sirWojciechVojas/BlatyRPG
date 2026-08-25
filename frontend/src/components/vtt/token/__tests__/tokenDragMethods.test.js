@@ -14,6 +14,7 @@ const context = (scale = 1) => {
     scale,
     drag: null,
     preview: {},
+    holdTokenPosition: vi.fn(),
     $emit: vi.fn(),
   };
   Object.entries(tokenDragMethods).forEach(([name, method]) => {
@@ -63,6 +64,10 @@ describe("token pointer drag", () => {
     );
     expect(vm.$emit).toHaveBeenCalledWith("move", {
       token,
+      x: 150,
+      y: 110,
+    });
+    expect(vm.holdTokenPosition).toHaveBeenCalledWith(token, {
       x: 150,
       y: 110,
     });

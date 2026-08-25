@@ -11,8 +11,12 @@
       class="scene-token-wrap"
       :class="{
         'scene-token-wrap--dragging': drag?.token.id === token.id,
+        'scene-token-wrap--moving': movingTokenIds[token.id],
       }"
       :style="tokenStyle(token)"
+      @transitionstart="startMotion($event, token.id)"
+      @transitionend="finishMotion($event, token.id)"
+      @transitioncancel="finishMotion($event, token.id)"
     >
       <button
         type="button"
@@ -64,6 +68,10 @@ import TokenHud from "./TokenHud.vue";
 import TokenDragIndicator from "./TokenDragIndicator.vue";
 import { tokenDragMethods } from "./tokenDragMethods";
 import { buildTokenDragIndicator } from "./tokenDragIndicator";
+import {
+  pendingTokenPositionResolved,
+  tokenTravelDuration,
+} from "./tokenMotion";
 
 export default {
   name: "SceneTokenLayer",
@@ -76,7 +84,14 @@ export default {
     busy: { type: Boolean, default: false },
   },
   emits: ["select", "move", "update", "delete", "open-actor"],
-  data: () => ({ drag: null, preview: {} }),
+  data: () => ({
+    drag: null,
+    preview: {},
+    pendingPositions: {},
+    pendingTimers: new Map(),
+    movingTokenIds: {},
+    motionDurations: {},
+  }),
   computed: {
     dragIndicator() {
       if (!this.drag) return null;
@@ -87,19 +102,94 @@ export default {
       );
     },
   },
+  watch: {
+    tokens: {
+      deep: true,
+      handler(tokens, previousTokens = []) {
+        const durations = { ...this.motionDurations };
+        tokens.forEach((token) => {
+          const previous = previousTokens.find((item) => item.id === token.id);
+          if (previous && (previous.x !== token.x || previous.y !== token.y)) {
+            durations[token.id] = tokenTravelDuration(previous, token);
+          }
+        });
+        Object.keys(durations).forEach((id) => {
+          if (!tokens.some((token) => token.id === Number(id)))
+            delete durations[id];
+        });
+        this.motionDurations = durations;
+        this.syncPendingPositions(tokens);
+      },
+    },
+  },
   beforeUnmount() {
     this.cancelDrag();
+    this.pendingTimers.forEach((timer) => window.clearTimeout(timer));
+    this.pendingTimers.clear();
   },
   methods: {
     ...tokenDragMethods,
     tokenStyle(token) {
-      const position = this.preview[token.id] || token;
+      const position =
+        this.preview[token.id] || this.pendingPositions[token.id] || token;
       return {
         width: `${token.width}px`,
         height: `${token.height}px`,
         transform: `translate(${position.x}px, ${position.y}px)`,
         zIndex: String(100 + Math.round(token.elevation || 0)),
+        "--token-travel-duration": `${this.motionDurations[token.id] || 460}ms`,
       };
+    },
+    holdTokenPosition(token, position) {
+      const tokenId = Number(token.id);
+      window.clearTimeout(this.pendingTimers.get(tokenId));
+      this.pendingPositions = {
+        ...this.pendingPositions,
+        [tokenId]: {
+          x: Number(position.x),
+          y: Number(position.y),
+          revision: Number(token.revision),
+        },
+      };
+      this.pendingTimers.set(
+        tokenId,
+        window.setTimeout(() => this.releasePendingPosition(tokenId), 3000),
+      );
+    },
+    syncPendingPositions(tokens) {
+      Object.entries(this.pendingPositions).forEach(([id, pending]) => {
+        const token = tokens.find((item) => item.id === Number(id));
+        if (pendingTokenPositionResolved(pending, token)) {
+          this.releasePendingPosition(id);
+        }
+      });
+    },
+    releasePendingPosition(tokenId) {
+      window.clearTimeout(this.pendingTimers.get(Number(tokenId)));
+      this.pendingTimers.delete(Number(tokenId));
+      const pendingPositions = { ...this.pendingPositions };
+      delete pendingPositions[tokenId];
+      this.pendingPositions = pendingPositions;
+    },
+    startMotion(event, tokenId) {
+      if (
+        event.target !== event.currentTarget ||
+        event.propertyName !== "transform"
+      ) {
+        return;
+      }
+      this.movingTokenIds = { ...this.movingTokenIds, [tokenId]: true };
+    },
+    finishMotion(event, tokenId) {
+      if (
+        event.target !== event.currentTarget ||
+        event.propertyName !== "transform"
+      ) {
+        return;
+      }
+      const movingTokenIds = { ...this.movingTokenIds };
+      delete movingTokenIds[tokenId];
+      this.movingTokenIds = movingTokenIds;
     },
     initials(name) {
       return String(name || "?")

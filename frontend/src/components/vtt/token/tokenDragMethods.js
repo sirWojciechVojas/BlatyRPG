@@ -65,6 +65,7 @@ export const tokenDragMethods = {
     const position = this.preview[token.id];
     this.clearDrag();
     if (position && (position.x !== token.x || position.y !== token.y)) {
+      this.holdTokenPosition?.(token, position);
       this.$emit("move", { token, x: position.x, y: position.y });
     }
   },

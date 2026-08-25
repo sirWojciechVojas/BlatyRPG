@@ -10,11 +10,33 @@
   left: 0;
   top: 0;
   transform-origin: center;
+  transition:
+    transform var(--token-travel-duration, 460ms)
+    cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: auto;
 }
 
 .scene-token-wrap--dragging {
   z-index: 500 !important;
+  transition: none;
+}
+
+.scene-token-wrap--moving {
+  z-index: 490 !important;
+}
+
+.scene-token-wrap--moving .scene-token {
+  animation: token-travel-glow var(--token-travel-duration, 460ms) ease-out;
+}
+
+.scene-token-wrap--moving .scene-token::after {
+  position: absolute;
+  inset: -10px;
+  content: "";
+  border: 2px solid rgb(255 211 110 / 72%);
+  border-radius: 50%;
+  animation: token-travel-ring var(--token-travel-duration, 460ms) ease-out both;
+  pointer-events: none;
 }
 
 .scene-token {
@@ -208,10 +230,21 @@
 @keyframes token-drag-flow { to { stroke-dashoffset: -18; } }
 @keyframes token-target-spin { to { stroke-dashoffset: -28; } }
 @keyframes token-target-breathe { to { opacity: 0.45; scale: 1.08; } }
+@keyframes token-travel-glow {
+  45% { box-shadow: 0 0 22px rgb(255 190 71 / 75%), 0 8px 18px rgb(0 0 0 / 82%); }
+}
+@keyframes token-travel-ring {
+  from { opacity: 0; scale: 0.72; }
+  45% { opacity: 1; }
+  to { opacity: 0; scale: 1.28; }
+}
 
 @media (prefers-reduced-motion: reduce) {
+  .scene-token-wrap { transition: none; }
   .scene-token-wrap--dragging .scene-token,
   .scene-token-wrap--dragging .scene-token::before,
+  .scene-token-wrap--moving .scene-token,
+  .scene-token-wrap--moving .scene-token::after,
   .token-drag-indicator__trail,
   .token-drag-indicator__target-pulse,
   .token-drag-indicator__target-core {
