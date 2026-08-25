@@ -1,3 +1,5 @@
+import { snapTokenPosition } from "@/lib/vtt/grid";
+
 const pointerValue = (event, field) => {
   const value = Number(event?.[field]);
   return Number.isFinite(value) ? value : 0;
@@ -46,9 +48,9 @@ export const tokenDragMethods = {
   moveDrag(event) {
     if (!this.drag || event.pointerId !== this.drag.id) return;
     const scale = Math.max(0.05, Number(this.scale) || 1);
-    this.preview = {
-      ...this.preview,
-      [this.drag.token.id]: {
+    const position = snapTokenPosition(
+      this.scene,
+      {
         x:
           this.drag.token.x +
           (pointerValue(event, "clientX") - this.drag.clientX) / scale,
@@ -56,6 +58,11 @@ export const tokenDragMethods = {
           this.drag.token.y +
           (pointerValue(event, "clientY") - this.drag.clientY) / scale,
       },
+      this.drag.token,
+    );
+    this.preview = {
+      ...this.preview,
+      [this.drag.token.id]: position,
     };
   },
   finishDrag(event) {

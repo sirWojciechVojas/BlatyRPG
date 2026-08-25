@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { buildGridPattern, GRID_TYPES } from "@/lib/vtt/grid";
+import {
+  buildGridPattern,
+  GRID_TYPES,
+  snapPointToGrid,
+  snapTokenPosition,
+} from "@/lib/vtt/grid";
 
 describe("VTT grid geometry", () => {
   it("builds an offset square pattern", () => {
@@ -35,5 +40,40 @@ describe("VTT grid geometry", () => {
 
   it("does not render a pattern for a gridless scene", () => {
     expect(buildGridPattern({ gridType: GRID_TYPES.GRIDLESS })).toBeNull();
+  });
+
+  it("snaps the center of differently sized tokens to a square cell", () => {
+    const scene = {
+      gridType: GRID_TYPES.SQUARE,
+      gridSize: 100,
+      gridOffsetX: 10,
+      gridOffsetY: 20,
+    };
+
+    expect(
+      snapTokenPosition(scene, { x: 72, y: 83 }, { width: 100, height: 100 }),
+    ).toEqual({ x: 110, y: 120 });
+    expect(
+      snapTokenPosition(scene, { x: 72, y: 83 }, { width: 200, height: 100 }),
+    ).toEqual({ x: 60, y: 120 });
+  });
+
+  it.each([
+    [GRID_TYPES.HEX_POINTY, { x: 147, y: 90 }, { x: 150, y: 86.603 }],
+    [GRID_TYPES.HEX_FLAT, { x: 90, y: 147 }, { x: 86.603, y: 150 }],
+  ])("snaps a point to the nearest %s center", (gridType, point, expected) => {
+    expect(snapPointToGrid({ gridType, gridSize: 100 }, point)).toEqual(
+      expected,
+    );
+  });
+
+  it("preserves free movement on gridless scenes", () => {
+    expect(
+      snapTokenPosition(
+        { gridType: GRID_TYPES.GRIDLESS },
+        { x: 17.25, y: 44.75 },
+        { width: 160, height: 80 },
+      ),
+    ).toEqual({ x: 17.25, y: 44.75 });
   });
 });

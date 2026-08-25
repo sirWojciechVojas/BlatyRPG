@@ -19,6 +19,7 @@ final class SceneTokenService
     private $access;
     private $validator;
     private $collisions;
+    private $grid;
 
     public function __construct(
         ?BaseConnection $db = null,
@@ -27,7 +28,8 @@ final class SceneTokenService
         ?SceneResourceAccessService $sceneAccess = null,
         ?TokenAccessService $access = null,
         ?TokenPayloadValidator $validator = null,
-        ?WallCollisionService $collisions = null
+        ?WallCollisionService $collisions = null,
+        ?TokenGridPositionService $grid = null
     ) {
         $this->db = $db ?: \Config\Database::connect();
         $this->tokens = $tokens ?: new SceneTokenModel($this->db);
@@ -36,6 +38,7 @@ final class SceneTokenService
         $this->access = $access ?: new TokenAccessService();
         $this->validator = $validator ?: new TokenPayloadValidator();
         $this->collisions = $collisions ?: new WallCollisionService($this->db);
+        $this->grid = $grid ?: new TokenGridPositionService();
     }
 
     public function list(int $campaignId, int $sceneId, array $auth): array
@@ -60,12 +63,12 @@ final class SceneTokenService
 
     public function create(int $campaignId, int $sceneId, array $auth, array $payload): array
     {
-        [, $capabilities] = $this->sceneContext($campaignId, $sceneId, $auth);
+        [$scene, $capabilities] = $this->sceneContext($campaignId, $sceneId, $auth);
         $this->assertManager($auth, $campaignId, $sceneId, $capabilities);
         $validated = $this->validator->create($payload);
         $this->assertValid($validated);
         $this->access->assertCharacterInCampaign($campaignId, $validated['data']['character_id'] ?? null);
-        $data = $validated['data'] + [
+        $data = $this->snapCreateData($scene, $validated['data']) + [
             'campaign_id' => $campaignId,
             'scene_id' => $sceneId,
             'revision' => 1,
@@ -90,6 +93,7 @@ final class SceneTokenService
         if (!$canControl) throw new TokenException('forbidden', 'You cannot control this token.', 403);
         $validated = $this->validator->update($payload);
         $this->assertValid($validated);
+        $validated['data'] = $this->snapUpdateData($scene, $row, $validated['data']);
         if (!$canManage && array_diff(array_keys($validated['data']), self::OWNER_FIELDS)) {
             throw new TokenException('forbidden', 'Only a scene manager can configure this token.', 403);
         }
@@ -198,6 +202,30 @@ final class SceneTokenService
                 422
             );
         }
+    }
+
+    private function snapCreateData(array $scene, array $data): array
+    {
+        $defaultSize = max(8.0, (float) ($scene['grid_size'] ?? 100));
+        $data['width'] = (float) ($data['width'] ?? $defaultSize);
+        $data['height'] = (float) ($data['height'] ?? $defaultSize);
+        $position = $this->grid->snap($scene, $data, $data['width'], $data['height']);
+        return array_merge($data, $position);
+    }
+
+    private function snapUpdateData(array $scene, array $token, array $data): array
+    {
+        if (!array_key_exists('x', $data) && !array_key_exists('y', $data)) return $data;
+        $position = $this->grid->snap(
+            $scene,
+            [
+                'x' => $data['x'] ?? $token['x'],
+                'y' => $data['y'] ?? $token['y'],
+            ],
+            (float) ($data['width'] ?? $token['width']),
+            (float) ($data['height'] ?? $token['height'])
+        );
+        return array_merge($data, $position);
     }
 
     private function writeRevision(int $campaignId, int $sceneId, int $tokenId, int $revision, array $data): void

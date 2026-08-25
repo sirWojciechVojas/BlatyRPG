@@ -1,3 +1,5 @@
+import { snapTokenPosition } from "@/lib/vtt/grid";
+
 export const tableTokenMethods = {
   selectToken(tokenId) {
     this.$store.commit("vtt/SELECT_TOKEN", Number(tokenId));
@@ -5,13 +7,18 @@ export const tableTokenMethods = {
   async createToken({ actor, x, y }) {
     if (!this.selectedScene || !this.canCreateToken) return;
     const size = Math.max(8, Number(this.selectedScene.gridSize) || 100);
+    const position = snapTokenPosition(
+      this.selectedScene,
+      { x: x - size / 2, y: y - size / 2 },
+      { width: size, height: size },
+    );
     await this.$store
       .dispatch("vtt/createToken", {
         characterId: actor.id,
         name: actor.name,
         imageUrl: actor.imageUrl,
-        x: Math.max(0, Math.round(x - size / 2)),
-        y: Math.max(0, Math.round(y - size / 2)),
+        x: position.x,
+        y: position.y,
         width: size,
         height: size,
       })

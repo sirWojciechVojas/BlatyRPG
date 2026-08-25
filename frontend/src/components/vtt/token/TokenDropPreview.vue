@@ -4,8 +4,8 @@
       <line
         :x1="preview.start.x"
         :y1="preview.start.y"
-        :x2="preview.x"
-        :y2="preview.y"
+        :x2="targetCenter.x"
+        :y2="targetCenter.y"
       />
     </svg>
     <div class="token-drop-preview__target" :style="targetStyle">
@@ -27,6 +27,8 @@
 </template>
 
 <script>
+import { snapTokenPosition } from "@/lib/vtt/grid";
+
 export default {
   name: "TokenDropPreview",
   props: {
@@ -38,10 +40,26 @@ export default {
     size() {
       return Math.max(8, Number(this.scene.gridSize) || 100);
     },
+    snappedPosition() {
+      return snapTokenPosition(
+        this.scene,
+        {
+          x: this.preview.x - this.size / 2,
+          y: this.preview.y - this.size / 2,
+        },
+        { width: this.size, height: this.size },
+      );
+    },
+    targetCenter() {
+      return {
+        x: this.snappedPosition.x + this.size / 2,
+        y: this.snappedPosition.y + this.size / 2,
+      };
+    },
     targetStyle() {
       return {
-        left: `${this.preview.x}px`,
-        top: `${this.preview.y}px`,
+        left: `${this.snappedPosition.x}px`,
+        top: `${this.snappedPosition.y}px`,
         width: `${this.size}px`,
         height: `${this.size}px`,
       };

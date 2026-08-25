@@ -12,6 +12,7 @@ const pointer = (type, values) => {
 const context = (scale = 1) => {
   const vm = {
     scale,
+    scene: { gridType: "square", gridSize: 100 },
     drag: null,
     preview: {},
     holdTokenPosition: vi.fn(),
@@ -32,12 +33,14 @@ const target = () => ({
 afterEach(() => vi.restoreAllMocks());
 
 describe("token pointer drag", () => {
-  it("tracks the pointer outside the token and emits scaled coordinates", () => {
+  it("tracks the pointer and emits scaled coordinates snapped by token center", () => {
     const vm = context(2);
     const token = {
       id: 7,
       x: 100,
       y: 80,
+      width: 100,
+      height: 100,
       locked: false,
       capabilities: { canControl: true },
     };
@@ -57,19 +60,19 @@ describe("token pointer drag", () => {
     window.dispatchEvent(
       pointer("pointermove", { pointerId: 4, clientX: 100, clientY: 70 }),
     );
-    expect(vm.preview[7]).toEqual({ x: 140, y: 100 });
+    expect(vm.preview[7]).toEqual({ x: 100, y: 100 });
 
     window.dispatchEvent(
       pointer("pointerup", { pointerId: 4, clientX: 120, clientY: 90 }),
     );
     expect(vm.$emit).toHaveBeenCalledWith("move", {
       token,
-      x: 150,
-      y: 110,
+      x: 200,
+      y: 100,
     });
     expect(vm.holdTokenPosition).toHaveBeenCalledWith(token, {
-      x: 150,
-      y: 110,
+      x: 200,
+      y: 100,
     });
     expect(captureTarget.releasePointerCapture).toHaveBeenCalledWith(4);
     expect(vm.drag).toBeNull();
