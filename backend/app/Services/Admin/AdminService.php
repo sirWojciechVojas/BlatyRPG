@@ -15,6 +15,7 @@ class AdminService
     private $validator;
     private $presenter;
     private $analytics;
+    private $characterDirectory;
 
     public function __construct(
         ?BaseConnection $db = null,
@@ -22,7 +23,8 @@ class AdminService
         ?CampaignModel $campaigns = null,
         ?AdminPayloadValidator $validator = null,
         ?AuthUserPresenter $presenter = null,
-        ?AdminOverviewAnalytics $analytics = null
+        ?AdminOverviewAnalytics $analytics = null,
+        ?AdminCharacterDirectory $characterDirectory = null
     ) {
         $this->db = $db ?: \Config\Database::connect();
         $this->users = $users ?: new UserModel($this->db);
@@ -30,6 +32,8 @@ class AdminService
         $this->validator = $validator ?: new AdminPayloadValidator();
         $this->presenter = $presenter ?: new AuthUserPresenter();
         $this->analytics = $analytics ?: new AdminOverviewAnalytics($this->db);
+        $this->characterDirectory = $characterDirectory
+            ?: new AdminCharacterDirectory($this->db);
     }
 
     public function overview(array $auth): array
@@ -47,6 +51,7 @@ class AdminService
             ->select('campaign_id, user_id, role, joined_at, created_at')
             ->where('is_active', 1)->get()->getResultArray();
         $analytics = $this->analytics->build($users, $campaignRows, $memberships);
+        $characterDirectory = $this->characterDirectory->all();
 
         return [
             'currentUserId' => (int) $admin['id'],
@@ -72,7 +77,7 @@ class AdminService
                         ?? $campaign['updated_at'] ?? null,
                 ];
             }, $campaignRows),
-        ] + $analytics;
+        ] + $characterDirectory + $analytics;
     }
 
     public function createUser(array $auth, array $payload): array
