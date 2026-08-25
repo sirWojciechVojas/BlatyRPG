@@ -34,6 +34,15 @@ export const resolveCharacterAvatar = (source = "", name = "") => {
   );
 };
 
+export const resolveCharacterTokenSource = (
+  tokenSource = "",
+  portraitSource = "",
+  avatarSource = "",
+) =>
+  resolveCharacterAssetSource(tokenSource, "token") ||
+  resolveCharacterAssetSource(portraitSource, "portrait") ||
+  resolveCharacterAssetSource(avatarSource, "avatar");
+
 export const resolveCharacterPortrait = (
   portraitSource = "",
   avatarSource = "",
@@ -52,7 +61,7 @@ export const resolveCharacterToken = (
   name = "",
 ) => {
   return (
-    resolveCharacterAssetSource(tokenSource, "token") ||
-    resolveCharacterPortrait(portraitSource, avatarSource, name)
+    resolveCharacterTokenSource(tokenSource, portraitSource, avatarSource) ||
+    createCharacterInitialsAvatar(name)
   );
 };

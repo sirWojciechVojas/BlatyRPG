@@ -91,7 +91,10 @@
 import CharacterSheetEditor from "@/components/characters/CharacterSheetEditor.vue";
 import { characterApiClient } from "@/lib/character/characterApiClient";
 import { characterErrorKey } from "@/lib/character/characterErrorKey";
-import { resolveCharacterAvatar } from "@/lib/trade/characterAvatar";
+import {
+  resolveCharacterAvatar,
+  resolveCharacterTokenSource,
+} from "@/lib/trade/characterAvatar";
 import { beginActorDrag, endActorDrag } from "@/lib/vtt/actorDragSession";
 import TableCharacterCreateForm from "./TableCharacterCreateForm.vue";
 import { tableCharacterCreationMethods } from "./tableCharacterCreationMethods";
@@ -274,7 +277,7 @@ export default {
       const actor = beginActorDrag(event.dataTransfer, {
         id: character.id,
         name: character.name,
-        imageUrl: this.avatar(character),
+        imageUrl: resolveCharacterTokenSource(character, character, character),
       });
       if (!actor) event.preventDefault();
       else this.draggedCharacterId = actor.id;

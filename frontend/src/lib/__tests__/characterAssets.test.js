@@ -25,4 +25,16 @@ describe("character assets", () => {
       ),
     ).toContain("/character-assets/000037/token");
   });
+
+  it("uses the canonical URL when a normalized character has no asset set", () => {
+    const imageUrl =
+      "https://5e.tools/img/bestiary/tokens/DMG/Avatar%20of%20Death.webp";
+
+    expect(
+      resolveCharacterAssetSource(
+        { assets: {}, avatarUrl: imageUrl },
+        "avatar",
+      ),
+    ).toBe(imageUrl);
+  });
 });

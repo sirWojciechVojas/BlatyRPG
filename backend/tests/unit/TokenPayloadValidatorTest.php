@@ -48,4 +48,18 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
         $this->assertArrayHasKey('imageUrl', $result['errors']);
         $this->assertArrayHasKey('campaignId', $result['errors']);
     }
+
+    public function testAcceptsEncodedHttpsImageUrlAndEmptyFallback(): void
+    {
+        $validator = new TokenPayloadValidator();
+        $imageUrl = 'https://5e.tools/img/bestiary/tokens/DMG/Avatar%20of%20Death.webp';
+
+        $withImage = $validator->create(['name' => 'Avatar of Death', 'imageUrl' => $imageUrl]);
+        $withoutImage = $validator->create(['name' => 'Nameless', 'imageUrl' => '']);
+
+        $this->assertTrue($withImage['valid']);
+        $this->assertSame($imageUrl, $withImage['data']['image_url']);
+        $this->assertTrue($withoutImage['valid']);
+        $this->assertNull($withoutImage['data']['image_url']);
+    }
 }
