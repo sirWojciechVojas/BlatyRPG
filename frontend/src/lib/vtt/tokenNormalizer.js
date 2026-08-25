@@ -1,4 +1,5 @@
 import { normalizeTokenAngle } from "./tokenFacing";
+import { normalizeTokenPermissionScope } from "./tokenPermissions";
 
 const number = (value, fallback = 0) => {
   const result = Number(value);
@@ -24,6 +25,22 @@ export const normalizeToken = (source = {}) => ({
   disposition: String(source.disposition || "neutral"),
   hidden: source.hidden === true || source.hidden === 1,
   locked: source.locked === true || source.locked === 1,
+  visibleTo: normalizeTokenPermissionScope(
+    source.visibleTo ?? source.visible_to_json,
+    source.hidden === true || source.hidden === 1 ? "gm" : "everyone",
+  ),
+  controlledBy: normalizeTokenPermissionScope(
+    source.controlledBy ?? source.controlled_by_json,
+    "inherit",
+  ),
+  editableBy: normalizeTokenPermissionScope(
+    source.editableBy ?? source.editable_by_json,
+    "gm",
+  ),
+  observerBy: normalizeTokenPermissionScope(
+    source.observerBy ?? source.observer_by_json,
+    "inherit",
+  ),
   bars: source.bars || {},
   statuses: Array.isArray(source.statuses) ? source.statuses : [],
   vision: source.vision || {},
@@ -31,6 +48,8 @@ export const normalizeToken = (source = {}) => ({
   revision: number(source.revision, 1),
   capabilities: {
     canControl: source.capabilities?.canControl === true,
+    canEdit: source.capabilities?.canEdit === true,
+    canObserve: source.capabilities?.canObserve === true,
     canManage: source.capabilities?.canManage === true,
   },
 });
@@ -50,6 +69,10 @@ export const tokenWritePayload = (changes = {}, includeRevision = false) => {
     "disposition",
     "hidden",
     "locked",
+    "visibleTo",
+    "controlledBy",
+    "editableBy",
+    "observerBy",
   ];
   const payload = {};
   allowed.forEach((key) => {

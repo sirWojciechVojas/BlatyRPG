@@ -18,6 +18,8 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
             'height' => 80,
             'rotation' => 370,
             'facing' => -15,
+            'visibleTo' => ['mode' => 'users', 'userIds' => [7, '4', 7]],
+            'controlledBy' => ['mode' => 'everyone', 'userIds' => []],
             'disposition' => 'HOSTILE',
             'hidden' => 'false',
         ]);
@@ -29,6 +31,14 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
         $this->assertSame(0, $result['data']['hidden']);
         $this->assertSame(10.0, $result['data']['rotation']);
         $this->assertSame(345.0, $result['data']['facing']);
+        $this->assertSame(
+            ['mode' => 'users', 'userIds' => [4, 7]],
+            $result['data']['visible_to_json']
+        );
+        $this->assertSame(
+            ['mode' => 'everyone', 'userIds' => []],
+            $result['data']['controlled_by_json']
+        );
     }
 
     public function testUpdateRequiresRevisionAndAWritableField(): void
@@ -65,5 +75,16 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
         $this->assertSame($imageUrl, $withImage['data']['image_url']);
         $this->assertTrue($withoutImage['valid']);
         $this->assertNull($withoutImage['data']['image_url']);
+    }
+
+    public function testRejectsMalformedPermissionScopes(): void
+    {
+        $result = (new TokenPayloadValidator())->update([
+            'revision' => 2,
+            'editableBy' => ['mode' => 'everyone', 'userIds' => [9]],
+        ]);
+
+        $this->assertFalse($result['valid']);
+        $this->assertArrayHasKey('editableBy', $result['errors']);
     }
 }

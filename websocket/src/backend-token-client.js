@@ -18,6 +18,21 @@ const coordinate = (value) => {
   return Number.isFinite(number) && Math.abs(number) <= 1000000 ? number : null;
 };
 
+const permissionScope = (value, legacyMode) => {
+  if (value === undefined || value === null) return { mode: legacyMode, userIds: [] };
+  if (!value || typeof value !== "object" || Array.isArray(value)) {
+    return { mode: "gm", userIds: [] };
+  }
+  const mode = String(value.mode || "").toLowerCase();
+  if (["gm", "everyone", "inherit"].includes(mode)) return { mode, userIds: [] };
+  const ids = Array.isArray(value.userIds)
+    ? value.userIds.map(positiveId).filter(Boolean).slice(0, 200)
+    : [];
+  return mode === "users" && ids.length
+    ? { mode, userIds: [...new Set(ids)] }
+    : { mode: "gm", userIds: [] };
+};
+
 const token = (value) => {
   const id = positiveId(value?.id);
   const sceneId = positiveId(value?.sceneId ?? value?.scene_id);
@@ -44,6 +59,10 @@ const token = (value) => {
     revision,
     hidden: value.hidden === true,
     locked: value.locked === true,
+    visibleTo: permissionScope(value.visibleTo, "everyone"),
+    controlledBy: permissionScope(value.controlledBy, "inherit"),
+    editableBy: permissionScope(value.editableBy, "gm"),
+    observerBy: permissionScope(value.observerBy, "inherit"),
   };
 };
 

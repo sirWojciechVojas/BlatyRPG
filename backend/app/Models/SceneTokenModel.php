@@ -13,8 +13,9 @@ class SceneTokenModel extends Model
     protected $allowedFields = [
         'campaign_id', 'scene_id', 'character_id', 'name', 'image_url',
         'x', 'y', 'width', 'height', 'rotation', 'facing', 'elevation', 'disposition',
-        'hidden', 'locked', 'bars_json', 'statuses_json', 'vision_json',
-        'light_json', 'sort_order', 'revision',
+        'hidden', 'locked', 'visible_to_json', 'controlled_by_json',
+        'editable_by_json', 'observer_by_json', 'bars_json', 'statuses_json',
+        'vision_json', 'light_json', 'sort_order', 'revision',
     ];
     protected $useTimestamps = true;
     protected $dateFormat = 'datetime';
@@ -66,6 +67,10 @@ class SceneTokenModel extends Model
 
     private static function jsonFields(): array
     {
-        return ['bars_json', 'statuses_json', 'vision_json', 'light_json'];
+        return [
+            'visible_to_json', 'controlled_by_json', 'editable_by_json',
+            'observer_by_json', 'bars_json', 'statuses_json',
+            'vision_json', 'light_json',
+        ];
     }
 }

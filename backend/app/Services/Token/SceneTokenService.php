@@ -12,6 +12,10 @@ use CodeIgniter\Database\BaseConnection;
 final class SceneTokenService
 {
     private const OWNER_FIELDS = ['x', 'y', 'rotation', 'facing', 'elevation'];
+    private const PERMISSION_FIELDS = [
+        'visible_to_json', 'controlled_by_json',
+        'editable_by_json', 'observer_by_json',
+    ];
     private $db;
     private $tokens;
     private $scenes;
@@ -48,14 +52,19 @@ final class SceneTokenService
         $query = $this->tokens->where('campaign_id', $campaignId)->where('scene_id', $sceneId);
         if (!$canManage) $query->where('hidden', 0);
         $rows = $query->orderBy('sort_order', 'ASC')->orderBy('id', 'ASC')->findAll();
+        $visible = array_values(array_filter(
+            $rows,
+            fn (array $row): bool => $this->access->canView(
+                $auth, $campaignId, $row, $canManage
+            )
+        ));
         return [
-            'items' => array_map(function (array $row) use ($auth, $campaignId, $canManage): array {
-                return TokenPresenter::present(
-                    $row,
-                    $this->access->canControl($auth, $campaignId, $row, $canManage),
-                    $canManage
-                );
-            }, $rows),
+            'items' => array_map(
+                fn (array $row): array => $this->presentRow(
+                    $auth, $campaignId, $row, $canManage
+                ),
+                $visible
+            ),
             'sceneRevision' => (int) $scene['revision'],
             'capabilities' => ['canCreate' => $canManage],
         ];
@@ -68,6 +77,7 @@ final class SceneTokenService
         $validated = $this->validator->create($payload);
         $this->assertValid($validated);
         $this->access->assertCharacterInCampaign($campaignId, $validated['data']['character_id'] ?? null);
+        $this->access->assertPermissionUsersInCampaign($campaignId, $validated['data']);
         $data = $this->snapCreateData($scene, $validated['data']) + [
             'campaign_id' => $campaignId,
             'scene_id' => $sceneId,
@@ -89,19 +99,32 @@ final class SceneTokenService
         [$scene, $capabilities] = $this->sceneContext($campaignId, $sceneId, $auth);
         $row = $this->find($campaignId, $sceneId, $tokenId);
         $canManage = $this->canManage($auth, $campaignId, $sceneId, $capabilities);
+        if (!$this->access->canView($auth, $campaignId, $row, $canManage)) {
+            throw new TokenException('token_not_found', 'Token was not found.', 404);
+        }
         $canControl = $this->access->canControl($auth, $campaignId, $row, $canManage);
-        if (!$canControl) throw new TokenException('forbidden', 'You cannot control this token.', 403);
+        $canEdit = $this->access->canEdit($auth, $campaignId, $row, $canManage);
+        if (!$canControl && !$canEdit) {
+            throw new TokenException('forbidden', 'You cannot modify this token.', 403);
+        }
         if (!$canManage && !empty($row['locked'])) {
             throw new TokenException('token_locked', 'This token is locked by the game master.', 403);
         }
         $validated = $this->validator->update($payload);
         $this->assertValid($validated);
         $validated['data'] = $this->snapUpdateData($scene, $row, $validated['data']);
-        if (!$canManage && array_diff(array_keys($validated['data']), self::OWNER_FIELDS)) {
+        if (!$canManage && array_intersect(array_keys($validated['data']), self::PERMISSION_FIELDS)) {
+            throw new TokenException('forbidden', 'Only a game master can assign token permissions.', 403);
+        }
+        if (!$canManage && !$canEdit
+            && array_diff(array_keys($validated['data']), self::OWNER_FIELDS)) {
             throw new TokenException('forbidden', 'Only a scene manager can configure this token.', 403);
         }
         if (array_key_exists('character_id', $validated['data'])) {
             $this->access->assertCharacterInCampaign($campaignId, $validated['data']['character_id']);
+        }
+        if ($canManage) {
+            $this->access->assertPermissionUsersInCampaign($campaignId, $validated['data']);
         }
         $this->assertMovementAllowed($campaignId, $sceneId, $row, $validated['data']);
         $this->writeRevision($campaignId, $sceneId, $tokenId, $validated['revision'], $validated['data']);
@@ -167,10 +190,17 @@ final class SceneTokenService
         $row = $this->find($campaignId, $sceneId, $tokenId);
         $result = $this->scenes->getScene($campaignId, $sceneId, $auth);
         $canManage = $this->canManage($auth, $campaignId, $sceneId, $result['capabilities']);
+        return $this->presentRow($auth, $campaignId, $row, $canManage);
+    }
+
+    private function presentRow(array $auth, int $campaignId, array $row, bool $canManage): array
+    {
         return TokenPresenter::present(
             $row,
             $this->access->canControl($auth, $campaignId, $row, $canManage),
-            $canManage
+            $canManage,
+            $this->access->canEdit($auth, $campaignId, $row, $canManage),
+            $this->access->canObserve($auth, $campaignId, $row, $canManage)
         );
     }
 

@@ -10,6 +10,13 @@ final class TokenPayloadValidator
     private const WRITABLE = [
         'characterId', 'name', 'imageUrl', 'x', 'y', 'width', 'height',
         'rotation', 'facing', 'elevation', 'disposition', 'hidden', 'locked',
+        'visibleTo', 'controlledBy', 'editableBy', 'observerBy',
+    ];
+    private const PERMISSIONS = [
+        'visibleTo' => 'visible_to_json',
+        'controlledBy' => 'controlled_by_json',
+        'editableBy' => 'editable_by_json',
+        'observerBy' => 'observer_by_json',
     ];
 
     public function create(array $payload): array
@@ -84,9 +91,22 @@ final class TokenPayloadValidator
             if (!in_array($value, self::DISPOSITIONS, true)) $result['errors']['disposition'] = 'Disposition is invalid.';
             else $result['data']['disposition'] = $value;
         }
+        foreach (self::PERMISSIONS as $field => $databaseField) {
+            if (!array_key_exists($field, $payload)) continue;
+            $scope = TokenPermissionScope::validate($payload[$field]);
+            if (!$scope['valid']) $result['errors'][$field] = $scope['error'];
+            else $result['data'][$databaseField] = $scope['data'];
+        }
         if (!$partial) {
             $result['data'] += ['x' => 0, 'y' => 0, 'width' => 100, 'height' => 100];
             $result['data']['facing'] ??= $result['data']['rotation'] ?? 0;
+            $hidden = !empty($result['data']['hidden']);
+            $result['data'] += [
+                'visible_to_json' => $this->scope($hidden ? 'gm' : 'everyone'),
+                'controlled_by_json' => $this->scope('inherit'),
+                'editable_by_json' => $this->scope('gm'),
+                'observer_by_json' => $this->scope('inherit'),
+            ];
         }
         return $result;
     }
@@ -132,5 +152,10 @@ final class TokenPayloadValidator
     {
         $angle = fmod($value, 360.0);
         return round($angle < 0 ? $angle + 360.0 : $angle, 3);
+    }
+
+    private function scope(string $mode): array
+    {
+        return ['mode' => $mode, 'userIds' => []];
     }
 }

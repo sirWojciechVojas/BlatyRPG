@@ -22,6 +22,7 @@ test("forwards token moves using authoritative session scope", async () => {
           x: 30,
           y: 40,
           rotation: 90,
+          visibleTo: { mode: "users", userIds: [2, "4", 2] },
           revision: 4,
         },
         visibility: { publishToPlayers: true },
@@ -39,6 +40,7 @@ test("forwards token moves using authoritative session scope", async () => {
   });
   assert.equal(result.token.revision, 4);
   assert.equal(result.token.facing, 90);
+  assert.deepEqual(result.token.visibleTo, { mode: "users", userIds: [2, 4] });
   assert.equal(result.publishToPlayers, true);
 });
 

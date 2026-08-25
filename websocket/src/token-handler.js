@@ -1,5 +1,6 @@
 import { BackendTokenError } from "./backend-token-client.js";
 import { createServerEvent, sendEvent } from "./protocol.js";
+import { canReceiveToken } from "./token-visibility.js";
 
 const eventFor = (session, type, payload, sequence = null) =>
   createServerEvent({
@@ -51,8 +52,7 @@ export const createTokenHandler = ({ backend, rooms, onAuthenticationFailure }) 
     for (const recipient of rooms.sessions(session.campaignId)) {
       if (
         recipient.id === session.id ||
-        result.publishToPlayers ||
-        recipient.capabilities?.canViewHidden === true
+        canReceiveToken(recipient, result)
       ) {
         sendEvent(recipient.ws, event);
       } else {

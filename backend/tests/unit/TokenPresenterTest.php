@@ -24,10 +24,16 @@ final class TokenPresenterTest extends CIUnitTestCase
             'disposition' => 'friendly',
             'hidden' => 0,
             'locked' => 1,
+            'visible_to_json' => ['mode' => 'users', 'userIds' => [8]],
+            'controlled_by_json' => ['mode' => 'users', 'userIds' => [8]],
+            'editable_by_json' => ['mode' => 'gm', 'userIds' => []],
+            'observer_by_json' => ['mode' => 'everyone', 'userIds' => []],
             'revision' => 3,
-        ], true, false);
+        ], true, false, false, true);
 
         $this->assertTrue($token['locked']);
         $this->assertTrue($token['capabilities']['canControl']);
+        $this->assertTrue($token['capabilities']['canObserve']);
+        $this->assertSame(['mode' => 'users', 'userIds' => [8]], $token['visibleTo']);
     }
 }

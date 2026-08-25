@@ -75,3 +75,41 @@ test("does not leak hidden-scene movement to regular campaign members", async ()
   assert.deepEqual(marker.payload, {});
   assert.equal(regular.history.some((event) => event.type === "token.updated"), false);
 });
+
+test("publishes token movement only to selected visible users and managers", async () => {
+  const setup = await startTestServer({}, {
+    tokenBackend: {
+      move: async () => ({
+        token: {
+          id: 9,
+          sceneId: 4,
+          name: "Scoped",
+          x: 3,
+          y: 4,
+          revision: 4,
+          visibleTo: { mode: "users", userIds: [2] },
+        },
+        publishToPlayers: true,
+      }),
+    },
+  });
+  running.push(setup);
+  const sender = await connect(setup.url, 1, "client-instance-0001");
+  const selected = await connect(setup.url, 2, "client-instance-0002");
+  const manager = await connect(
+    setup.url,
+    3,
+    "client-instance-0003",
+    { canManage: true },
+  );
+  const denied = await connect(setup.url, 4, "client-instance-0004");
+
+  sender.send(request);
+  await Promise.all([
+    sender.event("token.ack"),
+    selected.event("token.updated"),
+    manager.event("token.updated"),
+    denied.event("sync.marker"),
+  ]);
+  assert.equal(denied.history.some((event) => event.type === "token.updated"), false);
+});

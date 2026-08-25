@@ -18,7 +18,10 @@
       ↷
     </button>
     <button
-      v-if="token.characterId"
+      v-if="
+        token.characterId &&
+        (token.capabilities.canObserve || token.capabilities.canManage)
+      "
       type="button"
       :title="$t('vtt.token.openActor')"
       @click="$emit('open-actor', token.characterId)"
