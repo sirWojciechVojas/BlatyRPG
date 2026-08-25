@@ -42,6 +42,20 @@ describe("characterApiClient", () => {
     expect(request).toHaveBeenCalledWith("/characters?campaignId=4", {});
   });
 
+  it("can exclude unassigned legacy records from a table list", async () => {
+    const request = vi.fn().mockResolvedValue({ items: [] });
+
+    await createCharacterApiClient({ request }).list(4, {
+      assignedOnly: true,
+      signal: "abort-signal",
+    });
+
+    expect(request).toHaveBeenCalledWith(
+      "/characters?campaignId=4&assignedOnly=true",
+      { signal: "abort-signal" },
+    );
+  });
+
   it("sends only editable sheet fields with the concurrency version", async () => {
     const request = vi.fn().mockResolvedValue({
       character: { id: 3, name: "Adele II", data: {} },

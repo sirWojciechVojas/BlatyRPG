@@ -56,7 +56,9 @@ final class CharacterDirectoryService
     {
         $context = $this->campaignContext($auth, $campaignId);
         $query = $this->characters;
-        if (!empty($context['canManageAll'])) {
+        if (!empty($filters['assigned_only'])) {
+            $query->where('campaign_id', $campaignId);
+        } elseif (!empty($context['canManageAll'])) {
             $query->groupStart()->where('campaign_id', $campaignId)
                 ->orWhere('campaign_id', null)->groupEnd();
         } else {

@@ -190,6 +190,19 @@ class CharacterController extends BaseController
     private function characterFilters(): array
     {
         $filters = [];
+        $assignedOnly = $this->request->getGet('assignedOnly');
+        if ($assignedOnly !== null) {
+            $value = filter_var($assignedOnly, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            if ($value === null) {
+                throw new CharacterException(
+                    'validation_failed',
+                    'Character filter is invalid.',
+                    422,
+                    ['assignedOnly' => 'A boolean value is required.']
+                );
+            }
+            $filters['assigned_only'] = $value;
+        }
         foreach ([
             'user_id' => 'userId',
             'system_id' => 'systemId',

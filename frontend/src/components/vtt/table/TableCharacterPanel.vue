@@ -128,7 +128,9 @@ export default {
       this.loading = true;
       this.loadError = "";
       try {
-        const result = await characterApiClient.list(this.campaignId);
+        const result = await characterApiClient.list(this.campaignId, {
+          assignedOnly: true,
+        });
         if (sequence !== this.listRequestSequence) return;
         this.characters = result.characters;
         const nextId = this.selectedId || this.characters[0]?.id;
