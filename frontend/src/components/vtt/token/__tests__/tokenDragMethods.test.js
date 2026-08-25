@@ -15,6 +15,7 @@ const context = (scale = 1) => {
     scene: { gridType: "square", gridSize: 100 },
     drag: null,
     preview: {},
+    busy: false,
     holdTokenPosition: vi.fn(),
     $emit: vi.fn(),
   };
@@ -78,7 +79,7 @@ describe("token pointer drag", () => {
     expect(vm.drag).toBeNull();
   });
 
-  it("selects but does not drag a token without control permission", () => {
+  it("does not drag a token without control permission", () => {
     const vm = context();
     const token = {
       id: 8,
@@ -98,7 +99,7 @@ describe("token pointer drag", () => {
       token,
     );
 
-    expect(vm.$emit).toHaveBeenCalledWith("select", 8);
+    expect(vm.$emit).not.toHaveBeenCalled();
     expect(vm.drag).toBeNull();
   });
 });

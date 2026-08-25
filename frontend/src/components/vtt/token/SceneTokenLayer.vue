@@ -12,7 +12,7 @@
       :class="{
         'scene-token-wrap--dragging': drag?.token.id === token.id,
         'scene-token-wrap--moving': movingTokenIds[token.id],
-        'scene-token-wrap--selected': token.id === selectedId,
+        'scene-token-wrap--selected': tokenStates[token.id].selected,
       }"
       :style="tokenStyle(token)"
       @transitionstart="startMotion($event, token.id)"
@@ -29,18 +29,21 @@
         class="scene-token"
         :class="[
           `scene-token--${token.disposition}`,
-          {
-            'scene-token--selected': token.id === selectedId,
-            'scene-token--hidden': token.hidden,
-            'scene-token--locked': token.locked,
-          },
+          stateClasses(tokenStates[token.id]),
         ]"
         :style="{ transform: `rotate(${token.rotation}deg)` }"
-        :aria-label="token.name"
-        :aria-pressed="token.id === selectedId"
-        :aria-disabled="!token.capabilities.canControl || token.locked"
+        :aria-label="stateLabel(token, tokenStates[token.id])"
+        :title="stateLabel(token, tokenStates[token.id])"
+        :aria-pressed="tokenStates[token.id].selected"
+        :aria-disabled="
+          tokenStates[token.id].disabled ||
+          tokenStates[token.id].uncontrolled ||
+          tokenStates[token.id].locked
+        "
         @pointerdown.stop="startDrag($event, token)"
-        @click.stop="$emit('select', token.id)"
+        @pointerenter="hoveredTokenId = token.id"
+        @pointerleave="hoveredTokenId = null"
+        @click.stop="selectToken($event, token.id)"
       >
         <img
           v-if="token.imageUrl"
@@ -51,6 +54,7 @@
         <span v-else>{{ initials(token.name) }}</span>
         <small>{{ token.name }}</small>
       </button>
+      <TokenStateOverlay :flags="tokenStates[token.id]" />
       <TokenHud
         v-if="token.id === selectedId"
         :token="token"
@@ -72,6 +76,7 @@
 <script>
 import TokenHud from "./TokenHud.vue";
 import TokenDragIndicator from "./TokenDragIndicator.vue";
+import TokenStateOverlay from "./TokenStateOverlay.vue";
 import { tokenDragMethods } from "./tokenDragMethods";
 import { buildTokenDragIndicator } from "./tokenDragIndicator";
 import {
@@ -79,14 +84,23 @@ import {
   tokenTravelDuration,
 } from "./tokenMotion";
 import { rotateTokenFacing, tokenFacingStyle } from "@/lib/vtt/tokenFacing";
+import {
+  activeTokenUiStates,
+  tokenUiClasses,
+  tokenUiFlags,
+} from "@/lib/vtt/tokenUiState";
 
 export default {
   name: "SceneTokenLayer",
-  components: { TokenDragIndicator, TokenHud },
+  components: { TokenDragIndicator, TokenHud, TokenStateOverlay },
   props: {
     scene: { type: Object, required: true },
     tokens: { type: Array, default: () => [] },
     selectedId: { type: [Number, String], default: null },
+    selectedIds: { type: Array, default: () => [] },
+    activeTurnId: { type: [Number, String], default: null },
+    waitingTurnIds: { type: Array, default: () => [] },
+    targetedIds: { type: Array, default: () => [] },
     scale: { type: Number, default: 1 },
     busy: { type: Boolean, default: false },
   },
@@ -98,8 +112,32 @@ export default {
     pendingTimers: new Map(),
     movingTokenIds: {},
     motionDurations: {},
+    hoveredTokenId: null,
   }),
   computed: {
+    effectiveSelectedIds() {
+      return this.selectedIds.length
+        ? this.selectedIds
+        : this.selectedId === null
+          ? []
+          : [this.selectedId];
+    },
+    tokenStates() {
+      return Object.fromEntries(
+        this.tokens.map((token) => [
+          token.id,
+          tokenUiFlags(token, {
+            selectedIds: this.effectiveSelectedIds,
+            hoveredId: this.hoveredTokenId,
+            draggingId: this.drag?.token.id,
+            activeTurnId: this.activeTurnId,
+            waitingTurnIds: this.waitingTurnIds,
+            targetedIds: this.targetedIds,
+            disabled: this.busy,
+          }),
+        ]),
+      );
+    },
     dragIndicator() {
       if (!this.drag) return null;
       return buildTokenDragIndicator(
@@ -138,6 +176,21 @@ export default {
     ...tokenDragMethods,
     facingStyle: tokenFacingStyle,
     rotatedFacing: rotateTokenFacing,
+    stateClasses: tokenUiClasses,
+    selectToken(event, tokenId) {
+      this.$emit("select", {
+        tokenId,
+        additive: event.ctrlKey || event.metaKey || event.shiftKey,
+      });
+    },
+    stateLabel(token, flags) {
+      const labels = activeTokenUiStates(flags)
+        .filter((state) => state !== "default")
+        .map((state) => this.$t(`vtt.token.states.${state}`));
+      return labels.length
+        ? `${token.name} — ${labels.join(", ")}`
+        : token.name;
+    },
     tokenStyle(token) {
       const position =
         this.preview[token.id] || this.pendingPositions[token.id] || token;

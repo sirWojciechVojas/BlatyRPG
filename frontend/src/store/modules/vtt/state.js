@@ -6,6 +6,7 @@ export const createVttState = () => ({
   tokensByScene: {},
   tokenCapabilitiesByScene: {},
   selectedTokenId: null,
+  selectedTokenIds: [],
   tokenPhase: "idle",
   wallsByScene: {},
   wallCapabilitiesByScene: {},

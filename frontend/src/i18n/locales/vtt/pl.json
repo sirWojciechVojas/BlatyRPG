@@ -90,7 +90,24 @@
       "rotateRight": "Obróć w prawo",
       "openActor": "Otwórz kartę postaci",
       "delete": "Usuń token",
-      "deleteConfirm": "Czy na pewno usunąć token „{name}”?"
+      "deleteConfirm": "Czy na pewno usunąć token „{name}”?",
+      "states": {
+        "hover": "pod kursorem",
+        "selected": "zaznaczony",
+        "multiSelected": "zaznaczenie grupowe",
+        "dragging": "przeciągany",
+        "locked": "zablokowany",
+        "disabled": "nieaktywny",
+        "controlled": "kontrolowany",
+        "uncontrolled": "bez kontroli",
+        "activeTurn": "aktywna tura",
+        "waitingTurn": "oczekuje na turę",
+        "targeted": "wybrany jako cel",
+        "hidden": "ukryty",
+        "GMOnly": "tylko dla MG",
+        "defeated": "pokonany",
+        "dead": "martwy"
+      }
     },
     "measurement": {
       "circle": "Okrągły obszar",

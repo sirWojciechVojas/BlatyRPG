@@ -28,7 +28,7 @@ final class TokenPresenter
             'light' => (array) ($row['light_json'] ?? []),
             'revision' => (int) $row['revision'],
             'capabilities' => [
-                'canControl' => $canControl && empty($row['locked']),
+                'canControl' => $canControl,
                 'canManage' => $canManage,
             ],
         ];

@@ -91,6 +91,9 @@ final class SceneTokenService
         $canManage = $this->canManage($auth, $campaignId, $sceneId, $capabilities);
         $canControl = $this->access->canControl($auth, $campaignId, $row, $canManage);
         if (!$canControl) throw new TokenException('forbidden', 'You cannot control this token.', 403);
+        if (!$canManage && !empty($row['locked'])) {
+            throw new TokenException('token_locked', 'This token is locked by the game master.', 403);
+        }
         $validated = $this->validator->update($payload);
         $this->assertValid($validated);
         $validated['data'] = $this->snapUpdateData($scene, $row, $validated['data']);

@@ -40,6 +40,11 @@ describe("VTT token store", () => {
 
     await store.dispatch("vtt/initialize");
     expect(store.getters["vtt/selectedSceneTokens"]).toEqual([token]);
+    store.commit("vtt/SELECT_TOKEN", 9);
+    store.commit("vtt/UPSERT_TOKEN", { ...token, id: 10 });
+    store.commit("vtt/SELECT_TOKEN", { tokenId: 10, additive: true });
+    expect(store.state.vtt.selectedTokenIds).toEqual([9, 10]);
+    expect(store.getters["vtt/selectedTokens"]).toHaveLength(2);
     await store.dispatch("vtt/updateToken", { token, changes: { x: 30 } });
     expect(tokenApi.update).toHaveBeenCalledWith(7, 4, 9, {
       x: 30,
@@ -47,6 +52,9 @@ describe("VTT token store", () => {
     });
     expect(store.getters["vtt/selectedSceneTokens"][0].x).toBe(30);
     await store.dispatch("vtt/deleteToken", { ...token, revision: 2 });
-    expect(store.getters["vtt/selectedSceneTokens"]).toEqual([]);
+    expect(store.getters["vtt/selectedSceneTokens"]).toEqual([
+      { ...token, id: 10 },
+    ]);
+    expect(store.state.vtt.selectedTokenIds).toEqual([10]);
   });
 });

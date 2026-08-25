@@ -1,8 +1,12 @@
 import { snapTokenPosition } from "@/lib/vtt/grid";
 
 export const tableTokenMethods = {
-  selectToken(tokenId) {
-    this.$store.commit("vtt/SELECT_TOKEN", Number(tokenId));
+  selectToken(selection) {
+    const tokenId = selection?.tokenId ?? selection;
+    this.$store.commit("vtt/SELECT_TOKEN", {
+      tokenId: Number(tokenId),
+      additive: selection?.additive === true,
+    });
   },
   async createToken({ actor, x, y }) {
     if (!this.selectedScene || !this.canCreateToken) return;

@@ -90,7 +90,24 @@
       "rotateRight": "Rotate right",
       "openActor": "Open character sheet",
       "delete": "Delete token",
-      "deleteConfirm": "Are you sure you want to delete the “{name}” token?"
+      "deleteConfirm": "Are you sure you want to delete the “{name}” token?",
+      "states": {
+        "hover": "hovered",
+        "selected": "selected",
+        "multiSelected": "group selection",
+        "dragging": "dragged",
+        "locked": "locked",
+        "disabled": "disabled",
+        "controlled": "controlled",
+        "uncontrolled": "uncontrolled",
+        "activeTurn": "active turn",
+        "waitingTurn": "waiting for turn",
+        "targeted": "targeted",
+        "hidden": "hidden",
+        "GMOnly": "GM only",
+        "defeated": "defeated",
+        "dead": "dead"
+      }
     },
     "measurement": {
       "circle": "Circular area",

@@ -3,7 +3,7 @@
     <strong>{{ token.name }}</strong>
     <button
       type="button"
-      :disabled="busy || !token.capabilities.canControl"
+      :disabled="busy || token.locked || !token.capabilities.canControl"
       :title="$t('vtt.token.rotateLeft')"
       @click="$emit('rotate', -15)"
     >
@@ -11,7 +11,7 @@
     </button>
     <button
       type="button"
-      :disabled="busy || !token.capabilities.canControl"
+      :disabled="busy || token.locked || !token.capabilities.canControl"
       :title="$t('vtt.token.rotateRight')"
       @click="$emit('rotate', 15)"
     >

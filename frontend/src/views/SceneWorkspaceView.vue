@@ -76,6 +76,7 @@
           :active-tool="activeSceneTool"
           :tokens="selectedSceneTokens"
           :selected-token-id="state.selectedTokenId"
+          :selected-token-ids="state.selectedTokenIds"
           :token-busy="tokenBusy"
           :can-create-token="canCreateToken"
           :walls="selectedSceneWalls"

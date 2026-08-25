@@ -112,6 +112,7 @@
           :scene="scene"
           :tokens="tokens"
           :selected-id="selectedTokenId"
+          :selected-ids="selectedTokenIds"
           :scale="camera.scale"
           :busy="tokenBusy"
           @select="$emit('token-select', $event)"
@@ -157,6 +158,7 @@ export default {
     activeTool: { type: String, default: "select" },
     tokens: { type: Array, default: () => [] },
     selectedTokenId: { type: [Number, String], default: null },
+    selectedTokenIds: { type: Array, default: () => [] },
     tokenBusy: { type: Boolean, default: false },
     canCreateToken: { type: Boolean, default: false },
     walls: { type: Array, default: () => [] },

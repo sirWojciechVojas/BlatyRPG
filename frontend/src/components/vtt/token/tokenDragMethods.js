@@ -27,8 +27,13 @@ const releasePointer = (drag) => {
 
 export const tokenDragMethods = {
   startDrag(event, token) {
-    this.$emit("select", token.id);
-    if (!token.capabilities?.canControl || token.locked || event.button !== 0) {
+    if (
+      this.busy ||
+      token.disabled ||
+      !token.capabilities?.canControl ||
+      token.locked ||
+      event.button !== 0
+    ) {
       return;
     }
     this.cancelDrag();

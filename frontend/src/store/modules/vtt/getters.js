@@ -12,6 +12,10 @@ export const vttGetters = {
     getters.selectedSceneTokens.find(
       (token) => token.id === state.selectedTokenId,
     ) || null,
+  selectedTokens: (state, getters) =>
+    getters.selectedSceneTokens.filter((token) =>
+      state.selectedTokenIds.includes(token.id),
+    ),
   canCreateToken: (state) =>
     state.tokenCapabilitiesByScene[String(state.selectedSceneId)]?.canCreate ===
     true,

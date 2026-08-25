@@ -11,6 +11,7 @@ export const vttMutations = {
     state.tokensByScene = {};
     state.tokenCapabilitiesByScene = {};
     state.selectedTokenId = null;
+    state.selectedTokenIds = [];
     state.tokenPhase = "idle";
     state.wallsByScene = {};
     state.wallCapabilitiesByScene = {};
@@ -52,6 +53,7 @@ export const vttMutations = {
   SELECT_SCENE(state, sceneId) {
     state.selectedSceneId = sceneId;
     state.selectedTokenId = null;
+    state.selectedTokenIds = [];
     state.selectedWallId = null;
     state.selectedLightId = null;
     state.selectedTileId = null;
@@ -63,8 +65,12 @@ export const vttMutations = {
       [String(sceneId)]: capabilities,
     };
     state.tokenPhase = "ready";
-    if (!items.some((token) => token.id === state.selectedTokenId)) {
-      state.selectedTokenId = null;
+    const availableIds = new Set(items.map((token) => token.id));
+    state.selectedTokenIds = state.selectedTokenIds.filter((id) =>
+      availableIds.has(id),
+    );
+    if (!availableIds.has(state.selectedTokenId)) {
+      state.selectedTokenId = state.selectedTokenIds.at(-1) ?? null;
     }
   },
   UPSERT_TOKEN(state, token) {
@@ -83,10 +89,29 @@ export const vttMutations = {
         (token) => token.id !== tokenId,
       ),
     };
-    if (state.selectedTokenId === tokenId) state.selectedTokenId = null;
+    state.selectedTokenIds = state.selectedTokenIds.filter(
+      (id) => id !== tokenId,
+    );
+    if (state.selectedTokenId === tokenId) {
+      state.selectedTokenId = state.selectedTokenIds.at(-1) ?? null;
+    }
   },
-  SELECT_TOKEN(state, tokenId) {
+  SELECT_TOKEN(state, selection) {
+    const value = selection?.tokenId ?? selection;
+    const tokenId = Number(value);
+    if (!Number.isFinite(tokenId)) return;
+    if (selection?.additive === true) {
+      const selected = state.selectedTokenIds.includes(tokenId);
+      state.selectedTokenIds = selected
+        ? state.selectedTokenIds.filter((id) => id !== tokenId)
+        : [...state.selectedTokenIds, tokenId];
+      state.selectedTokenId = selected
+        ? (state.selectedTokenIds.at(-1) ?? null)
+        : tokenId;
+      return;
+    }
     state.selectedTokenId = tokenId;
+    state.selectedTokenIds = [tokenId];
   },
   SET_TOKEN_PHASE(state, phase) {
     state.tokenPhase = phase;
