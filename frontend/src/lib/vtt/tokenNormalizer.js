@@ -1,3 +1,5 @@
+import { normalizeTokenAngle } from "./tokenFacing";
+
 const number = (value, fallback = 0) => {
   const result = Number(value);
   return Number.isFinite(result) ? result : fallback;
@@ -16,7 +18,8 @@ export const normalizeToken = (source = {}) => ({
   y: number(source.y),
   width: number(source.width, 100),
   height: number(source.height, 100),
-  rotation: number(source.rotation),
+  rotation: normalizeTokenAngle(source.rotation),
+  facing: normalizeTokenAngle(source.facing, source.rotation),
   elevation: number(source.elevation),
   disposition: String(source.disposition || "neutral"),
   hidden: source.hidden === true || source.hidden === 1,
@@ -42,6 +45,7 @@ export const tokenWritePayload = (changes = {}, includeRevision = false) => {
     "width",
     "height",
     "rotation",
+    "facing",
     "elevation",
     "disposition",
     "hidden",

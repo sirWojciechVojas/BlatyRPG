@@ -12,12 +12,18 @@
       :class="{
         'scene-token-wrap--dragging': drag?.token.id === token.id,
         'scene-token-wrap--moving': movingTokenIds[token.id],
+        'scene-token-wrap--selected': token.id === selectedId,
       }"
       :style="tokenStyle(token)"
       @transitionstart="startMotion($event, token.id)"
       @transitionend="finishMotion($event, token.id)"
       @transitioncancel="finishMotion($event, token.id)"
     >
+      <i
+        class="scene-token-facing"
+        :style="facingStyle(token)"
+        aria-hidden="true"
+      />
       <button
         type="button"
         class="scene-token"
@@ -53,7 +59,7 @@
         @rotate="
           $emit('update', {
             token,
-            changes: { rotation: token.rotation + $event },
+            changes: rotatedFacing(token, $event),
           })
         "
         @open-actor="$emit('open-actor', $event)"
@@ -72,6 +78,7 @@ import {
   pendingTokenPositionResolved,
   tokenTravelDuration,
 } from "./tokenMotion";
+import { rotateTokenFacing, tokenFacingStyle } from "@/lib/vtt/tokenFacing";
 
 export default {
   name: "SceneTokenLayer",
@@ -129,6 +136,8 @@ export default {
   },
   methods: {
     ...tokenDragMethods,
+    facingStyle: tokenFacingStyle,
+    rotatedFacing: rotateTokenFacing,
     tokenStyle(token) {
       const position =
         this.preview[token.id] || this.pendingPositions[token.id] || token;

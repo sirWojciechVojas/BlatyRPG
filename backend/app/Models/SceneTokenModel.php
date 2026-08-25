@@ -12,7 +12,7 @@ class SceneTokenModel extends Model
     protected $useSoftDeletes = true;
     protected $allowedFields = [
         'campaign_id', 'scene_id', 'character_id', 'name', 'image_url',
-        'x', 'y', 'width', 'height', 'rotation', 'elevation', 'disposition',
+        'x', 'y', 'width', 'height', 'rotation', 'facing', 'elevation', 'disposition',
         'hidden', 'locked', 'bars_json', 'statuses_json', 'vision_json',
         'light_json', 'sort_order', 'revision',
     ];
@@ -33,7 +33,7 @@ class SceneTokenModel extends Model
             foreach (['id', 'campaign_id', 'scene_id', 'character_id', 'sort_order', 'revision'] as $field) {
                 if (isset($row[$field])) $row[$field] = (int) $row[$field];
             }
-            foreach (['x', 'y', 'width', 'height', 'rotation', 'elevation'] as $field) {
+            foreach (['x', 'y', 'width', 'height', 'rotation', 'facing', 'elevation'] as $field) {
                 if (isset($row[$field])) $row[$field] = (float) $row[$field];
             }
             foreach (['hidden', 'locked'] as $field) {

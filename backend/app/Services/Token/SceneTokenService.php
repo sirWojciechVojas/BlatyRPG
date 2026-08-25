@@ -11,7 +11,7 @@ use CodeIgniter\Database\BaseConnection;
 
 final class SceneTokenService
 {
-    private const OWNER_FIELDS = ['x', 'y', 'rotation', 'elevation'];
+    private const OWNER_FIELDS = ['x', 'y', 'rotation', 'facing', 'elevation'];
     private $db;
     private $tokens;
     private $scenes;

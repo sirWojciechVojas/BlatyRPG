@@ -16,6 +16,8 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
             'y' => 240,
             'width' => 80,
             'height' => 80,
+            'rotation' => 370,
+            'facing' => -15,
             'disposition' => 'HOSTILE',
             'hidden' => 'false',
         ]);
@@ -25,6 +27,8 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
         $this->assertSame('Strażnik', $result['data']['name']);
         $this->assertSame('hostile', $result['data']['disposition']);
         $this->assertSame(0, $result['data']['hidden']);
+        $this->assertSame(10.0, $result['data']['rotation']);
+        $this->assertSame(345.0, $result['data']['facing']);
     }
 
     public function testUpdateRequiresRevisionAndAWritableField(): void

@@ -15,7 +15,15 @@ test("forwards token moves using authoritative session scope", async () => {
     fetch: async (url, options) => {
       call = { url, options };
       return new Response(JSON.stringify({
-        token: { id: 9, sceneId: 4, name: "Guard", x: 30, y: 40, revision: 4 },
+        token: {
+          id: 9,
+          sceneId: 4,
+          name: "Guard",
+          x: 30,
+          y: 40,
+          rotation: 90,
+          revision: 4,
+        },
         visibility: { publishToPlayers: true },
       }), { status: 200 });
     },
@@ -30,6 +38,7 @@ test("forwards token moves using authoritative session scope", async () => {
     sceneId: 4, tokenId: 9, revision: 3, x: 30, y: 40,
   });
   assert.equal(result.token.revision, 4);
+  assert.equal(result.token.facing, 90);
   assert.equal(result.publishToPlayers, true);
 });
 

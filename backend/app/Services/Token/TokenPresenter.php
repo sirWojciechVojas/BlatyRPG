@@ -17,6 +17,7 @@ final class TokenPresenter
             'width' => (float) $row['width'],
             'height' => (float) $row['height'],
             'rotation' => (float) $row['rotation'],
+            'facing' => (float) ($row['facing'] ?? $row['rotation']),
             'elevation' => (float) $row['elevation'],
             'disposition' => (string) $row['disposition'],
             'hidden' => (bool) $row['hidden'],

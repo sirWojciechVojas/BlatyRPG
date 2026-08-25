@@ -39,6 +39,7 @@ const token = (value) => {
     width: coordinate(value.width) ?? 100,
     height: coordinate(value.height) ?? 100,
     rotation: coordinate(value.rotation) ?? 0,
+    facing: coordinate(value.facing ?? value.rotation) ?? 0,
     elevation: coordinate(value.elevation) ?? 0,
     revision,
     hidden: value.hidden === true,

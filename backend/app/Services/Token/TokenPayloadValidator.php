@@ -5,11 +5,11 @@ namespace App\Services\Token;
 final class TokenPayloadValidator
 {
     private const TEXT_LIMITS = ['name' => 150, 'imageUrl' => 2048];
-    private const NUMBERS = ['x', 'y', 'width', 'height', 'rotation', 'elevation'];
+    private const NUMBERS = ['x', 'y', 'width', 'height', 'rotation', 'facing', 'elevation'];
     private const DISPOSITIONS = ['friendly', 'neutral', 'hostile', 'secret'];
     private const WRITABLE = [
         'characterId', 'name', 'imageUrl', 'x', 'y', 'width', 'height',
-        'rotation', 'elevation', 'disposition', 'hidden', 'locked',
+        'rotation', 'facing', 'elevation', 'disposition', 'hidden', 'locked',
     ];
 
     public function create(array $payload): array
@@ -58,8 +58,14 @@ final class TokenPayloadValidator
         }
         foreach (self::NUMBERS as $field) {
             if (!array_key_exists($field, $payload)) continue;
-            if (!is_numeric($payload[$field])) $result['errors'][$field] = 'A number is required.';
-            else $result['data'][$field] = (float) $payload[$field];
+            if (!is_numeric($payload[$field]) || !is_finite((float) $payload[$field])) {
+                $result['errors'][$field] = 'A finite number is required.';
+            } else {
+                $value = (float) $payload[$field];
+                $result['data'][$field] = in_array($field, ['rotation', 'facing'], true)
+                    ? $this->angle($value)
+                    : $value;
+            }
         }
         foreach (['width', 'height'] as $field) {
             if (isset($result['data'][$field]) && ($result['data'][$field] < 8 || $result['data'][$field] > 10000)) {
@@ -78,7 +84,10 @@ final class TokenPayloadValidator
             if (!in_array($value, self::DISPOSITIONS, true)) $result['errors']['disposition'] = 'Disposition is invalid.';
             else $result['data']['disposition'] = $value;
         }
-        if (!$partial) $result['data'] += ['x' => 0, 'y' => 0, 'width' => 100, 'height' => 100];
+        if (!$partial) {
+            $result['data'] += ['x' => 0, 'y' => 0, 'width' => 100, 'height' => 100];
+            $result['data']['facing'] ??= $result['data']['rotation'] ?? 0;
+        }
         return $result;
     }
 
@@ -117,5 +126,11 @@ final class TokenPayloadValidator
     private function snake(string $value): string
     {
         return strtolower((string) preg_replace('/(?<!^)[A-Z]/', '_$0', $value));
+    }
+
+    private function angle(float $value): float
+    {
+        $angle = fmod($value, 360.0);
+        return round($angle < 0 ? $angle + 360.0 : $angle, 3);
     }
 }
