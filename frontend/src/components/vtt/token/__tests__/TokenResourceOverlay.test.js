@@ -8,6 +8,7 @@ import {
   normalizeTokenResources,
   tokenBarPercent,
 } from "@/lib/vtt/tokenResources";
+import { tokenResourceBubbleOffsets } from "@/lib/vtt/tokenResourcePosition";
 
 const loadComponent = () => {
   const path = resolve(
@@ -17,18 +18,24 @@ const loadComponent = () => {
   const { descriptor } = parse(readFileSync(path, "utf8"), { filename: path });
   const executable = descriptor.script.content
     .replace(/import \{[\s\S]*?\} from "@\/lib\/vtt\/tokenResources";/u, "")
+    .replace(
+      /import \{[\s\S]*?\} from "@\/lib\/vtt\/tokenResourcePosition";/u,
+      "",
+    )
     .replace("export default {", "return {");
   return new Function(
     "activeTokenResources",
     "cloneTokenResources",
     "normalizeTokenResources",
     "tokenBarPercent",
+    "tokenResourceBubbleOffsets",
     executable,
   )(
     activeTokenResources,
     cloneTokenResources,
     normalizeTokenResources,
     tokenBarPercent,
+    tokenResourceBubbleOffsets,
   );
 };
 
@@ -65,5 +72,23 @@ describe("TokenResourceOverlay", () => {
         ]),
       }),
     );
+  });
+
+  it("keeps bubbles clear of bars rendered on the same side", () => {
+    const component = loadComponent();
+    const context = {
+      barPosition: "below",
+      resources: {
+        bars: [
+          { enabled: true, label: "HP" },
+          { enabled: true, label: "PR" },
+        ],
+      },
+    };
+
+    expect(component.computed.overlayStyle.call(context)).toEqual({
+      "--token-resource-bubble-top": "-42px",
+      "--token-resource-bubble-bottom": "-93px",
+    });
   });
 });

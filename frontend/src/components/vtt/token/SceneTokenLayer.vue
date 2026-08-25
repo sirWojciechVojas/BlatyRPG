@@ -75,6 +75,7 @@
       <TokenResourceOverlay
         v-if="tokenInfoVisible(token)"
         :resources="token.resources"
+        :bar-position="token.resourceBarPosition"
         :editable="resourceEditable(token)"
         @update="updateTokenResources(token, $event)"
       />

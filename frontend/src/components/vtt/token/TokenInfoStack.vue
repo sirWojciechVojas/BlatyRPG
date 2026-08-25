@@ -12,7 +12,10 @@
 <script>
 import TokenResourceBars from "./TokenResourceBars.vue";
 import { tokenDisplayResourceBars } from "@/lib/vtt/tokenResources";
-import { normalizeTokenResourceBarPosition } from "@/lib/vtt/tokenResourcePosition";
+import {
+  normalizeTokenResourceBarPosition,
+  tokenResourceStackHeight,
+} from "@/lib/vtt/tokenResourcePosition";
 
 export default {
   name: "TokenInfoStack",
@@ -26,7 +29,7 @@ export default {
     },
     stackStyle() {
       const count = tokenDisplayResourceBars(this.token).length;
-      const height = count > 0 ? count * 15 - 2 : 0;
+      const height = tokenResourceStackHeight(count);
       return {
         "--token-resource-stack-height": `${height}px`,
         "--token-resource-stack-half-height": `${height / 2}px`,

@@ -1,5 +1,9 @@
 <template>
-  <span v-if="hasResources" class="token-resource-overlay">
+  <span
+    v-if="hasResources"
+    class="token-resource-overlay"
+    :style="overlayStyle"
+  >
     <span
       v-for="entry in bubbleEntries"
       :key="`${entry.item.position}-${entry.index}`"
@@ -40,12 +44,14 @@ import {
   cloneTokenResources,
   normalizeTokenResources,
 } from "@/lib/vtt/tokenResources";
+import { tokenResourceBubbleOffsets } from "@/lib/vtt/tokenResourcePosition";
 
 export default {
   name: "TokenResourceOverlay",
   props: {
     resources: { type: Object, default: () => ({}) },
     editable: { type: Boolean, default: false },
+    barPosition: { type: String, default: "below" },
   },
   emits: ["update"],
   data: () => ({ editingIndex: null, draftValue: "" }),
@@ -57,6 +63,16 @@ export default {
       return normalizeTokenResources(this.resources)
         .bubbles.map((item, index) => ({ item, index }))
         .filter(({ item }) => item.enabled);
+    },
+    overlayStyle() {
+      const barCount = normalizeTokenResources(this.resources).bars.filter(
+        ({ enabled }) => enabled,
+      ).length;
+      const offsets = tokenResourceBubbleOffsets(this.barPosition, barCount);
+      return {
+        "--token-resource-bubble-top": `-${offsets.top}px`,
+        "--token-resource-bubble-bottom": `-${offsets.bottom}px`,
+      };
     },
   },
   methods: {

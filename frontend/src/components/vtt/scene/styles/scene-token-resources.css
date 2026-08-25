@@ -70,6 +70,7 @@
   border: 2px solid #d85f56;
   border-radius: 50%;
   box-shadow: 0 2px 6px rgb(0 0 0 / 70%);
+  transition: top 160ms ease, bottom 160ms ease;
 }
 
 .token-resource-bubble--slot-2 {
@@ -128,9 +129,9 @@
   white-space: nowrap;
 }
 .token-resource-bubble b { font-size: 13px; line-height: 1; }
-.token-resource-bubble--top-left { top: -42px; left: -13px; }
-.token-resource-bubble--top-center { top: -42px; left: 50%; transform: translateX(-50%); }
-.token-resource-bubble--top-right { top: -42px; right: -13px; }
-.token-resource-bubble--bottom-left { bottom: -56px; left: -13px; }
-.token-resource-bubble--bottom-center { bottom: -56px; left: 50%; transform: translateX(-50%); }
-.token-resource-bubble--bottom-right { right: -13px; bottom: -56px; }
+.token-resource-bubble--top-left { top: var(--token-resource-bubble-top, -42px); left: -13px; }
+.token-resource-bubble--top-center { top: var(--token-resource-bubble-top, -42px); left: 50%; transform: translateX(-50%); }
+.token-resource-bubble--top-right { top: var(--token-resource-bubble-top, -42px); right: -13px; }
+.token-resource-bubble--bottom-left { bottom: var(--token-resource-bubble-bottom, -66px); left: -13px; }
+.token-resource-bubble--bottom-center { bottom: var(--token-resource-bubble-bottom, -66px); left: 50%; transform: translateX(-50%); }
+.token-resource-bubble--bottom-right { right: -13px; bottom: var(--token-resource-bubble-bottom, -66px); }

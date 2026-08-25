@@ -139,7 +139,10 @@
 import TokenStatusMenu from "./TokenStatusMenu.vue";
 import TokenResourceQuickPanel from "./TokenResourceQuickPanel.vue";
 import { activeTokenResources } from "@/lib/vtt/tokenResources";
-import { normalizeTokenResourceBarPosition } from "@/lib/vtt/tokenResourcePosition";
+import {
+  normalizeTokenResourceBarPosition,
+  tokenResourceStackHeight,
+} from "@/lib/vtt/tokenResourcePosition";
 
 export default {
   name: "TokenHud",
@@ -167,7 +170,7 @@ export default {
     hudStyle() {
       const inverse = 1 / Math.max(0.1, Number(this.scale) || 1);
       const count = this.activeResources.bars.length;
-      const stackHeight = count > 0 ? count * 15 - 2 : 0;
+      const stackHeight = tokenResourceStackHeight(count);
       const position = normalizeTokenResourceBarPosition(
         this.token.resourceBarPosition,
       );

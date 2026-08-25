@@ -82,6 +82,7 @@
         <TokenResourceOverlay
           v-if="informationVisible"
           :resources="previewToken.resources"
+          :bar-position="previewToken.resourceBarPosition"
         />
         <TokenInfoStack v-if="informationVisible" :token="previewToken" />
       </div>
