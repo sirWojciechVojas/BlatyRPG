@@ -18,18 +18,18 @@ final class CharacterAccessPolicy
         if ($userId < 1 || !empty($auth['anonymous'])) {
             return $denied;
         }
-        if (strtolower((string) ($auth['role'] ?? '')) === 'admin') {
-            return [
-                'canAccess' => true,
-                'canManageAll' => true,
-                'canCreateCharacters' => false,
-            ];
-        }
         if ((int) ($campaign['game_master_id'] ?? 0) === $userId) {
             return [
                 'canAccess' => true,
                 'canManageAll' => true,
                 'canCreateCharacters' => true,
+            ];
+        }
+        if (strtolower((string) ($auth['role'] ?? '')) === 'admin') {
+            return [
+                'canAccess' => true,
+                'canManageAll' => true,
+                'canCreateCharacters' => false,
             ];
         }
         if (!$membership || empty($membership['is_active'])) {

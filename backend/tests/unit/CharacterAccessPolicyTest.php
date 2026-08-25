@@ -106,6 +106,17 @@ final class CharacterAccessPolicyTest extends CIUnitTestCase
         $this->assertFalse($access['canCreateCharacters']);
     }
 
+    public function testCampaignGmCanCreateDespiteAdministratorAccountRole(): void
+    {
+        $access = $this->policy->campaign(
+            ['user_id' => 2, 'role' => 'admin', 'anonymous' => false],
+            ['game_master_id' => 2],
+            null
+        );
+
+        $this->assertTrue($access['canCreateCharacters']);
+    }
+
     public function testAssistantPermissionDoesNotGrantGmCharacterCreation(): void
     {
         $access = $this->policy->campaign(
