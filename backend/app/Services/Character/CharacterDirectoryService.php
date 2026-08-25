@@ -147,6 +147,7 @@ final class CharacterDirectoryService
         if (empty($context['canCreateCharacters'])) {
             throw new CharacterException('forbidden', 'Only a campaign GM can create characters.', 403);
         }
+        CharacterCampaignGameGuard::assertMatches($context['_campaign'], $data);
         $this->catalog->assertActiveGame((int) $data['system_id'], (int) $data['universe_id']);
         $data['user_id'] = null;
         $data['revision'] = 1;
@@ -278,7 +279,7 @@ final class CharacterDirectoryService
         if (!$access['canAccess']) {
             throw new CharacterException('forbidden', 'Campaign is outside your access scope.', 403);
         }
-        return $access + $auth + ['isAdmin' => $auth['role'] === 'admin'];
+        return $access + $auth + ['isAdmin' => $auth['role'] === 'admin', '_campaign' => $campaign];
     }
 
     private function verifiedAuth(array $auth): array
