@@ -37,6 +37,15 @@
   flex: 0 0 auto;
 }
 
+.table-character-panel__browser header .table-character-panel__create {
+  color: #271706;
+  font-size: 1rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #f4d691, #c87936);
+  border-color: #f5d99a;
+  box-shadow: 0 0 9px rgb(221 152 60 / 28%);
+}
+
 .table-character-panel__browser > button {
   display: grid;
   width: 100%;

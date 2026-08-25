@@ -9,6 +9,17 @@
           :aria-label="$t('characters.list.title')"
         />
         <button
+          v-if="canCreate"
+          type="button"
+          class="table-character-panel__create"
+          :disabled="creating"
+          :title="$t('characters.actions.new')"
+          :aria-label="$t('characters.actions.new')"
+          @click="openCreate"
+        >
+          ＋
+        </button>
+        <button
           type="button"
           :disabled="loading"
           :title="$t('characters.actions.refresh')"
@@ -65,19 +76,29 @@
         @delete="deleteCharacter"
       />
     </div>
+    <CharacterCreateDialog
+      v-if="showingCreate && canCreate"
+      :games="games"
+      :busy="creating || catalogLoading"
+      :error="createError"
+      @close="showingCreate = false"
+      @create="createCharacter"
+    />
   </section>
 </template>
 
 <script>
+import CharacterCreateDialog from "@/components/characters/CharacterCreateDialog.vue";
 import CharacterSheetEditor from "@/components/characters/CharacterSheetEditor.vue";
 import { characterApiClient } from "@/lib/character/characterApiClient";
 import { characterErrorKey } from "@/lib/character/characterErrorKey";
 import { resolveCharacterAvatar } from "@/lib/trade/characterAvatar";
 import { beginActorDrag, endActorDrag } from "@/lib/vtt/actorDragSession";
+import { tableCharacterCreationMethods } from "./tableCharacterCreationMethods";
 
 export default {
   name: "TableCharacterPanel",
-  components: { CharacterSheetEditor },
+  components: { CharacterCreateDialog, CharacterSheetEditor },
   props: {
     campaignId: { type: [Number, String], required: true },
     canCreateToken: { type: Boolean, default: false },
@@ -95,9 +116,16 @@ export default {
     loadError: "",
     saveError: "",
     notice: "",
+    games: [],
+    canCreate: false,
+    showingCreate: false,
+    creating: false,
+    catalogLoading: false,
+    createError: "",
     draggedCharacterId: null,
     listRequestSequence: 0,
     sheetRequestSequence: 0,
+    createRequestSequence: 0,
   }),
   computed: {
     filteredCharacters() {
@@ -118,15 +146,18 @@ export default {
   beforeUnmount() {
     this.listRequestSequence += 1;
     this.sheetRequestSequence += 1;
+    this.createRequestSequence += 1;
     endActorDrag();
   },
   methods: {
+    ...tableCharacterCreationMethods,
     resetAndLoad() {
       this.listRequestSequence += 1;
       this.sheetRequestSequence += 1;
       this.characters = [];
       this.selectedId = null;
       this.selectedCharacter = null;
+      this.resetCharacterCreation();
       this.loadCharacters();
     },
     async loadCharacters() {
@@ -139,6 +170,7 @@ export default {
         });
         if (sequence !== this.listRequestSequence) return;
         this.characters = result.characters;
+        this.configureCharacterCreation(result, sequence);
         const nextId = this.selectedId || this.characters[0]?.id;
         if (nextId) await this.selectCharacter(nextId);
       } catch (error) {
@@ -222,6 +254,9 @@ export default {
       );
       if (index < 0) this.characters.push(character);
       else this.characters.splice(index, 1, character);
+      this.characters.sort((left, right) =>
+        left.name.localeCompare(right.name),
+      );
     },
     avatar(character) {
       return resolveCharacterAvatar(character, character.name);
