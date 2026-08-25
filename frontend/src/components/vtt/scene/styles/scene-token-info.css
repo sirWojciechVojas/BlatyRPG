@@ -16,19 +16,42 @@
 
 .scene-token-info-stack {
   position: absolute;
-  top: calc(100% + 7px);
-  left: 50%;
   z-index: 12;
-  display: grid;
-  width: max(100%, 82px);
-  gap: 3px;
-  transform: translateX(-50%);
+  inset: 0;
   pointer-events: none;
 }
 
+.scene-token-info-stack > .token-resource-bars {
+  position: absolute;
+  left: 50%;
+  width: max(100%, 82px);
+}
+
+.scene-token-info-stack--above > .token-resource-bars {
+  bottom: calc(100% + 7px);
+  transform: translateX(-50%);
+}
+
+.scene-token-info-stack--top-overlap > .token-resource-bars {
+  top: 0;
+  transform: translate(-50%, -50%);
+}
+
+.scene-token-info-stack--bottom-overlap > .token-resource-bars {
+  top: 100%;
+  transform: translate(-50%, -50%);
+}
+
+.scene-token-info-stack--below > .token-resource-bars {
+  top: calc(100% + 7px);
+  transform: translateX(-50%);
+}
+
 .scene-token-name {
+  position: absolute;
+  top: calc(100% + 7px);
+  left: 50%;
   display: block;
-  justify-self: center;
   max-width: 170px;
   padding: 2px 5px;
   overflow: hidden;
@@ -39,5 +62,14 @@
   white-space: nowrap;
   background: rgb(8 6 5 / 88%);
   border-radius: 3px;
+  transform: translateX(-50%);
   pointer-events: none;
+}
+
+.scene-token-info-stack--bottom-overlap .scene-token-name {
+  top: calc(100% + var(--token-resource-stack-half-height) + 5px);
+}
+
+.scene-token-info-stack--below .scene-token-name {
+  top: calc(100% + var(--token-resource-stack-height) + 10px);
 }

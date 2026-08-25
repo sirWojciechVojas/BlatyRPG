@@ -9,6 +9,10 @@
         $t("vtt.token.resources.actor", { name: actor?.name || "—" })
       }}</span>
     </header>
+    <TokenResourcePositionPicker
+      :model-value="barPosition"
+      @update:model-value="$emit('update:barPosition', $event)"
+    />
     <div class="token-resource-settings__bars">
       <fieldset v-for="(bar, index) in normalized.bars" :key="`bar-${index}`">
         <legend>
@@ -141,14 +145,17 @@ import {
   normalizeTokenResources,
   numericActorAttributes,
 } from "@/lib/vtt/tokenResources";
+import TokenResourcePositionPicker from "./TokenResourcePositionPicker.vue";
 
 export default {
   name: "TokenResourceSettings",
+  components: { TokenResourcePositionPicker },
   props: {
     modelValue: { type: Object, default: () => ({}) },
     actor: { type: Object, default: null },
+    barPosition: { type: String, default: "below" },
   },
-  emits: ["update:modelValue"],
+  emits: ["update:modelValue", "update:barPosition"],
   data: () => ({
     positions: [
       "top-left",

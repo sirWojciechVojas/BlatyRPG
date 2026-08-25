@@ -27,13 +27,14 @@ describe("token presentation layout", () => {
     );
   });
 
-  it("places resource bars before the name in the stack below the token", () => {
+  it("positions the resource stack independently from the token name", () => {
     const source = template("TokenInfoStack");
 
     expect(source.indexOf("<TokenResourceBars")).toBeLessThan(
       source.indexOf('class="scene-token-name"'),
     );
     expect(source).not.toContain("TokenMovementBar");
+    expect(source).toContain("scene-token-info-stack--${position}");
   });
 
   it("balances four actions on both HUD rails", () => {
@@ -59,7 +60,7 @@ describe("token presentation layout", () => {
     expect(panel.indexOf("<TokenSettingsPreview")).toBeLessThan(
       panel.indexOf('class="token-settings-panel__body"'),
     );
-    expect(preview).toContain("<TokenResourceBars");
+    expect(preview).toContain("<TokenInfoStack");
     expect(preview).toContain("<TokenResourceOverlay");
     expect(preview).toContain("previewToken.rotation");
     expect(preview).toContain("previewToken.facing");

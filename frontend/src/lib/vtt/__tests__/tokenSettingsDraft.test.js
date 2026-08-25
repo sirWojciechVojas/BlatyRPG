@@ -40,6 +40,7 @@ describe("tokenSettingsDraft", () => {
         movementSpent: 2,
         movementResetMode: "round",
         showInfoUnselected: true,
+        resourceBarPosition: "top-overlap",
         resources: { bubbles: [{ enabled: true, value: 3 }] },
       },
       100,
@@ -56,6 +57,7 @@ describe("tokenSettingsDraft", () => {
     expect(payload.movementSpent).toBe(2);
     expect(payload.movementResetMode).toBe("round");
     expect(payload.showInfoUnselected).toBe(true);
+    expect(payload.resourceBarPosition).toBe("top-overlap");
     expect(payload.resources.bubbles[0]).toMatchObject({
       enabled: true,
       value: 3,
@@ -75,6 +77,10 @@ describe("tokenSettingsDraft", () => {
     );
     expect(tokenSettingsPayload(draft, 80, false)).not.toHaveProperty(
       "showInfoUnselected",
+    );
+    expect(tokenSettingsPayload(draft, 80, false)).toHaveProperty(
+      "resourceBarPosition",
+      "below",
     );
   });
 

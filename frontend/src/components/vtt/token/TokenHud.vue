@@ -139,6 +139,7 @@
 import TokenStatusMenu from "./TokenStatusMenu.vue";
 import TokenResourceQuickPanel from "./TokenResourceQuickPanel.vue";
 import { activeTokenResources } from "@/lib/vtt/tokenResources";
+import { normalizeTokenResourceBarPosition } from "@/lib/vtt/tokenResourcePosition";
 
 export default {
   name: "TokenHud",
@@ -165,7 +166,18 @@ export default {
   computed: {
     hudStyle() {
       const inverse = 1 / Math.max(0.1, Number(this.scale) || 1);
-      const informationGap = 38 + this.activeResources.bars.length * 12;
+      const count = this.activeResources.bars.length;
+      const stackHeight = count > 0 ? count * 15 - 2 : 0;
+      const position = normalizeTokenResourceBarPosition(
+        this.token.resourceBarPosition,
+      );
+      const barGap =
+        position === "below"
+          ? stackHeight
+          : position === "bottom-overlap"
+            ? stackHeight / 2
+            : 0;
+      const informationGap = 38 + barGap;
       return {
         "--token-hud-scale": inverse,
         "--token-hud-card-gap": `${informationGap * inverse}px`,

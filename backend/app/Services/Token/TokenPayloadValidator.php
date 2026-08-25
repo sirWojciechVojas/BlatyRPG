@@ -10,11 +10,14 @@ final class TokenPayloadValidator
         'movementRange', 'movementSpent',
     ];
     private const DISPOSITIONS = ['friendly', 'neutral', 'hostile', 'secret'];
+    private const RESOURCE_BAR_POSITIONS = [
+        'above', 'top-overlap', 'bottom-overlap', 'below',
+    ];
     private const WRITABLE = [
         'characterId', 'name', 'imageUrl', 'x', 'y', 'width', 'height',
         'rotation', 'facing', 'elevation', 'disposition', 'hidden', 'locked',
         'rotationHandleEnabled', 'facingHandleEnabled',
-        'showInfoUnselected',
+        'showInfoUnselected', 'resourceBarPosition',
         'movementRange', 'movementSpent', 'movementResetMode',
         'visibleTo', 'controlledBy', 'editableBy', 'observerBy',
         'statuses', 'resources',
@@ -111,6 +114,12 @@ final class TokenPayloadValidator
             if (!in_array($value, ['turn', 'round', 'manual'], true)) {
                 $result['errors']['movementResetMode'] = 'Movement reset mode is invalid.';
             } else $result['data']['movement_reset_mode'] = $value;
+        }
+        if (array_key_exists('resourceBarPosition', $payload)) {
+            $value = strtolower(trim((string) $payload['resourceBarPosition']));
+            if (!in_array($value, self::RESOURCE_BAR_POSITIONS, true)) {
+                $result['errors']['resourceBarPosition'] = 'Resource bar position is invalid.';
+            } else $result['data']['resource_bar_position'] = $value;
         }
         foreach (self::PERMISSIONS as $field => $databaseField) {
             if (!array_key_exists($field, $payload)) continue;

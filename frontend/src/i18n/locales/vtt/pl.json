@@ -208,8 +208,16 @@
         "maximum": "Maksimum",
         "valuePath": "Atrybut wartości, np. attributes.actual.hp",
         "maxPath": "Atrybut maksimum",
+        "barPosition": "Położenie pasków",
+        "barPositionHint": "Wybierz pozycję całego stosu względem tokena.",
         "editBubble": "Kliknij, aby zmienić: {label}",
         "empty": "Najpierw włącz zasób w pełnych ustawieniach tokena."
+      },
+      "resourceBarPositions": {
+        "above": "Nad tokenem",
+        "top-overlap": "Górna krawędź",
+        "bottom-overlap": "Dolna krawędź",
+        "below": "Pod tokenem"
       },
       "resourcePositions": {
         "top-left": "Góra — lewo",

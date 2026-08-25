@@ -64,6 +64,8 @@
             v-show="activeTab === 'resources'"
             v-model="draft.resources"
             :actor="actor"
+            :bar-position="draft.resourceBarPosition"
+            @update:bar-position="draft.resourceBarPosition = $event"
           />
 
           <TokenMovementSettings

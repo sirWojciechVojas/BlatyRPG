@@ -19,6 +19,7 @@ const apiToken = {
   movementSpent: "2.500",
   movementResetMode: "round",
   showInfoUnselected: true,
+  resourceBarPosition: "bottom-overlap",
   visibleTo: { mode: "users", userIds: [7, 4] },
   controlledBy: { mode: "everyone", userIds: [] },
   editableBy: { mode: "gm", userIds: [] },
@@ -60,6 +61,7 @@ describe("tokenApiClient", () => {
       movementPoints: 5.5,
       movementResetMode: "round",
       showInfoUnselected: true,
+      resourceBarPosition: "bottom-overlap",
       visibleTo: { mode: "users", userIds: [4, 7] },
       controlledBy: { mode: "everyone", userIds: [] },
       capabilities: {
@@ -82,6 +84,7 @@ describe("tokenApiClient", () => {
       y: 400,
       facing: 90,
       rotationHandleEnabled: true,
+      resourceBarPosition: "above",
       statuses: ["poisoned", "stunned"],
       observerBy: { mode: "users", userIds: [12] },
       resources: apiToken.resources,
@@ -95,6 +98,7 @@ describe("tokenApiClient", () => {
         y: 400,
         facing: 90,
         rotationHandleEnabled: true,
+        resourceBarPosition: "above",
         statuses: ["poisoned", "stunned"],
         observerBy: { mode: "users", userIds: [12] },
         resources: expect.objectContaining({

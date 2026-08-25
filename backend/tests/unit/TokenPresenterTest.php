@@ -26,6 +26,7 @@ final class TokenPresenterTest extends CIUnitTestCase
             'movement_spent' => 2.5,
             'movement_reset_mode' => 'round',
             'show_info_unselected' => 1,
+            'resource_bar_position' => 'above',
             'elevation' => 0,
             'disposition' => 'friendly',
             'hidden' => 0,
@@ -49,6 +50,7 @@ final class TokenPresenterTest extends CIUnitTestCase
         $this->assertSame(5.5, $token['movementPoints']);
         $this->assertSame('round', $token['movementResetMode']);
         $this->assertTrue($token['showInfoUnselected']);
+        $this->assertSame('above', $token['resourceBarPosition']);
         $this->assertTrue($token['capabilities']['canControl']);
         $this->assertTrue($token['capabilities']['canObserve']);
         $this->assertSame(['mode' => 'users', 'userIds' => [8]], $token['visibleTo']);

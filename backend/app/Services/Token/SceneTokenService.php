@@ -12,6 +12,7 @@ final class SceneTokenService
 {
     private const OWNER_FIELDS = [
         'x', 'y', 'rotation', 'facing', 'elevation', 'statuses_json', 'bars_json',
+        'resource_bar_position',
     ];
     private const MANAGER_FIELDS = [
         'visible_to_json', 'controlled_by_json',

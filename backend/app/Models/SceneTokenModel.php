@@ -15,7 +15,7 @@ class SceneTokenModel extends Model
         'x', 'y', 'width', 'height', 'rotation', 'facing', 'elevation', 'disposition',
         'rotation_handle_enabled', 'facing_handle_enabled',
         'movement_range', 'movement_spent', 'movement_reset_mode',
-        'show_info_unselected',
+        'show_info_unselected', 'resource_bar_position',
         'hidden', 'locked', 'visible_to_json', 'controlled_by_json',
         'editable_by_json', 'observer_by_json', 'bars_json', 'statuses_json',
         'vision_json', 'light_json', 'sort_order', 'revision',

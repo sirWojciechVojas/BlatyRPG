@@ -1,3 +1,5 @@
+import { normalizeTokenResourceBarPosition } from "./tokenResourcePosition";
+
 const finite = (value, fallback = 0) => {
   const number = Number(value);
   return Number.isFinite(number) ? number : fallback;
@@ -29,6 +31,9 @@ export const tokenSettingsPreview = (draft = {}, token = {}) => {
     rotationHandleEnabled: draft.rotationHandleEnabled === true,
     facingHandleEnabled: draft.facingHandleEnabled === true,
     showInfoUnselected: draft.showInfoUnselected === true,
+    resourceBarPosition: normalizeTokenResourceBarPosition(
+      draft.resourceBarPosition,
+    ),
     disposition: String(draft.disposition || "neutral"),
     elevation: finite(draft.elevation),
     hidden: draft.hidden === true,

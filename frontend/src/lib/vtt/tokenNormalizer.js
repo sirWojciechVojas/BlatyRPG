@@ -1,6 +1,7 @@
 import { normalizeTokenAngle } from "./tokenFacing";
 import { normalizeTokenPermissionScope } from "./tokenPermissions";
 import { normalizeTokenResources } from "./tokenResources";
+import { normalizeTokenResourceBarPosition } from "./tokenResourcePosition";
 
 const number = (value, fallback = 0) => {
   const result = Number(value);
@@ -29,6 +30,9 @@ export const normalizeToken = (source = {}) => ({
     source.facingHandleEnabled === true || source.facing_handle_enabled === 1,
   showInfoUnselected:
     source.showInfoUnselected === true || source.show_info_unselected === 1,
+  resourceBarPosition: normalizeTokenResourceBarPosition(
+    source.resourceBarPosition ?? source.resource_bar_position,
+  ),
   movementRange: Math.max(
     0,
     number(source.movementRange ?? source.movement_range, 6),
@@ -99,6 +103,7 @@ export const tokenWritePayload = (changes = {}, includeRevision = false) => {
     "rotationHandleEnabled",
     "facingHandleEnabled",
     "showInfoUnselected",
+    "resourceBarPosition",
     "movementRange",
     "movementSpent",
     "movementResetMode",

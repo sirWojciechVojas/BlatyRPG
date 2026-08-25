@@ -208,8 +208,16 @@
         "maximum": "Maximum",
         "valuePath": "Value attribute, e.g. attributes.actual.hp",
         "maxPath": "Maximum attribute",
+        "barPosition": "Bar placement",
+        "barPositionHint": "Choose where the complete stack sits relative to the token.",
         "editBubble": "Click to change: {label}",
         "empty": "Enable a resource in the full token settings first."
+      },
+      "resourceBarPositions": {
+        "above": "Above",
+        "top-overlap": "Top overlapping",
+        "bottom-overlap": "Bottom overlapping",
+        "below": "Below"
       },
       "resourcePositions": {
         "top-left": "Top — left",

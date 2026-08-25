@@ -16,6 +16,7 @@ describe("tokenSettingsPreview", () => {
           movementRange: 8,
           movementSpent: 2.5,
           disposition: "hostile",
+          resourceBarPosition: "above",
         },
         { id: 7, statuses: ["poisoned"] },
       ),
@@ -26,6 +27,7 @@ describe("tokenSettingsPreview", () => {
       facing: 90,
       movementPoints: 5.5,
       disposition: "hostile",
+      resourceBarPosition: "above",
     });
   });
 

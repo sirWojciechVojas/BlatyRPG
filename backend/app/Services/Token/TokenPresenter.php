@@ -34,6 +34,11 @@ final class TokenPresenter
             'rotationHandleEnabled' => !empty($row['rotation_handle_enabled']),
             'facingHandleEnabled' => !empty($row['facing_handle_enabled']),
             'showInfoUnselected' => !empty($row['show_info_unselected']),
+            'resourceBarPosition' => in_array(
+                $row['resource_bar_position'] ?? 'below',
+                ['above', 'top-overlap', 'bottom-overlap', 'below'],
+                true
+            ) ? ($row['resource_bar_position'] ?? 'below') : 'below',
             'movementRange' => $movementRange,
             'movementSpent' => $movementSpent,
             'movementPoints' => $movementPoints,

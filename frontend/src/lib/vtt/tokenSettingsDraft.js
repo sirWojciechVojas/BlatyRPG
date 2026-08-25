@@ -1,6 +1,7 @@
 import { normalizeTokenAngle } from "./tokenFacing";
 import { normalizeTokenPermissionScope } from "./tokenPermissions";
 import { cloneTokenResources } from "./tokenResources";
+import { normalizeTokenResourceBarPosition } from "./tokenResourcePosition";
 
 const finite = (value, fallback = 0) => {
   const number = Number(value);
@@ -33,6 +34,9 @@ export const createTokenSettingsDraft = (token, gridSize) => {
     rotationHandleEnabled: token.rotationHandleEnabled === true,
     facingHandleEnabled: token.facingHandleEnabled === true,
     showInfoUnselected: token.showInfoUnselected === true,
+    resourceBarPosition: normalizeTokenResourceBarPosition(
+      token.resourceBarPosition,
+    ),
     movementRange: Math.max(0, finite(token.movementRange, 6)),
     movementSpent: Math.max(0, finite(token.movementSpent)),
     movementResetMode: ["turn", "round", "manual"].includes(
@@ -63,6 +67,9 @@ export const tokenSettingsPayload = (draft, gridSize, canManage) => {
     facing: normalizeTokenAngle(draft.facing, draft.rotation),
     elevation: finite(draft.elevation),
     disposition: String(draft.disposition || "neutral"),
+    resourceBarPosition: normalizeTokenResourceBarPosition(
+      draft.resourceBarPosition,
+    ),
     resources: cloneTokenResources(draft.resources),
   };
   if (!canManage) return payload;

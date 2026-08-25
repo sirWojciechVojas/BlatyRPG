@@ -83,13 +83,7 @@
           v-if="informationVisible"
           :resources="previewToken.resources"
         />
-        <span
-          v-if="informationVisible"
-          class="token-settings-preview__information"
-        >
-          <TokenResourceBars :token="previewToken" />
-          <small>{{ previewToken.name }}</small>
-        </span>
+        <TokenInfoStack v-if="informationVisible" :token="previewToken" />
       </div>
     </div>
 
@@ -103,7 +97,7 @@
 </template>
 
 <script>
-import TokenResourceBars from "./TokenResourceBars.vue";
+import TokenInfoStack from "./TokenInfoStack.vue";
 import TokenResourceOverlay from "./TokenResourceOverlay.vue";
 import { buildGridPattern } from "@/lib/vtt/grid";
 import {
@@ -113,7 +107,7 @@ import {
 
 export default {
   name: "TokenSettingsPreview",
-  components: { TokenResourceBars, TokenResourceOverlay },
+  components: { TokenInfoStack, TokenResourceOverlay },
   props: {
     draft: { type: Object, required: true },
     token: { type: Object, required: true },
@@ -137,7 +131,16 @@ export default {
       return {
         width: `${this.metrics.width}px`,
         height: `${this.metrics.height}px`,
+        top: this.previewTop,
       };
+    },
+    previewTop() {
+      return {
+        above: "61%",
+        "top-overlap": "55%",
+        "bottom-overlap": "45%",
+        below: "39%",
+      }[this.previewToken.resourceBarPosition];
     },
     artworkStyle() {
       return { transform: `rotate(${this.previewToken.rotation}deg)` };

@@ -24,6 +24,7 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
             'movementSpent' => 2,
             'movementResetMode' => 'round',
             'showInfoUnselected' => true,
+            'resourceBarPosition' => 'top-overlap',
             'visibleTo' => ['mode' => 'users', 'userIds' => [7, '4', 7]],
             'controlledBy' => ['mode' => 'everyone', 'userIds' => []],
             'statuses' => ['poisoned', 'stunned', 'poisoned'],
@@ -48,6 +49,7 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
         $this->assertSame(2.0, $result['data']['movement_spent']);
         $this->assertSame('round', $result['data']['movement_reset_mode']);
         $this->assertSame(1, $result['data']['show_info_unselected']);
+        $this->assertSame('top-overlap', $result['data']['resource_bar_position']);
         $this->assertSame(
             ['mode' => 'users', 'userIds' => [4, 7]],
             $result['data']['visible_to_json']
@@ -133,5 +135,16 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
         $this->assertFalse($result['valid']);
         $this->assertArrayHasKey('movementRange', $result['errors']);
         $this->assertArrayHasKey('movementResetMode', $result['errors']);
+    }
+
+    public function testRejectsInvalidResourceBarPosition(): void
+    {
+        $result = (new TokenPayloadValidator())->update([
+            'revision' => 2,
+            'resourceBarPosition' => 'floating-anywhere',
+        ]);
+
+        $this->assertFalse($result['valid']);
+        $this->assertArrayHasKey('resourceBarPosition', $result['errors']);
     }
 }
