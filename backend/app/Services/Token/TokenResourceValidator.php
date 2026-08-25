@@ -4,7 +4,13 @@ namespace App\Services\Token;
 
 final class TokenResourceValidator
 {
-    private const BAR_COLORS = ['#4caf72', '#d95d55', '#4f91d9', '#d5a64f'];
+    private const BAR_DEFAULTS = [
+        ['enabled' => true, 'label' => 'HP', 'value' => 0, 'max' => 0, 'color' => '#d95d55'],
+        ['enabled' => true, 'label' => 'PR', 'value' => 6, 'max' => 6, 'color' => '#4caf72'],
+        ['enabled' => false, 'label' => '', 'value' => 0, 'max' => 0, 'color' => '#4f91d9'],
+        ['enabled' => false, 'label' => '', 'value' => 0, 'max' => 0, 'color' => '#d5a64f'],
+    ];
+    private const LEGACY_BAR_COLORS = ['#4caf72', '#d95d55', '#4f91d9', '#d5a64f'];
     private const POSITIONS = [
         'top-left', 'top-center', 'top-right',
         'bottom-left', 'bottom-center', 'bottom-right',
@@ -24,6 +30,7 @@ final class TokenResourceValidator
         if (!is_array($bubbles) || !self::isList($bubbles) || count($bubbles) > 3) {
             return self::invalid('Resources may contain at most three bubbles.');
         }
+        if (self::legacyEmptyBars($bars)) $bars = [];
         $result = self::defaults();
         foreach ($bars as $index => $bar) {
             $parsed = self::bar($bar, $index);
@@ -136,13 +143,29 @@ final class TokenResourceValidator
         return !$value || array_keys($value) === range(0, count($value) - 1);
     }
 
+    private static function legacyEmptyBars(array $bars): bool
+    {
+        if (count($bars) !== count(self::LEGACY_BAR_COLORS)) return false;
+        foreach ($bars as $index => $bar) {
+            if (!is_array($bar)
+                || !empty($bar['enabled'])
+                || trim((string) ($bar['label'] ?? '')) !== ''
+                || (float) ($bar['value'] ?? 0) !== 0.0
+                || (float) ($bar['max'] ?? 0) !== 0.0
+                || trim((string) ($bar['attributePath'] ?? '')) !== ''
+                || trim((string) ($bar['maxAttributePath'] ?? '')) !== ''
+                || strtolower((string) ($bar['color'] ?? '')) !== self::LEGACY_BAR_COLORS[$index]
+            ) return false;
+        }
+        return true;
+    }
+
     private static function defaults(): array
     {
         $bars = [];
-        foreach (self::BAR_COLORS as $color) {
-            $bars[] = [
-                'enabled' => false, 'label' => '', 'value' => 0, 'max' => 0,
-                'color' => $color, 'attributePath' => '', 'maxAttributePath' => '',
+        foreach (self::BAR_DEFAULTS as $default) {
+            $bars[] = $default + [
+                'attributePath' => '', 'maxAttributePath' => '',
             ];
         }
         $bubbles = [];

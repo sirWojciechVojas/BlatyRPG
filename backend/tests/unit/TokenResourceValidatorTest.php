@@ -34,4 +34,33 @@ final class TokenResourceValidatorTest extends CIUnitTestCase
 
         $this->assertFalse($result['valid']);
     }
+
+    public function testUsesHealthAndMovementAsDefaultBars(): void
+    {
+        $resources = TokenResourceValidator::stored([]);
+
+        $this->assertSame(
+            ['HP', 'PR'],
+            array_column(array_slice($resources['bars'], 0, 2), 'label')
+        );
+        $this->assertSame(['#d95d55', '#4caf72'], array_column(
+            array_slice($resources['bars'], 0, 2),
+            'color'
+        ));
+        $this->assertTrue($resources['bars'][0]['enabled']);
+        $this->assertTrue($resources['bars'][1]['enabled']);
+    }
+
+    public function testUpgradesPreviousEmptyBarDefaults(): void
+    {
+        $bars = array_map(static fn (string $color): array => [
+            'enabled' => false, 'label' => '', 'value' => 0, 'max' => 0,
+            'color' => $color, 'attributePath' => '', 'maxAttributePath' => '',
+        ], ['#4caf72', '#d95d55', '#4f91d9', '#d5a64f']);
+
+        $resources = TokenResourceValidator::stored(['bars' => $bars]);
+
+        $this->assertSame('HP', $resources['bars'][0]['label']);
+        $this->assertSame('PR', $resources['bars'][1]['label']);
+    }
 }

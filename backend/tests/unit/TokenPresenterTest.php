@@ -53,6 +53,12 @@ final class TokenPresenterTest extends CIUnitTestCase
         $this->assertTrue($token['capabilities']['canObserve']);
         $this->assertSame(['mode' => 'users', 'userIds' => [8]], $token['visibleTo']);
         $this->assertCount(4, $token['resources']['bars']);
+        $this->assertSame('HP', $token['resources']['bars'][0]['label']);
+        $this->assertSame('#d95d55', $token['resources']['bars'][0]['color']);
+        $this->assertSame('PR', $token['resources']['bars'][1]['label']);
+        $this->assertSame('#4caf72', $token['resources']['bars'][1]['color']);
+        $this->assertSame(5.5, $token['resources']['bars'][1]['value']);
+        $this->assertSame(8.0, $token['resources']['bars'][1]['max']);
         $this->assertSame(2.0, $token['resources']['bubbles'][0]['value']);
     }
 }

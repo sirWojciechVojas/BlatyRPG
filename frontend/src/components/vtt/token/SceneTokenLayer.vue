@@ -57,9 +57,7 @@
         />
         <span v-else>{{ initials(token.name) }}</span>
       </button>
-      <small v-if="tokenInfoVisible(token)" class="scene-token-name">
-        {{ token.name }}
-      </small>
+      <TokenInfoStack v-if="tokenInfoVisible(token)" :token="token" />
       <TokenRotationHandles
         v-if="tokenStates[token.id].selected"
         :token="displayTokenAngles(token)"
@@ -117,6 +115,7 @@
 
 <script>
 import TokenHud from "./TokenHud.vue";
+import TokenInfoStack from "./TokenInfoStack.vue";
 import TokenDragIndicator from "./TokenDragIndicator.vue";
 import TokenStateOverlay from "./TokenStateOverlay.vue";
 import TokenStatusBadges from "./TokenStatusBadges.vue";
@@ -141,6 +140,7 @@ export default {
   components: {
     TokenDragIndicator,
     TokenHud,
+    TokenInfoStack,
     TokenSettingsPanel,
     TokenResourceOverlay,
     TokenRotationHandles,

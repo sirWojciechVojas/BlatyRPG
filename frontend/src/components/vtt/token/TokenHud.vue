@@ -165,9 +165,10 @@ export default {
   computed: {
     hudStyle() {
       const inverse = 1 / Math.max(0.1, Number(this.scale) || 1);
+      const informationGap = 38 + this.activeResources.bars.length * 12;
       return {
         "--token-hud-scale": inverse,
-        "--token-hud-card-gap": `${11 * inverse}px`,
+        "--token-hud-card-gap": `${informationGap * inverse}px`,
         "--token-hud-rail-gap": `${9 * inverse}px`,
       };
     },

@@ -16,14 +16,24 @@ describe("token presentation layout", () => {
       "</button>",
       source.indexOf('class="scene-token"'),
     );
-    const name = source.indexOf('class="scene-token-name"');
+    const information = source.indexOf("<TokenInfoStack");
 
-    expect(name).toBeGreaterThan(buttonEnd);
+    expect(information).toBeGreaterThan(buttonEnd);
+    expect(template("TokenInfoStack")).toContain('class="scene-token-name"');
     expect(source).toContain("<TokenResourceOverlay");
     expect(source).not.toContain("token.id !== hudTokenId");
     expect(source).not.toMatch(
       /v-if="tokenInfoVisible\(token\)"\s+class="scene-token-facing"/u,
     );
+  });
+
+  it("places resource bars before the name in the stack below the token", () => {
+    const source = template("TokenInfoStack");
+
+    expect(source.indexOf("<TokenResourceBars")).toBeLessThan(
+      source.indexOf('class="scene-token-name"'),
+    );
+    expect(source).not.toContain("TokenMovementBar");
   });
 
   it("balances four actions on both HUD rails", () => {

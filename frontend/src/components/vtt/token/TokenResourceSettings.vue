@@ -38,6 +38,7 @@
           type="number"
           step="any"
           :title="$t('vtt.token.resources.value')"
+          :disabled="isMovementBar(bar, index)"
           @input="updateNumber('bars', index, 'value', $event.target.value)"
         />
         <input
@@ -45,12 +46,14 @@
           type="number"
           step="any"
           :title="$t('vtt.token.resources.maximum')"
+          :disabled="isMovementBar(bar, index)"
           @input="updateNumber('bars', index, 'max', $event.target.value)"
         />
         <input
           :value="bar.attributePath"
           :list="attributeListId"
           :placeholder="$t('vtt.token.resources.valuePath')"
+          :disabled="isMovementBar(bar, index)"
           @change="
             bind('bars', index, 'attributePath', 'value', $event.target.value)
           "
@@ -59,6 +62,7 @@
           :value="bar.maxAttributePath"
           :list="attributeListId"
           :placeholder="$t('vtt.token.resources.maxPath')"
+          :disabled="isMovementBar(bar, index)"
           @change="
             bind('bars', index, 'maxAttributePath', 'max', $event.target.value)
           "
@@ -167,6 +171,9 @@ export default {
     },
   },
   methods: {
+    isMovementBar(bar, index) {
+      return index === 1 && bar.label.toLocaleUpperCase() === "PR";
+    },
     update(group, index, field, value) {
       const next = cloneTokenResources(this.modelValue);
       next[group][index][field] = value;

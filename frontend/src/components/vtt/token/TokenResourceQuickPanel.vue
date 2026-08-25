@@ -17,12 +17,14 @@
         v-model.number="draft.bars[bar.index].value"
         type="number"
         step="any"
+        :disabled="isMovementBar(bar)"
       />
       <b>/</b>
       <input
         v-model.number="draft.bars[bar.index].max"
         type="number"
         step="any"
+        :disabled="isMovementBar(bar)"
       />
     </label>
     <label v-for="bubble in active.bubbles" :key="`bubble-${bubble.index}`">
@@ -72,6 +74,9 @@ export default {
     },
   },
   methods: {
+    isMovementBar(bar) {
+      return bar.index === 1 && bar.item.label.toLocaleUpperCase() === "PR";
+    },
     save() {
       this.$emit("save", normalizeTokenResources(this.draft));
     },

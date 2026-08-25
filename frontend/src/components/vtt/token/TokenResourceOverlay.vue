@@ -1,16 +1,5 @@
 <template>
   <span v-if="hasResources" class="token-resource-overlay">
-    <span v-if="active.bars.length" class="token-resource-bars">
-      <i
-        v-for="(bar, index) in active.bars"
-        :key="`${bar.label}-${index}`"
-        :title="barTitle(bar)"
-      >
-        <b :style="barStyle(bar)" />
-        <small>{{ bar.label }}</small>
-        <em>{{ bar.value }}/{{ bar.max }}</em>
-      </i>
-    </span>
     <span
       v-for="entry in bubbleEntries"
       :key="`${entry.item.position}-${entry.index}`"
@@ -48,10 +37,8 @@
 
 <script>
 import {
-  activeTokenResources,
   cloneTokenResources,
   normalizeTokenResources,
-  tokenBarPercent,
 } from "@/lib/vtt/tokenResources";
 
 export default {
@@ -63,11 +50,8 @@ export default {
   emits: ["update"],
   data: () => ({ editingIndex: null, draftValue: "" }),
   computed: {
-    active() {
-      return activeTokenResources(this.resources);
-    },
     hasResources() {
-      return this.active.bars.length > 0 || this.active.bubbles.length > 0;
+      return this.bubbleEntries.length > 0;
     },
     bubbleEntries() {
       return normalizeTokenResources(this.resources)
@@ -76,15 +60,6 @@ export default {
     },
   },
   methods: {
-    barStyle(bar) {
-      return {
-        width: `${tokenBarPercent(bar)}%`,
-        backgroundColor: bar.color,
-      };
-    },
-    barTitle(bar) {
-      return `${bar.label || "—"}: ${bar.value} / ${bar.max}`;
-    },
     editTitle(bubble) {
       if (!this.editable) return bubble.label || String(bubble.value);
       return this.$t("vtt.token.resources.editBubble", {

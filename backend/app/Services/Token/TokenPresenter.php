@@ -12,6 +12,13 @@ final class TokenPresenter
         bool $canObserve = false
     ): array {
         $resources = TokenResourceValidator::stored($row['bars_json'] ?? []);
+        $movementRange = (float) ($row['movement_range'] ?? 6);
+        $movementSpent = (float) ($row['movement_spent'] ?? 0);
+        $movementPoints = max(0.0, round($movementRange - $movementSpent, 3));
+        if (strtoupper((string) ($resources['bars'][1]['label'] ?? '')) === 'PR') {
+            $resources['bars'][1]['value'] = $movementPoints;
+            $resources['bars'][1]['max'] = $movementRange;
+        }
         return [
             'id' => (int) $row['id'],
             'sceneId' => (int) $row['scene_id'],
@@ -27,11 +34,9 @@ final class TokenPresenter
             'rotationHandleEnabled' => !empty($row['rotation_handle_enabled']),
             'facingHandleEnabled' => !empty($row['facing_handle_enabled']),
             'showInfoUnselected' => !empty($row['show_info_unselected']),
-            'movementRange' => (float) ($row['movement_range'] ?? 6),
-            'movementSpent' => (float) ($row['movement_spent'] ?? 0),
-            'movementPoints' => max(0.0, round(
-                (float) ($row['movement_range'] ?? 6) - (float) ($row['movement_spent'] ?? 0), 3
-            )),
+            'movementRange' => $movementRange,
+            'movementSpent' => $movementSpent,
+            'movementPoints' => $movementPoints,
             'movementResetMode' => (string) ($row['movement_reset_mode'] ?? 'turn'),
             'elevation' => (float) $row['elevation'],
             'disposition' => (string) $row['disposition'],

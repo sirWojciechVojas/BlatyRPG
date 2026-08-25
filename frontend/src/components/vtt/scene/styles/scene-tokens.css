@@ -73,26 +73,6 @@
   font-size: 1.2rem;
 }
 
-.scene-token-name {
-  position: absolute;
-  top: calc(100% + 4px);
-  left: 50%;
-  z-index: 12;
-  display: block;
-  max-width: 160px;
-  padding: 2px 5px;
-  overflow: hidden;
-  color: #fff;
-  font-size: 11px;
-  line-height: 1.1;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  background: rgb(8 6 5 / 86%);
-  border-radius: 3px;
-  transform: translateX(-50%);
-  pointer-events: none;
-}
-
 .scene-token--friendly { border-color: #46b878; }
 .scene-token--hostile { border-color: #d75555; }
 .scene-token--neutral { border-color: #d4ae62; }
