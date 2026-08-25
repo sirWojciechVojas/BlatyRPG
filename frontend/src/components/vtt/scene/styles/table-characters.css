@@ -1,6 +1,6 @@
 .table-character-panel {
   display: grid;
-  grid-template-columns: 12rem minmax(0, 1fr);
+  grid-template-columns: 10.75rem minmax(0, 1fr);
   width: 100%;
   height: 100%;
   min-height: 0;
@@ -228,26 +228,6 @@
 
 .table-character-create .table-character-create__error {
   color: #ffd7da;
-}
-
-.table-character-panel .character-sheet,
-.table-character-panel .character-sheet-placeholder {
-  border-radius: var(--ui-radius-sm, 0.25rem);
-  box-shadow: none;
-}
-
-.table-character-panel .character-sheet-header,
-.table-character-panel .character-sheet-form {
-  padding: 0.75rem;
-}
-
-.table-character-panel .character-sheet-header > img {
-  width: 5rem;
-  height: 6rem;
-}
-
-.table-character-panel .character-sheet-title > input {
-  font-size: 1.5rem;
 }
 
 @media (max-width: 560px) {

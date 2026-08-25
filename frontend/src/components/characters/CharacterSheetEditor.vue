@@ -24,7 +24,10 @@
     <p v-if="error" class="character-sheet-error" role="alert">{{ error }}</p>
 
     <form class="character-sheet-form" @submit.prevent="save">
-      <fieldset :disabled="!canEdit || saving">
+      <fieldset
+        class="character-sheet-section--identity"
+        :disabled="!canEdit || saving"
+      >
         <legend>{{ $t("characters.sections.identity") }}</legend>
         <div class="character-field-grid">
           <label v-for="key in detailKeys" :key="key">
@@ -47,7 +50,10 @@
         </div>
       </fieldset>
 
-      <fieldset :disabled="!canEdit || saving">
+      <fieldset
+        class="character-sheet-section--attributes"
+        :disabled="!canEdit || saving"
+      >
         <legend>{{ $t("characters.sections.attributes") }}</legend>
         <div v-if="attributeKeys.length" class="character-attribute-grid">
           <label v-for="key in attributeKeys" :key="key">

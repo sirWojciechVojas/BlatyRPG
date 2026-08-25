@@ -47,4 +47,11 @@ describe("table utilities", () => {
     expect(utilityById("chat")?.labelKey).toBe("vtt.table.rail.chat");
     expect(utilityById("unknown")).toBeNull();
   });
+
+  it("opens character editing in a wide, high-density workspace", () => {
+    expect(utilityById("characters")).toMatchObject({
+      windowWidth: 1480,
+      windowHeight: 900,
+    });
+  });
 });
