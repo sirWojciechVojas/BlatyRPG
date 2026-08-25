@@ -58,6 +58,16 @@ describe("VTT grid geometry", () => {
     ).toEqual({ x: 60, y: 120 });
   });
 
+  it("snaps quarter-cell tokens without inflating their dimensions", () => {
+    expect(
+      snapTokenPosition(
+        { gridType: GRID_TYPES.SQUARE, gridSize: 4 },
+        { x: 2.6, y: 2.6 },
+        { width: 1, height: 1 },
+      ),
+    ).toEqual({ x: 1.5, y: 1.5 });
+  });
+
   it.each([
     [GRID_TYPES.HEX_POINTY, { x: 147, y: 90 }, { x: 150, y: 86.603 }],
     [GRID_TYPES.HEX_FLAT, { x: 90, y: 147 }, { x: 86.603, y: 150 }],

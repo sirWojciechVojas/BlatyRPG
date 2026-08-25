@@ -3,9 +3,13 @@
 @import url("./styles/scene-canvas.css");
 @import url("./styles/scene-tokens.css");
 @import url("./styles/scene-token-facing.css");
+@import url("./styles/scene-token-rotation.css");
 @import url("./styles/scene-token-states.css");
 @import url("./styles/scene-token-hud.css");
+@import url("./styles/scene-token-hud-popovers.css");
 @import url("./styles/scene-token-settings.css");
+@import url("./styles/scene-token-resource-settings.css");
+@import url("./styles/scene-token-resources.css");
 @import url("./styles/scene-token-drop.css");
 @import url("./styles/scene-walls.css");
 @import url("./styles/scene-lights.css");

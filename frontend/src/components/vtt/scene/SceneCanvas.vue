@@ -115,6 +115,7 @@
           :selected-ids="selectedTokenIds"
           :targeted-ids="targetedTokenIds"
           :members="members"
+          :characters="characters"
           :scale="camera.scale"
           :busy="tokenBusy"
           @select="$emit('token-select', $event)"
@@ -164,6 +165,7 @@ export default {
     selectedTokenIds: { type: Array, default: () => [] },
     targetedTokenIds: { type: Array, default: () => [] },
     members: { type: Array, default: () => [] },
+    characters: { type: Array, default: () => [] },
     tokenBusy: { type: Boolean, default: false },
     canCreateToken: { type: Boolean, default: false },
     walls: { type: Array, default: () => [] },

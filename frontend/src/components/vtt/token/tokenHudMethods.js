@@ -10,11 +10,24 @@ const anchorRect = (event) => {
 };
 
 export const tokenHudMethods = {
+  openTokenActor(token) {
+    if (
+      token.characterId &&
+      (token.capabilities.canObserve ||
+        token.capabilities.canControl ||
+        token.capabilities.canManage)
+    ) {
+      this.$emit("open-actor", token.characterId);
+    }
+  },
   toggleTokenStatus(token, code) {
     this.$emit("update", {
       token,
       changes: { statuses: toggleTokenStatus(token.statuses, code) },
     });
+  },
+  updateTokenResources(token, resources) {
+    this.$emit("update", { token, changes: { resources } });
   },
   toggleTokenVisibility(token) {
     this.$emit("update", { token, changes: { hidden: !token.hidden } });

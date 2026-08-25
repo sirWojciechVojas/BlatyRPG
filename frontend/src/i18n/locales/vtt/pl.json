@@ -95,6 +95,7 @@
         "move": "Przeciągnij token",
         "close": "Zamknij HUD tokena",
         "statuses": "Szybkie statusy",
+        "resources": "Zasoby tokena",
         "target": "Oznacz lub usuń cel",
         "visibility": "Przełącz widoczność dla graczy",
         "lock": "Zablokuj lub odblokuj token",
@@ -103,6 +104,7 @@
         "short": {
           "move": "Ruch",
           "status": "Status",
+          "resources": "Zasoby",
           "target": "Cel",
           "left": "Lewo",
           "right": "Prawo",
@@ -131,13 +133,20 @@
         "heightCells": "Wysokość (pola)",
         "rotation": "Obrót grafiki (°)",
         "facing": "Kierunek patrzenia (°)",
+        "enableRotationHandle": "Uchwyt obrotu grafiki LPM",
+        "enableFacingHandle": "Uchwyt kierunku patrzenia LPM",
         "elevation": "Wysokość",
         "disposition": "Nastawienie",
         "hidden": "Ukryty przed graczami",
         "locked": "Zablokowany na mapie",
         "cancel": "Anuluj",
         "save": "Zapisz",
-        "sizePresets": "Szybki rozmiar względem siatki"
+        "sizePresets": "Szybki rozmiar względem siatki",
+        "tabs": {
+          "general": "Podstawowe",
+          "resources": "Zasoby",
+          "permissions": "Uprawnienia"
+        }
       },
       "permissions": {
         "title": "Uprawnienia",
@@ -158,11 +167,38 @@
         "secret": "Sekretny"
       },
       "sizes": {
+        "minuscule": "Drobny",
         "tiny": "Mini",
         "standard": "Standard",
         "large": "Duży",
-        "huge": "Ogromny",
-        "gargantuan": "Kolosalny"
+        "huge": "Ogromny"
+      },
+      "rotationHandles": {
+        "facing": "Przeciągnij LPM, aby ustawić kierunek patrzenia",
+        "rotation": "Przeciągnij LPM, aby obrócić grafikę"
+      },
+      "resources": {
+        "title": "Zasoby tokena",
+        "quickTitle": "Szybka zmiana zasobów",
+        "hint": "Cztery paski i trzy wartości mogą korzystać z danych powiązanej postaci.",
+        "actor": "Postać: {name}",
+        "bar": "Pasek {number}",
+        "bubble": "Wartość {number}",
+        "label": "Etykieta",
+        "color": "Kolor paska",
+        "value": "Wartość",
+        "maximum": "Maksimum",
+        "valuePath": "Atrybut wartości, np. attributes.actual.hp",
+        "maxPath": "Atrybut maksimum",
+        "empty": "Najpierw włącz zasób w pełnych ustawieniach tokena."
+      },
+      "resourcePositions": {
+        "top-left": "Góra — lewo",
+        "top-center": "Góra — środek",
+        "top-right": "Góra — prawo",
+        "bottom-left": "Dół — lewo",
+        "bottom-center": "Dół — środek",
+        "bottom-right": "Dół — prawo"
       },
       "states": {
         "hover": "pod kursorem",

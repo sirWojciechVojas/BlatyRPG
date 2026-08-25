@@ -28,6 +28,7 @@
     :campaign-id="campaignId"
     :campaign="campaign"
     :can-create-token="canCreateToken"
+    :initial-character-id="characterId"
     @changed="$emit('character-changed', $event)"
   />
 
@@ -79,6 +80,7 @@ export default {
     instanceId: { type: String, default: "drawer" },
     campaignId: { type: [Number, String], required: true },
     campaign: { type: Object, default: () => ({}) },
+    characterId: { type: [Number, String], default: null },
     scenes: { type: Array, default: () => [] },
     selectedId: { type: [Number, String], default: null },
     activeId: { type: [Number, String], default: null },

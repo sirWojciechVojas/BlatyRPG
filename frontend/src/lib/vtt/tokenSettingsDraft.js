@@ -1,5 +1,6 @@
 import { normalizeTokenAngle } from "./tokenFacing";
 import { normalizeTokenPermissionScope } from "./tokenPermissions";
+import { cloneTokenResources } from "./tokenResources";
 
 const finite = (value, fallback = 0) => {
   const number = Number(value);
@@ -13,11 +14,11 @@ const scope = (value, fallback) =>
   normalizeTokenPermissionScope(value, fallback);
 
 export const TOKEN_SIZE_PRESETS = Object.freeze([
+  { key: "minuscule", cells: 0.25 },
   { key: "tiny", cells: 0.5 },
   { key: "standard", cells: 1 },
   { key: "large", cells: 2 },
   { key: "huge", cells: 3 },
-  { key: "gargantuan", cells: 4 },
 ]);
 
 export const createTokenSettingsDraft = (token, gridSize) => {
@@ -29,6 +30,8 @@ export const createTokenSettingsDraft = (token, gridSize) => {
     heightCells: finite(token.height, size) / size,
     rotation: normalizeTokenAngle(token.rotation),
     facing: normalizeTokenAngle(token.facing, token.rotation),
+    rotationHandleEnabled: token.rotationHandleEnabled === true,
+    facingHandleEnabled: token.facingHandleEnabled === true,
     elevation: finite(token.elevation),
     disposition: String(token.disposition || "neutral"),
     hidden: token.hidden === true,
@@ -37,6 +40,7 @@ export const createTokenSettingsDraft = (token, gridSize) => {
     controlledBy: scope(token.controlledBy, "inherit"),
     editableBy: scope(token.editableBy, "gm"),
     observerBy: scope(token.observerBy, "inherit"),
+    resources: cloneTokenResources(token.resources),
   };
 };
 
@@ -45,12 +49,13 @@ export const tokenSettingsPayload = (draft, gridSize, canManage) => {
   const payload = {
     name: String(draft.name || "").trim(),
     imageUrl: String(draft.imageUrl || "").trim(),
-    width: clamped(finite(draft.widthCells, 1) * size, 8, 10000),
-    height: clamped(finite(draft.heightCells, 1) * size, 8, 10000),
+    width: clamped(finite(draft.widthCells, 1) * size, 1, 10000),
+    height: clamped(finite(draft.heightCells, 1) * size, 1, 10000),
     rotation: normalizeTokenAngle(draft.rotation),
     facing: normalizeTokenAngle(draft.facing, draft.rotation),
     elevation: finite(draft.elevation),
     disposition: String(draft.disposition || "neutral"),
+    resources: cloneTokenResources(draft.resources),
   };
   if (!canManage) return payload;
   return {
@@ -61,13 +66,15 @@ export const tokenSettingsPayload = (draft, gridSize, canManage) => {
     controlledBy: scope(draft.controlledBy, "gm"),
     editableBy: scope(draft.editableBy, "gm"),
     observerBy: scope(draft.observerBy, "gm"),
+    rotationHandleEnabled: draft.rotationHandleEnabled === true,
+    facingHandleEnabled: draft.facingHandleEnabled === true,
   };
 };
 
 export const tokenSettingsPosition = (
   anchor,
   viewport,
-  panel = { width: 420, height: 700 },
+  panel = { width: 860, height: 720 },
 ) => {
   const margin = 10;
   const gap = 12;

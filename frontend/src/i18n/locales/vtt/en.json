@@ -95,6 +95,7 @@
         "move": "Drag token",
         "close": "Close token HUD",
         "statuses": "Quick statuses",
+        "resources": "Token resources",
         "target": "Toggle target",
         "visibility": "Toggle player visibility",
         "lock": "Lock or unlock token",
@@ -103,6 +104,7 @@
         "short": {
           "move": "Move",
           "status": "Status",
+          "resources": "Resources",
           "target": "Target",
           "left": "Left",
           "right": "Right",
@@ -131,13 +133,20 @@
         "heightCells": "Height (cells)",
         "rotation": "Image rotation (°)",
         "facing": "Facing direction (°)",
+        "enableRotationHandle": "LMB artwork rotation handle",
+        "enableFacingHandle": "LMB facing direction handle",
         "elevation": "Elevation",
         "disposition": "Disposition",
         "hidden": "Hidden from players",
         "locked": "Locked on map",
         "cancel": "Cancel",
         "save": "Save",
-        "sizePresets": "Quick size relative to grid"
+        "sizePresets": "Quick size relative to grid",
+        "tabs": {
+          "general": "General",
+          "resources": "Resources",
+          "permissions": "Permissions"
+        }
       },
       "permissions": {
         "title": "Permissions",
@@ -158,11 +167,38 @@
         "secret": "Secret"
       },
       "sizes": {
+        "minuscule": "Minuscule",
         "tiny": "Tiny",
         "standard": "Standard",
         "large": "Large",
-        "huge": "Huge",
-        "gargantuan": "Gargantuan"
+        "huge": "Huge"
+      },
+      "rotationHandles": {
+        "facing": "Drag with LMB to set facing direction",
+        "rotation": "Drag with LMB to rotate artwork"
+      },
+      "resources": {
+        "title": "Token resources",
+        "quickTitle": "Quick resource update",
+        "hint": "Four bars and three values can use data from the linked actor.",
+        "actor": "Actor: {name}",
+        "bar": "Bar {number}",
+        "bubble": "Value {number}",
+        "label": "Label",
+        "color": "Bar color",
+        "value": "Value",
+        "maximum": "Maximum",
+        "valuePath": "Value attribute, e.g. attributes.actual.hp",
+        "maxPath": "Maximum attribute",
+        "empty": "Enable a resource in the full token settings first."
+      },
+      "resourcePositions": {
+        "top-left": "Top — left",
+        "top-center": "Top — center",
+        "top-right": "Top — right",
+        "bottom-left": "Bottom — left",
+        "bottom-center": "Bottom — center",
+        "bottom-right": "Bottom — right"
       },
       "states": {
         "hover": "hovered",

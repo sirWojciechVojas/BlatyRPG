@@ -49,6 +49,10 @@ final class CharacterRevisionWriter
         if ($this->db->affectedRows() !== 1) {
             $this->policy->throwConflict($revision);
         }
+        if (array_key_exists('data', $data)) {
+            (new \App\Services\Token\TokenResourceSyncService($this->db))
+                ->fromCharacter($characterId, $data['data']);
+        }
     }
 
     private function databaseData(array $data): array

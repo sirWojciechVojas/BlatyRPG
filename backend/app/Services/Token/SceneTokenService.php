@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Services\Token;
-
 use App\Models\SceneTokenModel;
 use App\Services\Scene\SceneResourceAccessService;
 use App\Services\Scene\SceneException;
@@ -12,11 +11,11 @@ use CodeIgniter\Database\BaseConnection;
 final class SceneTokenService
 {
     private const OWNER_FIELDS = [
-        'x', 'y', 'rotation', 'facing', 'elevation', 'statuses_json',
+        'x', 'y', 'rotation', 'facing', 'elevation', 'statuses_json', 'bars_json',
     ];
-    private const PERMISSION_FIELDS = [
+    private const MANAGER_FIELDS = [
         'visible_to_json', 'controlled_by_json',
-        'editable_by_json', 'observer_by_json',
+        'editable_by_json', 'observer_by_json', 'rotation_handle_enabled', 'facing_handle_enabled',
     ];
     private $db;
     private $tokens;
@@ -115,8 +114,8 @@ final class SceneTokenService
         $validated = $this->validator->update($payload);
         $this->assertValid($validated);
         $validated['data'] = $this->snapUpdateData($scene, $row, $validated['data']);
-        if (!$canManage && array_intersect(array_keys($validated['data']), self::PERMISSION_FIELDS)) {
-            throw new TokenException('forbidden', 'Only a game master can assign token permissions.', 403);
+        if (!$canManage && array_intersect(array_keys($validated['data']), self::MANAGER_FIELDS)) {
+            throw new TokenException('forbidden', 'Only a game master can configure protected token fields.', 403);
         }
         if (!$canManage && !$canEdit
             && array_diff(array_keys($validated['data']), self::OWNER_FIELDS)) {
@@ -129,7 +128,30 @@ final class SceneTokenService
             $this->access->assertPermissionUsersInCampaign($campaignId, $validated['data']);
         }
         $this->assertMovementAllowed($campaignId, $sceneId, $row, $validated['data']);
-        $this->writeRevision($campaignId, $sceneId, $tokenId, $validated['revision'], $validated['data']);
+        $syncResources = array_key_exists('bars_json', $validated['data']);
+        if ($syncResources) $this->db->transBegin();
+        try {
+            if ($syncResources) {
+                $validated['data']['bars_json'] = (new TokenResourceSyncService($this->db))->fromToken(
+                    $campaignId,
+                    $validated['data']['character_id'] ?? $row['character_id'] ?? null,
+                    array_key_exists('character_id', $validated['data'])
+                        ? [] : (array) ($row['bars_json'] ?? []),
+                    $validated['data']['bars_json']
+                );
+            }
+            $this->writeRevision(
+                $campaignId,
+                $sceneId,
+                $tokenId,
+                $validated['revision'],
+                $validated['data']
+            );
+            if ($syncResources) $this->db->transCommit();
+        } catch (\Throwable $exception) {
+            if ($syncResources) $this->db->transRollback();
+            throw $exception;
+        }
         $token = $this->present($campaignId, $sceneId, $tokenId, $auth);
         return [
             'token' => $token,
@@ -238,16 +260,14 @@ final class SceneTokenService
             );
         }
     }
-
     private function snapCreateData(array $scene, array $data): array
     {
-        $defaultSize = max(8.0, (float) ($scene['grid_size'] ?? 100));
+        $defaultSize = max(1.0, (float) ($scene['grid_size'] ?? 100));
         $data['width'] = (float) ($data['width'] ?? $defaultSize);
         $data['height'] = (float) ($data['height'] ?? $defaultSize);
         $position = $this->grid->snap($scene, $data, $data['width'], $data['height']);
         return array_merge($data, $position);
     }
-
     private function snapUpdateData(array $scene, array $token, array $data): array
     {
         $positionFields = ['x', 'y', 'width', 'height'];
@@ -266,6 +286,7 @@ final class SceneTokenService
 
     private function writeRevision(int $campaignId, int $sceneId, int $tokenId, int $revision, array $data): void
     {
+        $data = TokenDatabasePayload::encode($data);
         $this->db->table('scene_tokens')->set($data)->set('updated_at', date('Y-m-d H:i:s'))
             ->set('revision', 'revision + 1', false)->where('campaign_id', $campaignId)
             ->where('scene_id', $sceneId)->where('id', $tokenId)->where('revision', $revision)

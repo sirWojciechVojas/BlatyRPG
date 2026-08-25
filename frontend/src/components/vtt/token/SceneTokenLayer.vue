@@ -21,7 +21,7 @@
     >
       <i
         class="scene-token-facing"
-        :style="facingStyle(token)"
+        :style="facingStyle(displayTokenAngles(token))"
         aria-hidden="true"
       />
       <button
@@ -31,7 +31,9 @@
           `scene-token--${token.disposition}`,
           stateClasses(tokenStates[token.id]),
         ]"
-        :style="{ transform: `rotate(${token.rotation}deg)` }"
+        :style="{
+          transform: `rotate(${displayTokenAngles(token).rotation}deg)`,
+        }"
         :aria-label="stateLabel(token, tokenStates[token.id])"
         :title="stateLabel(token, tokenStates[token.id])"
         :aria-pressed="tokenStates[token.id].selected"
@@ -44,6 +46,7 @@
         @pointerenter="hoveredTokenId = token.id"
         @pointerleave="hoveredTokenId = null"
         @click.stop="selectToken($event, token.id)"
+        @dblclick.stop="openTokenActor(token)"
         @contextmenu.prevent.stop="toggleTokenHud(token.id)"
       >
         <img
@@ -55,23 +58,32 @@
         <span v-else>{{ initials(token.name) }}</span>
         <small>{{ token.name }}</small>
       </button>
+      <TokenRotationHandles
+        v-if="tokenStates[token.id].selected"
+        :token="displayTokenAngles(token)"
+        :disabled="busy"
+        :scale="scale"
+        @preview="previewTokenAngle(token, $event)"
+        @commit="commitTokenAngle(token, $event)"
+        @cancel="clearTokenAnglePreview(token.id)"
+      />
       <TokenStateOverlay :flags="tokenStates[token.id]" />
       <TokenStatusBadges :statuses="token.statuses" />
+      <TokenResourceOverlay
+        v-if="token.id !== hudTokenId"
+        :resources="token.resources"
+      />
       <TokenHud
         v-if="token.id === hudTokenId"
         :token="token"
         :busy="busy"
         :targeted="tokenStates[token.id].targeted"
+        :scale="scale"
         @pointerdown.stop
         @move-start="startDrag($event, token)"
         @status="toggleTokenStatus(token, $event)"
+        @resources="updateTokenResources(token, $event)"
         @target="$emit('target', token.id)"
-        @rotate="
-          $emit('update', {
-            token,
-            changes: rotatedFacing(token, $event),
-          })
-        "
         @visibility="toggleTokenVisibility(token)"
         @lock="toggleTokenLock(token)"
         @settings="openTokenSettings($event, token)"
@@ -86,6 +98,7 @@
         :token="settingsToken"
         :grid-size="Number(scene.gridSize) || 100"
         :members="members"
+        :actor="settingsActor"
         :anchor="settingsAnchor"
         :busy="busy"
         @save="saveTokenSettings(settingsToken, $event)"
@@ -100,13 +113,16 @@ import TokenHud from "./TokenHud.vue";
 import TokenDragIndicator from "./TokenDragIndicator.vue";
 import TokenStateOverlay from "./TokenStateOverlay.vue";
 import TokenStatusBadges from "./TokenStatusBadges.vue";
+import TokenResourceOverlay from "./TokenResourceOverlay.vue";
+import TokenRotationHandles from "./TokenRotationHandles.vue";
 import TokenSettingsPanel from "./TokenSettingsPanel.vue";
 import { tokenDragMethods } from "./tokenDragMethods";
 import { buildTokenDragIndicator } from "./tokenDragIndicator";
 import { tokenTravelDuration } from "./tokenMotion";
 import { tokenLayerMotionMethods } from "./tokenLayerMotionMethods";
 import { tokenHudMethods } from "./tokenHudMethods";
-import { rotateTokenFacing, tokenFacingStyle } from "@/lib/vtt/tokenFacing";
+import { tokenRotationMethods } from "./tokenRotationMethods";
+import { tokenFacingStyle } from "@/lib/vtt/tokenFacing";
 import {
   activeTokenUiStates,
   tokenUiClasses,
@@ -119,6 +135,8 @@ export default {
     TokenDragIndicator,
     TokenHud,
     TokenSettingsPanel,
+    TokenResourceOverlay,
+    TokenRotationHandles,
     TokenStateOverlay,
     TokenStatusBadges,
   },
@@ -131,6 +149,7 @@ export default {
     waitingTurnIds: { type: Array, default: () => [] },
     targetedIds: { type: Array, default: () => [] },
     members: { type: Array, default: () => [] },
+    characters: { type: Array, default: () => [] },
     scale: { type: Number, default: 1 },
     busy: { type: Boolean, default: false },
   },
@@ -146,11 +165,20 @@ export default {
     hudTokenId: null,
     settingsTokenId: null,
     settingsAnchor: {},
+    anglePreview: {},
   }),
   computed: {
     settingsToken() {
       return (
         this.tokens.find((token) => token.id === this.settingsTokenId) || null
+      );
+    },
+    settingsActor() {
+      if (!this.settingsToken?.characterId) return null;
+      return (
+        this.characters.find(
+          (actor) => actor.id === this.settingsToken.characterId,
+        ) || null
       );
     },
     effectiveSelectedIds() {
@@ -214,8 +242,8 @@ export default {
     ...tokenDragMethods,
     ...tokenLayerMotionMethods,
     ...tokenHudMethods,
+    ...tokenRotationMethods,
     facingStyle: tokenFacingStyle,
-    rotatedFacing: rotateTokenFacing,
     stateClasses: tokenUiClasses,
     selectToken(event, tokenId) {
       if (this.hudTokenId !== tokenId) this.hudTokenId = null;

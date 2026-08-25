@@ -11,6 +11,7 @@ final class TokenPresenter
         bool $canEdit = false,
         bool $canObserve = false
     ): array {
+        $resources = TokenResourceValidator::stored($row['bars_json'] ?? []);
         return [
             'id' => (int) $row['id'],
             'sceneId' => (int) $row['scene_id'],
@@ -23,6 +24,8 @@ final class TokenPresenter
             'height' => (float) $row['height'],
             'rotation' => (float) $row['rotation'],
             'facing' => (float) ($row['facing'] ?? $row['rotation']),
+            'rotationHandleEnabled' => !empty($row['rotation_handle_enabled']),
+            'facingHandleEnabled' => !empty($row['facing_handle_enabled']),
             'elevation' => (float) $row['elevation'],
             'disposition' => (string) $row['disposition'],
             'hidden' => (bool) $row['hidden'],
@@ -43,7 +46,8 @@ final class TokenPresenter
                 $row['observer_by_json'] ?? null,
                 'inherit'
             ),
-            'bars' => (array) ($row['bars_json'] ?? []),
+            'bars' => $resources['bars'],
+            'resources' => $resources,
             'statuses' => (array) ($row['statuses_json'] ?? []),
             'vision' => (array) ($row['vision_json'] ?? []),
             'light' => (array) ($row['light_json'] ?? []),

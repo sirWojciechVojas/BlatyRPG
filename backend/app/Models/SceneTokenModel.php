@@ -13,6 +13,7 @@ class SceneTokenModel extends Model
     protected $allowedFields = [
         'campaign_id', 'scene_id', 'character_id', 'name', 'image_url',
         'x', 'y', 'width', 'height', 'rotation', 'facing', 'elevation', 'disposition',
+        'rotation_handle_enabled', 'facing_handle_enabled',
         'hidden', 'locked', 'visible_to_json', 'controlled_by_json',
         'editable_by_json', 'observer_by_json', 'bars_json', 'statuses_json',
         'vision_json', 'light_json', 'sort_order', 'revision',
@@ -37,7 +38,7 @@ class SceneTokenModel extends Model
             foreach (['x', 'y', 'width', 'height', 'rotation', 'facing', 'elevation'] as $field) {
                 if (isset($row[$field])) $row[$field] = (float) $row[$field];
             }
-            foreach (['hidden', 'locked'] as $field) {
+            foreach (['hidden', 'locked', 'rotation_handle_enabled', 'facing_handle_enabled'] as $field) {
                 if (isset($row[$field])) $row[$field] = (bool) $row[$field];
             }
             foreach (self::jsonFields() as $field) {

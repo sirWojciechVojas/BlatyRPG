@@ -13,10 +13,15 @@ const apiToken = {
   height: "80.000",
   rotation: "370.000",
   facing: "-15.000",
+  rotationHandleEnabled: true,
+  facingHandleEnabled: false,
   visibleTo: { mode: "users", userIds: [7, 4] },
   controlledBy: { mode: "everyone", userIds: [] },
   editableBy: { mode: "gm", userIds: [] },
   observerBy: { mode: "inherit", userIds: [] },
+  resources: {
+    bars: [{ enabled: true, label: "HP", value: 8, max: 10 }],
+  },
   revision: 3,
   capabilities: {
     canControl: true,
@@ -44,6 +49,8 @@ describe("tokenApiClient", () => {
       x: 120.5,
       rotation: 10,
       facing: 345,
+      rotationHandleEnabled: true,
+      facingHandleEnabled: false,
       visibleTo: { mode: "users", userIds: [4, 7] },
       controlledBy: { mode: "everyone", userIds: [] },
       capabilities: {
@@ -65,8 +72,10 @@ describe("tokenApiClient", () => {
       x: 300,
       y: 400,
       facing: 90,
+      rotationHandleEnabled: true,
       statuses: ["poisoned", "stunned"],
       observerBy: { mode: "users", userIds: [12] },
+      resources: apiToken.resources,
       revision: 3,
     });
     expect(request).toHaveBeenCalledWith("/campaigns/7/scenes/4/tokens/9", {
@@ -75,8 +84,14 @@ describe("tokenApiClient", () => {
         x: 300,
         y: 400,
         facing: 90,
+        rotationHandleEnabled: true,
         statuses: ["poisoned", "stunned"],
         observerBy: { mode: "users", userIds: [12] },
+        resources: expect.objectContaining({
+          bars: expect.arrayContaining([
+            expect.objectContaining({ label: "HP", value: 8, max: 10 }),
+          ]),
+        }),
         revision: 3,
       },
     });

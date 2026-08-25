@@ -32,109 +32,73 @@
     </header>
 
     <form @submit.prevent="save">
-      <section class="token-settings-panel__presets">
-        <h3>{{ $t("vtt.token.settings.sizePresets") }}</h3>
-        <div>
-          <button
-            v-for="preset in sizePresets"
-            :key="preset.key"
-            type="button"
-            :class="{ active: hasSize(preset.cells) }"
-            @click="applySize(preset.cells)"
-          >
-            <b>{{ preset.cells }}×</b>
-            <small>{{ $t(`vtt.token.sizes.${preset.key}`) }}</small>
-          </button>
+      <nav class="token-settings-panel__tabs" role="tablist">
+        <button
+          v-for="tab in tabs"
+          :key="tab"
+          type="button"
+          role="tab"
+          :aria-selected="activeTab === tab"
+          :class="{ active: activeTab === tab }"
+          @click="activeTab = tab"
+        >
+          {{ $t(`vtt.token.settings.tabs.${tab}`) }}
+        </button>
+      </nav>
+
+      <div class="token-settings-panel__body">
+        <TokenAppearanceSettings
+          v-show="activeTab === 'general'"
+          v-model="draft"
+          :can-manage="canManage"
+        />
+
+        <TokenResourceSettings
+          v-show="activeTab === 'resources'"
+          v-model="draft.resources"
+          :actor="actor"
+        />
+
+        <div v-if="canManage" v-show="activeTab === 'permissions'">
+          <section class="token-settings-panel__toggles">
+            <label>
+              <input v-model="draft.hidden" type="checkbox" />
+              {{ $t("vtt.token.settings.hidden") }}
+            </label>
+            <label>
+              <input v-model="draft.locked" type="checkbox" />
+              {{ $t("vtt.token.settings.locked") }}
+            </label>
+          </section>
+
+          <section class="token-settings-panel__permissions">
+            <h3>{{ $t("vtt.token.permissions.title") }}</h3>
+            <TokenPermissionField
+              v-model="draft.visibleTo"
+              :label="$t('vtt.token.permissions.visibleTo')"
+              :members="members"
+            />
+            <TokenPermissionField
+              v-model="draft.controlledBy"
+              :label="$t('vtt.token.permissions.controlledBy')"
+              :members="members"
+              allow-inherit
+            />
+            <TokenPermissionField
+              v-model="draft.editableBy"
+              :label="$t('vtt.token.permissions.editableBy')"
+              :members="members"
+              allow-inherit
+            />
+            <TokenPermissionField
+              v-model="draft.observerBy"
+              :label="$t('vtt.token.permissions.observerBy')"
+              :members="members"
+              allow-inherit
+            />
+          </section>
         </div>
-      </section>
-      <section class="token-settings-panel__grid">
-        <label class="token-settings-panel__wide">
-          <span>{{ $t("vtt.token.settings.name") }}</span>
-          <input v-model.trim="draft.name" maxlength="150" required />
-        </label>
-        <label class="token-settings-panel__wide">
-          <span>{{ $t("vtt.token.settings.imageUrl") }}</span>
-          <input v-model.trim="draft.imageUrl" maxlength="2048" />
-        </label>
-        <label>
-          <span>{{ $t("vtt.token.settings.widthCells") }}</span>
-          <input
-            v-model.number="draft.widthCells"
-            type="number"
-            min="0.25"
-            max="100"
-            step="0.25"
-          />
-        </label>
-        <label>
-          <span>{{ $t("vtt.token.settings.heightCells") }}</span>
-          <input
-            v-model.number="draft.heightCells"
-            type="number"
-            min="0.25"
-            max="100"
-            step="0.25"
-          />
-        </label>
-        <label>
-          <span>{{ $t("vtt.token.settings.rotation") }}</span>
-          <input v-model.number="draft.rotation" type="number" step="15" />
-        </label>
-        <label>
-          <span>{{ $t("vtt.token.settings.facing") }}</span>
-          <input v-model.number="draft.facing" type="number" step="15" />
-        </label>
-        <label>
-          <span>{{ $t("vtt.token.settings.elevation") }}</span>
-          <input v-model.number="draft.elevation" type="number" step="1" />
-        </label>
-        <label>
-          <span>{{ $t("vtt.token.settings.disposition") }}</span>
-          <select v-model="draft.disposition">
-            <option v-for="value in dispositions" :key="value" :value="value">
-              {{ $t(`vtt.token.dispositions.${value}`) }}
-            </option>
-          </select>
-        </label>
-      </section>
-
-      <section v-if="canManage" class="token-settings-panel__toggles">
-        <label>
-          <input v-model="draft.hidden" type="checkbox" />
-          {{ $t("vtt.token.settings.hidden") }}
-        </label>
-        <label>
-          <input v-model="draft.locked" type="checkbox" />
-          {{ $t("vtt.token.settings.locked") }}
-        </label>
-      </section>
-
-      <section v-if="canManage" class="token-settings-panel__permissions">
-        <h3>{{ $t("vtt.token.permissions.title") }}</h3>
-        <TokenPermissionField
-          v-model="draft.visibleTo"
-          :label="$t('vtt.token.permissions.visibleTo')"
-          :members="members"
-        />
-        <TokenPermissionField
-          v-model="draft.controlledBy"
-          :label="$t('vtt.token.permissions.controlledBy')"
-          :members="members"
-          allow-inherit
-        />
-        <TokenPermissionField
-          v-model="draft.editableBy"
-          :label="$t('vtt.token.permissions.editableBy')"
-          :members="members"
-          allow-inherit
-        />
-        <TokenPermissionField
-          v-model="draft.observerBy"
-          :label="$t('vtt.token.permissions.observerBy')"
-          :members="members"
-          allow-inherit
-        />
-      </section>
+      </div>
 
       <footer>
         <button type="button" @click="$emit('close')">
@@ -149,9 +113,10 @@
 </template>
 
 <script>
+import TokenAppearanceSettings from "./TokenAppearanceSettings.vue";
 import TokenPermissionField from "./TokenPermissionField.vue";
+import TokenResourceSettings from "./TokenResourceSettings.vue";
 import {
-  TOKEN_SIZE_PRESETS,
   createTokenSettingsDraft,
   tokenSettingsPayload,
   tokenSettingsPosition,
@@ -159,11 +124,16 @@ import {
 
 export default {
   name: "TokenSettingsPanel",
-  components: { TokenPermissionField },
+  components: {
+    TokenAppearanceSettings,
+    TokenPermissionField,
+    TokenResourceSettings,
+  },
   props: {
     token: { type: Object, required: true },
     gridSize: { type: Number, default: 100 },
     members: { type: Array, default: () => [] },
+    actor: { type: Object, default: null },
     anchor: { type: Object, default: () => ({}) },
     busy: { type: Boolean, default: false },
   },
@@ -171,13 +141,17 @@ export default {
   data() {
     return {
       draft: createTokenSettingsDraft(this.token, this.gridSize),
-      sizePresets: TOKEN_SIZE_PRESETS,
-      dispositions: ["friendly", "neutral", "hostile", "secret"],
+      activeTab: "general",
       imageFailed: false,
       viewport: { width: window.innerWidth, height: window.innerHeight },
     };
   },
   computed: {
+    tabs() {
+      return this.canManage
+        ? ["general", "resources", "permissions"]
+        : ["general", "resources"];
+    },
     canManage() {
       return this.token.capabilities.canManage === true;
     },
@@ -225,16 +199,6 @@ export default {
     window.removeEventListener("keydown", this.onKeydown);
   },
   methods: {
-    applySize(cells) {
-      this.draft.widthCells = cells;
-      this.draft.heightCells = cells;
-    },
-    hasSize(cells) {
-      return (
-        Number(this.draft.widthCells) === cells &&
-        Number(this.draft.heightCells) === cells
-      );
-    },
     resize() {
       this.viewport = { width: window.innerWidth, height: window.innerHeight };
     },

@@ -13,7 +13,7 @@ export const tableTokenMethods = {
   },
   async createToken({ actor, x, y }) {
     if (!this.selectedScene || !this.canCreateToken) return;
-    const size = Math.max(8, Number(this.selectedScene.gridSize) || 100);
+    const size = Math.max(1, Number(this.selectedScene.gridSize) || 100);
     const position = snapTokenPosition(
       this.selectedScene,
       { x: x - size / 2, y: y - size / 2 },
@@ -40,21 +40,30 @@ export const tableTokenMethods = {
     }
     if (!sent) this.updateToken({ token, changes: { x, y } });
   },
-  updateToken({ token, changes }) {
-    this.$store
-      .dispatch("vtt/updateToken", { token, changes })
-      .catch((error) => {
-        if (error?.status === 409) {
-          this.$store.dispatch("vtt/loadTokens").catch(() => {});
-        }
+  async updateToken({ token, changes }) {
+    try {
+      const updated = await this.$store.dispatch("vtt/updateToken", {
+        token,
+        changes,
       });
+      if (changes.resources) {
+        this.$store.dispatch("campaignContext/refresh").catch(() => {});
+      }
+      return updated;
+    } catch (error) {
+      if (error?.status === 409) {
+        this.$store.dispatch("vtt/loadTokens").catch(() => {});
+      }
+      return null;
+    }
   },
   deleteToken(token) {
     const message = this.$t("vtt.token.deleteConfirm", { name: token.name });
     if (!window.confirm(message)) return;
     this.$store.dispatch("vtt/deleteToken", token).catch(() => {});
   },
-  openActor() {
+  openActor(characterId) {
+    this.focusedCharacterId = Number(characterId) || null;
     this.openUtilityWindow("characters");
   },
 };

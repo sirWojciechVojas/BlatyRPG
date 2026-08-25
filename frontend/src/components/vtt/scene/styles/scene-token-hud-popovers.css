@@ -1,0 +1,113 @@
+.token-status-menu {
+  display: grid;
+  grid-template-columns: repeat(6, 25px);
+  justify-content: center;
+  gap: 2px;
+  padding: 4px;
+  background: #100c09;
+  border-top: 1px solid #5b422b;
+}
+.token-status-menu button {
+  width: 25px;
+  height: 25px;
+  box-shadow: none;
+}
+
+.token-resource-quick {
+  display: grid;
+  width: auto;
+  gap: 3px;
+  padding: 5px;
+  color: #eadcc5;
+  background: #100c09;
+  border-top: 1px solid #5b422b;
+}
+.token-resource-quick header,
+.token-resource-quick footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+}
+.token-resource-quick header strong {
+  font-size: 9px;
+}
+.token-resource-quick header button {
+  width: 22px;
+  height: 22px;
+  box-shadow: none;
+}
+.token-resource-quick p {
+  margin: 3px;
+  color: #bda98a;
+  font-size: 8px;
+}
+.token-resource-quick > label {
+  display: grid;
+  grid-template-columns: minmax(54px, 1fr) 43px auto 43px;
+  align-items: center;
+  gap: 3px;
+  font-size: 7px;
+}
+.token-resource-quick > label span {
+  display: flex;
+  min-width: 0;
+  gap: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.token-resource-quick > label span i {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 auto;
+  border-radius: 50%;
+}
+.token-resource-quick input {
+  width: 43px;
+  height: 22px;
+  padding: 2px 3px;
+  color: #fff0d6;
+  background: #0a0806;
+  border: 1px solid #5f472f;
+  border-radius: 3px;
+}
+.token-resource-quick footer {
+  justify-content: flex-end;
+  padding-top: 3px;
+}
+.token-resource-quick footer button {
+  width: auto;
+  min-width: 48px;
+  height: 23px;
+  padding: 2px 6px;
+  box-shadow: none;
+}
+.token-resource-quick footer .primary {
+  color: #241508;
+  background: #d3a15b;
+  border-color: #efc77e;
+}
+
+.token-status-badges {
+  position: absolute;
+  z-index: 8;
+  top: -7px;
+  left: -7px;
+  display: flex;
+  gap: 2px;
+  pointer-events: none;
+}
+.token-status-badges i {
+  display: grid;
+  width: 14px;
+  height: 14px;
+  place-items: center;
+  color: #ffe7b1;
+  font-size: 9px;
+  font-style: normal;
+  line-height: 1;
+  background: rgb(40 20 15 / 95%);
+  border: 1px solid #c16b50;
+  border-radius: 50%;
+}

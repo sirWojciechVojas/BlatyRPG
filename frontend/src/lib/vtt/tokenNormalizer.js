@@ -1,5 +1,6 @@
 import { normalizeTokenAngle } from "./tokenFacing";
 import { normalizeTokenPermissionScope } from "./tokenPermissions";
+import { normalizeTokenResources } from "./tokenResources";
 
 const number = (value, fallback = 0) => {
   const result = Number(value);
@@ -21,6 +22,11 @@ export const normalizeToken = (source = {}) => ({
   height: number(source.height, 100),
   rotation: normalizeTokenAngle(source.rotation),
   facing: normalizeTokenAngle(source.facing, source.rotation),
+  rotationHandleEnabled:
+    source.rotationHandleEnabled === true ||
+    source.rotation_handle_enabled === 1,
+  facingHandleEnabled:
+    source.facingHandleEnabled === true || source.facing_handle_enabled === 1,
   elevation: number(source.elevation),
   disposition: String(source.disposition || "neutral"),
   hidden: source.hidden === true || source.hidden === 1,
@@ -41,7 +47,9 @@ export const normalizeToken = (source = {}) => ({
     source.observerBy ?? source.observer_by_json,
     "inherit",
   ),
-  bars: source.bars || {},
+  resources: normalizeTokenResources(
+    source.resources || { bars: source.bars, bubbles: source.bubbles },
+  ),
   statuses: Array.isArray(source.statuses) ? source.statuses : [],
   vision: source.vision || {},
   light: source.light || {},
@@ -65,6 +73,8 @@ export const tokenWritePayload = (changes = {}, includeRevision = false) => {
     "height",
     "rotation",
     "facing",
+    "rotationHandleEnabled",
+    "facingHandleEnabled",
     "elevation",
     "disposition",
     "hidden",
@@ -74,6 +84,7 @@ export const tokenWritePayload = (changes = {}, includeRevision = false) => {
     "editableBy",
     "observerBy",
     "statuses",
+    "resources",
   ];
   const payload = {};
   allowed.forEach((key) => {

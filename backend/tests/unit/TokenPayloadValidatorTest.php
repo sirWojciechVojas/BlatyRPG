@@ -18,9 +18,15 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
             'height' => 80,
             'rotation' => 370,
             'facing' => -15,
+            'rotationHandleEnabled' => true,
+            'facingHandleEnabled' => false,
             'visibleTo' => ['mode' => 'users', 'userIds' => [7, '4', 7]],
             'controlledBy' => ['mode' => 'everyone', 'userIds' => []],
             'statuses' => ['poisoned', 'stunned', 'poisoned'],
+            'resources' => ['bars' => [[
+                'enabled' => true, 'label' => 'HP', 'value' => 7, 'max' => 10,
+                'attributePath' => 'attributes.actual.hp',
+            ]]],
             'disposition' => 'HOSTILE',
             'hidden' => 'false',
         ]);
@@ -32,6 +38,8 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
         $this->assertSame(0, $result['data']['hidden']);
         $this->assertSame(10.0, $result['data']['rotation']);
         $this->assertSame(345.0, $result['data']['facing']);
+        $this->assertSame(1, $result['data']['rotation_handle_enabled']);
+        $this->assertSame(0, $result['data']['facing_handle_enabled']);
         $this->assertSame(
             ['mode' => 'users', 'userIds' => [4, 7]],
             $result['data']['visible_to_json']
@@ -41,6 +49,7 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
             $result['data']['controlled_by_json']
         );
         $this->assertSame(['poisoned', 'stunned'], $result['data']['statuses_json']);
+        $this->assertCount(4, $result['data']['bars_json']['bars']);
     }
 
     public function testUpdateRequiresRevisionAndAWritableField(): void
@@ -50,6 +59,19 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
         $this->assertFalse($result['valid']);
         $this->assertArrayHasKey('revision', $result['errors']);
         $this->assertArrayHasKey('payload', $result['errors']);
+    }
+
+    public function testAcceptsQuarterCellDimensionsOnTheSmallestGrid(): void
+    {
+        $result = (new TokenPayloadValidator())->create([
+            'name' => 'Duszek',
+            'width' => 1,
+            'height' => 1,
+        ]);
+
+        $this->assertTrue($result['valid']);
+        $this->assertSame(1.0, $result['data']['width']);
+        $this->assertSame(1.0, $result['data']['height']);
     }
 
     public function testRejectsUnsafeUrlAndServerOwnedFields(): void

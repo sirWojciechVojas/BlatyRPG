@@ -100,8 +100,8 @@ export const snapTokenPosition = (scene = {}, position = {}, token = {}) => {
   if (settings.type === GRID_TYPES.GRIDLESS) {
     return { x: finite(position.x), y: finite(position.y) };
   }
-  const width = Math.max(8, finite(token.width, settings.size));
-  const height = Math.max(8, finite(token.height, settings.size));
+  const width = Math.max(1, finite(token.width, settings.size));
+  const height = Math.max(1, finite(token.height, settings.size));
   const center = snapPointToGrid(scene, {
     x: finite(position.x) + width / 2,
     y: finite(position.y) + height / 2,

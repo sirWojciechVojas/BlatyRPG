@@ -38,7 +38,7 @@ export default {
   },
   computed: {
     size() {
-      return Math.max(8, Number(this.scene.gridSize) || 100);
+      return Math.max(1, Number(this.scene.gridSize) || 100);
     },
     snappedPosition() {
       return snapTokenPosition(

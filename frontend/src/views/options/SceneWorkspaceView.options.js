@@ -52,6 +52,7 @@ export default {
     panelWindows: [],
     nextWindowZ: 400,
     confirmDeleteOpen: false,
+    focusedCharacterId: null,
   }),
   computed: {
     state() {
@@ -224,7 +225,10 @@ export default {
       this.$store.dispatch("vtt/initialize").catch(() => {});
     },
     refreshCampaignContext() {
-      this.$store.dispatch("campaignContext/refresh").catch(() => {});
+      Promise.allSettled([
+        this.$store.dispatch("campaignContext/refresh"),
+        this.$store.dispatch("vtt/loadTokens"),
+      ]);
     },
     zoomOut() {
       this.$refs.canvas?.zoomBy(1 / 1.2);

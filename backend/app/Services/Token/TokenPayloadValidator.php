@@ -10,8 +10,9 @@ final class TokenPayloadValidator
     private const WRITABLE = [
         'characterId', 'name', 'imageUrl', 'x', 'y', 'width', 'height',
         'rotation', 'facing', 'elevation', 'disposition', 'hidden', 'locked',
+        'rotationHandleEnabled', 'facingHandleEnabled',
         'visibleTo', 'controlledBy', 'editableBy', 'observerBy',
-        'statuses',
+        'statuses', 'resources',
     ];
     private const PERMISSIONS = [
         'visibleTo' => 'visible_to_json',
@@ -76,16 +77,16 @@ final class TokenPayloadValidator
             }
         }
         foreach (['width', 'height'] as $field) {
-            if (isset($result['data'][$field]) && ($result['data'][$field] < 8 || $result['data'][$field] > 10000)) {
-                $result['errors'][$field] = 'Size must be between 8 and 10000.';
+            if (isset($result['data'][$field]) && ($result['data'][$field] < 1 || $result['data'][$field] > 10000)) {
+                $result['errors'][$field] = 'Size must be between 1 and 10000.';
             }
         }
         $this->optionalId($payload, 'characterId', $result);
-        foreach (['hidden', 'locked'] as $field) {
+        foreach (['hidden', 'locked', 'rotationHandleEnabled', 'facingHandleEnabled'] as $field) {
             if (!array_key_exists($field, $payload)) continue;
             $value = filter_var($payload[$field], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
             if ($value === null) $result['errors'][$field] = 'A boolean is required.';
-            else $result['data'][$field] = $value ? 1 : 0;
+            else $result['data'][$this->snake($field)] = $value ? 1 : 0;
         }
         if (array_key_exists('disposition', $payload)) {
             $value = strtolower(trim((string) $payload['disposition']));
@@ -102,6 +103,11 @@ final class TokenPayloadValidator
             $statuses = TokenStatusValidator::validate($payload['statuses']);
             if (!$statuses['valid']) $result['errors']['statuses'] = $statuses['error'];
             else $result['data']['statuses_json'] = $statuses['data'];
+        }
+        if (array_key_exists('resources', $payload)) {
+            $resources = TokenResourceValidator::validate($payload['resources']);
+            if (!$resources['valid']) $result['errors']['resources'] = $resources['error'];
+            else $result['data']['bars_json'] = $resources['data'];
         }
         if (!$partial) {
             $result['data'] += ['x' => 0, 'y' => 0];

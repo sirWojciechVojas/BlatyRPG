@@ -20,6 +20,8 @@ final class TokenPresenterTest extends CIUnitTestCase
             'height' => 100,
             'rotation' => 90,
             'facing' => 90,
+            'rotation_handle_enabled' => 1,
+            'facing_handle_enabled' => 0,
             'elevation' => 0,
             'disposition' => 'friendly',
             'hidden' => 0,
@@ -28,12 +30,20 @@ final class TokenPresenterTest extends CIUnitTestCase
             'controlled_by_json' => ['mode' => 'users', 'userIds' => [8]],
             'editable_by_json' => ['mode' => 'gm', 'userIds' => []],
             'observer_by_json' => ['mode' => 'everyone', 'userIds' => []],
+            'bars_json' => ['bubbles' => [[
+                'enabled' => true, 'label' => 'KP', 'value' => 2,
+                'position' => 'top-left',
+            ]]],
             'revision' => 3,
         ], true, false, false, true);
 
         $this->assertTrue($token['locked']);
+        $this->assertTrue($token['rotationHandleEnabled']);
+        $this->assertFalse($token['facingHandleEnabled']);
         $this->assertTrue($token['capabilities']['canControl']);
         $this->assertTrue($token['capabilities']['canObserve']);
         $this->assertSame(['mode' => 'users', 'userIds' => [8]], $token['visibleTo']);
+        $this->assertCount(4, $token['resources']['bars']);
+        $this->assertSame(2.0, $token['resources']['bubbles'][0]['value']);
     }
 }

@@ -106,6 +106,7 @@ export default {
     campaignId: { type: [Number, String], required: true },
     campaign: { type: Object, required: true },
     canCreateToken: { type: Boolean, default: false },
+    initialCharacterId: { type: [Number, String], default: null },
   },
   emits: ["changed"],
   data: () => ({
@@ -141,6 +142,10 @@ export default {
   },
   watch: {
     campaignId: "resetAndLoad",
+    initialCharacterId(value) {
+      if (value && Number(value) !== this.selectedId)
+        this.selectCharacter(value);
+    },
   },
   mounted() {
     this.loadCharacters();
@@ -173,7 +178,8 @@ export default {
         if (sequence !== this.listRequestSequence) return;
         this.characters = result.characters;
         this.configureCharacterCreation(result);
-        const nextId = this.selectedId || this.characters[0]?.id;
+        const nextId =
+          this.initialCharacterId || this.selectedId || this.characters[0]?.id;
         if (nextId) await this.selectCharacter(nextId);
       } catch (error) {
         if (sequence === this.listRequestSequence) {
