@@ -17,6 +17,7 @@ final class SceneTokenService
         'visible_to_json', 'controlled_by_json',
         'editable_by_json', 'observer_by_json', 'rotation_handle_enabled', 'facing_handle_enabled',
         'movement_range', 'movement_spent', 'movement_reset_mode',
+        'show_info_unselected',
     ];
     private $db;
     private $tokens;

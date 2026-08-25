@@ -14,6 +14,7 @@ final class TokenPayloadValidator
         'characterId', 'name', 'imageUrl', 'x', 'y', 'width', 'height',
         'rotation', 'facing', 'elevation', 'disposition', 'hidden', 'locked',
         'rotationHandleEnabled', 'facingHandleEnabled',
+        'showInfoUnselected',
         'movementRange', 'movementSpent', 'movementResetMode',
         'visibleTo', 'controlledBy', 'editableBy', 'observerBy',
         'statuses', 'resources',
@@ -93,7 +94,8 @@ final class TokenPayloadValidator
             }
         }
         $this->optionalId($payload, 'characterId', $result);
-        foreach (['hidden', 'locked', 'rotationHandleEnabled', 'facingHandleEnabled'] as $field) {
+        foreach (['hidden', 'locked', 'rotationHandleEnabled', 'facingHandleEnabled',
+            'showInfoUnselected'] as $field) {
             if (!array_key_exists($field, $payload)) continue;
             $value = filter_var($payload[$field], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
             if ($value === null) $result['errors'][$field] = 'A boolean is required.';

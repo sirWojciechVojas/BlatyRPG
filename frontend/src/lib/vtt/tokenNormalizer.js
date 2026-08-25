@@ -27,6 +27,8 @@ export const normalizeToken = (source = {}) => ({
     source.rotation_handle_enabled === 1,
   facingHandleEnabled:
     source.facingHandleEnabled === true || source.facing_handle_enabled === 1,
+  showInfoUnselected:
+    source.showInfoUnselected === true || source.show_info_unselected === 1,
   movementRange: Math.max(
     0,
     number(source.movementRange ?? source.movement_range, 6),
@@ -96,6 +98,7 @@ export const tokenWritePayload = (changes = {}, includeRevision = false) => {
     "facing",
     "rotationHandleEnabled",
     "facingHandleEnabled",
+    "showInfoUnselected",
     "movementRange",
     "movementSpent",
     "movementResetMode",

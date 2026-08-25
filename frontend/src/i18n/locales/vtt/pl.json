@@ -135,6 +135,7 @@
         "facing": "Kierunek patrzenia (°)",
         "enableRotationHandle": "Uchwyt obrotu grafiki LPM",
         "enableFacingHandle": "Uchwyt kierunku patrzenia LPM",
+        "showInfoUnselected": "Pokazuj informacje również bez zaznaczenia tokena",
         "elevation": "Wysokość",
         "disposition": "Nastawienie",
         "hidden": "Ukryty przed graczami",
@@ -203,6 +204,7 @@
         "maximum": "Maksimum",
         "valuePath": "Atrybut wartości, np. attributes.actual.hp",
         "maxPath": "Atrybut maksimum",
+        "editBubble": "Kliknij, aby zmienić: {label}",
         "empty": "Najpierw włącz zasób w pełnych ustawieniach tokena."
       },
       "resourcePositions": {

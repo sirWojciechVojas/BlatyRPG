@@ -83,6 +83,9 @@ export const sceneCanvasCameraMethods = {
   },
   startPan(event) {
     if (!this.scene || ![0, 1].includes(event.button)) return;
+    if (event.button === 0) {
+      this.$emit("token-select", { tokenId: null, additive: false });
+    }
     this.dragging = true;
     this.pointer = {
       id: event.pointerId,

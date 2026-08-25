@@ -45,6 +45,11 @@ describe("VTT token store", () => {
     store.commit("vtt/SELECT_TOKEN", { tokenId: 10, additive: true });
     expect(store.state.vtt.selectedTokenIds).toEqual([9, 10]);
     expect(store.getters["vtt/selectedTokens"]).toHaveLength(2);
+    store.commit("vtt/SELECT_TOKEN", { tokenId: null });
+    expect(store.state.vtt.selectedTokenId).toBeNull();
+    expect(store.state.vtt.selectedTokenIds).toEqual([]);
+    store.commit("vtt/SELECT_TOKEN", 9);
+    store.commit("vtt/SELECT_TOKEN", { tokenId: 10, additive: true });
     store.commit("vtt/TOGGLE_TOKEN_TARGET", 9);
     store.commit("vtt/TOGGLE_TOKEN_TARGET", 10);
     expect(store.state.vtt.targetedTokenIds).toEqual([9, 10]);

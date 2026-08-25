@@ -23,6 +23,7 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
             'movementRange' => 8.5,
             'movementSpent' => 2,
             'movementResetMode' => 'round',
+            'showInfoUnselected' => true,
             'visibleTo' => ['mode' => 'users', 'userIds' => [7, '4', 7]],
             'controlledBy' => ['mode' => 'everyone', 'userIds' => []],
             'statuses' => ['poisoned', 'stunned', 'poisoned'],
@@ -46,6 +47,7 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
         $this->assertSame(8.5, $result['data']['movement_range']);
         $this->assertSame(2.0, $result['data']['movement_spent']);
         $this->assertSame('round', $result['data']['movement_reset_mode']);
+        $this->assertSame(1, $result['data']['show_info_unselected']);
         $this->assertSame(
             ['mode' => 'users', 'userIds' => [4, 7]],
             $result['data']['visible_to_json']

@@ -2,7 +2,14 @@ import { snapTokenPosition } from "@/lib/vtt/grid";
 
 export const tableTokenMethods = {
   selectToken(selection) {
-    const tokenId = selection?.tokenId ?? selection;
+    const tokenId =
+      selection && typeof selection === "object"
+        ? selection.tokenId
+        : selection;
+    if (tokenId === null || tokenId === undefined) {
+      this.$store.commit("vtt/SELECT_TOKEN", { tokenId: null });
+      return;
+    }
     this.$store.commit("vtt/SELECT_TOKEN", {
       tokenId: Number(tokenId),
       additive: selection?.additive === true,

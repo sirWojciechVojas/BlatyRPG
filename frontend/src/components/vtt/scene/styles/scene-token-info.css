@@ -1,0 +1,15 @@
+.token-settings-panel__info-toggle {
+  display: flex;
+  min-height: 29px;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 7px;
+  color: #ccb99d;
+  background: #17100c;
+  border: 1px solid #493522;
+  border-radius: 3px;
+}
+
+.token-settings-panel__info-toggle > span {
+  margin: 0 !important;
+}

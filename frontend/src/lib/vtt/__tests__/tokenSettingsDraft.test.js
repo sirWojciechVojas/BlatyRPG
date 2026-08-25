@@ -39,6 +39,7 @@ describe("tokenSettingsDraft", () => {
         movementRange: 8,
         movementSpent: 2,
         movementResetMode: "round",
+        showInfoUnselected: true,
         resources: { bubbles: [{ enabled: true, value: 3 }] },
       },
       100,
@@ -54,6 +55,7 @@ describe("tokenSettingsDraft", () => {
     expect(payload.movementRange).toBe(8);
     expect(payload.movementSpent).toBe(2);
     expect(payload.movementResetMode).toBe("round");
+    expect(payload.showInfoUnselected).toBe(true);
     expect(payload.resources.bubbles[0]).toMatchObject({
       enabled: true,
       value: 3,
@@ -70,6 +72,9 @@ describe("tokenSettingsDraft", () => {
     );
     expect(tokenSettingsPayload(draft, 80, false)).not.toHaveProperty(
       "movementRange",
+    );
+    expect(tokenSettingsPayload(draft, 80, false)).not.toHaveProperty(
+      "showInfoUnselected",
     );
   });
 

@@ -56,8 +56,10 @@
           draggable="false"
         />
         <span v-else>{{ initials(token.name) }}</span>
-        <small>{{ token.name }}</small>
       </button>
+      <small v-if="tokenInfoVisible(token)" class="scene-token-name">
+        {{ token.name }}
+      </small>
       <TokenRotationHandles
         v-if="tokenStates[token.id].selected"
         :token="displayTokenAngles(token)"
@@ -68,10 +70,15 @@
         @cancel="clearTokenAnglePreview(token.id)"
       />
       <TokenStateOverlay :flags="tokenStates[token.id]" />
-      <TokenStatusBadges :statuses="token.statuses" />
+      <TokenStatusBadges
+        v-if="tokenInfoVisible(token)"
+        :statuses="token.statuses"
+      />
       <TokenResourceOverlay
-        v-if="token.id !== hudTokenId"
+        v-if="tokenInfoVisible(token)"
         :resources="token.resources"
+        :editable="resourceEditable(token)"
+        @update="updateTokenResources(token, $event)"
       />
       <TokenHud
         v-if="token.id === hudTokenId"
@@ -118,8 +125,8 @@ import TokenRotationHandles from "./TokenRotationHandles.vue";
 import TokenSettingsPanel from "./TokenSettingsPanel.vue";
 import { tokenDragMethods } from "./tokenDragMethods";
 import { buildTokenDragIndicator } from "./tokenDragIndicator";
-import { tokenTravelDuration } from "./tokenMotion";
 import { tokenLayerMotionMethods } from "./tokenLayerMotionMethods";
+import { tokenLayerWatchers } from "./tokenLayerWatchers";
 import { tokenHudMethods } from "./tokenHudMethods";
 import { tokenRotationMethods } from "./tokenRotationMethods";
 import { tokenFacingStyle } from "@/lib/vtt/tokenFacing";
@@ -222,26 +229,7 @@ export default {
       );
     },
   },
-  watch: {
-    tokens: {
-      deep: true,
-      handler(tokens, previousTokens = []) {
-        const durations = { ...this.motionDurations };
-        tokens.forEach((token) => {
-          const previous = previousTokens.find((item) => item.id === token.id);
-          if (previous && (previous.x !== token.x || previous.y !== token.y)) {
-            durations[token.id] = tokenTravelDuration(previous, token);
-          }
-        });
-        Object.keys(durations).forEach((id) => {
-          if (!tokens.some((token) => token.id === Number(id)))
-            delete durations[id];
-        });
-        this.motionDurations = durations;
-        this.syncPendingPositions(tokens);
-      },
-    },
-  },
+  watch: tokenLayerWatchers,
   beforeUnmount() {
     this.cancelDrag();
     this.pendingTimers.forEach((timer) => window.clearTimeout(timer));

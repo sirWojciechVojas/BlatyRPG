@@ -2,6 +2,19 @@ import { describe, expect, it, vi } from "vitest";
 import { tableTokenMethods } from "../tableTokenMethods";
 
 describe("tableTokenMethods resources", () => {
+  it("clears the active token when the canvas is selected", () => {
+    const commit = vi.fn();
+    tableTokenMethods.selectToken.call(
+      { $store: { commit } },
+      {
+        tokenId: null,
+        additive: false,
+      },
+    );
+
+    expect(commit).toHaveBeenCalledWith("vtt/SELECT_TOKEN", { tokenId: null });
+  });
+
   it("focuses a linked character card from the token", () => {
     const openUtilityWindow = vi.fn();
     const vm = { focusedCharacterId: null, openUtilityWindow };

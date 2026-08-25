@@ -105,7 +105,15 @@ export const vttMutations = {
     }
   },
   SELECT_TOKEN(state, selection) {
-    const value = selection?.tokenId ?? selection;
+    const value =
+      selection && typeof selection === "object"
+        ? selection.tokenId
+        : selection;
+    if (value === null || value === undefined || value === "") {
+      state.selectedTokenId = null;
+      state.selectedTokenIds = [];
+      return;
+    }
     const tokenId = Number(value);
     if (!Number.isFinite(tokenId)) return;
     if (selection?.additive === true) {

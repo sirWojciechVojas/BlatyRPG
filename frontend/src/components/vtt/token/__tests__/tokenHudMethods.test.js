@@ -24,4 +24,45 @@ describe("token HUD interactions", () => {
 
     expect(emit).not.toHaveBeenCalled();
   });
+
+  it("allows resource editing to managers and unlocked controllers", () => {
+    expect(
+      tokenHudMethods.resourceEditable.call(
+        { busy: false },
+        { locked: true, capabilities: { canManage: true } },
+      ),
+    ).toBe(true);
+    expect(
+      tokenHudMethods.resourceEditable.call(
+        { busy: false },
+        { locked: false, capabilities: { canControl: true } },
+      ),
+    ).toBe(true);
+    expect(
+      tokenHudMethods.resourceEditable.call(
+        { busy: false },
+        { locked: true, capabilities: { canControl: true } },
+      ),
+    ).toBe(false);
+  });
+
+  it("shows token information only while selected unless configured otherwise", () => {
+    const context = { tokenStates: { 7: { selected: false } } };
+    expect(
+      tokenHudMethods.tokenInfoVisible.call(context, {
+        id: 7,
+        showInfoUnselected: false,
+      }),
+    ).toBe(false);
+    expect(
+      tokenHudMethods.tokenInfoVisible.call(context, {
+        id: 7,
+        showInfoUnselected: true,
+      }),
+    ).toBe(true);
+    context.tokenStates[7].selected = true;
+    expect(tokenHudMethods.tokenInfoVisible.call(context, { id: 7 })).toBe(
+      true,
+    );
+  });
 });

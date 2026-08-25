@@ -16,6 +16,25 @@
         ✥
       </button>
       <button
+        type="button"
+        :class="{ active: targeted }"
+        :title="$t('vtt.token.hud.target')"
+        :aria-pressed="targeted"
+        @click="$emit('target')"
+      >
+        ⌖
+      </button>
+      <button
+        v-if="token.capabilities.canManage"
+        type="button"
+        :class="{ active: !token.hidden }"
+        :disabled="busy"
+        :title="$t('vtt.token.hud.visibility')"
+        @click="$emit('visibility')"
+      >
+        {{ token.hidden ? "◌" : "◉" }}
+      </button>
+      <button
         v-if="token.capabilities.canManage"
         type="button"
         :class="{ active: token.locked }"
@@ -33,6 +52,16 @@
         <i :class="`token-hud__dot token-hud__dot--${token.disposition}`" />
         <strong>{{ token.name }}</strong>
         <button
+          v-if="token.capabilities.canManage"
+          type="button"
+          class="token-hud__header-action token-hud__danger"
+          :disabled="busy"
+          :title="$t('vtt.token.delete')"
+          @click="$emit('delete')"
+        >
+          ⌫
+        </button>
+        <button
           type="button"
           class="token-hud__close"
           :title="$t('vtt.token.hud.close')"
@@ -47,29 +76,6 @@
         <b>{{ movementLeft }} / {{ movementRange }}</b>
       </div>
 
-      <div v-if="hasResources" class="token-hud__resources">
-        <div v-if="activeResources.bubbles.length" class="token-hud__values">
-          <span
-            v-for="bubble in activeResources.bubbles"
-            :key="`bubble-${bubble.index}`"
-            :title="bubble.item.label"
-          >
-            <small>{{ bubble.item.label || `#${bubble.index + 1}` }}</small>
-            <b>{{ bubble.item.value }}</b>
-          </span>
-        </div>
-        <span
-          v-for="bar in activeResources.bars"
-          :key="`bar-${bar.index}`"
-          class="token-hud__bar"
-          :title="`${bar.item.label}: ${bar.item.value}/${bar.item.max}`"
-        >
-          <i><b :style="barStyle(bar.item)" /></i>
-          <small>{{ bar.item.label || `#${bar.index + 1}` }}</small>
-          <em>{{ bar.item.value }}/{{ bar.item.max }}</em>
-        </span>
-      </div>
-
       <TokenStatusMenu
         v-if="statusOpen"
         :active-statuses="token.statuses"
@@ -81,39 +87,9 @@
         @save="saveResources"
         @close="resourceOpen = false"
       />
-
-      <footer v-if="token.capabilities.canManage">
-        <button
-          type="button"
-          :class="{ active: !token.hidden }"
-          :disabled="busy"
-          :title="$t('vtt.token.hud.visibility')"
-          @click="$emit('visibility')"
-        >
-          {{ token.hidden ? "◌" : "◉" }}
-        </button>
-        <button
-          type="button"
-          class="token-hud__danger"
-          :disabled="busy"
-          :title="$t('vtt.token.delete')"
-          @click="$emit('delete')"
-        >
-          ⌫
-        </button>
-      </footer>
     </section>
 
     <div class="token-hud__rail token-hud__rail--right">
-      <button
-        type="button"
-        :class="{ active: targeted }"
-        :title="$t('vtt.token.hud.target')"
-        :aria-pressed="targeted"
-        @click="$emit('target')"
-      >
-        ⌖
-      </button>
       <button
         type="button"
         :class="{ active: statusOpen || (token.statuses || []).length }"
@@ -162,10 +138,7 @@
 <script>
 import TokenStatusMenu from "./TokenStatusMenu.vue";
 import TokenResourceQuickPanel from "./TokenResourceQuickPanel.vue";
-import {
-  activeTokenResources,
-  tokenBarPercent,
-} from "@/lib/vtt/tokenResources";
+import { activeTokenResources } from "@/lib/vtt/tokenResources";
 
 export default {
   name: "TokenHud",
@@ -211,9 +184,7 @@ export default {
       );
     },
     activeResources() {
-      const indexed = (items) => items.map((item, index) => ({ item, index }));
-      const active = activeTokenResources(this.token.resources);
-      return { bars: indexed(active.bars), bubbles: indexed(active.bubbles) };
+      return activeTokenResources(this.token.resources);
     },
     hasResources() {
       return (
@@ -229,12 +200,6 @@ export default {
     },
   },
   methods: {
-    barStyle(bar) {
-      return {
-        width: `${tokenBarPercent(bar)}%`,
-        backgroundColor: bar.color,
-      };
-    },
     toggleStatuses() {
       this.resourceOpen = false;
       this.statusOpen = !this.statusOpen;

@@ -18,6 +18,7 @@ const apiToken = {
   movementRange: "8.000",
   movementSpent: "2.500",
   movementResetMode: "round",
+  showInfoUnselected: true,
   visibleTo: { mode: "users", userIds: [7, 4] },
   controlledBy: { mode: "everyone", userIds: [] },
   editableBy: { mode: "gm", userIds: [] },
@@ -58,6 +59,7 @@ describe("tokenApiClient", () => {
       movementSpent: 2.5,
       movementPoints: 5.5,
       movementResetMode: "round",
+      showInfoUnselected: true,
       visibleTo: { mode: "users", userIds: [4, 7] },
       controlledBy: { mode: "everyone", userIds: [] },
       capabilities: {

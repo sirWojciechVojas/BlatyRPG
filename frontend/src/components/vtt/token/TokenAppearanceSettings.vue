@@ -109,6 +109,17 @@
           </option>
         </select>
       </label>
+      <label
+        v-if="canManage"
+        class="token-settings-panel__wide token-settings-panel__info-toggle"
+      >
+        <input
+          :checked="modelValue.showInfoUnselected"
+          type="checkbox"
+          @change="update('showInfoUnselected', $event.target.checked)"
+        />
+        <span>{{ $t("vtt.token.settings.showInfoUnselected") }}</span>
+      </label>
     </section>
   </div>
 </template>

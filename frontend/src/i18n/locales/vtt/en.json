@@ -135,6 +135,7 @@
         "facing": "Facing direction (°)",
         "enableRotationHandle": "LMB artwork rotation handle",
         "enableFacingHandle": "LMB facing direction handle",
+        "showInfoUnselected": "Show information while the token is not selected",
         "elevation": "Elevation",
         "disposition": "Disposition",
         "hidden": "Hidden from players",
@@ -203,6 +204,7 @@
         "maximum": "Maximum",
         "valuePath": "Value attribute, e.g. attributes.actual.hp",
         "maxPath": "Maximum attribute",
+        "editBubble": "Click to change: {label}",
         "empty": "Enable a resource in the full token settings first."
       },
       "resourcePositions": {

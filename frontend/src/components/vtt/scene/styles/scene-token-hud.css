@@ -34,7 +34,7 @@
 
 .token-hud__header {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
   align-items: center;
   gap: 6px;
   min-height: 29px;
@@ -139,6 +139,14 @@
   height: 23px !important;
   background: transparent !important;
   border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.token-hud__header-action {
+  width: 23px !important;
+  height: 23px !important;
+  background: #2d1c16 !important;
+  border-color: #6e352e !important;
   box-shadow: none !important;
 }
 

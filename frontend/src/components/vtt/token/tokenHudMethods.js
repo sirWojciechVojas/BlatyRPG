@@ -10,6 +10,20 @@ const anchorRect = (event) => {
 };
 
 export const tokenHudMethods = {
+  tokenInfoVisible(token) {
+    return (
+      token.showInfoUnselected === true ||
+      this.tokenStates?.[token.id]?.selected === true
+    );
+  },
+  resourceEditable(token) {
+    if (this.busy) return false;
+    if (token.capabilities.canManage) return true;
+    return (
+      !token.locked &&
+      (token.capabilities.canControl || token.capabilities.canEdit)
+    );
+  },
   openTokenActor(token) {
     if (
       token.characterId &&
