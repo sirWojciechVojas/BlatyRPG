@@ -13,6 +13,10 @@
   pointer-events: auto;
 }
 
+.scene-token-wrap--dragging {
+  z-index: 500 !important;
+}
+
 .scene-token {
   position: relative;
   display: grid;
@@ -27,6 +31,7 @@
   border-radius: 50%;
   box-shadow: 0 2px 10px rgb(0 0 0 / 80%);
   cursor: grab;
+  touch-action: none;
 }
 
 .scene-token:active {
@@ -68,7 +73,151 @@
 .scene-token--neutral { border-color: #d4ae62; }
 .scene-token--secret { border-color: #8d72ca; }
 .scene-token--hidden { opacity: 0.5; }
-.scene-token--locked { cursor: not-allowed; }
+.scene-token--locked,
+.scene-token[aria-disabled="true"] { cursor: not-allowed; }
+
+.scene-token-wrap--dragging .scene-token {
+  border-color: #fff1ad;
+  cursor: grabbing;
+  filter: drop-shadow(0 0 7px #ffca57) drop-shadow(0 12px 12px rgb(0 0 0 / 75%));
+  outline: 3px solid rgb(255 208 99 / 82%);
+  outline-offset: 7px;
+  translate: 0 -7px;
+  scale: 1.08;
+  animation: token-drag-focus 0.72s ease-in-out infinite alternate;
+}
+
+.scene-token-wrap--dragging .scene-token::before {
+  position: absolute;
+  inset: -15px;
+  content: "";
+  border: 2px dashed;
+  border-color: #ffe18a transparent #ffae35;
+  border-radius: 50%;
+  animation: token-drag-orbit 1.15s linear infinite;
+  pointer-events: none;
+}
+
+.token-drag-indicator {
+  position: absolute;
+  z-index: 450;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.token-drag-indicator svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.token-drag-indicator__trail-glow {
+  stroke: rgb(255 174 52 / 45%);
+  stroke-width: 12;
+  stroke-linecap: round;
+}
+
+.token-drag-indicator__trail {
+  stroke: #ffe6a3;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 6 12;
+  filter: drop-shadow(0 0 3px #f6a52b);
+  animation: token-drag-flow 0.55s linear infinite;
+}
+
+.token-drag-indicator__origin-ring {
+  fill: rgb(255 214 126 / 7%);
+  stroke: rgb(255 214 126 / 70%);
+  stroke-width: 2;
+  stroke-dasharray: 5 6;
+}
+
+.token-drag-indicator__target-pulse {
+  fill: rgb(255 178 46 / 12%);
+  stroke: #ffd36e;
+  stroke-width: 3;
+  stroke-dasharray: 9 5;
+  animation: token-target-spin 1.4s linear infinite;
+}
+
+.token-drag-indicator__target-core {
+  fill: rgb(255 227 161 / 10%);
+  stroke: #fff4c9;
+  stroke-width: 1.5;
+  animation: token-target-breathe 0.7s ease-in-out infinite alternate;
+}
+
+.token-drag-indicator__target path {
+  fill: none;
+  stroke: #fff7d6;
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+
+.token-drag-indicator__ghost {
+  position: absolute;
+  display: grid;
+  overflow: hidden;
+  place-items: center;
+  color: #ffe8af;
+  font-weight: 800;
+  background: rgb(92 57 21 / 42%);
+  border: 2px dashed rgb(255 218 139 / 68%);
+  border-radius: 50%;
+  opacity: 0.48;
+  filter: grayscale(0.45) sepia(0.3);
+}
+
+.token-drag-indicator__ghost img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.token-drag-indicator output {
+  position: absolute;
+  min-width: max-content;
+  padding: 6px 10px;
+  color: #251506;
+  font-weight: 900;
+  font-size: 12px;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+  background: linear-gradient(135deg, #fff0b8, #e99a2d);
+  border: 1px solid #fff4d0;
+  border-radius: 999px;
+  box-shadow: 0 0 0 3px rgb(71 38 11 / 70%), 0 7px 18px rgb(0 0 0 / 65%);
+  transform-origin: bottom center;
+}
+
+@keyframes token-drag-focus {
+  from {
+    filter: drop-shadow(0 0 5px #ffbd3e) drop-shadow(0 9px 10px rgb(0 0 0 / 68%));
+  }
+
+  to {
+    filter: drop-shadow(0 0 13px #fff0a0) drop-shadow(0 15px 15px rgb(0 0 0 / 82%));
+  }
+}
+
+@keyframes token-drag-orbit { to { rotate: 360deg; } }
+@keyframes token-drag-flow { to { stroke-dashoffset: -18; } }
+@keyframes token-target-spin { to { stroke-dashoffset: -28; } }
+@keyframes token-target-breathe { to { opacity: 0.45; scale: 1.08; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-token-wrap--dragging .scene-token,
+  .scene-token-wrap--dragging .scene-token::before,
+  .token-drag-indicator__trail,
+  .token-drag-indicator__target-pulse,
+  .token-drag-indicator__target-core {
+    animation: none;
+  }
+}
 
 .scene-token--selected {
   outline: 3px solid #f4d18a;

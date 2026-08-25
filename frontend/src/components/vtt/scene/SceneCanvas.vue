@@ -108,6 +108,7 @@
           @delete="$emit('wall-delete', $event)"
         />
         <SceneTokenLayer
+          :scene="scene"
           :tokens="tokens"
           :selected-id="selectedTokenId"
           :scale="camera.scale"

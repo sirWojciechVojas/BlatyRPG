@@ -111,19 +111,19 @@ Jak używać:
 
 > Przykład: gracz zaznacza token „Eryk”, przesuwa go do sąsiedniej komnaty, a następnie obraca o 15° w stronę przeciwnika.
 
-### 5.2 Tokeny — CZĘŚCIOWO
+### 5.2 Tokeny — DOSTĘPNE
 
-Token jest reprezentacją postaci lub NPC na scenie. Obsługa istniejących tokenów, ich kontrola i synchronizacja są dostępne. Docelowy przepływ tworzenia tokena odbywa się przez przeciągnięcie postaci z okna **Postacie** na Canvas; pełne udostępnienie tego gestu w oknie Postaci wymaga jeszcze domknięcia integracji UI. Token przechowuje pozycję, rozmiar, obrót, elevation, nazwę, obraz, stan blokady i powiązanie z postacią.
+Token jest reprezentacją postaci lub NPC na scenie. Tworzenie tokena odbywa się przez przeciągnięcie postaci z okna **Postacie** na Canvas. Token przechowuje pozycję, rozmiar, obrót, elevation, nazwę, obraz, stan blokady i powiązanie z postacią.
 
 Jak używać:
 
-1. Po udostępnieniu tworzenia dla danej roli dwukliknij ikonę **Postacie** na prawym pasku.
+1. Dwukliknij ikonę **Postacie** na prawym pasku.
 2. Wyszukaj postać.
 3. Przeciągnij postać z listy na wybrane pole mapy.
 4. Kliknij token. HUD pozwala obracać go w lewo lub prawo, otworzyć kartę postaci albo — dla MG — usunąć token.
 5. Przeciągnij token, aby zmienić pozycję. Ruch zostanie zatwierdzony przez serwer i zsynchronizowany.
 
-Ściana blokująca ruch lub zamknięte drzwi zatrzymają niedozwolone przesunięcie. Gracz może poruszać tylko kontrolowanym, nieblokowanym tokenem.
+Podczas przeciągania aktywny token unosi się ponad mapę i pulsuje złotym światłem. W punkcie startowym pozostaje jego półprzezroczysty „duch”, animowany ślad prowadzi do celownika upuszczenia, a etykieta pokazuje nazwę tokena i aktualny dystans. Ściana blokująca ruch lub zamknięte drzwi zatrzymają niedozwolone przesunięcie. Gracz może poruszać tylko kontrolowanym, nieblokowanym tokenem.
 
 > Przykład: MG przeciąga NPC „Strażnik bramy” z listy postaci na mapę. Gracz nie może poruszyć strażnika, ale MG może go przesunąć, obrócić i usunąć.
 
@@ -321,7 +321,7 @@ Panel pokazuje grafiki przypisane do kampanii i tła scen. Obrazy są ładowane 
 
 ### 7.4 Postacie — DOSTĘPNE
 
-Okno zawiera wyszukiwarkę, listę postaci i pełny edytor karty. Można odświeżać dane, wybierać kartę, zapisywać zmiany i — przy odpowiednich uprawnieniach — usuwać postać. Docelowa integracja pozwala przeciągnąć postać na Canvas, aby utworzyć powiązany token; udostępnienie tego gestu w oknie Postaci wymaga jeszcze domknięcia UI.
+Okno zawiera wyszukiwarkę, listę postaci i pełny edytor karty. Można odświeżać dane, wybierać kartę, zapisywać zmiany i — przy odpowiednich uprawnieniach — usuwać postać. Postać można przeciągnąć na Canvas, aby utworzyć powiązany token.
 
 > Przykład: MG wyszukuje „Ulrika”, poprawia punkty życia na karcie, zapisuje zmianę i przeciąga postać na mapę. Kliknięcie ikony w HUD tokena ponownie otwiera jej kartę.
 
@@ -525,7 +525,7 @@ Sprawdź wskaźnik połączenia. Po reconnect aplikacja synchronizuje braki. Mo�
 | Obszar | Status | Najważniejsze ograniczenie obecnej wersji |
 |---|---|---|
 | Sceny i grid | DOSTĘPNE | Preload jest lokalny dla przeglądarki. |
-| Tokeny i Actorzy | CZĘŚCIOWO | Kontrola działa; tworzenie z okna Postaci i rozbudowane statusy wymagają domknięcia. |
+| Tokeny i Actorzy | DOSTĘPNE | Tworzenie i kontrola działają; rozbudowane zasoby oraz statusy tokena są planowane. |
 | Pomiar i AoE | DOSTĘPNE | Podgląd lokalny, bez zapisu i automatyzacji efektów. |
 | Ściany i drzwi | CZĘŚCIOWO | Ruch i światło działają; indywidualne widzenie czeka na wdrożenie. |
 | Światło | CZĘŚCIOWO | Brak token vision i trybów percepcji. |

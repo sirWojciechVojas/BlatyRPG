@@ -1,9 +1,17 @@
 <template>
   <div class="scene-token-layer">
+    <TokenDragIndicator
+      :scene="scene"
+      :indicator="dragIndicator"
+      :scale="scale"
+    />
     <div
       v-for="token in tokens"
       :key="token.id"
       class="scene-token-wrap"
+      :class="{
+        'scene-token-wrap--dragging': drag?.token.id === token.id,
+      }"
       :style="tokenStyle(token)"
     >
       <button
@@ -20,6 +28,7 @@
         :style="{ transform: `rotate(${token.rotation}deg)` }"
         :aria-label="token.name"
         :aria-pressed="token.id === selectedId"
+        :aria-disabled="!token.capabilities.canControl || token.locked"
         @pointerdown.stop="startDrag($event, token)"
         @click.stop="$emit('select', token.id)"
       >
@@ -52,11 +61,15 @@
 
 <script>
 import TokenHud from "./TokenHud.vue";
+import TokenDragIndicator from "./TokenDragIndicator.vue";
+import { tokenDragMethods } from "./tokenDragMethods";
+import { buildTokenDragIndicator } from "./tokenDragIndicator";
 
 export default {
   name: "SceneTokenLayer",
-  components: { TokenHud },
+  components: { TokenDragIndicator, TokenHud },
   props: {
+    scene: { type: Object, required: true },
     tokens: { type: Array, default: () => [] },
     selectedId: { type: [Number, String], default: null },
     scale: { type: Number, default: 1 },
@@ -64,7 +77,21 @@ export default {
   },
   emits: ["select", "move", "update", "delete", "open-actor"],
   data: () => ({ drag: null, preview: {} }),
+  computed: {
+    dragIndicator() {
+      if (!this.drag) return null;
+      return buildTokenDragIndicator(
+        this.scene,
+        this.drag.token,
+        this.preview[this.drag.token.id] || this.drag.token,
+      );
+    },
+  },
+  beforeUnmount() {
+    this.cancelDrag();
+  },
   methods: {
+    ...tokenDragMethods,
     tokenStyle(token) {
       const position = this.preview[token.id] || token;
       return {
@@ -81,49 +108,6 @@ export default {
         .map((part) => part[0])
         .join("")
         .toLocaleUpperCase();
-    },
-    startDrag(event, token) {
-      this.$emit("select", token.id);
-      if (!token.capabilities.canControl || token.locked || event.button !== 0)
-        return;
-      this.drag = {
-        id: event.pointerId,
-        token,
-        clientX: event.clientX,
-        clientY: event.clientY,
-      };
-      event.currentTarget.setPointerCapture?.(event.pointerId);
-      event.currentTarget.addEventListener("pointermove", this.moveDrag);
-      event.currentTarget.addEventListener("pointerup", this.endDrag, {
-        once: true,
-      });
-      event.currentTarget.addEventListener("pointercancel", this.endDrag, {
-        once: true,
-      });
-    },
-    moveDrag(event) {
-      if (!this.drag || event.pointerId !== this.drag.id) return;
-      const scale = Math.max(0.05, this.scale);
-      this.preview = {
-        ...this.preview,
-        [this.drag.token.id]: {
-          x: this.drag.token.x + (event.clientX - this.drag.clientX) / scale,
-          y: this.drag.token.y + (event.clientY - this.drag.clientY) / scale,
-        },
-      };
-    },
-    endDrag(event) {
-      if (!this.drag || event.pointerId !== this.drag.id) return;
-      const token = this.drag.token;
-      const position = this.preview[token.id];
-      event.currentTarget.removeEventListener("pointermove", this.moveDrag);
-      this.drag = null;
-      const next = { ...this.preview };
-      delete next[token.id];
-      this.preview = next;
-      if (position && (position.x !== token.x || position.y !== token.y)) {
-        this.$emit("move", { token, x: position.x, y: position.y });
-      }
     },
   },
 };

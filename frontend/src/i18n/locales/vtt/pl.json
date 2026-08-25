@@ -84,6 +84,7 @@
     },
     "token": {
       "dragActor": "Przeciągnij postać na mapę, aby utworzyć token",
+      "dragging": "Przesuwasz: {name} · {distance}",
       "rotateLeft": "Obróć w lewo",
       "rotateRight": "Obróć w prawo",
       "openActor": "Otwórz kartę postaci",
