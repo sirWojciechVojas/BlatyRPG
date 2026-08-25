@@ -45,6 +45,10 @@ describe("VTT token store", () => {
     store.commit("vtt/SELECT_TOKEN", { tokenId: 10, additive: true });
     expect(store.state.vtt.selectedTokenIds).toEqual([9, 10]);
     expect(store.getters["vtt/selectedTokens"]).toHaveLength(2);
+    store.commit("vtt/TOGGLE_TOKEN_TARGET", 9);
+    store.commit("vtt/TOGGLE_TOKEN_TARGET", 10);
+    expect(store.state.vtt.targetedTokenIds).toEqual([9, 10]);
+    expect(store.getters["vtt/targetedTokens"]).toHaveLength(2);
     await store.dispatch("vtt/updateToken", { token, changes: { x: 30 } });
     expect(tokenApi.update).toHaveBeenCalledWith(7, 4, 9, {
       x: 30,
@@ -56,5 +60,6 @@ describe("VTT token store", () => {
       { ...token, id: 10 },
     ]);
     expect(store.state.vtt.selectedTokenIds).toEqual([10]);
+    expect(store.state.vtt.targetedTokenIds).toEqual([10]);
   });
 });

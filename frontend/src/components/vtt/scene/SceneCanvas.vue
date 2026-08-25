@@ -113,11 +113,14 @@
           :tokens="tokens"
           :selected-id="selectedTokenId"
           :selected-ids="selectedTokenIds"
+          :targeted-ids="targetedTokenIds"
+          :members="members"
           :scale="camera.scale"
           :busy="tokenBusy"
           @select="$emit('token-select', $event)"
           @move="$emit('token-move', $event)"
           @update="$emit('token-update', $event)"
+          @target="$emit('token-target', $event)"
           @delete="$emit('token-delete', $event)"
           @open-actor="$emit('open-actor', $event)"
         />
@@ -159,6 +162,8 @@ export default {
     tokens: { type: Array, default: () => [] },
     selectedTokenId: { type: [Number, String], default: null },
     selectedTokenIds: { type: Array, default: () => [] },
+    targetedTokenIds: { type: Array, default: () => [] },
+    members: { type: Array, default: () => [] },
     tokenBusy: { type: Boolean, default: false },
     canCreateToken: { type: Boolean, default: false },
     walls: { type: Array, default: () => [] },
@@ -179,6 +184,7 @@ export default {
     "token-select",
     "token-move",
     "token-update",
+    "token-target",
     "token-delete",
     "token-create",
     "open-actor",

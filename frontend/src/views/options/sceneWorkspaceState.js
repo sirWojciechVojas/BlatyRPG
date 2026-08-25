@@ -3,6 +3,7 @@ export const emptySceneWorkspaceState = () => ({
   selectedSceneId: null,
   selectedTokenId: null,
   selectedTokenIds: [],
+  targetedTokenIds: [],
   activeSceneId: null,
   capabilities: { canManage: false, canViewHidden: false },
   phase: "idle",

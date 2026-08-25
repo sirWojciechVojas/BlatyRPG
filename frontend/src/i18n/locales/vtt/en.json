@@ -91,6 +91,79 @@
       "openActor": "Open character sheet",
       "delete": "Delete token",
       "deleteConfirm": "Are you sure you want to delete the “{name}” token?",
+      "hud": {
+        "move": "Drag token",
+        "close": "Close token HUD",
+        "statuses": "Quick statuses",
+        "target": "Toggle target",
+        "visibility": "Toggle player visibility",
+        "lock": "Lock or unlock token",
+        "settings": "Full token settings",
+        "kicker": "Token HUD",
+        "short": {
+          "move": "Move",
+          "status": "Status",
+          "target": "Target",
+          "left": "Left",
+          "right": "Right",
+          "visibility": "Visible",
+          "lock": "Lock",
+          "settings": "Options",
+          "actor": "Sheet",
+          "delete": "Delete"
+        }
+      },
+      "quickStatuses": {
+        "poisoned": "Poisoned",
+        "bleeding": "Bleeding",
+        "stunned": "Stunned",
+        "blinded": "Blinded",
+        "burning": "Burning",
+        "dead": "Dead"
+      },
+      "settings": {
+        "title": "Token settings: {name}",
+        "kicker": "Token configuration",
+        "close": "Close settings",
+        "name": "Name",
+        "imageUrl": "Image URL",
+        "widthCells": "Width (cells)",
+        "heightCells": "Height (cells)",
+        "rotation": "Image rotation (°)",
+        "facing": "Facing direction (°)",
+        "elevation": "Elevation",
+        "disposition": "Disposition",
+        "hidden": "Hidden from players",
+        "locked": "Locked on map",
+        "cancel": "Cancel",
+        "save": "Save",
+        "sizePresets": "Quick size relative to grid"
+      },
+      "permissions": {
+        "title": "Permissions",
+        "visibleTo": "Visible to",
+        "controlledBy": "Controlled by",
+        "editableBy": "Editable by",
+        "observerBy": "Observed by",
+        "gm": "GM only",
+        "everyone": "Everyone",
+        "users": "Selected players",
+        "inherit": "Inherit from actor",
+        "noMembers": "No active campaign players"
+      },
+      "dispositions": {
+        "friendly": "Friendly",
+        "neutral": "Neutral",
+        "hostile": "Hostile",
+        "secret": "Secret"
+      },
+      "sizes": {
+        "tiny": "Tiny",
+        "standard": "Standard",
+        "large": "Large",
+        "huge": "Huge",
+        "gargantuan": "Gargantuan"
+      },
       "states": {
         "hover": "hovered",
         "selected": "selected",

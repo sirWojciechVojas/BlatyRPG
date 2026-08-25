@@ -73,6 +73,7 @@ export const tokenWritePayload = (changes = {}, includeRevision = false) => {
     "controlledBy",
     "editableBy",
     "observerBy",
+    "statuses",
   ];
   const payload = {};
   allowed.forEach((key) => {

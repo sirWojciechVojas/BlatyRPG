@@ -8,6 +8,9 @@ export const tableTokenMethods = {
       additive: selection?.additive === true,
     });
   },
+  toggleTokenTarget(tokenId) {
+    this.$store.commit("vtt/TOGGLE_TOKEN_TARGET", Number(tokenId));
+  },
   async createToken({ actor, x, y }) {
     if (!this.selectedScene || !this.canCreateToken) return;
     const size = Math.max(8, Number(this.selectedScene.gridSize) || 100);

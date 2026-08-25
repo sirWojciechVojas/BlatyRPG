@@ -11,6 +11,7 @@ final class TokenPayloadValidator
         'characterId', 'name', 'imageUrl', 'x', 'y', 'width', 'height',
         'rotation', 'facing', 'elevation', 'disposition', 'hidden', 'locked',
         'visibleTo', 'controlledBy', 'editableBy', 'observerBy',
+        'statuses',
     ];
     private const PERMISSIONS = [
         'visibleTo' => 'visible_to_json',
@@ -97,8 +98,13 @@ final class TokenPayloadValidator
             if (!$scope['valid']) $result['errors'][$field] = $scope['error'];
             else $result['data'][$databaseField] = $scope['data'];
         }
+        if (array_key_exists('statuses', $payload)) {
+            $statuses = TokenStatusValidator::validate($payload['statuses']);
+            if (!$statuses['valid']) $result['errors']['statuses'] = $statuses['error'];
+            else $result['data']['statuses_json'] = $statuses['data'];
+        }
         if (!$partial) {
-            $result['data'] += ['x' => 0, 'y' => 0, 'width' => 100, 'height' => 100];
+            $result['data'] += ['x' => 0, 'y' => 0];
             $result['data']['facing'] ??= $result['data']['rotation'] ?? 0;
             $hidden = !empty($result['data']['hidden']);
             $result['data'] += [

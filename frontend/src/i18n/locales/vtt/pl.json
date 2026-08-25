@@ -91,6 +91,79 @@
       "openActor": "Otwórz kartę postaci",
       "delete": "Usuń token",
       "deleteConfirm": "Czy na pewno usunąć token „{name}”?",
+      "hud": {
+        "move": "Przeciągnij token",
+        "close": "Zamknij HUD tokena",
+        "statuses": "Szybkie statusy",
+        "target": "Oznacz lub usuń cel",
+        "visibility": "Przełącz widoczność dla graczy",
+        "lock": "Zablokuj lub odblokuj token",
+        "settings": "Pełne ustawienia tokena",
+        "kicker": "HUD tokena",
+        "short": {
+          "move": "Ruch",
+          "status": "Status",
+          "target": "Cel",
+          "left": "Lewo",
+          "right": "Prawo",
+          "visibility": "Widoczność",
+          "lock": "Blokada",
+          "settings": "Opcje",
+          "actor": "Karta",
+          "delete": "Usuń"
+        }
+      },
+      "quickStatuses": {
+        "poisoned": "Zatruty",
+        "bleeding": "Krwawiący",
+        "stunned": "Ogłuszony",
+        "blinded": "Oślepiony",
+        "burning": "Płonący",
+        "dead": "Martwy"
+      },
+      "settings": {
+        "title": "Ustawienia tokena: {name}",
+        "kicker": "Konfiguracja tokena",
+        "close": "Zamknij ustawienia",
+        "name": "Nazwa",
+        "imageUrl": "Adres grafiki",
+        "widthCells": "Szerokość (pola)",
+        "heightCells": "Wysokość (pola)",
+        "rotation": "Obrót grafiki (°)",
+        "facing": "Kierunek patrzenia (°)",
+        "elevation": "Wysokość",
+        "disposition": "Nastawienie",
+        "hidden": "Ukryty przed graczami",
+        "locked": "Zablokowany na mapie",
+        "cancel": "Anuluj",
+        "save": "Zapisz",
+        "sizePresets": "Szybki rozmiar względem siatki"
+      },
+      "permissions": {
+        "title": "Uprawnienia",
+        "visibleTo": "Widoczny dla",
+        "controlledBy": "Kontrolowany przez",
+        "editableBy": "Edytowany przez",
+        "observerBy": "Obserwowany przez",
+        "gm": "Tylko MG",
+        "everyone": "Wszyscy",
+        "users": "Wybrani gracze",
+        "inherit": "Dziedzicz po postaci",
+        "noMembers": "Brak aktywnych graczy w kampanii"
+      },
+      "dispositions": {
+        "friendly": "Przyjazny",
+        "neutral": "Neutralny",
+        "hostile": "Wrogi",
+        "secret": "Sekretny"
+      },
+      "sizes": {
+        "tiny": "Mini",
+        "standard": "Standard",
+        "large": "Duży",
+        "huge": "Ogromny",
+        "gargantuan": "Kolosalny"
+      },
       "states": {
         "hover": "pod kursorem",
         "selected": "zaznaczony",

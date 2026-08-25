@@ -65,6 +65,7 @@ describe("tokenApiClient", () => {
       x: 300,
       y: 400,
       facing: 90,
+      statuses: ["poisoned", "stunned"],
       observerBy: { mode: "users", userIds: [12] },
       revision: 3,
     });
@@ -74,6 +75,7 @@ describe("tokenApiClient", () => {
         x: 300,
         y: 400,
         facing: 90,
+        statuses: ["poisoned", "stunned"],
         observerBy: { mode: "users", userIds: [12] },
         revision: 3,
       },

@@ -20,6 +20,7 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
             'facing' => -15,
             'visibleTo' => ['mode' => 'users', 'userIds' => [7, '4', 7]],
             'controlledBy' => ['mode' => 'everyone', 'userIds' => []],
+            'statuses' => ['poisoned', 'stunned', 'poisoned'],
             'disposition' => 'HOSTILE',
             'hidden' => 'false',
         ]);
@@ -39,6 +40,7 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
             ['mode' => 'everyone', 'userIds' => []],
             $result['data']['controlled_by_json']
         );
+        $this->assertSame(['poisoned', 'stunned'], $result['data']['statuses_json']);
     }
 
     public function testUpdateRequiresRevisionAndAWritableField(): void
@@ -75,6 +77,8 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
         $this->assertSame($imageUrl, $withImage['data']['image_url']);
         $this->assertTrue($withoutImage['valid']);
         $this->assertNull($withoutImage['data']['image_url']);
+        $this->assertArrayNotHasKey('width', $withoutImage['data']);
+        $this->assertArrayNotHasKey('height', $withoutImage['data']);
     }
 
     public function testRejectsMalformedPermissionScopes(): void

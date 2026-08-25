@@ -1,0 +1,126 @@
+.token-settings-panel {
+  position: fixed;
+  z-index: 1200;
+  width: min(420px, calc(100vw - 20px));
+  max-height: calc(100vh - 20px);
+  overflow: hidden;
+  color: #f2e5cf;
+  background: rgb(18 13 10 / 98%);
+  border: 1px solid #745738;
+  border-radius: 6px;
+  box-shadow: 0 14px 44px rgb(0 0 0 / 78%);
+}
+
+.token-settings-panel > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  background: #2a1e15;
+  border-bottom: 1px solid #5f452e;
+}
+
+.token-settings-panel > header > button {
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+.token-settings-panel__identity { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.token-settings-panel__identity div { display: grid; min-width: 0; }
+.token-settings-panel__identity small { color: #bd9360; font-size: 8px; text-transform: uppercase; }
+.token-settings-panel__identity strong { overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+
+.token-settings-panel__preview {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  flex: 0 0 auto;
+  overflow: hidden;
+  place-items: center;
+  background: #17100c;
+  border: 1px solid #735539;
+  border-radius: 50%;
+}
+
+.token-settings-panel__preview img { width: 100%; height: 100%; object-fit: cover; }
+.token-settings-panel__preview b { font-size: 9px; }
+
+.token-settings-panel form {
+  max-height: calc(100vh - 67px);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.token-settings-panel__presets { padding: 7px 8px; border-bottom: 1px solid #3d2d20; }
+.token-settings-panel__presets h3 { margin: 0 0 4px; color: #d9b57c; font-size: 9px; letter-spacing: 0.08em; text-transform: uppercase; }
+.token-settings-panel__presets > div { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 3px; }
+
+.token-settings-panel__presets button {
+  display: grid;
+  min-width: 0;
+  min-height: 34px;
+  place-items: center;
+  padding: 2px;
+  color: #d8c5a9;
+  background: #261b13;
+  border: 1px solid #59412c;
+  border-radius: 3px;
+}
+
+.token-settings-panel__presets button.active {
+  color: #fff0ca;
+  background: #57381e;
+  border-color: #d1a15f;
+  box-shadow: inset 0 0 0 1px rgb(255 222 157 / 14%);
+}
+
+.token-settings-panel__presets b { font-size: 11px; line-height: 1; }
+.token-settings-panel__presets small { max-width: 100%; overflow: hidden; font-size: 7px; text-overflow: ellipsis; white-space: nowrap; }
+
+.token-settings-panel__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  padding: 8px;
+}
+
+.token-settings-panel label { min-width: 0; font-size: 9px; }
+.token-settings-panel label > span { display: block; margin-bottom: 2px; color: #ccb99d; }
+.token-settings-panel input:not([type="checkbox"]),
+.token-settings-panel select {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  height: 28px;
+  padding: 3px 6px;
+  color: #f5e8d3;
+  background: #100c09;
+  border: 1px solid #5d462f;
+  border-radius: 3px;
+}
+
+.token-settings-panel__wide { grid-column: 1 / -1; }
+.token-settings-panel__toggles { display: flex; gap: 14px; padding: 6px 8px; border-block: 1px solid #3d2d20; }
+.token-settings-panel__toggles label { display: flex; align-items: center; gap: 5px; }
+.token-settings-panel__permissions { padding: 7px 8px; }
+.token-settings-panel__permissions h3 { margin: 0 0 5px; color: #d9b57c; font-size: 10px; text-transform: uppercase; }
+
+.token-permission-field { display: grid; grid-template-columns: 112px 1fr; align-items: start; gap: 5px; margin: 0 0 5px; padding: 4px; border: 1px solid #493522; border-radius: 3px; }
+.token-permission-field legend { padding: 0 3px; color: #cbb18a; font-size: 9px; }
+.token-permission-field__users { display: grid; max-height: 78px; overflow: auto; gap: 2px; }
+.token-permission-field__users label { display: flex; align-items: center; gap: 4px; }
+.token-permission-field__users label span { margin: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.token-settings-panel footer { position: sticky; bottom: 0; display: flex; justify-content: flex-end; gap: 5px; padding: 6px 8px; background: #21170f; border-top: 1px solid #5f452e; }
+.token-settings-panel footer button { min-height: 27px; padding: 3px 10px; color: inherit; background: #302217; border: 1px solid #684c31; border-radius: 3px; }
+.token-settings-panel footer .primary { color: #211206; background: #d5a65f; border-color: #f1c981; }
+
+@media (max-width: 560px) {
+  .token-settings-panel__grid { grid-template-columns: 1fr; }
+  .token-settings-panel__wide { grid-column: auto; }
+  .token-permission-field { grid-template-columns: 1fr; }
+}

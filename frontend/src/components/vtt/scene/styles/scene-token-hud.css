@@ -1,0 +1,141 @@
+.token-hud {
+  z-index: 30;
+  display: grid;
+  width: 300px;
+  gap: 0;
+  padding: 0;
+  overflow: visible;
+  background: rgb(18 13 10 / 98%);
+  border-color: #9c7447;
+  box-shadow: 0 7px 24px rgb(0 0 0 / 78%), 0 0 0 1px rgb(225 177 105 / 10%);
+}
+
+.token-hud__header {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 6px;
+  min-height: 31px;
+  padding: 3px 4px 3px 7px;
+  background: linear-gradient(90deg, #302116, #211710);
+  border-bottom: 1px solid #5a4028;
+  border-radius: 4px 4px 0 0;
+}
+
+.token-hud__header > span { display: grid; min-width: 0; }
+.token-hud__header small { color: #b98b55; font-size: 7px; letter-spacing: 0.11em; text-transform: uppercase; }
+.token-hud__header strong {
+  max-width: none;
+  overflow: hidden;
+  color: #fff0d1;
+  font-size: 11px;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.token-hud__dot {
+  width: 7px;
+  height: 7px;
+  background: #d4ae62;
+  border-radius: 50%;
+  box-shadow: 0 0 5px currentcolor;
+}
+
+.token-hud__dot--friendly { color: #46b878; background: currentcolor; }
+.token-hud__dot--hostile { color: #d75555; background: currentcolor; }
+.token-hud__dot--secret { color: #8d72ca; background: currentcolor; }
+
+.token-hud__actions {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 3px;
+  padding: 4px;
+}
+
+.token-hud__actions button {
+  display: grid;
+  width: auto;
+  height: 38px;
+  place-items: center;
+  gap: 0;
+  padding: 2px 1px;
+  color: #eadbc3;
+  background: #302219;
+  border-color: #5f462e;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.token-hud__actions button b { font-size: 14px; font-weight: 500; line-height: 1; }
+.token-hud__actions button small { overflow: hidden; color: #bea98a; font-size: 7px; line-height: 1; text-overflow: ellipsis; white-space: nowrap; }
+
+.token-hud__actions button:hover:not(:disabled),
+.token-hud__actions button:focus-visible,
+.token-hud__actions button.active {
+  color: #fff2bf;
+  background: #5a3b1f;
+  border-color: #c79654;
+  outline: none;
+}
+
+.token-hud__actions button.active small { color: #ffe3a1; }
+.token-hud button:disabled { cursor: not-allowed; opacity: 0.38; }
+.token-hud__move { cursor: grab !important; }
+.token-hud__move:active { cursor: grabbing !important; }
+.token-hud__close {
+  width: 24px !important;
+  height: 24px !important;
+  color: #cbb79a;
+  background: transparent !important;
+  border-color: transparent !important;
+}
+.token-hud__close:hover { color: #fff1d5; border-color: #765234 !important; }
+
+.token-status-menu {
+  position: absolute;
+  bottom: calc(100% + 5px);
+  left: 50%;
+  display: grid;
+  grid-template-columns: repeat(6, 25px);
+  gap: 2px;
+  padding: 3px;
+  background: rgb(17 12 9 / 98%);
+  border: 1px solid #745535;
+  border-radius: 4px;
+  box-shadow: 0 5px 16px rgb(0 0 0 / 72%);
+  transform: translateX(-50%);
+}
+
+.token-status-menu button {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  place-items: center;
+  padding: 0;
+  font-size: 13px;
+}
+
+.token-status-badges {
+  position: absolute;
+  z-index: 8;
+  top: -7px;
+  left: -7px;
+  display: flex;
+  gap: 2px;
+  pointer-events: none;
+}
+
+.token-status-badges i {
+  display: grid;
+  width: 14px;
+  height: 14px;
+  place-items: center;
+  color: #ffe7b1;
+  font-size: 9px;
+  font-style: normal;
+  line-height: 1;
+  background: rgb(40 20 15 / 95%);
+  border: 1px solid #c16b50;
+  border-radius: 50%;
+}

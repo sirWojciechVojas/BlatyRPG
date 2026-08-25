@@ -12,6 +12,7 @@ export const vttMutations = {
     state.tokenCapabilitiesByScene = {};
     state.selectedTokenId = null;
     state.selectedTokenIds = [];
+    state.targetedTokenIds = [];
     state.tokenPhase = "idle";
     state.wallsByScene = {};
     state.wallCapabilitiesByScene = {};
@@ -54,6 +55,7 @@ export const vttMutations = {
     state.selectedSceneId = sceneId;
     state.selectedTokenId = null;
     state.selectedTokenIds = [];
+    state.targetedTokenIds = [];
     state.selectedWallId = null;
     state.selectedLightId = null;
     state.selectedTileId = null;
@@ -67,6 +69,9 @@ export const vttMutations = {
     state.tokenPhase = "ready";
     const availableIds = new Set(items.map((token) => token.id));
     state.selectedTokenIds = state.selectedTokenIds.filter((id) =>
+      availableIds.has(id),
+    );
+    state.targetedTokenIds = state.targetedTokenIds.filter((id) =>
       availableIds.has(id),
     );
     if (!availableIds.has(state.selectedTokenId)) {
@@ -92,6 +97,9 @@ export const vttMutations = {
     state.selectedTokenIds = state.selectedTokenIds.filter(
       (id) => id !== tokenId,
     );
+    state.targetedTokenIds = state.targetedTokenIds.filter(
+      (id) => id !== tokenId,
+    );
     if (state.selectedTokenId === tokenId) {
       state.selectedTokenId = state.selectedTokenIds.at(-1) ?? null;
     }
@@ -112,6 +120,13 @@ export const vttMutations = {
     }
     state.selectedTokenId = tokenId;
     state.selectedTokenIds = [tokenId];
+  },
+  TOGGLE_TOKEN_TARGET(state, tokenId) {
+    const id = Number(tokenId);
+    if (!Number.isFinite(id)) return;
+    state.targetedTokenIds = state.targetedTokenIds.includes(id)
+      ? state.targetedTokenIds.filter((targetId) => targetId !== id)
+      : [...state.targetedTokenIds, id];
   },
   SET_TOKEN_PHASE(state, phase) {
     state.tokenPhase = phase;

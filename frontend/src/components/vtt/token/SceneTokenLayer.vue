@@ -44,6 +44,7 @@
         @pointerenter="hoveredTokenId = token.id"
         @pointerleave="hoveredTokenId = null"
         @click.stop="selectToken($event, token.id)"
+        @contextmenu.prevent.stop="toggleTokenHud(token.id)"
       >
         <img
           v-if="token.imageUrl"
@@ -55,21 +56,42 @@
         <small>{{ token.name }}</small>
       </button>
       <TokenStateOverlay :flags="tokenStates[token.id]" />
+      <TokenStatusBadges :statuses="token.statuses" />
       <TokenHud
-        v-if="token.id === selectedId"
+        v-if="token.id === hudTokenId"
         :token="token"
         :busy="busy"
+        :targeted="tokenStates[token.id].targeted"
         @pointerdown.stop
+        @move-start="startDrag($event, token)"
+        @status="toggleTokenStatus(token, $event)"
+        @target="$emit('target', token.id)"
         @rotate="
           $emit('update', {
             token,
             changes: rotatedFacing(token, $event),
           })
         "
+        @visibility="toggleTokenVisibility(token)"
+        @lock="toggleTokenLock(token)"
+        @settings="openTokenSettings($event, token)"
         @open-actor="$emit('open-actor', $event)"
         @delete="$emit('delete', token)"
+        @close="hudTokenId = null"
       />
     </div>
+    <Teleport to="body">
+      <TokenSettingsPanel
+        v-if="settingsToken"
+        :token="settingsToken"
+        :grid-size="Number(scene.gridSize) || 100"
+        :members="members"
+        :anchor="settingsAnchor"
+        :busy="busy"
+        @save="saveTokenSettings(settingsToken, $event)"
+        @close="settingsTokenId = null"
+      />
+    </Teleport>
   </div>
 </template>
 
@@ -77,12 +99,13 @@
 import TokenHud from "./TokenHud.vue";
 import TokenDragIndicator from "./TokenDragIndicator.vue";
 import TokenStateOverlay from "./TokenStateOverlay.vue";
+import TokenStatusBadges from "./TokenStatusBadges.vue";
+import TokenSettingsPanel from "./TokenSettingsPanel.vue";
 import { tokenDragMethods } from "./tokenDragMethods";
 import { buildTokenDragIndicator } from "./tokenDragIndicator";
-import {
-  pendingTokenPositionResolved,
-  tokenTravelDuration,
-} from "./tokenMotion";
+import { tokenTravelDuration } from "./tokenMotion";
+import { tokenLayerMotionMethods } from "./tokenLayerMotionMethods";
+import { tokenHudMethods } from "./tokenHudMethods";
 import { rotateTokenFacing, tokenFacingStyle } from "@/lib/vtt/tokenFacing";
 import {
   activeTokenUiStates,
@@ -92,7 +115,13 @@ import {
 
 export default {
   name: "SceneTokenLayer",
-  components: { TokenDragIndicator, TokenHud, TokenStateOverlay },
+  components: {
+    TokenDragIndicator,
+    TokenHud,
+    TokenSettingsPanel,
+    TokenStateOverlay,
+    TokenStatusBadges,
+  },
   props: {
     scene: { type: Object, required: true },
     tokens: { type: Array, default: () => [] },
@@ -101,10 +130,11 @@ export default {
     activeTurnId: { type: [Number, String], default: null },
     waitingTurnIds: { type: Array, default: () => [] },
     targetedIds: { type: Array, default: () => [] },
+    members: { type: Array, default: () => [] },
     scale: { type: Number, default: 1 },
     busy: { type: Boolean, default: false },
   },
-  emits: ["select", "move", "update", "delete", "open-actor"],
+  emits: ["select", "move", "update", "target", "delete", "open-actor"],
   data: () => ({
     drag: null,
     preview: {},
@@ -113,8 +143,16 @@ export default {
     movingTokenIds: {},
     motionDurations: {},
     hoveredTokenId: null,
+    hudTokenId: null,
+    settingsTokenId: null,
+    settingsAnchor: {},
   }),
   computed: {
+    settingsToken() {
+      return (
+        this.tokens.find((token) => token.id === this.settingsTokenId) || null
+      );
+    },
     effectiveSelectedIds() {
       return this.selectedIds.length
         ? this.selectedIds
@@ -174,14 +212,22 @@ export default {
   },
   methods: {
     ...tokenDragMethods,
+    ...tokenLayerMotionMethods,
+    ...tokenHudMethods,
     facingStyle: tokenFacingStyle,
     rotatedFacing: rotateTokenFacing,
     stateClasses: tokenUiClasses,
     selectToken(event, tokenId) {
+      if (this.hudTokenId !== tokenId) this.hudTokenId = null;
       this.$emit("select", {
         tokenId,
         additive: event.ctrlKey || event.metaKey || event.shiftKey,
       });
+    },
+    toggleTokenHud(tokenId) {
+      const opening = this.hudTokenId !== tokenId;
+      this.hudTokenId = opening ? tokenId : null;
+      if (opening) this.$emit("select", { tokenId, additive: false });
     },
     stateLabel(token, flags) {
       const labels = activeTokenUiStates(flags)
@@ -201,57 +247,6 @@ export default {
         zIndex: String(100 + Math.round(token.elevation || 0)),
         "--token-travel-duration": `${this.motionDurations[token.id] || 460}ms`,
       };
-    },
-    holdTokenPosition(token, position) {
-      const tokenId = Number(token.id);
-      window.clearTimeout(this.pendingTimers.get(tokenId));
-      this.pendingPositions = {
-        ...this.pendingPositions,
-        [tokenId]: {
-          x: Number(position.x),
-          y: Number(position.y),
-          revision: Number(token.revision),
-        },
-      };
-      this.pendingTimers.set(
-        tokenId,
-        window.setTimeout(() => this.releasePendingPosition(tokenId), 3000),
-      );
-    },
-    syncPendingPositions(tokens) {
-      Object.entries(this.pendingPositions).forEach(([id, pending]) => {
-        const token = tokens.find((item) => item.id === Number(id));
-        if (pendingTokenPositionResolved(pending, token)) {
-          this.releasePendingPosition(id);
-        }
-      });
-    },
-    releasePendingPosition(tokenId) {
-      window.clearTimeout(this.pendingTimers.get(Number(tokenId)));
-      this.pendingTimers.delete(Number(tokenId));
-      const pendingPositions = { ...this.pendingPositions };
-      delete pendingPositions[tokenId];
-      this.pendingPositions = pendingPositions;
-    },
-    startMotion(event, tokenId) {
-      if (
-        event.target !== event.currentTarget ||
-        event.propertyName !== "transform"
-      ) {
-        return;
-      }
-      this.movingTokenIds = { ...this.movingTokenIds, [tokenId]: true };
-    },
-    finishMotion(event, tokenId) {
-      if (
-        event.target !== event.currentTarget ||
-        event.propertyName !== "transform"
-      ) {
-        return;
-      }
-      const movingTokenIds = { ...this.movingTokenIds };
-      delete movingTokenIds[tokenId];
-      this.movingTokenIds = movingTokenIds;
     },
     initials(name) {
       return String(name || "?")

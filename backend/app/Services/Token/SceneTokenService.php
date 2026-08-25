@@ -11,7 +11,9 @@ use CodeIgniter\Database\BaseConnection;
 
 final class SceneTokenService
 {
-    private const OWNER_FIELDS = ['x', 'y', 'rotation', 'facing', 'elevation'];
+    private const OWNER_FIELDS = [
+        'x', 'y', 'rotation', 'facing', 'elevation', 'statuses_json',
+    ];
     private const PERMISSION_FIELDS = [
         'visible_to_json', 'controlled_by_json',
         'editable_by_json', 'observer_by_json',
@@ -248,7 +250,8 @@ final class SceneTokenService
 
     private function snapUpdateData(array $scene, array $token, array $data): array
     {
-        if (!array_key_exists('x', $data) && !array_key_exists('y', $data)) return $data;
+        $positionFields = ['x', 'y', 'width', 'height'];
+        if (!array_intersect($positionFields, array_keys($data))) return $data;
         $position = $this->grid->snap(
             $scene,
             [
