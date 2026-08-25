@@ -46,63 +46,71 @@
         </button>
       </nav>
 
-      <div class="token-settings-panel__body">
-        <TokenAppearanceSettings
-          v-show="activeTab === 'general'"
-          v-model="draft"
-          :can-manage="canManage"
+      <div class="token-settings-panel__workspace">
+        <TokenSettingsPreview
+          :draft="draft"
+          :token="token"
+          :grid-type="gridType"
         />
 
-        <TokenResourceSettings
-          v-show="activeTab === 'resources'"
-          v-model="draft.resources"
-          :actor="actor"
-        />
+        <div class="token-settings-panel__body">
+          <TokenAppearanceSettings
+            v-show="activeTab === 'general'"
+            v-model="draft"
+            :can-manage="canManage"
+          />
 
-        <TokenMovementSettings
-          v-show="activeTab === 'movement'"
-          v-model="draft"
-          :can-manage="canManage"
-        />
+          <TokenResourceSettings
+            v-show="activeTab === 'resources'"
+            v-model="draft.resources"
+            :actor="actor"
+          />
 
-        <div v-if="canManage" v-show="activeTab === 'permissions'">
-          <section class="token-settings-panel__toggles">
-            <label>
-              <input v-model="draft.hidden" type="checkbox" />
-              {{ $t("vtt.token.settings.hidden") }}
-            </label>
-            <label>
-              <input v-model="draft.locked" type="checkbox" />
-              {{ $t("vtt.token.settings.locked") }}
-            </label>
-          </section>
+          <TokenMovementSettings
+            v-show="activeTab === 'movement'"
+            v-model="draft"
+            :can-manage="canManage"
+          />
 
-          <section class="token-settings-panel__permissions">
-            <h3>{{ $t("vtt.token.permissions.title") }}</h3>
-            <TokenPermissionField
-              v-model="draft.visibleTo"
-              :label="$t('vtt.token.permissions.visibleTo')"
-              :members="members"
-            />
-            <TokenPermissionField
-              v-model="draft.controlledBy"
-              :label="$t('vtt.token.permissions.controlledBy')"
-              :members="members"
-              allow-inherit
-            />
-            <TokenPermissionField
-              v-model="draft.editableBy"
-              :label="$t('vtt.token.permissions.editableBy')"
-              :members="members"
-              allow-inherit
-            />
-            <TokenPermissionField
-              v-model="draft.observerBy"
-              :label="$t('vtt.token.permissions.observerBy')"
-              :members="members"
-              allow-inherit
-            />
-          </section>
+          <div v-if="canManage" v-show="activeTab === 'permissions'">
+            <section class="token-settings-panel__toggles">
+              <label>
+                <input v-model="draft.hidden" type="checkbox" />
+                {{ $t("vtt.token.settings.hidden") }}
+              </label>
+              <label>
+                <input v-model="draft.locked" type="checkbox" />
+                {{ $t("vtt.token.settings.locked") }}
+              </label>
+            </section>
+
+            <section class="token-settings-panel__permissions">
+              <h3>{{ $t("vtt.token.permissions.title") }}</h3>
+              <TokenPermissionField
+                v-model="draft.visibleTo"
+                :label="$t('vtt.token.permissions.visibleTo')"
+                :members="members"
+              />
+              <TokenPermissionField
+                v-model="draft.controlledBy"
+                :label="$t('vtt.token.permissions.controlledBy')"
+                :members="members"
+                allow-inherit
+              />
+              <TokenPermissionField
+                v-model="draft.editableBy"
+                :label="$t('vtt.token.permissions.editableBy')"
+                :members="members"
+                allow-inherit
+              />
+              <TokenPermissionField
+                v-model="draft.observerBy"
+                :label="$t('vtt.token.permissions.observerBy')"
+                :members="members"
+                allow-inherit
+              />
+            </section>
+          </div>
         </div>
       </div>
 
@@ -123,6 +131,7 @@ import TokenAppearanceSettings from "./TokenAppearanceSettings.vue";
 import TokenMovementSettings from "./TokenMovementSettings.vue";
 import TokenPermissionField from "./TokenPermissionField.vue";
 import TokenResourceSettings from "./TokenResourceSettings.vue";
+import TokenSettingsPreview from "./TokenSettingsPreview.vue";
 import {
   createTokenSettingsDraft,
   tokenSettingsPayload,
@@ -136,10 +145,12 @@ export default {
     TokenMovementSettings,
     TokenPermissionField,
     TokenResourceSettings,
+    TokenSettingsPreview,
   },
   props: {
     token: { type: Object, required: true },
     gridSize: { type: Number, default: 100 },
+    gridType: { type: String, default: "square" },
     members: { type: Array, default: () => [] },
     actor: { type: Object, default: null },
     anchor: { type: Object, default: () => ({}) },

@@ -50,4 +50,18 @@ describe("token presentation layout", () => {
       "token-resource-bubble--slot-${entry.index + 1}",
     );
   });
+
+  it("renders the unsaved token draft with shared resource visuals", () => {
+    const panel = template("TokenSettingsPanel");
+    const preview = template("TokenSettingsPreview");
+
+    expect(panel).toContain("<TokenSettingsPreview");
+    expect(panel.indexOf("<TokenSettingsPreview")).toBeLessThan(
+      panel.indexOf('class="token-settings-panel__body"'),
+    );
+    expect(preview).toContain("<TokenResourceBars");
+    expect(preview).toContain("<TokenResourceOverlay");
+    expect(preview).toContain("previewToken.rotation");
+    expect(preview).toContain("previewToken.facing");
+  });
 });

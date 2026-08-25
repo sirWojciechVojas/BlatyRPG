@@ -102,6 +102,7 @@
         v-if="settingsToken"
         :token="settingsToken"
         :grid-size="Number(scene.gridSize) || 100"
+        :grid-type="scene.gridType || 'square'"
         :members="members"
         :actor="settingsActor"
         :anchor="settingsAnchor"

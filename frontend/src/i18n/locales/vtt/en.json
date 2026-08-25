@@ -143,6 +143,10 @@
         "cancel": "Cancel",
         "save": "Save",
         "sizePresets": "Quick size relative to grid",
+        "previewTitle": "Live preview",
+        "previewHint": "Unsaved token appearance on the scene grid.",
+        "previewActive": "Active",
+        "previewInactive": "Inactive",
         "tabs": {
           "general": "General",
           "movement": "Movement",

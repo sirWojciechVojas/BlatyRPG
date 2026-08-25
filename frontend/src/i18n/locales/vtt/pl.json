@@ -143,6 +143,10 @@
         "cancel": "Anuluj",
         "save": "Zapisz",
         "sizePresets": "Szybki rozmiar względem siatki",
+        "previewTitle": "Podgląd na żywo",
+        "previewHint": "Niezapisany wygląd tokena na siatce sceny.",
+        "previewActive": "Aktywny",
+        "previewInactive": "Nieaktywny",
         "tabs": {
           "general": "Podstawowe",
           "movement": "Ruch",
