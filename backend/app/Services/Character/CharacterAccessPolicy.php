@@ -62,7 +62,9 @@ final class CharacterAccessPolicy
         if (empty($campaignAccess['canAccess'])) {
             return $denied;
         }
-        $characterCampaignId = (int) ($character['campaign_id'] ?? 0);
+        $characterCampaignId = (int) (
+            $character['_assigned_campaign_id'] ?? $character['campaign_id'] ?? 0
+        );
         $isUnassigned = $characterCampaignId < 1;
         if (!$isUnassigned && $characterCampaignId !== $campaignId) {
             return $denied;

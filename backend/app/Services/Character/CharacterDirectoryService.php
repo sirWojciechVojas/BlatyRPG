@@ -51,18 +51,19 @@ final class CharacterDirectoryService
         $this->catalog = $catalog ?: new CharacterCatalogGuard($this->db);
         $this->revisionWriter = $revisionWriter ?: new CharacterRevisionWriter($this->db);
     }
-
     public function list(array $auth, int $campaignId, array $filters = []): array
     {
         $context = $this->campaignContext($auth, $campaignId);
         $query = $this->characters;
+        $assignedIds = (new CharacterCampaignAssignmentLookup($this->db))
+            ->idsForCampaign($campaignId);
         if (!empty($filters['assigned_only'])) {
-            $query->where('campaign_id', $campaignId);
+            $query->whereIn('id', $assignedIds ?: [0]);
         } elseif (!empty($context['canManageAll'])) {
-            $query->groupStart()->where('campaign_id', $campaignId)
+            $query->groupStart()->whereIn('id', $assignedIds ?: [0])
                 ->orWhere('campaign_id', null)->groupEnd();
         } else {
-            $query->where('campaign_id', $campaignId);
+            $query->whereIn('id', $assignedIds ?: [0]);
         }
         foreach (['user_id', 'system_id'] as $field) {
             if (!empty($filters[$field])) {
@@ -76,6 +77,9 @@ final class CharacterDirectoryService
         );
         $visible = [];
         foreach ($rows as $row) {
+            if (in_array((int) $row['id'], $assignedIds, true)) {
+                $row['_assigned_campaign_id'] = $campaignId;
+            }
             $permissions = $this->policy->character(
                 $context,
                 $row,
@@ -98,7 +102,6 @@ final class CharacterDirectoryService
             ],
         ];
     }
-
     public function show(array $auth, int $id, ?int $campaignId = null): array
     {
         list($row) = $this->authorizedCharacter($auth, $id, $campaignId, false);
@@ -106,7 +109,6 @@ final class CharacterDirectoryService
         $character = CharacterPresenter::present($row);
         return $character + ['character' => $character];
     }
-
     public function update(array $auth, int $id, ?int $campaignId, array $payload): array
     {
         list($row) = $this->authorizedCharacter($auth, $id, $campaignId, true);
@@ -130,7 +132,6 @@ final class CharacterDirectoryService
         $result['message'] = 'Character was updated.';
         return $result;
     }
-
     public function create(array $auth, array $payload): array
     {
         $validated = $this->validator->validateCreate($payload);
@@ -162,6 +163,9 @@ final class CharacterDirectoryService
                 );
             }
             $id = (int) $this->characters->getInsertID();
+            (new CharacterCampaignAssignmentLookup($this->db))->attachCreated(
+                $id, (int) $data['campaign_id'], (int) $context['user_id']
+            );
             $this->assignCreatedAssetSet($id, $validated['assetSetId']);
             if ($this->db->transStatus() === false) {
                 throw new CharacterException(
@@ -179,7 +183,6 @@ final class CharacterDirectoryService
         $result['message'] = 'Character was created.';
         return $result;
     }
-
     public function delete(array $auth, int $id, ?int $campaignId = null): void
     {
         list(, $permissions) = $this->authorizedCharacter($auth, $id, $campaignId, true);
@@ -198,13 +201,11 @@ final class CharacterDirectoryService
             throw $exception;
         }
     }
-
     public function assertEditable(array $auth, int $id, ?int $campaignId = null): array
     {
         list($row) = $this->authorizedCharacter($auth, $id, $campaignId, true);
         return $row;
     }
-
     public function assertAssetSetManager(array $auth, int $campaignId): array
     {
         $context = $this->campaignContext($auth, $campaignId);
@@ -217,7 +218,6 @@ final class CharacterDirectoryService
         }
         return $context;
     }
-
     private function assignCreatedAssetSet(int $characterId, ?int $assetSetId): void
     {
         if ($assetSetId === null) {
@@ -232,7 +232,6 @@ final class CharacterDirectoryService
             );
         }
     }
-
     private function authorizedCharacter(
         array $auth,
         int $id,
@@ -248,6 +247,10 @@ final class CharacterDirectoryService
             throw new CharacterException('campaign_required', 'Campaign id is required.', 422);
         }
         $context = $this->campaignContext($auth, $campaignId);
+        if ((new CharacterCampaignAssignmentLookup($this->db))
+            ->contains($id, $campaignId, $row)) {
+            $row['_assigned_campaign_id'] = $campaignId;
+        }
         $levels = $this->permissionResolver->levelsFor((int) $context['user_id'], $campaignId);
         $permissions = $this->policy->character(
             $context,
@@ -262,7 +265,6 @@ final class CharacterDirectoryService
         $row['_permissions'] = $permissions;
         return [$row, $permissions];
     }
-
     private function campaignContext(array $auth, int $campaignId): array
     {
         if ($campaignId < 1) {
@@ -281,7 +283,6 @@ final class CharacterDirectoryService
         }
         return $access + $auth + ['isAdmin' => $auth['role'] === 'admin', '_campaign' => $campaign];
     }
-
     private function verifiedAuth(array $auth): array
     {
         $userId = (int) ($auth['user_id'] ?? 0);

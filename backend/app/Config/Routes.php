@@ -98,6 +98,10 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->get('admin/overview', 'AdminController::overview');
         $routes->post('admin/users', 'AdminController::createUser');
         $routes->patch('admin/users/(:num)/role', 'AdminController::changeUserRole/$1');
+        $routes->put('admin/characters/(:num)/campaigns/(:num)', 'AdminController::attachCharacterCampaign/$1/$2');
+        $routes->delete('admin/characters/(:num)/campaigns/(:num)', 'AdminController::detachCharacterCampaign/$1/$2');
+        $routes->put('admin/characters/(:num)/campaigns/(:num)/owners/(:num)', 'AdminController::attachCharacterOwner/$1/$2/$3');
+        $routes->delete('admin/characters/(:num)/campaigns/(:num)/owners/(:num)', 'AdminController::detachCharacterOwner/$1/$2/$3');
 
         // ----------------------------------------
         // CHARACTERS

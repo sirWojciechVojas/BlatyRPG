@@ -6,6 +6,7 @@ use App\Models\ResourcePermissionModel;
 use App\Models\ShopOwnerClaimModel;
 use App\Services\Authorization\AccessLevel;
 use App\Services\Character\CharacterPermissionResolver;
+use App\Services\Character\CharacterCampaignAssignmentLookup;
 use CodeIgniter\Database\BaseConnection;
 
 final class TokenActorAccessResolver
@@ -48,7 +49,8 @@ final class TokenActorAccessResolver
         $userId = (int) ($auth['user_id'] ?? 0);
         if ($characterId < 1 || $userId < 1) return AccessLevel::NONE;
         $character = $this->character($characterId);
-        if (!$character || (int) ($character['campaign_id'] ?? 0) !== $campaignId) {
+        if (!$character || !(new CharacterCampaignAssignmentLookup($this->db))
+            ->contains($characterId, $campaignId, $character)) {
             return AccessLevel::NONE;
         }
         if ((int) ($character['user_id'] ?? 0) === $userId) return AccessLevel::OWNER;

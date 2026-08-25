@@ -79,6 +79,25 @@ final class CharacterAccessPolicyTest extends CIUnitTestCase
         );
     }
 
+    public function testSecondaryCampaignAssignmentUsesRequestedCampaignScope(): void
+    {
+        $access = $this->policy->character(
+            ['canAccess' => true, 'canManageAll' => true, 'isAdmin' => false],
+            [
+                'campaign_id' => 99,
+                '_assigned_campaign_id' => 12,
+                'user_id' => null,
+            ],
+            7,
+            12,
+            null
+        );
+
+        $this->assertTrue($access['canView']);
+        $this->assertTrue($access['canEdit']);
+        $this->assertTrue($access['canDelete']);
+    }
+
     public function testLegacyUnassignedCharacterIsReadOnlyForNonAdminManager(): void
     {
         $access = $this->policy->character(

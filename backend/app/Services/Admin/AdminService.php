@@ -16,6 +16,7 @@ class AdminService
     private $presenter;
     private $analytics;
     private $characterDirectory;
+    private $characterAssignments;
 
     public function __construct(
         ?BaseConnection $db = null,
@@ -24,7 +25,8 @@ class AdminService
         ?AdminPayloadValidator $validator = null,
         ?AuthUserPresenter $presenter = null,
         ?AdminOverviewAnalytics $analytics = null,
-        ?AdminCharacterDirectory $characterDirectory = null
+        ?AdminCharacterDirectory $characterDirectory = null,
+        ?AdminCharacterAssignmentService $characterAssignments = null
     ) {
         $this->db = $db ?: \Config\Database::connect();
         $this->users = $users ?: new UserModel($this->db);
@@ -34,6 +36,8 @@ class AdminService
         $this->analytics = $analytics ?: new AdminOverviewAnalytics($this->db);
         $this->characterDirectory = $characterDirectory
             ?: new AdminCharacterDirectory($this->db);
+        $this->characterAssignments = $characterAssignments
+            ?: new AdminCharacterAssignmentService($this->db);
     }
 
     public function overview(array $auth): array
@@ -103,6 +107,44 @@ class AdminService
         return ['user' => $this->presenter->present(
             $this->users->find((int) $this->users->getInsertID())
         )];
+    }
+
+    public function attachCharacterCampaign(array $auth, int $characterId, int $campaignId): array
+    {
+        $admin = $this->verifiedAdmin($auth);
+        return $this->characterAssignments->attachCampaign(
+            $characterId, $campaignId, (int) $admin['id']
+        );
+    }
+
+    public function detachCharacterCampaign(array $auth, int $characterId, int $campaignId): array
+    {
+        $this->verifiedAdmin($auth);
+        return $this->characterAssignments->detachCampaign($characterId, $campaignId);
+    }
+
+    public function attachCharacterOwner(
+        array $auth,
+        int $characterId,
+        int $campaignId,
+        int $userId
+    ): array {
+        $admin = $this->verifiedAdmin($auth);
+        return $this->characterAssignments->attachOwner(
+            $characterId, $campaignId, $userId, (int) $admin['id']
+        );
+    }
+
+    public function detachCharacterOwner(
+        array $auth,
+        int $characterId,
+        int $campaignId,
+        int $userId
+    ): array {
+        $this->verifiedAdmin($auth);
+        return $this->characterAssignments->detachOwner(
+            $characterId, $campaignId, $userId
+        );
     }
 
     public function changeUserRole(array $auth, int $userId, array $payload): array

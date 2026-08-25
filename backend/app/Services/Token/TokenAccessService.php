@@ -2,6 +2,7 @@
 
 namespace App\Services\Token;
 
+use App\Services\Character\CharacterCampaignAssignmentLookup;
 use CodeIgniter\Database\BaseConnection;
 
 final class TokenAccessService
@@ -73,9 +74,10 @@ final class TokenAccessService
     public function assertCharacterInCampaign(int $campaignId, ?int $characterId): void
     {
         if ($characterId === null) return;
-        $row = db_connect()->table('characters')->select('id')
-            ->where('id', $characterId)->where('campaign_id', $campaignId)->get()->getRowArray();
-        if (!$row) {
+        $row = $this->db->table('characters')->select('id, campaign_id')
+            ->where('id', $characterId)->get()->getRowArray();
+        if (!$row || !(new CharacterCampaignAssignmentLookup($this->db))
+            ->contains($characterId, $campaignId, $row)) {
             throw new TokenException(
                 'character_not_found',
                 'Linked character was not found in this campaign.',
