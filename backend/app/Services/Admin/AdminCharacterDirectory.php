@@ -69,8 +69,11 @@ final class AdminCharacterDirectory
                 . 'permissions.user_id, users.username, campaigns.name AS campaign_name')
             ->join('users users', 'users.id = permissions.user_id', 'inner')
             ->join('campaigns campaigns', 'campaigns.id = permissions.campaign_id', 'inner')
+            ->join('campaign_members members', 'members.campaign_id = permissions.campaign_id '
+                . 'AND members.user_id = permissions.user_id', 'inner')
             ->where('permissions.resource_type', 'character')
             ->where('permissions.access_level', 'owner')
+            ->where('members.role', 'gm')->where('members.is_active', 1)
             ->where('users.deleted_at', null)->where('campaigns.deleted_at', null)
             ->orderBy('users.username', 'ASC')->get()->getResultArray();
     }
