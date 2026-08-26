@@ -33,7 +33,7 @@ const permissionScope = (value, legacyMode) => {
     : { mode: "gm", userIds: [] };
 };
 
-const token = (value) => {
+export const normalizeBackendToken = (value) => {
   const id = positiveId(value?.id);
   const sceneId = positiveId(value?.sceneId ?? value?.scene_id);
   const revision = positiveId(value?.revision);
@@ -74,6 +74,29 @@ const token = (value) => {
   };
 };
 
+export const normalizeMovementRequest = (value) => {
+  const id = positiveId(value?.id);
+  const sceneId = positiveId(value?.sceneId);
+  const tokenId = positiveId(value?.tokenId);
+  const requestedByUserId = positiveId(value?.requestedByUserId);
+  if (!id || !sceneId || !tokenId || !requestedByUserId) {
+    throw new BackendTokenError("backend_response_invalid", 502);
+  }
+  return {
+    ...value,
+    id,
+    sceneId,
+    tokenId,
+    requestedByUserId,
+    tokenName: String(value.tokenName || "").slice(0, 150),
+    requesterName: String(value.requesterName || "").slice(0, 100),
+    cost: Math.max(0, coordinate(value.cost) ?? 0),
+    spent: Math.max(0, coordinate(value.spent) ?? 0),
+    range: Math.max(0, coordinate(value.range) ?? 0),
+    status: String(value.status || "pending"),
+  };
+};
+
 export class BackendTokenClient {
   constructor(config, options = {}) {
     this.baseUrl = config.backendInternalUrl;
@@ -82,7 +105,51 @@ export class BackendTokenClient {
   }
 
   async move(session, payload) {
-    const endpoint = `${this.baseUrl}/campaigns/${session.campaignId}/tokens/move`;
+    const result = await this.post(session, "tokens/move", {
+      sceneId: payload.sceneId,
+      tokenId: payload.tokenId,
+      revision: payload.revision,
+      x: payload.x,
+      y: payload.y,
+      waypoints: payload.waypoints,
+    });
+    return {
+      token: normalizeBackendToken(result?.token),
+      publishToPlayers: result?.visibility?.publishToPlayers === true,
+    };
+  }
+
+  async requestMovement(session, payload) {
+    const result = await this.post(session, "tokens/movement-requests", {
+      sceneId: payload.sceneId,
+      tokenId: payload.tokenId,
+      revision: payload.revision,
+      x: payload.x,
+      y: payload.y,
+      waypoints: payload.waypoints,
+    });
+    return { request: normalizeMovementRequest(result?.request) };
+  }
+
+  async resolveMovement(session, payload) {
+    const result = await this.post(
+      session,
+      `tokens/movement-requests/${payload.movementRequestId}/resolve`,
+      { decision: payload.decision },
+    );
+    return {
+      request: normalizeMovementRequest(result?.request),
+      ...(result?.token
+        ? {
+            token: normalizeBackendToken(result.token),
+            publishToPlayers: result?.visibility?.publishToPlayers === true,
+          }
+        : {}),
+    };
+  }
+
+  async post(session, path, body) {
+    const endpoint = `${this.baseUrl}/campaigns/${session.campaignId}/${path}`;
     let response;
     try {
       response = await this.fetch(endpoint, {
@@ -92,14 +159,7 @@ export class BackendTokenClient {
           "Content-Type": "application/json",
           "X-Realtime-Client-Instance": session.clientInstanceId,
         },
-        body: JSON.stringify({
-          sceneId: payload.sceneId,
-          tokenId: payload.tokenId,
-          revision: payload.revision,
-          x: payload.x,
-          y: payload.y,
-          waypoints: payload.waypoints,
-        }),
+        body: JSON.stringify(body),
         signal: AbortSignal.timeout(this.timeoutMs),
       });
     } catch (_error) {
@@ -118,9 +178,6 @@ export class BackendTokenClient {
         errors: result?.errors,
       });
     }
-    return {
-      token: token(result?.token),
-      publishToPlayers: result?.visibility?.publishToPlayers === true,
-    };
+    return result;
   }
 }

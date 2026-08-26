@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { WebSocket } from "ws";
 import { ProtocolError } from "./protocol-error.js";
 import { parseSceneElementMessage } from "./scene-element-protocol.js";
+import { parseTokenMovementMessage } from "./token-movement-protocol.js";
 
 export { ProtocolError } from "./protocol-error.js";
 
@@ -132,6 +133,8 @@ export const parseAuthMessage = (message) => {
 };
 
 export const parseAuthenticatedMessage = (message) => {
+  const tokenMovement = parseTokenMovementMessage(message);
+  if (tokenMovement) return tokenMovement;
   const sceneElement = parseSceneElementMessage(message);
   if (sceneElement) return sceneElement;
   if (message.type === "token.move") {

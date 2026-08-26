@@ -38,3 +38,47 @@ test("validates token movement without accepting client campaign scope", () => {
       error instanceof ProtocolError && error.code === "token_waypoint_y_invalid",
   );
 });
+
+test("validates movement approval requests and GM decisions", () => {
+  const request = parseAuthenticatedMessage({
+    v: 1,
+    type: "token.movement.request",
+    requestId: "movement-request-1",
+    sceneId: 4,
+    tokenId: 9,
+    revision: 3,
+    x: 500,
+    y: 600,
+    waypoints: [],
+  });
+  assert.equal(request.type, "token.movement.request");
+  assert.equal(request.tokenId, 9);
+
+  assert.deepEqual(
+    parseAuthenticatedMessage({
+      v: 1,
+      type: "token.movement.resolve",
+      requestId: "movement-resolve-1",
+      movementRequestId: 22,
+      decision: "approve",
+    }),
+    {
+      type: "token.movement.resolve",
+      requestId: "movement-resolve-1",
+      movementRequestId: 22,
+      decision: "approve",
+    },
+  );
+  assert.throws(
+    () =>
+      parseAuthenticatedMessage({
+        v: 1,
+        type: "token.movement.resolve",
+        requestId: "movement-resolve-2",
+        movementRequestId: 22,
+        decision: "force",
+      }),
+    (error) =>
+      error instanceof ProtocolError && error.code === "movement_decision_invalid",
+  );
+});

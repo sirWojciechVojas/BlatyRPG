@@ -59,3 +59,52 @@ test("fails closed on malformed committed tokens", async () => {
     (error) => error instanceof BackendTokenError && error.status === 502,
   );
 });
+
+test("creates and resolves authoritative movement requests", async () => {
+  const calls = [];
+  const movement = {
+    id: 31,
+    sceneId: 4,
+    tokenId: 9,
+    requestedByUserId: 2,
+    tokenName: "Guard",
+    requesterName: "Player",
+    cost: 8,
+    spent: 2,
+    range: 6,
+    status: "pending",
+  };
+  const client = new BackendTokenClient(testConfig(), {
+    fetch: async (url, options) => {
+      calls.push({ url, body: JSON.parse(options.body) });
+      return new Response(
+        JSON.stringify(
+          calls.length === 1
+            ? { request: movement }
+            : {
+                request: { ...movement, status: "approved" },
+                token: {
+                  id: 9, sceneId: 4, name: "Guard", x: 500, y: 600,
+                  movementSpent: 10, revision: 4,
+                },
+                visibility: { publishToPlayers: true },
+              },
+        ),
+        { status: calls.length === 1 ? 201 : 200 },
+      );
+    },
+  });
+
+  const requested = await client.requestMovement(session, {
+    sceneId: 4, tokenId: 9, revision: 3, x: 500, y: 600, waypoints: [],
+  });
+  const resolved = await client.resolveMovement(session, {
+    movementRequestId: 31, decision: "approve",
+  });
+
+  assert.equal(requested.request.cost, 8);
+  assert.match(calls[0].url, /tokens\/movement-requests$/);
+  assert.match(calls[1].url, /tokens\/movement-requests\/31\/resolve$/);
+  assert.deepEqual(calls[1].body, { decision: "approve" });
+  assert.equal(resolved.token.movementSpent, 10);
+});

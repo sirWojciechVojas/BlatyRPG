@@ -113,3 +113,65 @@ test("publishes token movement only to selected visible users and managers", asy
   ]);
   assert.equal(denied.history.some((event) => event.type === "token.updated"), false);
 });
+
+test("notifies the GM and animates an approved over-limit movement", async () => {
+  const movementRequest = {
+    id: 31,
+    sceneId: 4,
+    tokenId: 9,
+    requestedByUserId: 2,
+    tokenName: "Guard",
+    requesterName: "Player",
+    cost: 8,
+    spent: 2,
+    range: 6,
+    status: "pending",
+  };
+  const setup = await startTestServer({}, {
+    tokenBackend: {
+      requestMovement: async () => ({ request: movementRequest }),
+      resolveMovement: async () => ({
+        request: { ...movementRequest, status: "approved" },
+        token: {
+          id: 9, sceneId: 4, name: "Guard", x: 500, y: 600,
+          movementRange: 6, movementSpent: 10, movementPoints: 0,
+          revision: 4,
+        },
+        publishToPlayers: true,
+      }),
+    },
+  });
+  running.push(setup);
+  const player = await connect(setup.url, 2, "client-instance-0002");
+  const gm = await connect(setup.url, 3, "client-instance-0003", {
+    canManage: true,
+  });
+  gm.ws.close();
+  await gm.waitForClose();
+  const gmTicket = signTicket({
+    sub: 3,
+    auth_session_id: 103,
+    client_instance_id: "client-instance-0004",
+    campaign_role: "gm",
+    capabilities: { canManage: true },
+  });
+  const gameMaster = await connectClient(setup.url);
+  await authenticate(gameMaster, gmTicket, {
+    clientInstanceId: "client-instance-0004",
+  });
+
+  player.send({
+    v: 1, type: "token.movement.request", requestId: "request-31",
+    sceneId: 4, tokenId: 9, revision: 3, x: 500, y: 600, waypoints: [],
+  });
+  const notification = await gameMaster.event("token.movement.requested");
+  assert.equal(notification.payload.request.id, 31);
+
+  gameMaster.send({
+    v: 1, type: "token.movement.resolve", requestId: "resolve-31",
+    movementRequestId: 31, decision: "approve",
+  });
+  const resolved = await player.event("token.movement.resolved");
+  assert.equal(resolved.payload.request.status, "approved");
+  assert.equal(resolved.payload.tokenPatch.movementSpent, 10);
+});

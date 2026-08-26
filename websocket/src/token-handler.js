@@ -34,6 +34,26 @@ export const createTokenHandler = ({ backend, rooms, onAuthenticationFailure }) 
     );
   };
 
+  const movementFailure = (session, request, cause) => {
+    const error =
+      cause instanceof BackendTokenError
+        ? cause
+        : new BackendTokenError("token_unavailable", 503);
+    if (error.status === 401) {
+      onAuthenticationFailure(session);
+      return;
+    }
+    sendEvent(
+      session.ws,
+      eventFor(session, "token.movement.error", {
+        requestId: request.requestId,
+        code: error.code,
+        status: error.status,
+        ...(error.details?.errors ? { errors: error.details.errors } : {}),
+      }),
+    );
+  };
+
   const publish = (session, request, result) => {
     const sequence = rooms.nextSequence(session.campaignId);
     const event = eventFor(
@@ -84,5 +104,74 @@ export const createTokenHandler = ({ backend, rooms, onAuthenticationFailure }) 
     current.catch((cause) => failure(session, request, cause));
   };
 
-  return { handle };
+  const publishMovement = (session, type, payload, allowed) => {
+    const sequence = rooms.nextSequence(session.campaignId);
+    const event = eventFor(session, type, payload, sequence);
+    const marker = createServerEvent({
+      type: "sync.marker",
+      campaignId: session.campaignId,
+      sequence,
+      actorUserId: null,
+      payload: {},
+    });
+    for (const recipient of rooms.sessions(session.campaignId)) {
+      sendEvent(recipient.ws, allowed(recipient) ? event : marker);
+    }
+  };
+
+  const requestMovement = (session, request) => {
+    backend
+      .requestMovement(session, request)
+      .then((result) => {
+        publishMovement(
+          session,
+          "token.movement.requested",
+          { request: result.request },
+          (recipient) =>
+            recipient.userId === result.request.requestedByUserId ||
+            recipient.campaignRole === "gm",
+        );
+        sendEvent(session.ws, eventFor(session, "token.movement.ack", {
+          requestId: request.requestId,
+          movementRequestId: result.request.id,
+        }));
+      })
+      .catch((cause) => movementFailure(session, request, cause));
+  };
+
+  const resolveMovement = (session, request) => {
+    backend
+      .resolveMovement(session, request)
+      .then((result) => {
+        const tokenPatch = result.token
+          ? {
+              id: result.token.id,
+              sceneId: result.token.sceneId,
+              x: result.token.x,
+              y: result.token.y,
+              movementRange: result.token.movementRange,
+              movementSpent: result.token.movementSpent,
+              movementPoints: result.token.movementPoints,
+              resources: result.token.resources,
+              revision: result.token.revision,
+            }
+          : null;
+        publishMovement(
+          session,
+          "token.movement.resolved",
+          { request: result.request, ...(tokenPatch ? { tokenPatch } : {}) },
+          (recipient) =>
+            recipient.userId === result.request.requestedByUserId ||
+            recipient.campaignRole === "gm" ||
+            (result.token && canReceiveToken(recipient, result)),
+        );
+        sendEvent(session.ws, eventFor(session, "token.movement.ack", {
+          requestId: request.requestId,
+          movementRequestId: result.request.id,
+        }));
+      })
+      .catch((cause) => movementFailure(session, request, cause));
+  };
+
+  return { handle, requestMovement, resolveMovement };
 };
