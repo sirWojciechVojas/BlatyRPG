@@ -1,6 +1,7 @@
 import { movementRequestMutations } from "./movementRequestMutations";
 import { campaignMutations } from "./campaignMutations";
 import { combatMutations } from "./combatMutations";
+import { tokenSelectionMutations } from "./tokenSelectionMutations";
 
 const hasScene = (state, sceneId) =>
   state.scenes.some((scene) => scene.id === sceneId);
@@ -9,6 +10,7 @@ export const vttMutations = {
   ...campaignMutations,
   ...movementRequestMutations,
   ...combatMutations,
+  ...tokenSelectionMutations,
   BEGIN_REQUEST(state, { phase, requestId }) {
     state.phase = phase;
     state.requestId = requestId;
@@ -83,31 +85,6 @@ export const vttMutations = {
     if (state.selectedTokenId === tokenId) {
       state.selectedTokenId = state.selectedTokenIds.at(-1) ?? null;
     }
-  },
-  SELECT_TOKEN(state, selection) {
-    const value =
-      selection && typeof selection === "object"
-        ? selection.tokenId
-        : selection;
-    if (value === null || value === undefined || value === "") {
-      state.selectedTokenId = null;
-      state.selectedTokenIds = [];
-      return;
-    }
-    const tokenId = Number(value);
-    if (!Number.isFinite(tokenId)) return;
-    if (selection?.additive === true) {
-      const selected = state.selectedTokenIds.includes(tokenId);
-      state.selectedTokenIds = selected
-        ? state.selectedTokenIds.filter((id) => id !== tokenId)
-        : [...state.selectedTokenIds, tokenId];
-      state.selectedTokenId = selected
-        ? (state.selectedTokenIds.at(-1) ?? null)
-        : tokenId;
-      return;
-    }
-    state.selectedTokenId = tokenId;
-    state.selectedTokenIds = [tokenId];
   },
   TOGGLE_TOKEN_TARGET(state, tokenId) {
     const id = Number(tokenId);

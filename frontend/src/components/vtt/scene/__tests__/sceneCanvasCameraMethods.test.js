@@ -28,4 +28,27 @@ describe("scene canvas selection", () => {
     expect(context.dragging).toBe(true);
     expect(capture).toHaveBeenCalledWith(8);
   });
+
+  it("delegates the primary pointer to active area selection", () => {
+    const emit = vi.fn();
+    const startTokenAreaSelection = vi.fn(() => true);
+    const context = {
+      scene: { id: 4 },
+      dragging: false,
+      pointer: null,
+      startTokenAreaSelection,
+      $emit: emit,
+    };
+    const pointer = {
+      button: 0,
+      pointerId: 8,
+      currentTarget: { setPointerCapture: vi.fn() },
+    };
+
+    sceneCanvasCameraMethods.startPan.call(context, pointer);
+
+    expect(startTokenAreaSelection).toHaveBeenCalledWith(pointer);
+    expect(context.dragging).toBe(false);
+    expect(emit).not.toHaveBeenCalled();
+  });
 });

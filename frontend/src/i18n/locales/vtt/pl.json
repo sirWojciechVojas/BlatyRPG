@@ -380,6 +380,15 @@
         "unavailable": "Narzędzie jeszcze niedostępne",
         "select": "Zaznaczanie i przesuwanie",
         "tokens": "Tokeny",
+        "tokenSelection": {
+          "label": "Tryb zaznaczania tokenów",
+          "point": "Wybór i przesuwanie pojedynczego tokena",
+          "rectangle": "Zaznaczenie prostokątem",
+          "circle": "Zaznaczenie okręgiem",
+          "polygon": "Zaznaczenie wielokątem",
+          "polygonHint": "Wielokąt: klikaj wierzchołki, zakończ dwuklikiem lub Enterem; Esc anuluje",
+          "count": "Tokeny w obszarze: {count}"
+        },
         "measure": "Pomiar odległości",
         "templates": "Szablony obszarowe",
         "walls": "Ściany",

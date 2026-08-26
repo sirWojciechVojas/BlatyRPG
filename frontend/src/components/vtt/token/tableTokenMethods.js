@@ -10,6 +10,13 @@ const isRealtimeAngleChange = (changes) => {
 
 export const tableTokenMethods = {
   selectToken(selection) {
+    if (Array.isArray(selection?.tokenIds)) {
+      this.$store.commit("vtt/SELECT_TOKENS", {
+        tokenIds: selection.tokenIds,
+        additive: selection.additive === true,
+      });
+      return;
+    }
     const tokenId =
       selection && typeof selection === "object"
         ? selection.tokenId

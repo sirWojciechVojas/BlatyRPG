@@ -14,6 +14,7 @@
 @import url("./styles/scene-token-resource-settings.css");
 @import url("./styles/scene-token-resources.css");
 @import url("./styles/scene-token-movement.css");
+@import url("./styles/scene-token-selection.css");
 @import url("./styles/scene-token-drop.css");
 @import url("./styles/scene-walls.css");
 @import url("./styles/scene-lights.css");

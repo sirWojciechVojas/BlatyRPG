@@ -15,6 +15,18 @@ describe("tableTokenMethods resources", () => {
     expect(commit).toHaveBeenCalledWith("vtt/SELECT_TOKEN", { tokenId: null });
   });
 
+  it("commits an area token selection as one batch", () => {
+    const commit = vi.fn();
+    tableTokenMethods.selectToken.call(
+      { $store: { commit } },
+      { tokenIds: [7, 8], additive: true },
+    );
+    expect(commit).toHaveBeenCalledWith("vtt/SELECT_TOKENS", {
+      tokenIds: [7, 8],
+      additive: true,
+    });
+  });
+
   it("focuses a linked character card from the token", () => {
     const openUtilityWindow = vi.fn();
     const vm = { focusedCharacterId: null, openUtilityWindow };

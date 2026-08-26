@@ -4,6 +4,7 @@
     class="scene-canvas"
     :class="{
       'scene-canvas--dragging': dragging,
+      'scene-canvas--area-selection': tokenAreaSelectionActive,
       [`scene-canvas--tool-${activeTool}`]: true,
     }"
     tabindex="0"
@@ -17,10 +18,17 @@
     @pointermove="movePan"
     @pointerup="endPan"
     @pointercancel="endPan"
+    @click="addTokenPolygonPoint"
+    @dblclick="finishTokenPolygonSelection"
     @dragover.prevent="previewDrop"
     @dragleave="leaveDropPreview"
     @drop.prevent="dropContent"
   >
+    <TokenAreaSelectionToolbar
+      v-if="activeTool === 'tokens'"
+      :model-value="tokenSelectionMode"
+      @update:model-value="setTokenSelectionMode"
+    />
     <SceneMeasurementOverlay
       :scene="scene"
       :active-tool="activeTool"
@@ -137,6 +145,12 @@
           @delete="$emit('token-delete', $event)"
           @open-actor="$emit('open-actor', $event)"
         />
+        <TokenAreaSelectionOverlay
+          :scene="scene"
+          :tokens="tokens"
+          :selection="tokenSelection"
+          :scale="camera.scale"
+        />
         <TokenDropPreview
           :scene="scene"
           :preview="actorDropPreview"
@@ -149,8 +163,9 @@
 
 <script>
 import { getCurrentInstance, nextTick } from "vue";
-import { buildGridPattern } from "@/lib/vtt/grid";
 import SceneTokenLayer from "@/components/vtt/token/SceneTokenLayer.vue";
+import TokenAreaSelectionOverlay from "@/components/vtt/token/TokenAreaSelectionOverlay.vue";
+import TokenAreaSelectionToolbar from "@/components/vtt/token/TokenAreaSelectionToolbar.vue";
 import SceneWallLayer from "@/components/vtt/wall/SceneWallLayer.vue";
 import SceneLightLayer from "@/components/vtt/light/SceneLightLayer.vue";
 import SceneTileLayer from "@/components/vtt/tile/SceneTileLayer.vue";
@@ -158,7 +173,9 @@ import SceneMeasurementOverlay from "./SceneMeasurementOverlay.vue";
 import TokenDropPreview from "@/components/vtt/token/TokenDropPreview.vue";
 import TokenMovementRange from "@/components/vtt/token/TokenMovementRange.vue";
 import { sceneCanvasCameraMethods } from "./sceneCanvasCameraMethods";
+import { sceneCanvasComputed } from "./sceneCanvasComputed";
 import { sceneCanvasDropMethods } from "./sceneCanvasDropMethods";
+import { tokenAreaSelectionMethods } from "@/components/vtt/token/tokenAreaSelectionMethods";
 
 export default {
   name: "SceneCanvas",
@@ -166,6 +183,8 @@ export default {
     SceneLightLayer,
     SceneMeasurementOverlay,
     SceneTokenLayer,
+    TokenAreaSelectionOverlay,
+    TokenAreaSelectionToolbar,
     TokenDropPreview,
     TokenMovementRange,
     SceneTileLayer,
@@ -233,47 +252,23 @@ export default {
       viewportSize: { width: 0, height: 0 },
       patternId: `scene-grid-${getCurrentInstance().uid}`,
       actorDropPreview: null,
+      tokenSelectionMode: "point",
+      tokenSelection: null,
     };
   },
-  computed: {
-    pattern() {
-      return this.scene ? buildGridPattern(this.scene) : null;
-    },
-    mapDimensions() {
-      if (!this.scene) return { width: 0, height: 0, padding: 0 };
-      const padding = Math.max(0, Number(this.scene.padding) || 0);
-      return {
-        width: this.scene.width + padding * 2,
-        height: this.scene.height + padding * 2,
-        padding,
-      };
-    },
-    mapStyle() {
-      if (!this.scene) return {};
-      return {
-        width: `${this.mapDimensions.width}px`,
-        height: `${this.mapDimensions.height}px`,
-        backgroundColor: this.scene.backgroundColor,
-        transform: `translate(${this.camera.x}px, ${this.camera.y}px) scale(${this.camera.scale})`,
-      };
-    },
-    contentStyle() {
-      return {
-        top: `${this.mapDimensions.padding}px`,
-        left: `${this.mapDimensions.padding}px`,
-        width: `${this.scene?.width || 0}px`,
-        height: `${this.scene?.height || 0}px`,
-      };
-    },
-  },
+  computed: sceneCanvasComputed,
   watch: {
     "scene.id"() {
+      this.cancelTokenAreaSelection();
       this.backgroundFailed = false;
       this.hasFitted = false;
       nextTick(this.fit);
     },
     "scene.backgroundUrl"() {
       this.backgroundFailed = false;
+    },
+    activeTool(value) {
+      if (value !== "tokens") this.cancelTokenAreaSelection();
     },
   },
   mounted() {
@@ -287,12 +282,14 @@ export default {
     nextTick(this.fit);
   },
   beforeUnmount() {
+    this.cancelTokenAreaSelection();
     window.removeEventListener("dragend", this.clearDropPreview);
     this.resizeObserver?.disconnect();
   },
   methods: {
     ...sceneCanvasCameraMethods,
     ...sceneCanvasDropMethods,
+    ...tokenAreaSelectionMethods,
   },
 };
 </script>

@@ -62,6 +62,7 @@ export const sceneCanvasCameraMethods = {
   },
   onKeydown(event) {
     if (!this.scene) return;
+    if (this.handleTokenAreaSelectionKey?.(event)) return;
     const pan = {
       ArrowLeft: [40, 0],
       ArrowRight: [-40, 0],
@@ -83,6 +84,7 @@ export const sceneCanvasCameraMethods = {
   },
   startPan(event) {
     if (!this.scene || ![0, 1].includes(event.button)) return;
+    if (this.startTokenAreaSelection?.(event)) return;
     if (event.button === 0) {
       this.$emit("token-select", { tokenId: null, additive: false });
     }
@@ -97,11 +99,13 @@ export const sceneCanvasCameraMethods = {
     event.currentTarget.setPointerCapture?.(event.pointerId);
   },
   movePan(event) {
+    if (this.moveTokenAreaSelection?.(event)) return;
     if (!this.dragging || this.pointer?.id !== event.pointerId) return;
     this.camera.x = this.pointer.cameraX + event.clientX - this.pointer.x;
     this.camera.y = this.pointer.cameraY + event.clientY - this.pointer.y;
   },
   endPan(event) {
+    if (this.endTokenAreaSelection?.(event)) return;
     if (this.pointer?.id !== event.pointerId) return;
     this.dragging = false;
     this.pointer = null;

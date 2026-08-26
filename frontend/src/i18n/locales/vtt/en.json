@@ -380,6 +380,15 @@
         "unavailable": "Tool not available yet",
         "select": "Select and move",
         "tokens": "Tokens",
+        "tokenSelection": {
+          "label": "Token selection mode",
+          "point": "Select and move a single token",
+          "rectangle": "Rectangle selection",
+          "circle": "Circle selection",
+          "polygon": "Polygon selection",
+          "polygonHint": "Polygon: click vertices, finish with a double-click or Enter; Esc cancels",
+          "count": "Tokens in area: {count}"
+        },
         "measure": "Distance measurement",
         "templates": "Area templates",
         "walls": "Walls",
