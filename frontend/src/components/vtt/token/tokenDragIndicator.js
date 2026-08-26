@@ -1,6 +1,13 @@
 import { formatDistance, measuredDistance } from "@/lib/vtt/measurement";
 import { tokenMovementPreview } from "@/lib/vtt/tokenMovement";
 
+export const tokenGhostStyle = (indicator = {}) => ({
+  left: `${Number(indicator.end?.x) - Number(indicator.width) / 2}px`,
+  top: `${Number(indicator.end?.y) - Number(indicator.height) / 2}px`,
+  width: `${Number(indicator.width)}px`,
+  height: `${Number(indicator.height)}px`,
+});
+
 export const buildTokenDragIndicator = (
   scene,
   token,

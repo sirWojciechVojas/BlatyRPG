@@ -1,5 +1,8 @@
 import { describe, expect, it } from "vitest";
-import { buildTokenDragIndicator } from "../tokenDragIndicator";
+import {
+  buildTokenDragIndicator,
+  tokenGhostStyle,
+} from "../tokenDragIndicator";
 
 describe("token drag indicator", () => {
   it("identifies the token and reports distance in scene units", () => {
@@ -41,5 +44,11 @@ describe("token drag indicator", () => {
     expect(indicator.waypoints).toEqual([{ x: 150, y: 150 }]);
     expect(indicator.polyline).toBe("50,50 150,150 350,50");
     expect(indicator.exceeded).toBe(true);
+  });
+
+  it("places the drag ghost at the planned destination", () => {
+    expect(
+      tokenGhostStyle({ end: { x: 350, y: 250 }, width: 100, height: 80 }),
+    ).toMatchObject({ left: "300px", top: "210px" });
   });
 });

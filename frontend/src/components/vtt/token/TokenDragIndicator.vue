@@ -65,6 +65,7 @@
 
 <script>
 import { getCurrentInstance } from "vue";
+import { tokenGhostStyle } from "./tokenDragIndicator";
 
 export default {
   name: "TokenDragIndicator",
@@ -84,13 +85,7 @@ export default {
       return `M ${-outer} 0 H ${-inner} M ${inner} 0 H ${outer} M 0 ${-outer} V ${-inner} M 0 ${inner} V ${outer}`;
     },
     ghostStyle() {
-      const value = this.indicator;
-      return {
-        left: `${value.start.x - value.width / 2}px`,
-        top: `${value.start.y - value.height / 2}px`,
-        width: `${value.width}px`,
-        height: `${value.height}px`,
-      };
+      return tokenGhostStyle(this.indicator);
     },
     labelStyle() {
       const inverse = 1 / Math.max(0.05, this.scale);

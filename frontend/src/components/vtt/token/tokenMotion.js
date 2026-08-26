@@ -11,6 +11,9 @@ export const tokenTravelDuration = (from = {}, to = {}) => {
   return Math.round(Math.min(720, Math.max(260, 220 + distance * 0.65)));
 };
 
+export const tokenDisplayPosition = (token = {}, pending = null) =>
+  pending || token;
+
 export const pendingTokenPositionResolved = (pending = {}, token = null) => {
   if (!token) return true;
   const arrived =

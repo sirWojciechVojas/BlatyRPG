@@ -129,6 +129,7 @@ import { tokenDragMethods } from "./tokenDragMethods";
 import { buildTokenDragIndicator } from "./tokenDragIndicator";
 import { tokenLayerMotionMethods } from "./tokenLayerMotionMethods";
 import { tokenLayerWatchers } from "./tokenLayerWatchers";
+import { tokenDisplayPosition } from "./tokenMotion";
 import { tokenHudMethods } from "./tokenHudMethods";
 import { tokenRotationMethods } from "./tokenRotationMethods";
 import { tokenFacingStyle } from "@/lib/vtt/tokenFacing";
@@ -266,8 +267,10 @@ export default {
         : token.name;
     },
     tokenStyle(token) {
-      const position =
-        this.preview[token.id] || this.pendingPositions[token.id] || token;
+      const position = tokenDisplayPosition(
+        token,
+        this.pendingPositions[token.id],
+      );
       return {
         width: `${token.width}px`,
         height: `${token.height}px`,

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   pendingTokenPositionResolved,
+  tokenDisplayPosition,
   tokenTravelDuration,
 } from "../tokenMotion";
 
@@ -26,5 +27,15 @@ describe("token movement timing", () => {
     expect(
       pendingTokenPositionResolved(pending, { x: 280, y: 200, revision: 5 }),
     ).toBe(true);
+  });
+
+  it("keeps the real token at its origin while only a drag preview exists", () => {
+    const token = { x: 100, y: 200 };
+
+    expect(tokenDisplayPosition(token)).toBe(token);
+    expect(tokenDisplayPosition(token, { x: 300, y: 400 })).toEqual({
+      x: 300,
+      y: 400,
+    });
   });
 });
