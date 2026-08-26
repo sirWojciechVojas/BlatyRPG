@@ -37,30 +37,23 @@
 
     <ol v-if="combat?.combatants?.length" class="table-combat-panel__list">
       <li
-        v-for="combatant in combat.combatants"
+        v-for="(combatant, index) in combat.combatants"
         :key="combatant.id"
         :class="{
           active: combat.activeTokenId === combatant.tokenId,
           defeated: combatant.defeated,
         }"
       >
-        <span class="table-combat-panel__avatar">
-          <img
-            v-if="combatant.token.imageUrl"
-            :src="combatant.token.imageUrl"
-            alt=""
-          />
-          <b v-else>{{ initials(combatant.token.name) }}</b>
-        </span>
-        <span class="table-combat-panel__identity">
-          <strong>{{ combatant.token.name }}</strong>
-          <small>
-            {{ $t("vtt.table.combat.movementShort") }}
-            {{ combatant.token.movementPoints }} /
-            {{ combatant.token.movementRange }}
-          </small>
-        </span>
-        <label>
+        <b class="table-combat-panel__rank">{{ index + 1 }}</b>
+        <CombatTokenIdentity :token="combatant.token" />
+        <CombatMovementBar
+          :points="combatant.token.movementPoints"
+          :range="combatant.token.movementRange"
+          :prefix="$t('vtt.table.combat.movementShort')"
+          :label="movementLabel(combatant.token)"
+          :color="movementColor(combatant.token)"
+        />
+        <label class="table-combat-panel__initiative">
           <span>{{ $t("vtt.table.combat.initiative") }}</span>
           <input
             :value="combatant.initiative"
@@ -95,71 +88,41 @@
           {{ $t("vtt.table.combat.resetAll") }}
         </button>
       </header>
-      <div
+      <CombatMovementRow
         v-for="token in tokens"
         :key="token.id"
-        class="table-combat-panel__movement-row"
-      >
-        <button
-          v-if="combat?.id"
-          type="button"
-          :class="{ active: combatantIds.has(token.id) }"
-          :title="$t('vtt.table.combat.toggleRoster')"
-          :disabled="busy"
-          @click="toggle(token.id)"
-        >
-          {{ combatantIds.has(token.id) ? "✓" : "+" }}
-        </button>
-        <strong>{{ token.name }}</strong>
-        <label>
-          <span>{{ $t("vtt.table.combat.points") }}</span>
-          <input
-            :value="draft(token).points"
-            type="number"
-            min="0"
-            :max="draft(token).range"
-            step="0.5"
-            @input="edit(token, 'points', $event.target.value)"
-          />
-        </label>
-        <label>
-          <span>{{ $t("vtt.table.combat.range") }}</span>
-          <input
-            :value="draft(token).range"
-            type="number"
-            min="0"
-            max="10000"
-            step="0.5"
-            @input="edit(token, 'range', $event.target.value)"
-          />
-        </label>
-        <select
-          :value="draft(token).resetMode"
-          :title="$t('vtt.table.combat.resetMode')"
-          @change="edit(token, 'resetMode', $event.target.value)"
-        >
-          <option value="turn">{{ $t("vtt.token.movement.turn") }}</option>
-          <option value="round">{{ $t("vtt.token.movement.round") }}</option>
-          <option value="manual">{{ $t("vtt.token.movement.manual") }}</option>
-        </select>
-        <button type="button" :disabled="busy" @click="saveMovement(token)">
-          {{ $t("vtt.table.combat.assign") }}
-        </button>
-        <button
-          type="button"
-          :disabled="busy"
-          @click="resetMovement([token.id])"
-        >
-          ↺
-        </button>
-      </div>
+        :token="token"
+        :draft="draft(token)"
+        :expanded="expandedTokenId === token.id"
+        :in-roster="combatantIds.has(token.id)"
+        :show-roster="Boolean(combat?.id)"
+        :busy="busy"
+        @toggle="toggle(token.id)"
+        @expand="toggleMovementEditor(token.id)"
+        @edit="edit(token, $event.key, $event.value)"
+        @reset="resetMovement([token.id])"
+        @save="saveMovement(token)"
+      />
+      <p v-if="!tokens.length" class="table-combat-panel__empty">
+        {{ $t("vtt.table.combat.movementEmpty") }}
+      </p>
     </section>
   </section>
 </template>
 
 <script>
+import CombatMovementBar from "./CombatMovementBar.vue";
+import CombatMovementRow from "./CombatMovementRow.vue";
+import CombatTokenIdentity from "./CombatTokenIdentity.vue";
+import { tokenMovementColor } from "@/lib/vtt/combatPresentation";
+
 export default {
   name: "TableCombatPanel",
+  components: {
+    CombatMovementBar,
+    CombatMovementRow,
+    CombatTokenIdentity,
+  },
   props: {
     combat: { type: Object, default: null },
     tokens: { type: Array, default: () => [] },
@@ -168,7 +131,7 @@ export default {
     error: { type: Object, default: null },
   },
   emits: ["command"],
-  data: () => ({ movementDrafts: {} }),
+  data: () => ({ movementDrafts: {}, expandedTokenId: null }),
   watch: {
     tokens() {
       this.movementDrafts = {};
@@ -189,12 +152,17 @@ export default {
     },
   },
   methods: {
-    initials(name) {
-      return String(name || "?")
-        .split(/\s+/u)
-        .slice(0, 2)
-        .map((part) => part[0])
-        .join("");
+    movementColor(token) {
+      return tokenMovementColor(token);
+    },
+    movementLabel(token) {
+      return this.$t("vtt.table.combat.movementValue", {
+        points: token.movementPoints,
+        range: token.movementRange,
+      });
+    },
+    toggleMovementEditor(tokenId) {
+      this.expandedTokenId = this.expandedTokenId === tokenId ? null : tokenId;
     },
     draft(token) {
       return (

@@ -455,6 +455,11 @@
         "range": "Limit",
         "resetMode": "Tryb resetu PR",
         "assign": "Przydziel",
+        "editMovement": "Edytuj punkty ruchu",
+        "editMovementFor": "Edytuj punkty ruchu: {name}",
+        "movementValue": "Punkty ruchu: {points} z {range}",
+        "movementEmpty": "Brak tokenów na aktywnej scenie.",
+        "resetOne": "Resetuj PR",
         "error": "Stan walki zmienił się lub nie udało się wykonać komendy. Dane zostały odświeżone."
       },
       "settings": {

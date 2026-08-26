@@ -1,0 +1,31 @@
+@container (max-width: 430px) {
+  .table-combat-panel__list li {
+    grid-template-columns: 18px minmax(0, 1fr) 52px 27px;
+  }
+
+  .table-combat-panel__list .combat-movement-bar {
+    grid-row: 2;
+    grid-column: 2 / 5;
+  }
+
+  .combat-movement-row__summary {
+    grid-template-columns: 27px minmax(0, 1fr) 31px;
+  }
+
+  .combat-movement-row__summary .combat-movement-bar {
+    grid-row: 2;
+    grid-column: 2 / 4;
+  }
+
+  .table-combat-panel__status,
+  .table-combat-panel__movement > header {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+@container (max-width: 310px) {
+  .table-combat-panel__controls,
+  .table-combat-panel__controls button,
+  .table-combat-panel__movement > header button { width: 100%; }
+}

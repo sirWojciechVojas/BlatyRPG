@@ -455,6 +455,11 @@
         "range": "Range",
         "resetMode": "MP reset mode",
         "assign": "Assign",
+        "editMovement": "Edit movement points",
+        "editMovementFor": "Edit movement points: {name}",
+        "movementValue": "Movement points: {points} of {range}",
+        "movementEmpty": "No tokens on the active scene.",
+        "resetOne": "Reset MP",
         "error": "Combat changed or the command failed. Data has been refreshed."
       },
       "settings": {
