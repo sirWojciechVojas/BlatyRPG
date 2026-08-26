@@ -48,6 +48,18 @@ final class ScenePayloadValidatorTest extends CIUnitTestCase
         $this->assertSame(0, $result['data']['global_illumination']);
     }
 
+    public function testLegacyDarknessStillUpdatesGlobalIllumination(): void
+    {
+        $result = (new ScenePayloadValidator())->validateUpdate([
+            'revision' => 2,
+            'darkness_level' => 0.5,
+            'global_illumination' => true,
+        ]);
+
+        $this->assertTrue($result['valid']);
+        $this->assertEqualsWithDelta(0.91, $result['data']['global_light_level'], 0.0001);
+    }
+
     public function testRejectsUnsafeAssetUrlAndUnknownFields(): void
     {
         $result = (new ScenePayloadValidator())->validateCreate([

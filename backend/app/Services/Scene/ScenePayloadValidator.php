@@ -123,6 +123,9 @@ class ScenePayloadValidator
         if (array_key_exists('global_light_level', $data)) {
             $data['darkness_level'] = 1 - $data['global_light_level'];
             $data['global_illumination'] = 0;
+        } elseif (array_key_exists('darkness_level', $data)) {
+            $legacyMultiplier = !empty($data['global_illumination']) ? 0.18 : 1;
+            $data['global_light_level'] = 1 - $data['darkness_level'] * $legacyMultiplier;
         }
 
         $revision = null;
