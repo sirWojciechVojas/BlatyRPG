@@ -75,3 +75,10 @@
 .light-management__toggle.active { color: #ffe29b; border-color: #d39a4c; }
 .light-management__actions { display: flex; gap: 2px; }
 .light-management__actions button { width: 27px; padding: 0; }
+.light-context-menu { position: absolute; z-index: 5; display: grid; width: 180px; gap: 3px; padding: 5px; color: #d8cbb9; background: rgb(18 13 10 / 98%); border: 1px solid #80613d; border-radius: 5px; box-shadow: 0 6px 20px rgb(0 0 0 / 70%); pointer-events: auto; }
+.light-context-menu header { display: flex; align-items: center; justify-content: space-between; gap: 5px; }
+.light-context-menu button,
+.light-context-menu select { min-height: 26px; color: #d8cbb9; background: #2b2119; border: 1px solid #604b38; border-radius: 3px; }
+.light-context-menu header button { width: 26px; }
+.light-context-menu hr { width: 100%; margin: 2px 0; border: 0; border-top: 1px solid #604b38; }
+.light-context-menu__danger { color: #ff9e9e !important; }

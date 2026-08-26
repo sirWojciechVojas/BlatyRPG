@@ -31,5 +31,7 @@ describe("scene lighting management UI", () => {
     expect(template).toContain("technicalPath(display(light), false)");
     expect(template).toContain("technicalPath(creationPreview, true)");
     expect(template).toContain("isDirected(creationPreview)");
+    expect(template).toContain('@contextmenu.prevent.stop="openContextMenu"');
+    expect(template).toContain('@pointerdown="canvasPointerDown"');
   });
 });

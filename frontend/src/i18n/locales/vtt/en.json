@@ -309,6 +309,8 @@
       "copy": "Copy source (Ctrl+D)",
       "copyShort": "Copy",
       "toolbar": "Light tools",
+      "contextMenu": "Light tool menu",
+      "addHere": "Add light here",
       "add": "Add light",
       "list": "Light list",
       "empty": "This scene has no light sources yet.",

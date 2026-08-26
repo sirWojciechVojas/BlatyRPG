@@ -9,6 +9,15 @@ export const lightLayerEditorMethods = {
   point(event) {
     return wallPoint(event, this.$refs.editor, this.scene, !event.altKey);
   },
+  canvasPointerDown(event) {
+    if (event.button !== 0 || this.busy) return;
+    this.contextMenu = null;
+    if (this.drag?.type === "create") {
+      this.finishCreate(event);
+      return;
+    }
+    this.startCreate(event);
+  },
   startCreate(event) {
     if (this.busy || event.button !== 0) return;
     const origin = this.point(event);
@@ -16,7 +25,6 @@ export const lightLayerEditorMethods = {
     this.drag = { type: "create", pointerId: event.pointerId, origin };
     this.preview = lightDraftFromDrag(origin, origin, this.creationType);
     this.$refs.editor.focus();
-    this.$refs.editor.setPointerCapture?.(event.pointerId);
   },
   startMove(event, light) {
     if (this.busy || event.button !== 0) return;
@@ -36,28 +44,33 @@ export const lightLayerEditorMethods = {
   },
   finish(event) {
     if (!this.drag || event.pointerId !== this.drag.pointerId) return;
+    if (this.drag.type === "create") return;
     this.move(event);
     const drag = this.drag;
     const point = this.preview;
     this.cancel(event);
-    if (drag.type === "create") {
-      if (validLightDraft(point)) {
-        this.$emit("create", {
-          ...point,
-          name: `${this.$t("vtt.light.defaultName")} ${this.lights.length + 1}`,
-          sourceType: this.creationType,
-          angle: this.defaultAngle(this.creationType),
-          lumens: 800,
-        });
-      }
-      return;
-    }
     if (point.x !== drag.light.x || point.y !== drag.light.y) {
       this.$emit("update", { light: drag.light, changes: point });
     }
   },
+  finishCreate(event) {
+    this.move(event);
+    const point = this.preview;
+    this.cancel();
+    if (!validLightDraft(point)) return;
+    this.$emit("create", this.lightDraft(point));
+  },
+  lightDraft(point) {
+    return {
+      ...point,
+      name: `${this.$t("vtt.light.defaultName")} ${this.lights.length + 1}`,
+      sourceType: this.creationType,
+      angle: this.defaultAngle(this.creationType),
+      lumens: 800,
+    };
+  },
   cancel(event) {
-    if (event && this.drag) {
+    if (event && this.drag?.type === "move") {
       this.$refs.editor.releasePointerCapture?.(this.drag.pointerId);
     }
     this.drag = null;
@@ -83,10 +96,15 @@ export const lightLayerEditorMethods = {
   },
   addDefault() {
     if (this.busy) return;
-    const grid = Math.max(1, Number(this.scene.gridSize) || 100);
-    this.$emit("create", {
+    this.addAt({
       x: Number(this.scene.width) / 2,
       y: Number(this.scene.height) / 2,
+    });
+  },
+  addAt(point) {
+    const grid = Math.max(1, Number(this.scene.gridSize) || 100);
+    this.$emit("create", {
+      ...point,
       brightRadius: grid * 2,
       dimRadius: grid * 4,
       name: `${this.$t("vtt.light.defaultName")} ${this.lights.length + 1}`,
@@ -94,6 +112,53 @@ export const lightLayerEditorMethods = {
       angle: this.defaultAngle(this.creationType),
       lumens: 800,
     });
+  },
+  openContextMenu(event) {
+    if (this.drag) {
+      this.cancel(event);
+      return;
+    }
+    const bounds = this.$refs.root.getBoundingClientRect();
+    this.contextMenu = {
+      left: Math.max(
+        4,
+        Math.min(bounds.width - 184, event.clientX - bounds.left),
+      ),
+      top: Math.max(
+        4,
+        Math.min(bounds.height - 230, event.clientY - bounds.top),
+      ),
+      point: this.point(event),
+    };
+  },
+  closeContext(action) {
+    action?.();
+    this.contextMenu = null;
+  },
+  addAtContext() {
+    this.closeContext(() => this.addAt(this.contextMenu.point));
+  },
+  contextSourceType(sourceType) {
+    this.closeContext(() => this.setSourceType(sourceType));
+  },
+  toggleListFromContext() {
+    this.closeContext(() => {
+      this.listOpen = !this.listOpen;
+    });
+  },
+  updateFromContext(changes) {
+    this.closeContext(() => this.updateSelected(changes));
+  },
+  copyFromContext() {
+    this.closeContext(() => this.copySelected());
+  },
+  editFromContext() {
+    this.closeContext(() => {
+      this.propertiesOpen = true;
+    });
+  },
+  deleteFromContext() {
+    this.closeContext(() => this.$emit("delete", this.selectedLight));
   },
   setSourceType(sourceType) {
     this.creationType = sourceType;
@@ -131,6 +196,8 @@ export const lightLayerEditorMethods = {
       event.preventDefault();
       this.$emit("delete", this.selectedLight);
     } else if (event.key === "Escape") {
+      if (this.drag?.type === "create") this.cancel();
+      this.contextMenu = null;
       this.propertiesOpen = false;
       this.$emit("select", null);
     }

@@ -309,6 +309,8 @@
       "copy": "Kopiuj źródło (Ctrl+D)",
       "copyShort": "Kopiuj",
       "toolbar": "Narzędzia światła",
+      "contextMenu": "Menu narzędzia światła",
+      "addHere": "Dodaj światło tutaj",
       "add": "Dodaj światło",
       "list": "Lista świateł",
       "empty": "Na tej scenie nie ma jeszcze źródeł światła.",

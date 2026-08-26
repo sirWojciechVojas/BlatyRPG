@@ -1,5 +1,6 @@
 <template>
   <div
+    ref="root"
     class="scene-light-layer"
     :class="{ 'scene-light-layer--active': active }"
   >
@@ -17,16 +18,13 @@
       :viewBox="viewBox"
       tabindex="0"
       @pointermove="move"
+      @pointerdown="canvasPointerDown"
       @pointerup="finish"
       @pointercancel="cancel"
+      @contextmenu.prevent.stop="openContextMenu"
       @keydown="keyboard"
     >
-      <rect
-        width="100%"
-        height="100%"
-        fill="transparent"
-        @pointerdown="startCreate"
-      />
+      <rect width="100%" height="100%" fill="transparent" />
       <g v-for="light in lights" :key="light.id" :class="lightClasses(light)">
         <path
           v-if="light.id === selectedId"
@@ -133,12 +131,28 @@
       @close="propertiesOpen = false"
       @save="$emit('update', { light: selectedLight, changes: $event })"
     />
+    <LightContextMenu
+      v-if="canManage && active && contextMenu"
+      :style="contextMenuStyle"
+      :light="selectedLight"
+      :source-type="selectedLight?.sourceType || creationType"
+      :busy="busy"
+      @source-type="contextSourceType"
+      @add="addAtContext"
+      @toggle-list="toggleListFromContext"
+      @update="updateFromContext"
+      @copy="copyFromContext"
+      @edit="editFromContext"
+      @delete="deleteFromContext"
+      @close="contextMenu = null"
+    />
   </div>
 </template>
 
 <script>
 import { getCurrentInstance } from "vue";
 import LightHud from "./LightHud.vue";
+import LightContextMenu from "./LightContextMenu.vue";
 import LightManagementPanel from "./LightManagementPanel.vue";
 import LightPropertiesPanel from "./LightPropertiesPanel.vue";
 import LightToolToolbar from "./LightToolToolbar.vue";
@@ -151,6 +165,7 @@ export default {
   name: "SceneLightLayer",
   components: {
     LightHud,
+    LightContextMenu,
     LightManagementPanel,
     LightPropertiesPanel,
     LightToolToolbar,
@@ -174,6 +189,7 @@ export default {
       propertiesOpen: false,
       listOpen: true,
       creationType: "omni",
+      contextMenu: null,
     };
   },
   computed: {
@@ -232,6 +248,12 @@ export default {
       return {
         left: `${this.selectedLight.x}px`,
         top: `${this.selectedLight.y}px`,
+      };
+    },
+    contextMenuStyle() {
+      return {
+        left: `${this.contextMenu.left}px`,
+        top: `${this.contextMenu.top}px`,
       };
     },
   },
