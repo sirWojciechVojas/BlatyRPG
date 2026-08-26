@@ -12,7 +12,8 @@ class SceneModel extends Model
     protected $useSoftDeletes = true;
     protected $allowedFields = [
         'campaign_id', 'name', 'description', 'background_url', 'width', 'height', 'padding',
-        'background_color', 'darkness_level', 'global_illumination', 'fog_exploration',
+        'background_color', 'darkness_level', 'global_illumination', 'global_light_level',
+        'fog_exploration',
         'grid_type', 'grid_size', 'grid_distance', 'grid_unit',
         'grid_offset_x', 'grid_offset_y', 'grid_color', 'grid_opacity', 'is_visible',
         'sort_order', 'revision',
@@ -38,7 +39,8 @@ class SceneModel extends Model
                     $row[$field] = (int) $row[$field];
                 }
             }
-            foreach (['darkness_level', 'grid_distance', 'grid_offset_x', 'grid_offset_y', 'grid_opacity'] as $field) {
+            foreach (['darkness_level', 'global_light_level', 'grid_distance',
+                'grid_offset_x', 'grid_offset_y', 'grid_opacity'] as $field) {
                 if (isset($row[$field])) {
                     $row[$field] = (float) $row[$field];
                 }

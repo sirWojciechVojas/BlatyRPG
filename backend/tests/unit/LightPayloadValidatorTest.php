@@ -15,7 +15,8 @@ final class LightPayloadValidatorTest extends CIUnitTestCase
         $this->assertSame(400, $result['data']['dim_radius']);
         $this->assertSame('#FFD27A', $result['data']['color']);
         $this->assertSame(1, $result['data']['gradual_illumination']);
-        $this->assertSame('light', $result['data']['source_type']);
+        $this->assertSame('omni', $result['data']['source_type']);
+        $this->assertSame(800, $result['data']['lumens']);
         $this->assertSame('none', $result['data']['animation']);
     }
 
@@ -41,6 +42,27 @@ final class LightPayloadValidatorTest extends CIUnitTestCase
         $this->assertSame('flicker', $result['data']['animation']);
         $this->assertSame(1, $result['data']['provides_vision']);
         $this->assertSame(0, $result['data']['constrained_by_walls']);
+    }
+
+    public function testValidatesPhotometryAndDirectionalGeometry(): void
+    {
+        $result = (new LightPayloadValidator())->update([
+            'revision' => 3,
+            'name' => 'Gate lantern',
+            'sourceType' => 'directional',
+            'lumens' => 1250,
+            'direction' => 275.5,
+            'angle' => 70,
+            'areaWidth' => 600,
+            'areaHeight' => 300,
+        ]);
+
+        $this->assertTrue($result['valid']);
+        $this->assertSame('Gate lantern', $result['data']['name']);
+        $this->assertSame('directional', $result['data']['source_type']);
+        $this->assertSame(1250, $result['data']['lumens']);
+        $this->assertSame(275.5, $result['data']['direction']);
+        $this->assertSame(600.0, $result['data']['area_width']);
     }
 
     public function testRejectsInvertedDarknessRangeAndUnknownAnimation(): void

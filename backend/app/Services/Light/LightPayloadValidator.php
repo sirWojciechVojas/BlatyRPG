@@ -9,6 +9,7 @@ final class LightPayloadValidator
         'softness', 'gradualIllumination', 'darknessMin', 'darknessMax',
         'sourceType', 'providesVision', 'constrainedByWalls', 'animation',
         'animationSpeed', 'animationIntensity', 'elevation', 'enabled', 'hidden',
+        'name', 'lumens', 'direction', 'angle', 'areaWidth', 'areaHeight',
     ];
 
     public function create(array $payload): array
@@ -46,6 +47,20 @@ final class LightPayloadValidator
                 $this->number($payload[$field], $db, 0, 100000, $data, $errors, $field);
             }
         }
+        foreach (['lumens' => ['lumens', 0, 1000000],
+            'direction' => ['direction', 0, 360], 'angle' => ['angle', 1, 360],
+            'areaWidth' => ['area_width', 1, 100000],
+            'areaHeight' => ['area_height', 1, 100000]]
+            as $field => [$db, $minimum, $maximum]) {
+            if (array_key_exists($field, $payload)) {
+                $this->number(
+                    $payload[$field], $db, $minimum, $maximum, $data, $errors, $field
+                );
+                if ($field === 'lumens' && isset($data[$db])) {
+                    $data[$db] = (int) round($data[$db]);
+                }
+            }
+        }
         foreach (['intensity' => 'intensity', 'opacity' => 'opacity',
             'softness' => 'softness', 'darknessMin' => 'darkness_min',
             'darknessMax' => 'darkness_max', 'animationIntensity' => 'animation_intensity']
@@ -66,6 +81,12 @@ final class LightPayloadValidator
                 $errors['color'] = 'Color is invalid.';
             } else $data['color'] = $color;
         }
+        if (array_key_exists('name', $payload)) {
+            $name = trim((string) $payload['name']);
+            if ($name === '' || strlen($name) > 100) {
+                $errors['name'] = 'Name must contain between 1 and 100 characters.';
+            } else $data['name'] = $name;
+        }
         foreach (['enabled' => 'enabled', 'hidden' => 'hidden',
             'gradualIllumination' => 'gradual_illumination',
             'providesVision' => 'provides_vision',
@@ -75,7 +96,9 @@ final class LightPayloadValidator
             if ($value === null) $errors[$field] = 'A boolean is required.';
             else $data[$db] = $value ? 1 : 0;
         }
-        foreach (['sourceType' => ['source_type', ['light', 'darkness']],
+        foreach (['sourceType' => ['source_type', [
+            'light', 'omni', 'directional', 'cone', 'area', 'darkness',
+        ]],
             'animation' => ['animation', ['none', 'flicker', 'pulse', 'vortex']]]
             as $field => [$db, $allowedValues]) {
             if (!array_key_exists($field, $payload)) continue;
@@ -88,11 +111,13 @@ final class LightPayloadValidator
                 'bright_radius' => 200, 'dim_radius' => 400, 'color' => '#FFD27A',
                 'intensity' => 1, 'opacity' => 1, 'softness' => 0.5,
                 'gradual_illumination' => 1, 'darkness_min' => 0,
-                'darkness_max' => 1, 'source_type' => 'light',
+                'darkness_max' => 1, 'source_type' => 'omni',
                 'provides_vision' => 0, 'constrained_by_walls' => 1,
                 'animation' => 'none', 'animation_speed' => 1,
                 'animation_intensity' => 0.5, 'elevation' => 0,
                 'enabled' => 1, 'hidden' => 0,
+                'name' => 'Light', 'lumens' => 800, 'direction' => 0,
+                'angle' => 90, 'area_width' => 400, 'area_height' => 400,
             ];
         }
         if (isset($data['bright_radius'], $data['dim_radius'])

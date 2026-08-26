@@ -16,6 +16,7 @@ class SceneLightModel extends Model
         'darkness_min', 'darkness_max', 'source_type', 'provides_vision',
         'constrained_by_walls', 'animation', 'animation_speed',
         'animation_intensity', 'elevation', 'enabled', 'hidden', 'revision',
+        'name', 'lumens', 'direction', 'angle', 'area_width', 'area_height',
     ];
     protected $useTimestamps = true;
     protected $afterFind = ['normalizeRows'];
@@ -30,9 +31,11 @@ class SceneLightModel extends Model
             }
             foreach (['x', 'y', 'bright_radius', 'dim_radius', 'intensity', 'opacity',
                 'softness', 'darkness_min', 'darkness_max', 'animation_speed',
-                'animation_intensity', 'elevation'] as $field) {
+                'animation_intensity', 'elevation', 'direction', 'angle',
+                'area_width', 'area_height'] as $field) {
                 if (isset($row[$field])) $row[$field] = (float) $row[$field];
             }
+            if (isset($row['lumens'])) $row['lumens'] = (int) $row['lumens'];
             foreach (['gradual_illumination', 'provides_vision', 'constrained_by_walls',
                 'enabled', 'hidden'] as $field) {
                 if (isset($row[$field])) $row[$field] = (bool) $row[$field];

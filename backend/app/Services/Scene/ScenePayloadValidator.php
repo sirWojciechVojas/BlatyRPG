@@ -8,7 +8,8 @@ class ScenePayloadValidator
         'name', 'description', 'background_url', 'width', 'height', 'padding',
         'background_color', 'grid_type', 'grid_size', 'grid_distance', 'grid_unit',
         'grid_offset_x', 'grid_offset_y', 'grid_color', 'grid_opacity', 'is_visible',
-        'sort_order', 'darkness_level', 'global_illumination', 'fog_exploration',
+        'sort_order', 'darkness_level', 'global_illumination', 'global_light_level',
+        'fog_exploration',
     ];
 
     public function validateCreate(array $payload): array
@@ -74,7 +75,8 @@ class ScenePayloadValidator
         }
 
         $numbers = [
-            'darkness_level' => [0, 1], 'grid_distance' => [0.01, 1000000],
+            'darkness_level' => [0, 1], 'global_light_level' => [0, 1],
+            'grid_distance' => [0.01, 1000000],
             'grid_offset_x' => [-50000, 50000],
             'grid_offset_y' => [-50000, 50000], 'grid_opacity' => [0, 1],
         ];
@@ -116,6 +118,11 @@ class ScenePayloadValidator
             } else {
                 $data[$field] = $value ? 1 : 0;
             }
+        }
+
+        if (array_key_exists('global_light_level', $data)) {
+            $data['darkness_level'] = 1 - $data['global_light_level'];
+            $data['global_illumination'] = 0;
         }
 
         $revision = null;
