@@ -231,7 +231,9 @@ export default {
       return light.sourceType === "area" ? solid : gradient;
     },
     areaOpacity(light, multiplier) {
-      return light.sourceType === "area" ? this.strength(light) * multiplier : 1;
+      return light.sourceType === "area"
+        ? this.strength(light) * multiplier
+        : 1;
     },
     brightOffset(light) {
       return `${lightTransitionOffsets(light).bright}%`;

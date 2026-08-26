@@ -50,20 +50,26 @@
               :title="$t('vtt.light.edit')"
               :disabled="busy"
               @click.stop="$emit('edit', light.id)"
-            >⚙</button>
+            >
+              ⚙
+            </button>
             <button
               type="button"
               :title="$t('vtt.light.copy')"
               :disabled="busy"
               @click.stop="$emit('copy', light.id)"
-            >⧉</button>
+            >
+              ⧉
+            </button>
             <button
               type="button"
               class="light-management__danger"
               :title="$t('vtt.light.delete')"
               :disabled="busy"
               @click.stop="$emit('delete', light)"
-            >×</button>
+            >
+              ×
+            </button>
           </div>
         </li>
       </ol>

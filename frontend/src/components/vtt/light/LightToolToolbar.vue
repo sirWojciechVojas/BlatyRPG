@@ -1,5 +1,9 @@
 <template>
-  <nav class="light-tool-toolbar" :aria-label="$t('vtt.light.toolbar')" @pointerdown.stop>
+  <nav
+    class="light-tool-toolbar"
+    :aria-label="$t('vtt.light.toolbar')"
+    @pointerdown.stop
+  >
     <select
       :value="sourceType"
       :title="$t('vtt.light.sourceType')"
@@ -18,11 +22,15 @@
     </button>
     <label class="light-tool-toolbar__lumens" :title="$t('vtt.light.lumens')">
       <input
-        type="number" min="0" max="1000000" step="50"
+        type="number"
+        min="0"
+        max="1000000"
+        step="50"
         :value="light?.lumens ?? 800"
         :disabled="busy || !light"
         @change="$emit('update', { lumens: Number($event.target.value) })"
-      /> lm
+      />
+      lm
     </label>
     <input
       type="color"
@@ -34,13 +42,21 @@
     <button type="button" :disabled="busy || !light" @click="$emit('edit')">
       ⚙ {{ $t("vtt.light.editShort") }}
     </button>
-    <button type="button" :class="{ active: listOpen }" @click="$emit('toggle-list')">
+    <button
+      type="button"
+      :class="{ active: listOpen }"
+      @click="$emit('toggle-list')"
+    >
       ☷ {{ $t("vtt.light.list") }} ({{ count }})
     </button>
     <button
-      type="button" class="light-tool-toolbar__danger"
-      :disabled="busy || !light" @click="$emit('delete')"
-    >× {{ $t("vtt.light.deleteShort") }}</button>
+      type="button"
+      class="light-tool-toolbar__danger"
+      :disabled="busy || !light"
+      @click="$emit('delete')"
+    >
+      × {{ $t("vtt.light.deleteShort") }}
+    </button>
   </nav>
 </template>
 
@@ -56,7 +72,15 @@ export default {
     listOpen: { type: Boolean, default: true },
     busy: { type: Boolean, default: false },
   },
-  emits: ["add", "copy", "update", "source-type", "edit", "toggle-list", "delete"],
+  emits: [
+    "add",
+    "copy",
+    "update",
+    "source-type",
+    "edit",
+    "toggle-list",
+    "delete",
+  ],
   data: () => ({ types: LIGHT_TYPES }),
 };
 </script>
