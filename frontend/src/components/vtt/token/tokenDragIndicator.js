@@ -13,6 +13,7 @@ export const buildTokenDragIndicator = (
   token,
   position,
   waypoints = [],
+  groupCount = 1,
 ) => {
   if (!scene || !token || !position) return null;
   const halfWidth = Number(token.width) / 2;
@@ -40,6 +41,7 @@ export const buildTokenDragIndicator = (
     polyline: movement.points.map((point) => `${point.x},${point.y}`).join(" "),
     waypoints: movement.points.slice(1, -1),
     movement: `${movement.projected} / ${movement.range} PR`,
+    groupCount: Math.max(1, Number(groupCount) || 1),
     exceeded: movement.exceeded,
     name: String(token.name || ""),
     imageUrl: String(token.imageUrl || ""),

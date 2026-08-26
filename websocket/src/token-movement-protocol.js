@@ -44,7 +44,37 @@ const waypoints = (value) => {
   });
 };
 
+const groupMoves = (value) => {
+  if (!Array.isArray(value) || value.length < 2 || value.length > 50) {
+    throw new ProtocolError("token_group_moves_invalid");
+  }
+  const ids = new Set();
+  return value.map((move) => {
+    if (!object(move)) throw new ProtocolError("token_group_moves_invalid");
+    exact(move, ["tokenId", "revision", "x", "y", "waypoints"]);
+    const tokenId = positive(move.tokenId, "token_id_invalid");
+    if (ids.has(tokenId)) throw new ProtocolError("token_group_duplicate");
+    ids.add(tokenId);
+    return {
+      tokenId,
+      revision: positive(move.revision, "token_revision_invalid"),
+      x: coordinate(move.x, "token_x_invalid"),
+      y: coordinate(move.y, "token_y_invalid"),
+      waypoints: waypoints(move.waypoints),
+    };
+  });
+};
+
 export const parseTokenMovementMessage = (message) => {
+  if (message.type === "token.move.group") {
+    exact(message, ["v", "type", "requestId", "sceneId", "moves"]);
+    return {
+      type: message.type,
+      requestId: requestId(message.requestId),
+      sceneId: positive(message.sceneId, "scene_id_invalid"),
+      moves: groupMoves(message.moves),
+    };
+  }
   if (message.type === "token.movement.request") {
     exact(message, [
       "v", "type", "requestId", "sceneId", "tokenId", "revision", "x", "y",

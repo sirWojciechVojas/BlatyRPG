@@ -11,7 +11,7 @@
       class="scene-token-wrap"
       :class="{
         'scene-token-wrap--dragging':
-          !drag?.blocked && drag?.token.id === token.id,
+          !drag?.blocked && isDraggingToken(token.id),
         'scene-token-wrap--moving': movingTokenIds[token.id],
         'scene-token-wrap--selected': tokenStates[token.id].selected,
         'scene-token-wrap--hud': token.id === hudTokenId,
@@ -169,6 +169,7 @@ export default {
   emits: [
     "select",
     "move",
+    "move-group",
     "movement-depleted",
     "movement-limit",
     "update",
@@ -236,6 +237,7 @@ export default {
         this.drag.token,
         this.preview[this.drag.token.id] || this.drag.token,
         this.drag.waypoints,
+        this.drag.group.length,
       );
     },
   },

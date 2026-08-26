@@ -81,6 +81,8 @@
         "conflict": "Another user changed this scene. Refresh its data.",
         "movementPointsDepletedTitle": "No movement points remain",
         "movementPointsDepleted": "This token has spent its available movement. The GM must assign or reset its movement points.",
+        "movementGroupBlockedTitle": "Group movement blocked",
+        "movementGroupBlocked": "The whole group cannot move. Missing MP, control, or movement access: {names}.",
         "generic": "The scene operation failed.",
         "validation": "Correct these fields: {fields}."
       }
@@ -88,6 +90,7 @@
     "token": {
       "dragActor": "Drag the character onto the map to create a token",
       "dragging": "Moving: {name} · {distance} · {movement}",
+      "draggingGroup": "Moving group ({groupCount}) · {distance} · {movement}",
       "dropActor": "Drop token: {name}",
       "rotateLeft": "Rotate left",
       "rotateRight": "Rotate right",

@@ -39,6 +39,35 @@ test("validates token movement without accepting client campaign scope", () => {
   );
 });
 
+test("validates one bounded group movement command", () => {
+  const group = {
+    v: 1,
+    type: "token.move.group",
+    requestId: "group-1",
+    sceneId: 4,
+    moves: [
+      { tokenId: 9, revision: 3, x: 100, y: 200, waypoints: [] },
+      { tokenId: 10, revision: 7, x: 300, y: 400, waypoints: [] },
+    ],
+  };
+
+  assert.deepEqual(parseAuthenticatedMessage(group), {
+    type: "token.move.group",
+    requestId: "group-1",
+    sceneId: 4,
+    moves: group.moves,
+  });
+  assert.throws(
+    () =>
+      parseAuthenticatedMessage({
+        ...group,
+        moves: [group.moves[0], { ...group.moves[1], tokenId: 9 }],
+      }),
+    (error) =>
+      error instanceof ProtocolError && error.code === "token_group_duplicate",
+  );
+});
+
 test("accepts only realtime token angle changes", () => {
   const change = {
     v: 1,

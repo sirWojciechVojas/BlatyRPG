@@ -47,6 +47,23 @@ export const tokenMoveMessage = (payload) => ({
     : [],
 });
 
+export const tokenMoveGroupMessage = (payload) => ({
+  v: REALTIME_VERSION,
+  type: "token.move.group",
+  requestId: String(payload.requestId),
+  sceneId: Number(payload.sceneId),
+  moves: (payload.moves || []).slice(0, 50).map((move) => ({
+    tokenId: Number(move.tokenId),
+    revision: Number(move.revision),
+    x: Number(move.x),
+    y: Number(move.y),
+    waypoints: (move.waypoints || []).slice(0, 20).map((point) => ({
+      x: Number(point.x),
+      y: Number(point.y),
+    })),
+  })),
+});
+
 export const tokenChangeMessage = (payload) => ({
   v: REALTIME_VERSION,
   type: "token.change",

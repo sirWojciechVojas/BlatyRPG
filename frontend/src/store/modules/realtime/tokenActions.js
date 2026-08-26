@@ -12,6 +12,15 @@ export const routeRealtimeTokenEvent = (context, event) => {
     }
     return;
   }
+  if (event.type === "token.group.updated") {
+    (event.payload.tokens || []).forEach((item) => {
+      const token = normalizeToken(item);
+      if (token.id > 0 && token.sceneId > 0) {
+        context.commit("vtt/UPSERT_TOKEN", token, { root: true });
+      }
+    });
+    return;
+  }
   if (event.type === "token.error") {
     context.dispatch("vtt/loadTokens", null, { root: true }).catch(() => {});
     return;
@@ -67,6 +76,29 @@ export const createRealtimeTokenActions = (ensureSession) => ({
       x: Number(x),
       y: Number(y),
       waypoints,
+    });
+  },
+  moveTokenGroup(context, { moves = [] }) {
+    if (moves.length < 2 || moves.some(({ token }) => !token?.revision)) {
+      return false;
+    }
+    const sceneId = Number(moves[0].token.sceneId);
+    if (
+      !sceneId ||
+      moves.some(({ token }) => Number(token.sceneId) !== sceneId)
+    ) {
+      return false;
+    }
+    return ensureSession(context).moveTokenGroup({
+      requestId: `token-group-move-${++requestSerial}`,
+      sceneId,
+      moves: moves.map(({ token, x, y, waypoints }) => ({
+        tokenId: token.id,
+        revision: token.revision,
+        x: Number(x),
+        y: Number(y),
+        waypoints,
+      })),
     });
   },
   requestTokenMovement(context, { token, x, y, waypoints = [] }) {

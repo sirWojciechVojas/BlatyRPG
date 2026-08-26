@@ -60,6 +60,21 @@ export const tableTokenMethods = {
     }
     if (!sent) this.updateToken({ token, changes: { x, y, waypoints } });
   },
+  async moveTokenGroup({ moves = [] }) {
+    let sent = false;
+    try {
+      sent = await this.$store.dispatch("realtime/moveTokenGroup", { moves });
+    } catch (_error) {
+      sent = false;
+    }
+    if (!sent) {
+      this.$store.commit("vtt/SHOW_NOTICE", {
+        code: "token_group_realtime_required",
+        status: 0,
+        network: true,
+      });
+    }
+  },
   async requestTokenMovement({ token, position, waypoints = [] }) {
     const sent = await this.$store.dispatch("realtime/requestTokenMovement", {
       token,
@@ -69,12 +84,19 @@ export const tableTokenMethods = {
     });
     if (sent) this.selectUtility("notifications");
   },
-  blockDepletedTokenMovement() {
+  blockDepletedTokenMovement(payload) {
+    const group = payload?.group === true;
+    const names = group
+      ? (payload.tokens || [])
+          .map(({ name }) => name)
+          .filter(Boolean)
+          .join(", ")
+      : "";
     this.$store.commit("vtt/SHOW_NOTICE", {
-      code: "movement_points_depleted",
+      code: group ? "movement_group_blocked" : "movement_points_depleted",
       status: 422,
       network: false,
-      details: null,
+      details: group ? { names } : null,
     });
   },
   dismissSceneNotice() {

@@ -107,4 +107,37 @@ describe("tableTokenMethods resources", () => {
     tableTokenMethods.dismissSceneNotice.call(vm);
     expect(commit).toHaveBeenLastCalledWith("vtt/CLEAR_ERROR");
   });
+
+  it("sends the complete group through one realtime action", async () => {
+    const dispatch = vi.fn().mockResolvedValue(true);
+    const moves = [
+      { token: { id: 1 }, x: 100, y: 0 },
+      { token: { id: 2 }, x: 200, y: 0 },
+    ];
+
+    await tableTokenMethods.moveTokenGroup.call(
+      { $store: { dispatch, commit: vi.fn() } },
+      { moves },
+    );
+
+    expect(dispatch).toHaveBeenCalledWith("realtime/moveTokenGroup", {
+      moves,
+    });
+  });
+
+  it("names group members that block an all-or-nothing move", () => {
+    const commit = vi.fn();
+
+    tableTokenMethods.blockDepletedTokenMovement.call(
+      { $store: { commit } },
+      { group: true, tokens: [{ name: "Jürgen" }, { name: "Bruder" }] },
+    );
+
+    expect(commit).toHaveBeenCalledWith("vtt/SHOW_NOTICE", {
+      code: "movement_group_blocked",
+      status: 422,
+      network: false,
+      details: { names: "Jürgen, Bruder" },
+    });
+  });
 });

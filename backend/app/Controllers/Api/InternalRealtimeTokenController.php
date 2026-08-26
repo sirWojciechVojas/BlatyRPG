@@ -7,6 +7,7 @@ use App\Services\Campaign\CampaignException;
 use App\Services\Chat\CampaignChatException;
 use App\Services\Realtime\RealtimePrincipalService;
 use App\Services\Token\SceneTokenService;
+use App\Services\Token\TokenGroupMovementService;
 use App\Services\Token\TokenMovementRequestService;
 use CodeIgniter\API\ResponseTrait;
 
@@ -17,15 +18,18 @@ class InternalRealtimeTokenController extends BaseController
 
     private $principals;
     private $tokens;
+    private $tokenGroups;
     private $movementRequests;
 
     public function __construct(
         ?RealtimePrincipalService $principals = null,
         ?SceneTokenService $tokens = null,
+        ?TokenGroupMovementService $tokenGroups = null,
         ?TokenMovementRequestService $movementRequests = null
     ) {
         $this->principals = $principals ?: new RealtimePrincipalService();
         $this->tokens = $tokens ?: new SceneTokenService();
+        $this->tokenGroups = $tokenGroups ?: new TokenGroupMovementService();
         $this->movementRequests = $movementRequests ?: new TokenMovementRequestService();
     }
 
@@ -83,6 +87,25 @@ class InternalRealtimeTokenController extends BaseController
                     'y' => $payload['y'] ?? null,
                 ],
                 $payload['waypoints'] ?? []
+            ));
+        } catch (CampaignException $exception) {
+            return $this->failure($exception);
+        } catch (CampaignChatException $exception) {
+            return $this->failure($exception);
+        }
+    }
+
+    public function moveGroup($campaignId = null)
+    {
+        try {
+            $id = $this->positiveId($campaignId);
+            $payload = $this->jsonPayload();
+            $this->exactKeys($payload, ['sceneId', 'moves']);
+            return $this->respond($this->tokenGroups->move(
+                $id,
+                $this->positiveId($payload['sceneId'] ?? null),
+                $this->principal($id),
+                $payload['moves'] ?? []
             ));
         } catch (CampaignException $exception) {
             return $this->failure($exception);

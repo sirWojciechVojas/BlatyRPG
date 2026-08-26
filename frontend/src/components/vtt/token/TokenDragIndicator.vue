@@ -58,7 +58,14 @@
       <span v-else>{{ indicator.initials }}</span>
     </div>
     <output :style="labelStyle">
-      {{ $t("vtt.token.dragging", indicator) }}
+      {{
+        $t(
+          indicator.groupCount > 1
+            ? "vtt.token.draggingGroup"
+            : "vtt.token.dragging",
+          indicator,
+        )
+      }}
     </output>
   </div>
 </template>

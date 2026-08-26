@@ -81,6 +81,8 @@
         "conflict": "Scena została zmieniona przez innego użytkownika. Odśwież dane.",
         "movementPointsDepletedTitle": "Brak punktów ruchu",
         "movementPointsDepleted": "Ten token wykorzystał dostępne PR. Nowe punkty ruchu przydziela lub resetuje MG.",
+        "movementGroupBlockedTitle": "Ruch grupy zablokowany",
+        "movementGroupBlocked": "Nie można przesunąć całej grupy. Brak PR, kontroli lub możliwości ruchu: {names}.",
         "generic": "Nie udało się wykonać operacji na scenie.",
         "validation": "Popraw pola: {fields}."
       }
@@ -88,6 +90,7 @@
     "token": {
       "dragActor": "Przeciągnij postać na mapę, aby utworzyć token",
       "dragging": "Przesuwasz: {name} · {distance} · {movement}",
+      "draggingGroup": "Przesuwasz grupę ({groupCount}) · {distance} · {movement}",
       "dropActor": "Upuść token: {name}",
       "rotateLeft": "Obróć w lewo",
       "rotateRight": "Obróć w prawo",

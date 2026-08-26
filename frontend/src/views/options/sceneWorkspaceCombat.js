@@ -6,6 +6,18 @@ export const sceneWorkspaceCombat = {
     errorMessage() {
       return sceneErrorMessage(this.$t, this.state.error);
     },
+    isMovementNotice() {
+      return ["movement_points_depleted", "movement_group_blocked"].includes(
+        this.state.error?.code,
+      );
+    },
+    movementNoticeTitle() {
+      const key =
+        this.state.error?.code === "movement_group_blocked"
+          ? "movementGroupBlockedTitle"
+          : "movementPointsDepletedTitle";
+      return this.$t(`vtt.scene.errors.${key}`);
+    },
     selectedSceneCombat() {
       return (
         this.$store.getters["vtt/selectedSceneCombat"] ||

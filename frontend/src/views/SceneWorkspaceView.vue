@@ -50,8 +50,7 @@
           v-if="state.error"
           class="scene-workspace__notice"
           :class="{
-            'scene-workspace__notice--movement':
-              state.error?.code === 'movement_points_depleted',
+            'scene-workspace__notice--movement': isMovementNotice,
           }"
           role="alert"
         >
@@ -62,13 +61,13 @@
             </svg>
           </span>
           <span class="scene-workspace__notice-copy">
-            <strong v-if="state.error?.code === 'movement_points_depleted'">
-              {{ $t("vtt.scene.errors.movementPointsDepletedTitle") }}
+            <strong v-if="isMovementNotice">
+              {{ movementNoticeTitle }}
             </strong>
             <span>{{ errorMessage }}</span>
           </span>
           <button
-            v-if="state.error?.code === 'movement_points_depleted'"
+            v-if="isMovementNotice"
             type="button"
             class="scene-button"
             @click="dismissSceneNotice"
@@ -126,6 +125,7 @@
           @camera-change="zoomPercent = $event.zoomPercent"
           @token-select="selectToken"
           @token-move="moveToken"
+          @token-move-group="moveTokenGroup"
           @token-movement-depleted="blockDepletedTokenMovement"
           @token-movement-limit="requestTokenMovement"
           @token-update="updateToken"

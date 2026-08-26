@@ -95,6 +95,51 @@ test("broadcasts committed rotation and facing through token.updated", async () 
   assert.equal(ack.payload.requestId, "token-change-1");
 });
 
+test("broadcasts an authoritative group in one synchronized event", async () => {
+  let received;
+  const setup = await startTestServer({}, {
+    tokenBackend: {
+      moveGroup: async (_session, payload) => {
+        received = payload;
+        return {
+          items: [
+            {
+              token: { id: 9, sceneId: 4, name: "A", x: 100, y: 0, revision: 4 },
+              publishToPlayers: true,
+            },
+            {
+              token: { id: 10, sceneId: 4, name: "B", x: 300, y: 0, revision: 8 },
+              publishToPlayers: true,
+            },
+          ],
+        };
+      },
+    },
+  });
+  running.push(setup);
+  const sender = await connect(setup.url, 1, "client-instance-0001");
+  const recipient = await connect(setup.url, 2, "client-instance-0002");
+
+  sender.send({
+    v: 1,
+    type: "token.move.group",
+    requestId: "group-1",
+    sceneId: 4,
+    moves: [
+      { tokenId: 9, revision: 3, x: 100, y: 0, waypoints: [] },
+      { tokenId: 10, revision: 7, x: 300, y: 0, waypoints: [] },
+    ],
+  });
+  const [updated, ack] = await Promise.all([
+    recipient.event("token.group.updated"),
+    sender.event("token.group.ack"),
+  ]);
+
+  assert.equal(received.moves.length, 2);
+  assert.deepEqual(updated.payload.tokens.map(({ id }) => id), [9, 10]);
+  assert.deepEqual(ack.payload.tokenIds, [9, 10]);
+});
+
 test("does not leak hidden-scene movement to regular campaign members", async () => {
   const setup = await startTestServer({}, {
     tokenBackend: {

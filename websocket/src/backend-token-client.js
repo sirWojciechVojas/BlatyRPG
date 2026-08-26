@@ -119,6 +119,22 @@ export class BackendTokenClient {
     };
   }
 
+  async moveGroup(session, payload) {
+    const result = await this.post(session, "tokens/move-group", {
+      sceneId: payload.sceneId,
+      moves: payload.moves,
+    });
+    if (!Array.isArray(result?.items) || result.items.length < 2) {
+      throw new BackendTokenError("backend_response_invalid", 502);
+    }
+    return {
+      items: result.items.map((item) => ({
+        token: normalizeBackendToken(item?.token),
+        publishToPlayers: item?.visibility?.publishToPlayers === true,
+      })),
+    };
+  }
+
   async change(session, payload) {
     const result = await this.post(session, "tokens/change", {
       sceneId: payload.sceneId,

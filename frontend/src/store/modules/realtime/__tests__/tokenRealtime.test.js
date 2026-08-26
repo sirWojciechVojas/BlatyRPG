@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import {
   tokenChangeMessage,
+  tokenMoveGroupMessage,
   tokenMoveMessage,
   tokenMovementRequestMessage,
   tokenMovementResolveMessage,
@@ -54,6 +55,28 @@ describe("realtime token synchronization", () => {
     });
   });
 
+  it("builds one bounded message for an atomic token group move", () => {
+    expect(
+      tokenMoveGroupMessage({
+        requestId: "group-1",
+        sceneId: 4,
+        moves: [
+          { tokenId: 9, revision: 3, x: 100, y: 200 },
+          { tokenId: 10, revision: 7, x: 300, y: 400 },
+        ],
+      }),
+    ).toEqual({
+      v: 1,
+      type: "token.move.group",
+      requestId: "group-1",
+      sceneId: 4,
+      moves: [
+        { tokenId: 9, revision: 3, x: 100, y: 200, waypoints: [] },
+        { tokenId: 10, revision: 7, x: 300, y: 400, waypoints: [] },
+      ],
+    });
+  });
+
   it("applies only the authoritative token returned by the server", () => {
     const context = {
       rootState: { vtt: {} },
@@ -69,6 +92,30 @@ describe("realtime token synchronization", () => {
     expect(context.commit).toHaveBeenCalledWith(
       "vtt/UPSERT_TOKEN",
       expect.objectContaining({ id: 9, sceneId: 4, x: 30, revision: 4 }),
+      { root: true },
+    );
+  });
+
+  it("applies all authoritative group tokens in one routed event", () => {
+    const context = {
+      rootState: { vtt: {} },
+      commit: vi.fn(),
+      dispatch: vi.fn(),
+    };
+    routeRealtimeTokenEvent(context, {
+      type: "token.group.updated",
+      payload: {
+        tokens: [
+          { id: 9, sceneId: 4, x: 100, y: 200, revision: 4 },
+          { id: 10, sceneId: 4, x: 300, y: 400, revision: 8 },
+        ],
+      },
+    });
+
+    expect(context.commit).toHaveBeenCalledTimes(2);
+    expect(context.commit).toHaveBeenLastCalledWith(
+      "vtt/UPSERT_TOKEN",
+      expect.objectContaining({ id: 10, x: 300, revision: 8 }),
       { root: true },
     );
   });

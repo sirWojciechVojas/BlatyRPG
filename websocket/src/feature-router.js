@@ -3,8 +3,14 @@ export const routeRealtimeFeature = (handlers, session, message) => {
     handlers.chat.handle(session, message);
     return true;
   }
-  if (message.type === "token.move" || message.type === "token.change") {
-    handlers.tokens.handle(session, message);
+  if (
+    ["token.move", "token.move.group", "token.change"].includes(message.type)
+  ) {
+    if (message.type === "token.move.group") {
+      handlers.tokens.handleGroup(session, message);
+    } else {
+      handlers.tokens.handle(session, message);
+    }
     return true;
   }
   if (message.type === "token.movement.request") {

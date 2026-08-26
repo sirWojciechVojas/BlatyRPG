@@ -89,23 +89,73 @@ export const createTokenHandler = ({ backend, rooms, onAuthenticationFailure }) 
     );
   };
 
-  const handle = (session, request) => {
-    const key = `${session.campaignId}:${request.tokenId}`;
-    const previous = writes.get(key) || Promise.resolve();
-    const current = previous
-      .catch(() => {})
-      .then(() =>
-        request.type === "token.change"
-          ? backend.change(session, request)
-          : backend.move(session, request),
-      )
-      .then((result) => publish(session, request, result));
-    writes.set(key, current);
+  const publishGroup = (session, request, result) => {
+    const sequence = rooms.nextSequence(session.campaignId);
+    const marker = createServerEvent({
+      type: "sync.marker",
+      campaignId: session.campaignId,
+      sequence,
+      actorUserId: null,
+      payload: {},
+    });
+    for (const recipient of rooms.sessions(session.campaignId)) {
+      const visible = result.items.filter(
+        (item) => recipient.id === session.id || canReceiveToken(recipient, item),
+      );
+      sendEvent(
+        recipient.ws,
+        visible.length
+          ? eventFor(
+              session,
+              "token.group.updated",
+              { tokens: visible.map(({ token }) => token) },
+              sequence,
+            )
+          : marker,
+      );
+    }
+    sendEvent(
+      session.ws,
+      eventFor(session, "token.group.ack", {
+        requestId: request.requestId,
+        tokenIds: result.items.map(({ token }) => token.id),
+      }),
+    );
+  };
+
+  const enqueue = (keys, task) => {
+    const previous = Promise.all(
+      keys.map((key) => writes.get(key)?.catch(() => {}) || Promise.resolve()),
+    );
+    const current = previous.then(task);
+    keys.forEach((key) => writes.set(key, current));
     const cleanup = () => {
-      if (writes.get(key) === current) writes.delete(key);
+      keys.forEach((key) => {
+        if (writes.get(key) === current) writes.delete(key);
+      });
     };
     current.then(cleanup, cleanup);
-    current.catch((cause) => failure(session, request, cause));
+    return current;
+  };
+
+  const handle = (session, request) => {
+    const key = `${session.campaignId}:${request.tokenId}`;
+    enqueue([key], () =>
+      request.type === "token.change"
+        ? backend.change(session, request)
+        : backend.move(session, request),
+    )
+      .then((result) => publish(session, request, result))
+      .catch((cause) => failure(session, request, cause));
+  };
+
+  const handleGroup = (session, request) => {
+    const keys = request.moves.map(
+      ({ tokenId }) => `${session.campaignId}:${tokenId}`,
+    );
+    enqueue(keys, () => backend.moveGroup(session, request))
+      .then((result) => publishGroup(session, request, result))
+      .catch((cause) => failure(session, request, cause));
   };
 
   const publishMovement = (session, type, payload, allowed) => {
@@ -177,5 +227,5 @@ export const createTokenHandler = ({ backend, rooms, onAuthenticationFailure }) 
       .catch((cause) => movementFailure(session, request, cause));
   };
 
-  return { handle, requestMovement, resolveMovement };
+  return { handle, handleGroup, requestMovement, resolveMovement };
 };

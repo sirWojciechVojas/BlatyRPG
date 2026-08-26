@@ -60,6 +60,41 @@ test("fails closed on malformed committed tokens", async () => {
   );
 });
 
+test("forwards an atomic token group move to one backend endpoint", async () => {
+  let call;
+  const committed = [
+    { id: 9, sceneId: 4, name: "A", x: 100, y: 200, revision: 4 },
+    { id: 10, sceneId: 4, name: "B", x: 300, y: 400, revision: 8 },
+  ];
+  const client = new BackendTokenClient(testConfig(), {
+    fetch: async (url, options) => {
+      call = { url, body: JSON.parse(options.body) };
+      return new Response(
+        JSON.stringify({
+          items: committed.map((token) => ({
+            token,
+            visibility: { publishToPlayers: true },
+          })),
+        }),
+        { status: 200 },
+      );
+    },
+  });
+  const moves = [
+    { tokenId: 9, revision: 3, x: 100, y: 200, waypoints: [] },
+    { tokenId: 10, revision: 7, x: 300, y: 400, waypoints: [] },
+  ];
+
+  const result = await client.moveGroup(session, { sceneId: 4, moves });
+
+  assert.match(call.url, /campaigns\/7\/tokens\/move-group$/);
+  assert.deepEqual(call.body, { sceneId: 4, moves });
+  assert.deepEqual(
+    result.items.map(({ token }) => token.id),
+    [9, 10],
+  );
+});
+
 test("forwards angle changes through the authoritative token endpoint", async () => {
   let call;
   const client = new BackendTokenClient(testConfig(), {
