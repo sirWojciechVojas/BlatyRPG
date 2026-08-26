@@ -150,6 +150,20 @@
         "previewHint": "Unsaved token appearance on the scene grid.",
         "previewActive": "Active",
         "previewInactive": "Inactive",
+        "transfer": {
+          "title": "Copy / paste settings",
+          "copy": "Copy",
+          "paste": "Paste",
+          "apply": "Apply",
+          "placeholder": "Paste a token settings package here…",
+          "idle": "Transfers settings without name, image, position or spent MP.",
+          "copied": "Settings copied to the clipboard.",
+          "pasted": "Settings pasted. Click Apply, then Save.",
+          "applied": "Settings applied to the preview. Save to confirm.",
+          "manualCopy": "Clipboard is unavailable — copy the selected text manually.",
+          "manualPaste": "Clipboard is unavailable — paste the text manually.",
+          "error": "Invalid or unsupported settings format."
+        },
         "tabs": {
           "general": "General",
           "movement": "Movement",

@@ -150,6 +150,20 @@
         "previewHint": "Niezapisany wygląd tokena na siatce sceny.",
         "previewActive": "Aktywny",
         "previewInactive": "Nieaktywny",
+        "transfer": {
+          "title": "Kopiuj / wklej ustawienia",
+          "copy": "Kopiuj",
+          "paste": "Wklej",
+          "apply": "Zastosuj",
+          "placeholder": "Wklej tutaj paczkę ustawień tokena…",
+          "idle": "Przenoszone są ustawienia bez nazwy, grafiki, pozycji i wydanych PR.",
+          "copied": "Ustawienia skopiowane do schowka.",
+          "pasted": "Ustawienia wklejone. Kliknij Zastosuj, a następnie Zapisz.",
+          "applied": "Ustawienia zastosowane do podglądu. Zapisz, aby je zatwierdzić.",
+          "manualCopy": "Schowek jest niedostępny — skopiuj zaznaczony tekst ręcznie.",
+          "manualPaste": "Schowek jest niedostępny — wklej tekst ręcznie.",
+          "error": "Nieprawidłowy lub nieobsługiwany format ustawień."
+        },
         "tabs": {
           "general": "Podstawowe",
           "movement": "Ruch",

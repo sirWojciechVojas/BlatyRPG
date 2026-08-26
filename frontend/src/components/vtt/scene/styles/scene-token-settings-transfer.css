@@ -1,0 +1,65 @@
+.token-settings-transfer {
+  position: relative;
+  margin-left: auto;
+  color: #cdbb9f;
+  font-size: 9px;
+}
+
+.token-settings-transfer summary {
+  min-height: 27px;
+  padding: 6px 9px;
+  cursor: pointer;
+  list-style: none;
+  border: 1px solid #59412c;
+  border-radius: 3px 3px 0 0;
+}
+
+.token-settings-transfer[open] {
+  position: absolute;
+  z-index: 3;
+  top: 39px;
+  right: 7px;
+  display: grid;
+  width: min(390px, calc(100vw - 44px));
+  padding: 6px;
+  gap: 5px;
+  background: #1b120d;
+  border: 1px solid #6b4d31;
+  box-shadow: 0 8px 22px rgb(0 0 0 / 62%);
+}
+
+.token-settings-transfer[open] summary {
+  display: none;
+}
+
+.token-settings-transfer__actions {
+  display: flex;
+  gap: 4px;
+}
+
+.token-settings-panel__tabs .token-settings-transfer__actions button {
+  min-height: 26px;
+  padding: 3px 7px;
+  color: #ead8bc;
+  background: #302217;
+  border: 1px solid #684c31;
+}
+
+.token-settings-transfer textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: 120px;
+  resize: vertical;
+  color: #d8c9b1;
+  background: #0d0907;
+  border: 1px solid #503923;
+  font: 8px/1.35 monospace;
+}
+
+.token-settings-transfer small {
+  color: #ae9a7d;
+}
+
+.token-settings-transfer small.error {
+  color: #ff927e;
+}

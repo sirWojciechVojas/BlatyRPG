@@ -44,6 +44,11 @@
         >
           {{ $t(`vtt.token.settings.tabs.${tab}`) }}
         </button>
+        <TokenSettingsTransfer
+          v-if="canManage"
+          :draft="draft"
+          @apply="applyTransfer"
+        />
       </nav>
 
       <div class="token-settings-panel__workspace">
@@ -135,6 +140,7 @@ import TokenMovementSettings from "./TokenMovementSettings.vue";
 import TokenPermissionField from "./TokenPermissionField.vue";
 import TokenResourceSettings from "./TokenResourceSettings.vue";
 import TokenSettingsPreview from "./TokenSettingsPreview.vue";
+import TokenSettingsTransfer from "./TokenSettingsTransfer.vue";
 import {
   createTokenSettingsDraft,
   tokenSettingsPayload,
@@ -149,6 +155,7 @@ export default {
     TokenPermissionField,
     TokenResourceSettings,
     TokenSettingsPreview,
+    TokenSettingsTransfer,
   },
   props: {
     token: { type: Object, required: true },
@@ -233,6 +240,10 @@ export default {
         "save",
         tokenSettingsPayload(this.draft, this.gridSize, this.canManage),
       );
+    },
+    applyTransfer(draft) {
+      this.draft = draft;
+      this.activeTab = "general";
     },
   },
 };
