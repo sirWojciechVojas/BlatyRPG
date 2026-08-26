@@ -20,7 +20,11 @@ test("validates light changes without accepting client campaign scope", () => {
       gradualIllumination: true,
       darknessMin: 0.2,
       darknessMax: 0.9,
-      sourceType: "darkness",
+      sourceType: "directional",
+      name: "Gate lantern",
+      lumens: 1200,
+      direction: 90,
+      angle: 70,
       providesVision: false,
       constrainedByWalls: true,
       animation: "vortex",
@@ -74,6 +78,10 @@ test("rejects invalid advanced light ranges", () => {
       changes: { darknessMin: 0.8, darknessMax: 0.2 },
     }),
     (error) => error.code === "light_darkness_range_invalid",
+  );
+  assert.throws(
+    () => parseAuthenticatedMessage({ ...base, changes: { lumens: 1000001 } }),
+    (error) => error.code === "light_lumens_invalid",
   );
   assert.throws(
     () => parseAuthenticatedMessage({ ...base, changes: { animation: "rainbow" } }),

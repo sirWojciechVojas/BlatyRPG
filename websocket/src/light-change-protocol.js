@@ -10,6 +10,11 @@ const booleans = [
 ];
 
 const ranges = {
+  lumens: [0, 1000000],
+  direction: [0, 360],
+  angle: [1, 360],
+  areaWidth: [1, 100000],
+  areaHeight: [1, 100000],
   brightRadius: [0, 100000],
   dimRadius: [0, 100000],
   intensity: [0, 1],
@@ -35,6 +40,7 @@ export const lightChanges = (value, operation) => {
     "x",
     "y",
     "color",
+    "name",
     "sourceType",
     "animation",
     "elevation",
@@ -65,7 +71,12 @@ export const lightChanges = (value, operation) => {
     }
     changes[field] = value[field];
   }
-  enumeration(value, "sourceType", ["light", "darkness"], changes);
+  enumeration(
+    value,
+    "sourceType",
+    ["light", "omni", "directional", "cone", "area", "darkness"],
+    changes,
+  );
   enumeration(value, "animation", ["none", "flicker", "pulse", "vortex"], changes);
   if (value.color !== undefined) {
     const color = String(value.color).toUpperCase();
@@ -73,6 +84,11 @@ export const lightChanges = (value, operation) => {
       throw new ProtocolError("light_color_invalid");
     }
     changes.color = color;
+  }
+  if (value.name !== undefined) {
+    const name = String(value.name).trim();
+    if (!name || name.length > 100) throw new ProtocolError("light_name_invalid");
+    changes.name = name;
   }
   if (operation === "create" && !["x", "y"].every((key) => key in changes)) {
     throw new ProtocolError("light_geometry_required");

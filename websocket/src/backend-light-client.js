@@ -36,7 +36,12 @@ const light = (value) => {
     0,
     100000,
   );
-  const intensity = finiteNumber(value?.intensity, 0, 1);
+  const intensity = finiteNumber(value?.intensity ?? 1, 0, 1);
+  const lumens = finiteNumber(value?.lumens ?? intensity * 800, 0, 1000000);
+  const direction = finiteNumber(value?.direction ?? 0, 0, 360);
+  const angle = finiteNumber(value?.angle ?? 90, 1, 360);
+  const areaWidth = finiteNumber(value?.areaWidth ?? value?.area_width ?? 400, 1, 100000);
+  const areaHeight = finiteNumber(value?.areaHeight ?? value?.area_height ?? 400, 1, 100000);
   const opacity = finiteNumber(value?.opacity ?? 1, 0, 1);
   const softness = finiteNumber(value?.softness ?? 0.5, 0, 1);
   const darknessMin = finiteNumber(value?.darknessMin ?? value?.darkness_min ?? 0, 0, 1);
@@ -49,7 +54,9 @@ const light = (value) => {
   );
   const elevation = finiteNumber(value?.elevation ?? 0);
   const color = String(value?.color || "").toUpperCase();
-  const sourceType = String(value?.sourceType ?? value?.source_type ?? "light");
+  const legacyType = String(value?.sourceType ?? value?.source_type ?? "omni");
+  const sourceType = legacyType === "light" ? "omni" : legacyType;
+  const name = String(value?.name || "Light").trim();
   const animation = String(value?.animation || "none");
   if (
     !id ||
@@ -60,6 +67,12 @@ const light = (value) => {
     brightRadius === null ||
     dimRadius === null ||
     intensity === null ||
+    lumens === null ||
+    direction === null ||
+    angle === null ||
+    areaWidth === null ||
+    areaHeight === null ||
+    !name ||
     opacity === null ||
     softness === null ||
     darknessMin === null ||
@@ -69,7 +82,7 @@ const light = (value) => {
     animationIntensity === null ||
     elevation === null ||
     brightRadius > dimRadius ||
-    !["light", "darkness"].includes(sourceType) ||
+    !["omni", "directional", "cone", "area", "darkness"].includes(sourceType) ||
     !["none", "flicker", "pulse", "vortex"].includes(animation) ||
     !/^#[0-9A-F]{6}(?:[0-9A-F]{2})?$/.test(color)
   ) {
@@ -81,6 +94,12 @@ const light = (value) => {
     sceneId,
     x,
     y,
+    name,
+    lumens,
+    direction,
+    angle,
+    areaWidth,
+    areaHeight,
     brightRadius,
     dimRadius,
     color,
@@ -111,16 +130,25 @@ const scene = (value) => {
     0,
     1,
   );
-  if (!id || !revision || darknessLevel === null) {
+  const legacyGlobal =
+    value?.globalIllumination === true || value?.global_illumination === true;
+  const globalLightLevel = finiteNumber(
+    value?.globalLightLevel ??
+      value?.global_light_level ??
+      (darknessLevel === null ? null : 1 - darknessLevel * (legacyGlobal ? 0.18 : 1)),
+    0,
+    1,
+  );
+  if (!id || !revision || globalLightLevel === null) {
     throw new BackendLightError("backend_response_invalid", 502);
   }
   return {
     ...value,
     id,
     revision,
-    darknessLevel,
-    globalIllumination:
-      value.globalIllumination === true || value.global_illumination === true,
+    globalLightLevel,
+    darknessLevel: 1 - globalLightLevel,
+    globalIllumination: legacyGlobal,
     fogExploration:
       value.fogExploration !== false && value.fog_exploration !== false,
     isVisible: value.isVisible !== false && value.is_visible !== false,

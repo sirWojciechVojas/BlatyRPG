@@ -35,7 +35,7 @@ const request = {
   sceneId: 4,
   lightId: 8,
   revision: 1,
-  changes: { intensity: 0.5 },
+  changes: { lumens: 500 },
 };
 
 test("broadcasts committed light effects to every campaign session", async () => {
@@ -54,6 +54,7 @@ test("broadcasts committed light effects to every campaign session", async () =>
             dimRadius: 400,
             color: "#FFD27A",
             intensity: 0.5,
+            lumens: 500,
             enabled: true,
             hidden: false,
             revision: 2,
@@ -77,10 +78,10 @@ test("broadcasts committed light effects to every campaign session", async () =>
   ]);
   assert.equal(updated.payload.light.revision, 2);
   assert.equal(ack.payload.requestId, request.requestId);
-  assert.equal(regularUpdate.payload.light.intensity, 0.5);
+  assert.equal(regularUpdate.payload.light.lumens, 500);
 });
 
-test("broadcasts the authoritative scene Darkness snapshot", async () => {
+test("broadcasts the authoritative global illumination snapshot", async () => {
   const setup = await startTestServer(
     {},
     {
@@ -90,8 +91,7 @@ test("broadcasts the authoritative scene Darkness snapshot", async () => {
           scene: {
             id: 4,
             name: "Crypt",
-            darknessLevel: 0.8,
-            globalIllumination: false,
+            globalLightLevel: 0.2,
             fogExploration: true,
             revision: 3,
           },
@@ -114,6 +114,6 @@ test("broadcasts the authoritative scene Darkness snapshot", async () => {
     regular.event("scene.updated"),
     sender.event("light.ack"),
   ]);
-  assert.equal(updated.payload.scene.darknessLevel, 0.8);
+  assert.equal(updated.payload.scene.globalLightLevel, 0.2);
   assert.equal(ack.payload.revision, 3);
 });

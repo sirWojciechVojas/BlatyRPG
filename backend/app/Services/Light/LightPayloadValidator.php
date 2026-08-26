@@ -58,6 +58,7 @@ final class LightPayloadValidator
                 );
                 if ($field === 'lumens' && isset($data[$db])) {
                     $data[$db] = (int) round($data[$db]);
+                    $data['intensity'] = min(1, $data[$db] / 800);
                 }
             }
         }
@@ -104,7 +105,8 @@ final class LightPayloadValidator
             if (!array_key_exists($field, $payload)) continue;
             $value = strtolower(trim((string) $payload[$field]));
             if (!in_array($value, $allowedValues, true)) $errors[$field] = 'Value is invalid.';
-            else $data[$db] = $value;
+            else $data[$db] = $field === 'sourceType' && $value === 'light'
+                ? 'omni' : $value;
         }
         if (!$partial) {
             $data += [

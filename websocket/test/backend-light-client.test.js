@@ -58,6 +58,7 @@ test("forwards light writes using authoritative session scope", async () => {
     changes: { enabled: false },
   });
   assert.equal(result.light.revision, 2);
+  assert.equal(result.light.lumens, 640);
 });
 
 test("fails closed on malformed committed lights", async () => {
@@ -104,7 +105,8 @@ test("reads an authoritative scene lighting snapshot", async () => {
       darkness_level: 0.8,
       global_illumination: true,
       fog_exploration: false,
-      darknessLevel: 0.8,
+      globalLightLevel: 0.856,
+      darknessLevel: 0.14400000000000002,
       globalIllumination: true,
       fogExploration: false,
       isVisible: true,
