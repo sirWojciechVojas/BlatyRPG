@@ -69,7 +69,9 @@ describe("authoritative light writes", () => {
       },
     };
 
-    await tableLightMethods.updateGlobalLight.call(component, 0.65);
+    await tableLightMethods.updateLight.call(component, {
+      globalLightLevel: 0.65,
+    });
 
     expect(dispatch).toHaveBeenCalledWith("vtt/updateSelectedScene", {
       globalLightLevel: 0.65,

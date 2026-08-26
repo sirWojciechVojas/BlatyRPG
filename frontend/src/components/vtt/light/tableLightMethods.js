@@ -83,7 +83,10 @@ export const tableLightMethods = {
       return true;
     });
   },
-  updateLight({ light, changes, onSuccess, onError }) {
+  updateLight({ light, changes, onSuccess, onError, globalLightLevel }) {
+    if (globalLightLevel !== undefined) {
+      return tableLightMethods.updateGlobalLight.call(this, globalLightLevel);
+    }
     const key = `${light.sceneId}:${light.id}`;
     return perform(this, key, () => realtimeUpdate(this, light, changes), {
       onSuccess,

@@ -108,7 +108,7 @@
       @add="addDefault"
       @copy="copySelected"
       @update="updateSelected"
-      @global-update="$emit('global-update', $event)"
+      @global-update="$emit('update', { globalLightLevel: $event })"
       @source-type="setSourceType"
       @edit="openProperties"
       @toggle-list="listOpen = !listOpen"
@@ -123,7 +123,7 @@
       @select="$emit('select', $event)"
       @add="addDefault"
       @update="$emit('update', $event)"
-      @global-update="$emit('global-update', $event)"
+      @global-update="$emit('update', { globalLightLevel: $event })"
       @edit="editLight"
       @copy="copyLight"
       @delete="$emit('delete', $event)"
@@ -190,7 +190,7 @@ export default {
     canManage: { type: Boolean, default: false },
     busy: { type: Boolean, default: false },
   },
-  emits: ["select", "create", "update", "global-update", "delete"],
+  emits: ["select", "create", "update", "delete"],
   data() {
     return {
       uid: getCurrentInstance().uid,
