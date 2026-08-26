@@ -30,4 +30,17 @@ describe("light layer click interaction", () => {
     expect(cancel).toHaveBeenCalledWith(event);
     expect(context.contextMenu).toBeUndefined();
   });
+
+  it("finishes a draft when the second click lands on another light", () => {
+    const finishCreate = vi.fn();
+    const context = {
+      busy: false,
+      drag: { type: "create" },
+      finishCreate,
+    };
+    const event = { button: 0 };
+
+    lightLayerEditorMethods.startMove.call(context, event, { id: 8 });
+    expect(finishCreate).toHaveBeenCalledWith(event);
+  });
 });

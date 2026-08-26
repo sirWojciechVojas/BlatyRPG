@@ -28,6 +28,10 @@ export const lightLayerEditorMethods = {
   },
   startMove(event, light) {
     if (this.busy || event.button !== 0) return;
+    if (this.drag?.type === "create") {
+      this.finishCreate(event);
+      return;
+    }
     this.$emit("select", light.id);
     this.drag = { type: "move", pointerId: event.pointerId, light };
     this.preview = { x: light.x, y: light.y };
