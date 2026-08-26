@@ -15,8 +15,19 @@ describe("scene lighting management UI", () => {
     expect(template).toContain("light.lumensShort");
     expect(template).toContain("enabled: !light.enabled");
     expect(template).toContain("$emit('copy', light.id)");
+    expect(template).toContain("globalLightLevel");
+    expect(template).toContain("globalLocked");
+    expect(template.indexOf("light-management__global")).toBeLessThan(
+      template.indexOf('v-for="light in lights"'),
+    );
     expect(template).not.toContain("light.x");
     expect(template).not.toContain("light.y");
+  });
+
+  it("exposes global illumination in the light toolbar", () => {
+    const template = component("LightToolToolbar").template.content;
+    expect(template).toContain("globalLightLevel * 100");
+    expect(template).toContain("'global-update'");
   });
 
   it("shows one grouped settings section at a time", () => {

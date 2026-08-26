@@ -17,6 +17,21 @@
     <button type="button" :disabled="busy" @click="$emit('add')">
       ＋ {{ $t("vtt.light.add") }}
     </button>
+    <label
+      class="light-tool-toolbar__global"
+      :title="$t('vtt.scene.fields.globalLightLevel')"
+    >
+      ☀
+      <input
+        type="number"
+        min="0"
+        max="100"
+        step="5"
+        :value="Math.round(globalLightLevel * 100)"
+        :disabled="busy"
+        @change="$emit('global-update', Number($event.target.value) / 100)"
+      />%
+    </label>
     <button type="button" :disabled="busy || !light" @click="$emit('copy')">
       ⧉ {{ $t("vtt.light.copyShort") }}
     </button>
@@ -71,11 +86,13 @@ export default {
     count: { type: Number, default: 0 },
     listOpen: { type: Boolean, default: true },
     busy: { type: Boolean, default: false },
+    globalLightLevel: { type: Number, default: 0 },
   },
   emits: [
     "add",
     "copy",
     "update",
+    "global-update",
     "source-type",
     "edit",
     "toggle-list",
