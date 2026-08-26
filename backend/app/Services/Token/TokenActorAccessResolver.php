@@ -70,7 +70,7 @@ final class TokenActorAccessResolver
         if (!array_key_exists($id, $this->characters)) {
             $this->characters[$id] = $this->db->table('characters')
                 ->select('id, campaign_id, user_id, visibility_level')
-                ->where('id', $id)->where('deleted_at', null)->get()->getRowArray();
+                ->where('id', $id)->get()->getRowArray();
         }
         return $this->characters[$id] ?: null;
     }
