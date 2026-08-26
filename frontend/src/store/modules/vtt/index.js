@@ -36,7 +36,9 @@ export const createVttModule = (
       "fogExploration",
     ];
     if (scene && lightingFields.some((field) => field in changes)) {
-      context.dispatch("realtime/syncSceneLighting", scene, { root: true });
+      await context.dispatch("realtime/syncSceneLighting", scene, {
+        root: true,
+      });
     }
     return scene;
   };
