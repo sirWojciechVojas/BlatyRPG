@@ -51,15 +51,15 @@
     >
       H
     </button>
-    <label :title="$t('vtt.light.intensity')">
+    <label :title="$t('vtt.light.lumens')">
       <input
-        type="range"
+        type="number"
         min="0"
-        max="1"
-        step="0.1"
-        :value="light.intensity"
+        max="1000000"
+        step="50"
+        :value="light.lumens"
         :disabled="busy"
-        @change="$emit('update', { intensity: Number($event.target.value) })"
+        @change="$emit('update', { lumens: Number($event.target.value) })"
       />
     </label>
     <button

@@ -28,19 +28,23 @@
         @pointerdown="startCreate"
       />
       <g v-for="light in lights" :key="light.id" :class="lightClasses(light)">
-        <circle
+        <path
           v-if="light.id === selectedId"
           class="scene-light__dim"
-          :cx="display(light).x"
-          :cy="display(light).y"
-          :r="light.dimRadius"
+          :d="technicalPath(display(light), false)"
         />
-        <circle
+        <path
           v-if="light.id === selectedId"
           class="scene-light__bright"
-          :cx="display(light).x"
-          :cy="display(light).y"
-          :r="light.brightRadius"
+          :d="technicalPath(display(light), true)"
+        />
+        <line
+          v-if="light.id === selectedId && isDirected(light)"
+          class="scene-light__direction"
+          :x1="display(light).x"
+          :y1="display(light).y"
+          :x2="directionEnd(display(light)).x"
+          :y2="directionEnd(display(light)).y"
         />
         <circle
           v-if="light.id === selectedId"
@@ -60,17 +64,21 @@
         />
       </g>
       <g v-if="creationPreview" class="scene-light scene-light--draft">
-        <circle
+        <path
           class="scene-light__dim"
-          :cx="creationPreview.x"
-          :cy="creationPreview.y"
-          :r="creationPreview.dimRadius"
+          :d="technicalPath(creationPreview, false)"
         />
-        <circle
+        <path
           class="scene-light__bright"
-          :cx="creationPreview.x"
-          :cy="creationPreview.y"
-          :r="creationPreview.brightRadius"
+          :d="technicalPath(creationPreview, true)"
+        />
+        <line
+          v-if="isDirected(creationPreview)"
+          class="scene-light__direction"
+          :x1="creationPreview.x"
+          :y1="creationPreview.y"
+          :x2="directionEnd(creationPreview).x"
+          :y2="directionEnd(creationPreview).y"
         />
         <circle
           class="scene-light__source"
@@ -94,12 +102,14 @@
     <LightToolToolbar
       v-if="canManage && active"
       :light="selectedLight"
+      :source-type="selectedLight?.sourceType || creationType"
       :count="lights.length"
       :list-open="listOpen"
       :busy="busy"
       @add="addDefault"
       @copy="copySelected"
       @update="updateSelected"
+      @source-type="setSourceType"
       @edit="propertiesOpen = true"
       @toggle-list="listOpen = !listOpen"
       @delete="$emit('delete', selectedLight)"
@@ -113,6 +123,7 @@
       @add="addDefault"
       @update="$emit('update', $event)"
       @edit="editLight"
+      @copy="copyLight"
       @delete="$emit('delete', $event)"
     />
     <LightPropertiesPanel
@@ -133,6 +144,8 @@ import LightPropertiesPanel from "./LightPropertiesPanel.vue";
 import LightToolToolbar from "./LightToolToolbar.vue";
 import SceneLightingVisual from "./SceneLightingVisual.vue";
 import { lightLayerEditorMethods } from "./lightLayerEditorMethods";
+import { lightTechnicalPath } from "@/lib/vtt/lightGeometry";
+import { effectiveLight } from "@/lib/vtt/lightPhotometry";
 
 export default {
   name: "SceneLightLayer",
@@ -160,6 +173,7 @@ export default {
       preview: null,
       propertiesOpen: false,
       listOpen: true,
+      creationType: "omni",
     };
   },
   computed: {
@@ -170,7 +184,19 @@ export default {
       return this.lights.find((light) => light.id === this.selectedId) || null;
     },
     creationPreview() {
-      return this.drag?.type === "create" ? this.preview : null;
+      return this.drag?.type === "create"
+        ? {
+            ...this.preview,
+            sourceType: this.creationType,
+            angle: this.defaultAngle(this.creationType),
+            lumens: 800,
+            opacity: 1,
+            softness: 0.5,
+            gradualIllumination: true,
+            constrainedByWalls: true,
+            enabled: true,
+          }
+        : null;
     },
     visualLights() {
       if (this.drag?.type === "move") {
@@ -186,20 +212,14 @@ export default {
           {
             ...this.creationPreview,
             id: "draft",
+            name: this.$t("vtt.light.defaultName"),
             color: "#FFD27A",
-            intensity: 1,
-            opacity: 1,
-            softness: 0.5,
-            gradualIllumination: true,
             darknessMin: 0,
             darknessMax: 1,
-            sourceType: "light",
-            constrainedByWalls: true,
             animation: "none",
             animationSpeed: 1,
             animationIntensity: 0.5,
             elevation: 0,
-            enabled: true,
           },
         ];
       }
@@ -217,6 +237,25 @@ export default {
   },
   methods: {
     ...lightLayerEditorMethods,
+    technicalPath(light, bright) {
+      return lightTechnicalPath(light, this.walls, this.scene, bright);
+    },
+    isDirected(light) {
+      return ["directional", "cone"].includes(light?.sourceType);
+    },
+    defaultAngle(sourceType) {
+      if (sourceType === "cone") return 60;
+      if (sourceType === "directional") return 120;
+      return 360;
+    },
+    directionEnd(light) {
+      const geometry = effectiveLight(light);
+      const radians = ((Number(light.direction) || 0) * Math.PI) / 180;
+      return {
+        x: Number(light.x) + Math.cos(radians) * geometry.dimRadius,
+        y: Number(light.y) + Math.sin(radians) * geometry.dimRadius,
+      };
+    },
   },
 };
 </script>

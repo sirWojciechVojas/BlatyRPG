@@ -12,6 +12,19 @@ describe("light creation interaction", () => {
       y: 20,
       brightRadius: 25,
       dimRadius: 50,
+      direction: 53,
+    });
+  });
+
+  it("derives area geometry and direction from the same drag gesture", () => {
+    expect(
+      lightDraftFromDrag({ x: 100, y: 100 }, { x: 160, y: 140 }, "area"),
+    ).toMatchObject({
+      x: 100,
+      y: 100,
+      direction: 34,
+      areaWidth: 120,
+      areaHeight: 80,
     });
   });
 

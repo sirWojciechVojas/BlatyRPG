@@ -14,7 +14,7 @@ export const lightLayerEditorMethods = {
     const origin = this.point(event);
     this.$emit("select", null);
     this.drag = { type: "create", pointerId: event.pointerId, origin };
-    this.preview = lightDraftFromDrag(origin, origin);
+    this.preview = lightDraftFromDrag(origin, origin, this.creationType);
     this.$refs.editor.focus();
     this.$refs.editor.setPointerCapture?.(event.pointerId);
   },
@@ -31,7 +31,7 @@ export const lightLayerEditorMethods = {
     const point = this.point(event);
     this.preview =
       this.drag.type === "create"
-        ? lightDraftFromDrag(this.drag.origin, point)
+        ? lightDraftFromDrag(this.drag.origin, point, this.creationType)
         : point;
   },
   finish(event) {
@@ -41,7 +41,15 @@ export const lightLayerEditorMethods = {
     const point = this.preview;
     this.cancel(event);
     if (drag.type === "create") {
-      if (validLightDraft(point)) this.$emit("create", point);
+      if (validLightDraft(point)) {
+        this.$emit("create", {
+          ...point,
+          name: `${this.$t("vtt.light.defaultName")} ${this.lights.length + 1}`,
+          sourceType: this.creationType,
+          angle: this.defaultAngle(this.creationType),
+          lumens: 800,
+        });
+      }
       return;
     }
     if (point.x !== drag.light.x || point.y !== drag.light.y) {
@@ -56,7 +64,9 @@ export const lightLayerEditorMethods = {
     this.preview = null;
   },
   display(light) {
-    return this.drag?.light?.id === light.id ? this.preview : light;
+    return this.drag?.light?.id === light.id
+      ? { ...light, ...this.preview }
+      : light;
   },
   lightClasses(light) {
     return [
@@ -69,7 +79,7 @@ export const lightLayerEditorMethods = {
   },
   copySelected() {
     if (!this.selectedLight || this.busy) return;
-    this.$emit("create", lightCopyDraft(this.selectedLight, this.scene));
+    this.copyLight(this.selectedLight.id);
   },
   addDefault() {
     if (this.busy) return;
@@ -79,6 +89,27 @@ export const lightLayerEditorMethods = {
       y: Number(this.scene.height) / 2,
       brightRadius: grid * 2,
       dimRadius: grid * 4,
+      name: `${this.$t("vtt.light.defaultName")} ${this.lights.length + 1}`,
+      sourceType: this.creationType,
+      angle: this.defaultAngle(this.creationType),
+      lumens: 800,
+    });
+  },
+  setSourceType(sourceType) {
+    this.creationType = sourceType;
+    if (this.selectedLight) {
+      this.updateSelected({
+        sourceType,
+        angle: this.defaultAngle(sourceType),
+      });
+    }
+  },
+  copyLight(lightId) {
+    const light = this.lights.find((item) => item.id === lightId);
+    if (!light || this.busy) return;
+    this.$emit("create", {
+      ...lightCopyDraft(light, this.scene),
+      name: `${light.name} ${this.$t("vtt.light.copySuffix")}`,
     });
   },
   updateSelected(changes) {

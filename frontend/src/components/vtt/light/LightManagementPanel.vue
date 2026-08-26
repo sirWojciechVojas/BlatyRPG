@@ -7,73 +7,67 @@
       </button>
     </header>
     <p v-if="!lights.length">{{ $t("vtt.light.empty") }}</p>
-    <ol v-else>
-      <li
-        v-for="(light, index) in lights"
-        :key="light.id"
-        :class="{ selected: light.id === selectedId }"
-      >
-        <button
-          type="button"
-          class="light-management__select"
+    <template v-else>
+      <div class="light-management__head" aria-hidden="true">
+        <span>{{ $t("vtt.light.name") }}</span>
+        <span>{{ $t("vtt.light.sourceType") }}</span>
+        <span>{{ $t("vtt.light.lumensShort") }}</span>
+        <span>{{ $t("vtt.light.colorShort") }}</span>
+        <span>{{ $t("vtt.light.state") }}</span>
+        <span />
+      </div>
+      <ol>
+        <li
+          v-for="light in lights"
+          :key="light.id"
+          :class="{ selected: light.id === selectedId }"
           @click="$emit('select', light.id)"
         >
-          <i :style="{ backgroundColor: light.color }" />
-          <span>#{{ index + 1 }}</span>
-        </button>
-        <select
-          :value="light.sourceType"
-          :title="$t('vtt.light.sourceType')"
-          :disabled="busy"
-          @change="update(light, { sourceType: $event.target.value })"
-        >
-          <option value="light">{{ $t("vtt.light.types.light") }}</option>
-          <option value="darkness">{{ $t("vtt.light.types.darkness") }}</option>
-        </select>
-        <input
-          type="color"
-          :value="light.color.slice(0, 7)"
-          :title="$t('vtt.light.color')"
-          :disabled="busy"
-          @change="update(light, { color: $event.target.value })"
-        />
-        <label>
-          X
-          <input
-            type="number"
-            :value="light.x"
-            :disabled="busy"
-            @change="coordinate(light, 'x', $event.target.value)"
+          <button type="button" class="light-management__name">
+            {{ light.name }}
+          </button>
+          <span class="light-management__type">
+            {{ $t(`vtt.light.types.${light.sourceType}`) }}
+          </span>
+          <strong>{{ Math.round(light.lumens) }} lm</strong>
+          <i
+            class="light-management__swatch"
+            :style="{ backgroundColor: light.color }"
+            :title="light.color"
           />
-        </label>
-        <label>
-          Y
-          <input
-            type="number"
-            :value="light.y"
+          <button
+            type="button"
+            class="light-management__toggle"
+            :class="{ active: light.enabled }"
             :disabled="busy"
-            @change="coordinate(light, 'y', $event.target.value)"
-          />
-        </label>
-        <button
-          type="button"
-          :title="$t('vtt.light.edit')"
-          :disabled="busy"
-          @click="$emit('edit', light.id)"
-        >
-          ⚙
-        </button>
-        <button
-          type="button"
-          class="light-management__danger"
-          :title="$t('vtt.light.delete')"
-          :disabled="busy"
-          @click="$emit('delete', light)"
-        >
-          ×
-        </button>
-      </li>
-    </ol>
+            @click.stop="update(light, { enabled: !light.enabled })"
+          >
+            {{ light.enabled ? "ON" : "OFF" }}
+          </button>
+          <div class="light-management__actions">
+            <button
+              type="button"
+              :title="$t('vtt.light.edit')"
+              :disabled="busy"
+              @click.stop="$emit('edit', light.id)"
+            >⚙</button>
+            <button
+              type="button"
+              :title="$t('vtt.light.copy')"
+              :disabled="busy"
+              @click.stop="$emit('copy', light.id)"
+            >⧉</button>
+            <button
+              type="button"
+              class="light-management__danger"
+              :title="$t('vtt.light.delete')"
+              :disabled="busy"
+              @click.stop="$emit('delete', light)"
+            >×</button>
+          </div>
+        </li>
+      </ol>
+    </template>
   </aside>
 </template>
 
@@ -85,14 +79,10 @@ export default {
     selectedId: { type: [Number, String], default: null },
     busy: { type: Boolean, default: false },
   },
-  emits: ["select", "add", "update", "edit", "delete"],
+  emits: ["select", "add", "update", "edit", "copy", "delete"],
   methods: {
     update(light, changes) {
       this.$emit("update", { light, changes });
-    },
-    coordinate(light, field, value) {
-      const number = Number(value);
-      if (Number.isFinite(number)) this.update(light, { [field]: number });
     },
   },
 };
