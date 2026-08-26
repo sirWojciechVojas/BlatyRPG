@@ -47,7 +47,10 @@ describe("token HUD interactions", () => {
   });
 
   it("shows token information only while selected unless configured otherwise", () => {
-    const context = { tokenStates: { 7: { selected: false } } };
+    const context = {
+      hasMultiSelection: false,
+      tokenStates: { 7: { selected: false } },
+    };
     expect(
       tokenHudMethods.tokenInfoVisible.call(context, {
         id: 7,
@@ -64,5 +67,19 @@ describe("token HUD interactions", () => {
     expect(tokenHudMethods.tokenInfoVisible.call(context, { id: 7 })).toBe(
       true,
     );
+  });
+
+  it("hides token information for every member of a multi-selection", () => {
+    const context = {
+      hasMultiSelection: true,
+      tokenStates: { 7: { selected: true } },
+    };
+
+    expect(
+      tokenHudMethods.tokenInfoVisible.call(context, {
+        id: 7,
+        showInfoUnselected: true,
+      }),
+    ).toBe(false);
   });
 });

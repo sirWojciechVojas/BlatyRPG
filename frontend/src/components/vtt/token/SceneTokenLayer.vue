@@ -61,7 +61,7 @@
       </button>
       <TokenInfoStack v-if="tokenInfoVisible(token)" :token="token" />
       <TokenRotationHandles
-        v-if="tokenStates[token.id].selected"
+        v-if="tokenStates[token.id].selected && !hasMultiSelection"
         :token="displayTokenAngles(token)"
         :disabled="busy"
         :scale="scale"
@@ -83,7 +83,7 @@
         @update="updateTokenResources(token, $event)"
       />
       <TokenHud
-        v-if="token.id === hudTokenId"
+        v-if="token.id === hudTokenId && !hasMultiSelection"
         :token="token"
         :busy="busy"
         :targeted="tokenStates[token.id].targeted"
@@ -190,6 +190,9 @@ export default {
     anglePreview: {},
   }),
   computed: {
+    hasMultiSelection() {
+      return this.effectiveSelectedIds.length > 1;
+    },
     settingsToken() {
       return (
         this.tokens.find((token) => token.id === this.settingsTokenId) || null

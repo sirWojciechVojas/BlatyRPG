@@ -43,6 +43,15 @@ describe("token presentation layout", () => {
     expect(styles).toContain(".scene-token-wrap--hud");
   });
 
+  it("keeps multi-selection free of token information and HUD controls", () => {
+    const layer = template("SceneTokenLayer");
+
+    expect(layer).toContain(
+      "tokenStates[token.id].selected && !hasMultiSelection",
+    );
+    expect(layer).toContain("token.id === hudTokenId && !hasMultiSelection");
+  });
+
   it("shows movement reach without duplicating the movement resource label", () => {
     const range = template("TokenMovementRange");
 

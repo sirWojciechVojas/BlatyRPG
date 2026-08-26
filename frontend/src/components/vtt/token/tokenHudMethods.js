@@ -11,6 +11,12 @@ const anchorRect = (event) => {
 
 export const tokenHudMethods = {
   tokenInfoVisible(token) {
+    if (
+      this.hasMultiSelection === true &&
+      this.tokenStates?.[token.id]?.selected === true
+    ) {
+      return false;
+    }
     return (
       token.showInfoUnselected === true ||
       this.tokenStates?.[token.id]?.selected === true

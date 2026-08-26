@@ -21,10 +21,13 @@ export const tokenLayerWatchers = {
     },
   },
   effectiveSelectedIds(ids) {
-    if (this.hudTokenId && !ids.includes(this.hudTokenId)) {
+    if (this.hudTokenId && (ids.length > 1 || !ids.includes(this.hudTokenId))) {
       this.hudTokenId = null;
     }
-    if (this.settingsTokenId && !ids.includes(this.settingsTokenId)) {
+    if (
+      this.settingsTokenId &&
+      (ids.length > 1 || !ids.includes(this.settingsTokenId))
+    ) {
       this.settingsTokenId = null;
     }
   },
