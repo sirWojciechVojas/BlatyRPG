@@ -39,6 +39,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
     $routes->post('internal/realtime/campaigns/(:num)/tokens/change', 'InternalRealtimeTokenController::change/$1');
     $routes->post('internal/realtime/campaigns/(:num)/tokens/movement-requests', 'InternalRealtimeTokenController::requestMovement/$1');
     $routes->post('internal/realtime/campaigns/(:num)/tokens/movement-requests/(:num)/resolve', 'InternalRealtimeTokenController::resolveMovement/$1/$2');
+    $routes->post('internal/realtime/campaigns/(:num)/combat/commands', 'InternalRealtimeCombatController::command/$1');
     $routes->post('internal/realtime/campaigns/(:num)/walls/change', 'InternalRealtimeWallController::change/$1');
     $routes->post('internal/realtime/campaigns/(:num)/lights/change', 'InternalRealtimeLightController::change/$1');
     $routes->post('internal/realtime/campaigns/(:num)/tiles/change', 'InternalRealtimeTileController::change/$1');
@@ -169,6 +170,8 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->post('campaigns/(:num)/scenes/(:num)/tokens', 'SceneTokenController::create/$1/$2');
         $routes->patch('campaigns/(:num)/scenes/(:num)/tokens/(:num)', 'SceneTokenController::update/$1/$2/$3');
         $routes->delete('campaigns/(:num)/scenes/(:num)/tokens/(:num)', 'SceneTokenController::delete/$1/$2/$3');
+        $routes->get('campaigns/(:num)/scenes/(:num)/combat', 'SceneCombatController::show/$1/$2');
+        $routes->post('campaigns/(:num)/scenes/(:num)/combat/commands', 'SceneCombatController::command/$1/$2');
         $routes->get('campaigns/(:num)/scenes/(:num)/walls', 'SceneWallController::index/$1/$2');
         $routes->post('campaigns/(:num)/scenes/(:num)/walls', 'SceneWallController::create/$1/$2');
         $routes->patch('campaigns/(:num)/scenes/(:num)/walls/(:num)', 'SceneWallController::update/$1/$2/$3');

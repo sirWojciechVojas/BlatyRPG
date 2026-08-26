@@ -16,11 +16,26 @@ final class TokenMovementResetService
     public function resetForAdvance(int $campaignId, string $event, array $tokenIds = []): int
     {
         if (!in_array($event, ['turn', 'round'], true)) return 0;
+        return $this->reset($campaignId, null, $event, $tokenIds);
+    }
+
+    public function resetTokens(int $campaignId, int $sceneId, array $tokenIds = []): int
+    {
+        return $this->reset($campaignId, $sceneId, null, $tokenIds);
+    }
+
+    private function reset(
+        int $campaignId,
+        ?int $sceneId,
+        ?string $event,
+        array $tokenIds
+    ): int {
         $builder = $this->db->table('scene_tokens')
             ->where('campaign_id', $campaignId)
-            ->where('movement_reset_mode', $event)
             ->where('movement_spent >', 0)
             ->where('deleted_at', null);
+        if ($sceneId !== null) $builder->where('scene_id', $sceneId);
+        if ($event !== null) $builder->where('movement_reset_mode', $event);
         $ids = array_values(array_unique(array_filter(array_map('intval', $tokenIds))));
         if ($ids) $builder->whereIn('id', $ids);
         $tokens = $builder->get()->getResultArray();
