@@ -29,21 +29,31 @@
       />
       <g v-for="light in lights" :key="light.id" :class="lightClasses(light)">
         <circle
+          v-if="light.id === selectedId"
+          class="scene-light__dim"
           :cx="display(light).x"
           :cy="display(light).y"
           :r="light.dimRadius"
         />
         <circle
+          v-if="light.id === selectedId"
           class="scene-light__bright"
           :cx="display(light).x"
           :cy="display(light).y"
           :r="light.brightRadius"
         />
         <circle
+          v-if="light.id === selectedId"
           class="scene-light__source"
           :cx="display(light).x"
           :cy="display(light).y"
           r="11"
+        />
+        <circle
+          class="scene-light__hit"
+          :cx="display(light).x"
+          :cy="display(light).y"
+          r="16"
           @pointerdown.stop="startMove($event, light)"
           @click.stop="$emit('select', light.id)"
           @dblclick.stop="propertiesOpen = true"
@@ -51,6 +61,7 @@
       </g>
       <g v-if="creationPreview" class="scene-light scene-light--draft">
         <circle
+          class="scene-light__dim"
           :cx="creationPreview.x"
           :cy="creationPreview.y"
           :r="creationPreview.dimRadius"

@@ -11,9 +11,10 @@
 @keyframes scene-light-pulse { 50% { opacity: var(--light-animation-opacity); transform: scale(var(--light-animation-scale)); } }
 @keyframes scene-light-vortex { 50% { opacity: .9; transform: rotate(180deg) scale(var(--light-animation-scale)); } to { transform: rotate(360deg); } }
 .scene-light-layer__editor { z-index: 1; overflow: visible; pointer-events: auto; cursor: crosshair; }
-.scene-light > circle:first-child { fill: rgb(255 210 122 / 8%); stroke: #e7b64e; stroke-width: 2; stroke-dasharray: 8 5; vector-effect: non-scaling-stroke; }
+.scene-light__dim { fill: rgb(255 210 122 / 8%); stroke: #e7b64e; stroke-width: 2; stroke-dasharray: 8 5; vector-effect: non-scaling-stroke; }
 .scene-light__bright { fill: none; stroke: #fff0a6; stroke-width: 1; stroke-dasharray: 4 3; vector-effect: non-scaling-stroke; }
 .scene-light__source { fill: #ffcf66; stroke: #533a12; stroke-width: 3; vector-effect: non-scaling-stroke; cursor: move; }
+.scene-light__hit { fill: transparent; stroke: none; pointer-events: all; cursor: move; }
 .scene-light--selected .scene-light__source { stroke: #fff; filter: drop-shadow(0 0 4px #ffdb7b); }
 .scene-light--disabled { opacity: 0.38; }
 .light-hud { position: absolute; z-index: 2; display: flex; align-items: center; gap: 2px; padding: 3px; background: rgb(18 13 10 / 96%); border: 1px solid #80613d; border-radius: 4px; box-shadow: 0 4px 14px rgb(0 0 0 / 65%); transform: translate(-50%, calc(-100% - 14px)); pointer-events: auto; }
