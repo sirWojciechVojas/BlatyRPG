@@ -33,6 +33,7 @@ describe("table utilities", () => {
   it("marks only integrated panels as available", () => {
     expect(IMPLEMENTED_TABLE_UTILITIES).toEqual([
       "chat",
+      "combat",
       "graphics",
       "characters",
       "scenario",

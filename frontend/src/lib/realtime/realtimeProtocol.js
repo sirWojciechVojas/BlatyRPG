@@ -74,6 +74,14 @@ export const tokenMovementResolveMessage = (payload) => ({
   decision: String(payload.decision),
 });
 
+export const combatCommandMessage = (payload) => ({
+  v: REALTIME_VERSION,
+  type: "combat.command",
+  requestId: String(payload.requestId),
+  sceneId: Number(payload.sceneId),
+  command: { ...payload.command },
+});
+
 export const sceneElementChangeMessage = (resource, payload) => ({
   v: REALTIME_VERSION,
   type: `${resource}.change`,

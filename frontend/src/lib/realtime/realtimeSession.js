@@ -1,5 +1,6 @@
 import { getClientInstanceId as getInstanceId } from "./clientInstanceId";
 import { createRealtimeChatTransport } from "./realtimeChatTransport";
+import { createRealtimeCombatTransport } from "./realtimeCombatTransport";
 import { createAuthExpiryScheduler } from "./authExpiryScheduler";
 import {
   authMessage,
@@ -287,6 +288,7 @@ export const createRealtimeSession = (options = {}) => {
     retry,
     sendChat: chat.sendMessage,
     ...createRealtimeTokenTransport(() => authenticated, send),
+    ...createRealtimeCombatTransport(() => authenticated, send),
     ...sceneElementTransport(() => authenticated, send),
     syncChat: chat.sync,
     snapshot: () => ({

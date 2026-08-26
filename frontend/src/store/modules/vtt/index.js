@@ -4,6 +4,8 @@ import { wallApiClient } from "@/lib/vtt/wallApiClient";
 import { lightApiClient } from "@/lib/vtt/lightApiClient";
 import { tileApiClient } from "@/lib/vtt/tileApiClient";
 import { tokenMovementRequestApiClient } from "@/lib/vtt/tokenMovementRequestApiClient";
+import { combatApiClient } from "@/lib/vtt/combatApiClient";
+import { createCombatActions } from "./combatActions";
 import { createVttActions } from "./actions";
 import { vttGetters } from "./getters";
 import { vttMutations } from "./mutations";
@@ -18,19 +20,16 @@ export const createVttModule = (
   movementRequests = api === sceneApiClient
     ? tokenMovementRequestApiClient
     : null,
+  combats = api === sceneApiClient ? combatApiClient : null,
 ) => ({
   namespaced: true,
   state: createVttState,
   getters: vttGetters,
   mutations: vttMutations,
-  actions: createVttActions(
-    api,
-    tokens,
-    walls,
-    lights,
-    tiles,
-    movementRequests,
-  ),
+  actions: {
+    ...createVttActions(api, tokens, walls, lights, tiles, movementRequests),
+    ...createCombatActions(combats),
+  },
 });
 
 export default createVttModule();

@@ -23,6 +23,16 @@
     @activate="$emit('activate-scene')"
   />
 
+  <TableCombatPanel
+    v-else-if="panelId === 'combat'"
+    :combat="combat"
+    :tokens="tokens"
+    :can-manage="canManageCombat"
+    :busy="combatBusy"
+    :error="combatError"
+    @command="$emit('combat-command', $event)"
+  />
+
   <TableCharacterPanel
     v-else-if="panelId === 'characters'"
     :campaign-id="campaignId"
@@ -79,6 +89,9 @@ const TableCharacterPanel = defineAsyncComponent(
       /* webpackChunkName: "table-characters" */ "./TableCharacterPanel.vue"
     ),
 );
+const TableCombatPanel = defineAsyncComponent(
+  () => import(/* webpackChunkName: "table-combat" */ "./TableCombatPanel.vue"),
+);
 
 export default {
   name: "TablePanelContent",
@@ -86,6 +99,7 @@ export default {
     CampaignChatPanel,
     SceneManagerPanel,
     TableCharacterPanel,
+    TableCombatPanel,
     TableContextPanel,
     TableMovementRequestsPanel,
     TableShopPanel,
@@ -103,11 +117,16 @@ export default {
     members: { type: Array, default: () => [] },
     invitations: { type: Array, default: () => [] },
     movementRequests: { type: Array, default: () => [] },
+    tokens: { type: Array, default: () => [] },
+    combat: { type: Object, default: null },
+    combatError: { type: Object, default: null },
     realtimeStatus: { type: String, default: "disconnected" },
     canManage: { type: Boolean, default: false },
     canOpenShop: { type: Boolean, default: false },
     canCreateToken: { type: Boolean, default: false },
     canResolveMovement: { type: Boolean, default: false },
+    canManageCombat: { type: Boolean, default: false },
+    combatBusy: { type: Boolean, default: false },
     movementRequestBusy: { type: Boolean, default: false },
     busy: { type: Boolean, default: false },
   },
@@ -121,6 +140,7 @@ export default {
     "character-changed",
     "open-window",
     "resolve-movement-request",
+    "combat-command",
   ],
   computed: {
     selectedScene() {

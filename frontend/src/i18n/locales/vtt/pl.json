@@ -436,6 +436,27 @@
           }
         }
       },
+      "combat": {
+        "kicker": "Tracker walki",
+        "inactive": "Walka nieaktywna",
+        "roundTurn": "Runda {round} · tura {turn}/{count}",
+        "start": "Rozpocznij walkę",
+        "end": "Zakończ",
+        "next": "Następna tura",
+        "initiative": "Inic.",
+        "movementShort": "PR",
+        "remove": "Usuń z walki",
+        "empty": "Brak tokenów w kolejce walki.",
+        "movementKicker": "Zasoby tury",
+        "movementTitle": "Punkty ruchu tokenów",
+        "resetAll": "Resetuj PR wszystkim",
+        "toggleRoster": "Dodaj lub usuń token z walki",
+        "points": "Dostępne",
+        "range": "Limit",
+        "resetMode": "Tryb resetu PR",
+        "assign": "Przydziel",
+        "error": "Stan walki zmienił się lub nie udało się wykonać komendy. Dane zostały odświeżone."
+      },
       "settings": {
         "description": "Ustawienia kampanii oraz Twojego profilu.",
         "table": "Ustawienia Stołu",

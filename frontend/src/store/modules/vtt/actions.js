@@ -70,6 +70,7 @@ export const createVttActions = (
         dispatch("loadLights"),
         dispatch("loadTiles"),
         dispatch("loadMovementRequests"),
+        dispatch("loadCombat"),
       ]);
     } catch (error) {
       if (state.requestId === requestId) failRequest(commit, requestId, error);
@@ -101,6 +102,7 @@ export const createVttActions = (
         dispatch("loadWalls"),
         dispatch("loadLights"),
         dispatch("loadTiles"),
+        dispatch("loadCombat"),
       ]);
     } catch (error) {
       if (state.requestId === requestId) failRequest(commit, requestId, error);

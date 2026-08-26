@@ -436,6 +436,27 @@
           }
         }
       },
+      "combat": {
+        "kicker": "Combat tracker",
+        "inactive": "Combat inactive",
+        "roundTurn": "Round {round} · turn {turn}/{count}",
+        "start": "Start combat",
+        "end": "End",
+        "next": "Next turn",
+        "initiative": "Init.",
+        "movementShort": "MP",
+        "remove": "Remove from combat",
+        "empty": "No tokens in the combat order.",
+        "movementKicker": "Turn resources",
+        "movementTitle": "Token movement points",
+        "resetAll": "Reset MP for all",
+        "toggleRoster": "Add or remove token from combat",
+        "points": "Available",
+        "range": "Range",
+        "resetMode": "MP reset mode",
+        "assign": "Assign",
+        "error": "Combat changed or the command failed. Data has been refreshed."
+      },
       "settings": {
         "description": "Campaign and personal profile settings.",
         "table": "Table settings",

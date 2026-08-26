@@ -31,4 +31,13 @@ describe("TablePanelContent", () => {
     );
     expect(descriptor.template.content).toContain("resolve-movement-request");
   });
+
+  it("opens the real combat tracker instead of a context placeholder", () => {
+    const source = readFileSync(componentPath, "utf8");
+    const { descriptor } = parse(source, { filename: componentPath });
+
+    expect(descriptor.template.content).toContain("panelId === 'combat'");
+    expect(descriptor.template.content).toContain("<TableCombatPanel");
+    expect(descriptor.template.content).toContain("combat-command");
+  });
 });

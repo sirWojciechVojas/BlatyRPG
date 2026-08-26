@@ -19,6 +19,10 @@ import {
   createRealtimeWallActions,
   routeRealtimeWallEvent,
 } from "./wallActions";
+import {
+  createRealtimeCombatActions,
+  routeRealtimeCombatEvent,
+} from "./combatActions";
 
 const defaultRestore = async (context, details) => {
   if (!details.reconnected) return;
@@ -49,6 +53,7 @@ export const createRealtimeActions = (
         }
         routeRealtimeChatEvent(context, ensureSession(context), event);
         routeRealtimeTokenEvent(context, event);
+        routeRealtimeCombatEvent(context, event);
         routeRealtimeWallEvent(context, event);
         routeRealtimeLightEvent(context, event);
         routeRealtimeTileEvent(context, event);
@@ -67,6 +72,7 @@ export const createRealtimeActions = (
   return {
     ...createRealtimeChatActions(ensureSession),
     ...createRealtimeTokenActions(ensureSession),
+    ...createRealtimeCombatActions(ensureSession),
     ...createRealtimeWallActions(ensureSession),
     ...createRealtimeLightActions(ensureSession),
     ...createRealtimeTileActions(ensureSession),

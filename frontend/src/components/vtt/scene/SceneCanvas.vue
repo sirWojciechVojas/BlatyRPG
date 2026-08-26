@@ -122,6 +122,8 @@
           :selected-id="selectedTokenId"
           :selected-ids="selectedTokenIds"
           :targeted-ids="targetedTokenIds"
+          :active-turn-id="activeTurnId"
+          :waiting-turn-ids="waitingTurnIds"
           :members="members"
           :characters="characters"
           :scale="camera.scale"
@@ -176,6 +178,8 @@ export default {
     selectedTokenId: { type: [Number, String], default: null },
     selectedTokenIds: { type: Array, default: () => [] },
     targetedTokenIds: { type: Array, default: () => [] },
+    activeTurnId: { type: [Number, String], default: null },
+    waitingTurnIds: { type: Array, default: () => [] },
     members: { type: Array, default: () => [] },
     characters: { type: Array, default: () => [] },
     tokenBusy: { type: Boolean, default: false },

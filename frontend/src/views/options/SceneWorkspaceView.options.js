@@ -24,8 +24,8 @@ import {
   utilityById,
 } from "@/components/vtt/table/tableUtilities";
 import { ensureVttStoreModule } from "@/store/modules/loadVttModule";
-import { sceneErrorMessage } from "./sceneErrorMessage";
 import { emptySceneWorkspaceState } from "./sceneWorkspaceState";
+import { sceneWorkspaceCombat } from "./sceneWorkspaceCombat";
 
 export default {
   name: "SceneWorkspaceView",
@@ -55,6 +55,7 @@ export default {
     focusedCharacterId: null,
   }),
   computed: {
+    ...sceneWorkspaceCombat.computed,
     state() {
       return this.$store.state.vtt || emptySceneWorkspaceState();
     },
@@ -158,9 +159,6 @@ export default {
     hotbarActions() {
       return tableHotbarActions(this.$t, this.canManage);
     },
-    errorMessage() {
-      return sceneErrorMessage(this.$t, this.state.error);
-    },
   },
   watch: {
     "$route.params.campaignId": "loadCampaign",
@@ -178,6 +176,7 @@ export default {
     this.loadCampaign();
   },
   methods: {
+    ...sceneWorkspaceCombat.methods,
     ...tableWindowMethods,
     ...tableTokenMethods,
     ...tableWallMethods,

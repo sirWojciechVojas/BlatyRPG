@@ -1,5 +1,6 @@
 import { movementRequestMutations } from "./movementRequestMutations";
 import { campaignMutations } from "./campaignMutations";
+import { combatMutations } from "./combatMutations";
 
 const hasScene = (state, sceneId) =>
   state.scenes.some((scene) => scene.id === sceneId);
@@ -7,6 +8,7 @@ const hasScene = (state, sceneId) =>
 export const vttMutations = {
   ...campaignMutations,
   ...movementRequestMutations,
+  ...combatMutations,
   BEGIN_REQUEST(state, { phase, requestId }) {
     state.phase = phase;
     state.requestId = requestId;

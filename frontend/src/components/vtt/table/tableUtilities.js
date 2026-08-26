@@ -1,6 +1,12 @@
 export const TABLE_UTILITIES = Object.freeze([
   { id: "chat", icon: "chat", labelKey: "vtt.table.rail.chat" },
-  { id: "combat", icon: "sword", labelKey: "vtt.table.rail.combat" },
+  {
+    id: "combat",
+    icon: "sword",
+    labelKey: "vtt.table.rail.combat",
+    windowWidth: 520,
+    windowHeight: 760,
+  },
   { id: "graphics", icon: "image", labelKey: "vtt.table.rail.graphics" },
   {
     id: "characters",
@@ -33,6 +39,7 @@ export const TABLE_UTILITIES = Object.freeze([
 
 export const IMPLEMENTED_TABLE_UTILITIES = Object.freeze([
   "chat",
+  "combat",
   "graphics",
   "characters",
   "scenario",
