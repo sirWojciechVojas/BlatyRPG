@@ -77,7 +77,12 @@
       @pointerup="finish"
       @pointercancel="cancel"
     >
-      <rect width="100%" height="100%" fill="transparent" @click="create" />
+      <rect
+        width="100%"
+        height="100%"
+        fill="transparent"
+        @pointerdown="startCreate"
+      />
       <g v-for="light in lights" :key="light.id" :class="lightClasses(light)">
         <circle
           :cx="display(light).x"
@@ -99,6 +104,25 @@
           @click.stop="$emit('select', light.id)"
         />
       </g>
+      <g v-if="creationPreview" class="scene-light scene-light--draft">
+        <circle
+          :cx="creationPreview.x"
+          :cy="creationPreview.y"
+          :r="creationPreview.dimRadius"
+        />
+        <circle
+          class="scene-light__bright"
+          :cx="creationPreview.x"
+          :cy="creationPreview.y"
+          :r="creationPreview.brightRadius"
+        />
+        <circle
+          class="scene-light__source"
+          :cx="creationPreview.x"
+          :cy="creationPreview.y"
+          r="11"
+        />
+      </g>
     </svg>
     <LightHud
       v-if="canManage && active && selectedLight"
@@ -116,6 +140,10 @@
 import { getCurrentInstance } from "vue";
 import { wallPoint } from "@/lib/vtt/wallGeometry";
 import { lightPolygonPath } from "@/lib/vtt/lightGeometry";
+import {
+  lightDraftFromDrag,
+  validLightDraft,
+} from "@/lib/vtt/lightInteraction";
 import LightHud from "./LightHud.vue";
 
 export default {
@@ -152,6 +180,9 @@ export default {
     selectedLight() {
       return this.lights.find((light) => light.id === this.selectedId) || null;
     },
+    creationPreview() {
+      return this.drag?.type === "create" ? this.preview : null;
+    },
     darkness() {
       return Math.min(1, Math.max(0, Number(this.scene.darknessLevel) || 0));
     },
@@ -184,37 +215,47 @@ export default {
     point(event) {
       return wallPoint(event, this.$refs.editor, this.scene, !event.altKey);
     },
-    create(event) {
-      if (this.busy) return;
-      const point = this.point(event);
-      const grid = Math.max(1, Number(this.scene.gridSize) || 100);
-      this.$emit("create", {
-        ...point,
-        brightRadius: grid * 2,
-        dimRadius: grid * 4,
-      });
+    startCreate(event) {
+      if (this.busy || event.button !== 0) return;
+      const origin = this.point(event);
+      this.$emit("select", null);
+      this.drag = { type: "create", pointerId: event.pointerId, origin };
+      this.preview = lightDraftFromDrag(origin, origin);
+      this.$refs.editor.setPointerCapture?.(event.pointerId);
     },
     startMove(event, light) {
       if (this.busy || event.button !== 0) return;
       this.$emit("select", light.id);
-      this.drag = { pointerId: event.pointerId, light };
+      this.drag = { type: "move", pointerId: event.pointerId, light };
       this.preview = { x: light.x, y: light.y };
       event.currentTarget.setPointerCapture?.(event.pointerId);
     },
     move(event) {
       if (!this.drag || event.pointerId !== this.drag.pointerId) return;
-      this.preview = this.point(event);
+      const point = this.point(event);
+      this.preview =
+        this.drag.type === "create"
+          ? lightDraftFromDrag(this.drag.origin, point)
+          : point;
     },
     finish(event) {
       if (!this.drag || event.pointerId !== this.drag.pointerId) return;
-      const { light } = this.drag;
+      this.move(event);
+      const drag = this.drag;
       const point = this.preview;
-      this.cancel();
-      if (point.x !== light.x || point.y !== light.y) {
-        this.$emit("update", { light, changes: point });
+      this.cancel(event);
+      if (drag.type === "create") {
+        if (validLightDraft(point)) this.$emit("create", point);
+        return;
+      }
+      if (point.x !== drag.light.x || point.y !== drag.light.y) {
+        this.$emit("update", { light: drag.light, changes: point });
       }
     },
-    cancel() {
+    cancel(event) {
+      if (event && this.drag) {
+        this.$refs.editor.releasePointerCapture?.(this.drag.pointerId);
+      }
       this.drag = null;
       this.preview = null;
     },
