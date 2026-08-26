@@ -15,6 +15,18 @@ test("validates light changes without accepting client campaign scope", () => {
       brightRadius: 200,
       dimRadius: 400,
       color: "#FFD27A",
+      opacity: 0.8,
+      softness: 0.4,
+      gradualIllumination: true,
+      darknessMin: 0.2,
+      darknessMax: 0.9,
+      sourceType: "darkness",
+      providesVision: false,
+      constrainedByWalls: true,
+      animation: "vortex",
+      animationSpeed: 1.5,
+      animationIntensity: 0.6,
+      elevation: 5,
     },
   };
   assert.deepEqual(parseAuthenticatedMessage(create), {
@@ -43,6 +55,29 @@ test("validates light changes without accepting client campaign scope", () => {
       }),
     (error) =>
       error instanceof ProtocolError && error.code === "light_radius_invalid",
+  );
+});
+
+test("rejects invalid advanced light ranges", () => {
+  const base = {
+    v: 1,
+    type: "light.change",
+    requestId: "light-update-range",
+    operation: "update",
+    sceneId: 4,
+    lightId: 8,
+    revision: 1,
+  };
+  assert.throws(
+    () => parseAuthenticatedMessage({
+      ...base,
+      changes: { darknessMin: 0.8, darknessMax: 0.2 },
+    }),
+    (error) => error.code === "light_darkness_range_invalid",
+  );
+  assert.throws(
+    () => parseAuthenticatedMessage({ ...base, changes: { animation: "rainbow" } }),
+    (error) => error.code === "light_animation_invalid",
   );
 });
 

@@ -10,6 +10,9 @@ const apiLight = {
   dim_radius: "350.000",
   color: "#FFD27A",
   intensity: "0.800",
+  opacity: "0.700",
+  source_type: "darkness",
+  animation: "pulse",
   enabled: 1,
   revision: 2,
   capabilities: { canManage: true },
@@ -32,6 +35,9 @@ describe("lightApiClient", () => {
       dimRadius: 350,
       intensity: 0.8,
       enabled: true,
+      opacity: 0.7,
+      sourceType: "darkness",
+      animation: "pulse",
     });
   });
 
@@ -42,11 +48,18 @@ describe("lightApiClient", () => {
     await client.update(7, 4, 6, {
       id: 99,
       intensity: 0.5,
+      opacity: 0.6,
+      providesVision: true,
       revision: 2,
     });
     expect(request).toHaveBeenCalledWith("/campaigns/7/scenes/4/lights/6", {
       method: "PATCH",
-      body: { intensity: 0.5, revision: 2 },
+      body: {
+        intensity: 0.5,
+        opacity: 0.6,
+        providesVision: true,
+        revision: 2,
+      },
     });
   });
 });

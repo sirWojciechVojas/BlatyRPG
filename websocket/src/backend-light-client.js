@@ -37,7 +37,20 @@ const light = (value) => {
     100000,
   );
   const intensity = finiteNumber(value?.intensity, 0, 1);
+  const opacity = finiteNumber(value?.opacity ?? 1, 0, 1);
+  const softness = finiteNumber(value?.softness ?? 0.5, 0, 1);
+  const darknessMin = finiteNumber(value?.darknessMin ?? value?.darkness_min ?? 0, 0, 1);
+  const darknessMax = finiteNumber(value?.darknessMax ?? value?.darkness_max ?? 1, 0, 1);
+  const animationSpeed = finiteNumber(value?.animationSpeed ?? value?.animation_speed ?? 1, 0.1, 10);
+  const animationIntensity = finiteNumber(
+    value?.animationIntensity ?? value?.animation_intensity ?? 0.5,
+    0,
+    1,
+  );
+  const elevation = finiteNumber(value?.elevation ?? 0);
   const color = String(value?.color || "").toUpperCase();
+  const sourceType = String(value?.sourceType ?? value?.source_type ?? "light");
+  const animation = String(value?.animation || "none");
   if (
     !id ||
     !sceneId ||
@@ -47,7 +60,17 @@ const light = (value) => {
     brightRadius === null ||
     dimRadius === null ||
     intensity === null ||
+    opacity === null ||
+    softness === null ||
+    darknessMin === null ||
+    darknessMax === null ||
+    darknessMin > darknessMax ||
+    animationSpeed === null ||
+    animationIntensity === null ||
+    elevation === null ||
     brightRadius > dimRadius ||
+    !["light", "darkness"].includes(sourceType) ||
+    !["none", "flicker", "pulse", "vortex"].includes(animation) ||
     !/^#[0-9A-F]{6}(?:[0-9A-F]{2})?$/.test(color)
   ) {
     throw new BackendLightError("backend_response_invalid", 502);
@@ -62,6 +85,18 @@ const light = (value) => {
     dimRadius,
     color,
     intensity,
+    opacity,
+    softness,
+    gradualIllumination: value.gradualIllumination !== false,
+    darknessMin,
+    darknessMax,
+    sourceType,
+    providesVision: value.providesVision === true,
+    constrainedByWalls: value.constrainedByWalls !== false,
+    animation,
+    animationSpeed,
+    animationIntensity,
+    elevation,
     enabled: value.enabled === true,
     hidden: value.hidden === true,
     revision,

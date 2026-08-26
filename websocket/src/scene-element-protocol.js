@@ -1,30 +1,10 @@
 import { ProtocolError } from "./protocol-error.js";
-
-const plainObject = (value) =>
-  value !== null && typeof value === "object" && !Array.isArray(value);
-
-const exactKeys = (value, allowed) => {
-  for (const key of Object.keys(value)) {
-    if (!allowed.includes(key))
-      throw new ProtocolError("unexpected_field", key);
-  }
-};
+import { lightChanges } from "./light-change-protocol.js";
+import { exactKeys, number, plainObject } from "./scene-element-validation.js";
 
 const positiveId = (value, code) => {
   if (value === undefined || value === null) return null;
   if (!Number.isSafeInteger(value) || value < 1) throw new ProtocolError(code);
-  return value;
-};
-
-const number = (value, code, minimum = -1000000, maximum = 1000000) => {
-  if (
-    typeof value !== "number" ||
-    !Number.isFinite(value) ||
-    value < minimum ||
-    value > maximum
-  ) {
-    throw new ProtocolError(code);
-  }
   return value;
 };
 
@@ -76,62 +56,6 @@ const wallChanges = (value, operation) => {
     !["x1", "y1", "x2", "y2"].every((key) => key in changes)
   ) {
     throw new ProtocolError("wall_geometry_required");
-  }
-  return changes;
-};
-
-const lightChanges = (value, operation) => {
-  if (!plainObject(value)) throw new ProtocolError("light_changes_invalid");
-  exactKeys(value, [
-    "x",
-    "y",
-    "brightRadius",
-    "dimRadius",
-    "color",
-    "intensity",
-    "enabled",
-    "hidden",
-  ]);
-  const changes = {};
-  for (const field of ["x", "y"]) {
-    if (value[field] !== undefined)
-      changes[field] = number(value[field], `light_${field}_invalid`);
-  }
-  for (const field of ["brightRadius", "dimRadius"]) {
-    if (value[field] !== undefined)
-      changes[field] = number(
-        value[field],
-        `light_${field}_invalid`,
-        0,
-        100000,
-      );
-  }
-  if (value.intensity !== undefined) {
-    changes.intensity = number(
-      value.intensity,
-      "light_intensity_invalid",
-      0,
-      1,
-    );
-  }
-  for (const field of ["enabled", "hidden"]) {
-    if (value[field] === undefined) continue;
-    if (typeof value[field] !== "boolean")
-      throw new ProtocolError(`light_${field}_invalid`);
-    changes[field] = value[field];
-  }
-  if (value.color !== undefined) {
-    const color = String(value.color).toUpperCase();
-    if (!/^#[0-9A-F]{6}(?:[0-9A-F]{2})?$/.test(color)) {
-      throw new ProtocolError("light_color_invalid");
-    }
-    changes.color = color;
-  }
-  if (operation === "create" && !["x", "y"].every((key) => key in changes)) {
-    throw new ProtocolError("light_geometry_required");
-  }
-  if (changes.brightRadius > changes.dimRadius) {
-    throw new ProtocolError("light_radius_invalid");
   }
   return changes;
 };
