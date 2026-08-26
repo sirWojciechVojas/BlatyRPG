@@ -5,11 +5,11 @@ import {
   authMessage,
   leaveMessage,
   syncRequestMessage,
-  tokenMoveMessage,
 } from "./realtimeProtocol";
 import { createRealtimeEventRouter } from "./realtimeEventRouter";
 import { sceneElementTransport } from "./realtimeSceneElementTransport";
 import { createRealtimeTimers } from "./realtimeTimers";
+import { createRealtimeTokenTransport } from "./realtimeTokenTransport";
 import { createReconnectBudget } from "./reconnectBudget";
 import {
   realtimeCloseStatus,
@@ -286,7 +286,7 @@ export const createRealtimeSession = (options = {}) => {
     requestSync,
     retry,
     sendChat: chat.sendMessage,
-    moveToken: (payload) => authenticated && send(tokenMoveMessage(payload)),
+    ...createRealtimeTokenTransport(() => authenticated, send),
     ...sceneElementTransport(() => authenticated, send),
     syncChat: chat.sync,
     snapshot: () => ({

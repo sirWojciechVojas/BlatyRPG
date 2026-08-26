@@ -1,40 +1,12 @@
+import { movementRequestMutations } from "./movementRequestMutations";
+import { campaignMutations } from "./campaignMutations";
+
 const hasScene = (state, sceneId) =>
   state.scenes.some((scene) => scene.id === sceneId);
 
 export const vttMutations = {
-  SET_CAMPAIGN(state, campaignId) {
-    if (state.campaignId === campaignId) return;
-    state.campaignId = campaignId;
-    state.scenes = [];
-    state.activeSceneId = null;
-    state.selectedSceneId = null;
-    state.tokensByScene = {};
-    state.tokenCapabilitiesByScene = {};
-    state.selectedTokenId = null;
-    state.selectedTokenIds = [];
-    state.targetedTokenIds = [];
-    state.tokenPhase = "idle";
-    state.wallsByScene = {};
-    state.wallCapabilitiesByScene = {};
-    state.selectedWallId = null;
-    state.wallPhase = "idle";
-    state.lightsByScene = {};
-    state.lightCapabilitiesByScene = {};
-    state.selectedLightId = null;
-    state.lightPhase = "idle";
-    state.tilesByScene = {};
-    state.tileCapabilitiesByScene = {};
-    state.selectedTileId = null;
-    state.tilePhase = "idle";
-    state.capabilities = {
-      canManage: false,
-      canViewHidden: false,
-    };
-    state.phase = "idle";
-    state.error = null;
-    state.unauthorized = false;
-    state.requestId += 1;
-  },
+  ...campaignMutations,
+  ...movementRequestMutations,
   BEGIN_REQUEST(state, { phase, requestId }) {
     state.phase = phase;
     state.requestId = requestId;

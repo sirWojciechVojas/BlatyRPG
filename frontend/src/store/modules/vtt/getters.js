@@ -23,6 +23,10 @@ export const vttGetters = {
   canCreateToken: (state) =>
     state.tokenCapabilitiesByScene[String(state.selectedSceneId)]?.canCreate ===
     true,
+  pendingMovementRequests: (state) =>
+    state.movementRequests.filter((request) => request.status === "pending"),
+  canResolveMovementRequests: (state) =>
+    state.movementRequestCapabilities.canResolve === true,
   selectedSceneWalls: (state) =>
     state.wallsByScene[String(state.selectedSceneId)] || [],
   selectedWall: (state, getters) =>

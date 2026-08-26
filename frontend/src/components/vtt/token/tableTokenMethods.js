@@ -52,6 +52,21 @@ export const tableTokenMethods = {
     }
     if (!sent) this.updateToken({ token, changes: { x, y, waypoints } });
   },
+  async requestTokenMovement({ token, position, waypoints = [] }) {
+    const sent = await this.$store.dispatch("realtime/requestTokenMovement", {
+      token,
+      x: position.x,
+      y: position.y,
+      waypoints,
+    });
+    if (sent) this.selectUtility("notifications");
+  },
+  resolveTokenMovement({ requestId, decision }) {
+    this.$store.dispatch("realtime/resolveTokenMovement", {
+      movementRequestId: requestId,
+      decision,
+    });
+  },
   async updateToken({ token, changes }) {
     try {
       const updated = await this.$store.dispatch("vtt/updateToken", {

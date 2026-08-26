@@ -399,7 +399,25 @@
       "notifications": {
         "connection": "Połączenie",
         "online": "Uczestnicy online",
-        "invites": "Oczekujące zaproszenia"
+        "invites": "Oczekujące zaproszenia",
+        "movement": {
+          "kicker": "Zgody MG",
+          "title": "Żądania ruchu ponad limit",
+          "cost": "Koszt trasy",
+          "before": "PR przed ruchem",
+          "after": "PR po ruchu",
+          "approve": "Zezwól i wydaj PR",
+          "reject": "Odrzuć",
+          "waiting": "Żądanie wysłane — oczekiwanie na decyzję MG.",
+          "empty": "Brak żądań ruchu wymagających decyzji.",
+          "status": {
+            "pending": "Oczekuje",
+            "approved": "Zezwolono",
+            "rejected": "Odrzucono",
+            "expired": "Nieaktualne",
+            "processing": "Przetwarzanie"
+          }
+        }
       },
       "settings": {
         "description": "Ustawienia kampanii oraz Twojego profilu.",

@@ -399,7 +399,25 @@
       "notifications": {
         "connection": "Connection",
         "online": "Participants online",
-        "invites": "Pending invitations"
+        "invites": "Pending invitations",
+        "movement": {
+          "kicker": "GM approvals",
+          "title": "Over-limit movement requests",
+          "cost": "Route cost",
+          "before": "MP before move",
+          "after": "MP after move",
+          "approve": "Allow and spend MP",
+          "reject": "Reject",
+          "waiting": "Request sent — waiting for the GM's decision.",
+          "empty": "No movement requests require a decision.",
+          "status": {
+            "pending": "Pending",
+            "approved": "Approved",
+            "rejected": "Rejected",
+            "expired": "Expired",
+            "processing": "Processing"
+          }
+        }
       },
       "settings": {
         "description": "Campaign and personal profile settings.",

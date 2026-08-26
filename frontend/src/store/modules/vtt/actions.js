@@ -37,6 +37,7 @@ export const createVttActions = (
   wallApi,
   lightApi,
   tileApi,
+  movementRequestApi,
 ) => ({
   ...createSceneElementActions(
     wallApi,
@@ -68,9 +69,22 @@ export const createVttActions = (
         dispatch("loadWalls"),
         dispatch("loadLights"),
         dispatch("loadTiles"),
+        dispatch("loadMovementRequests"),
       ]);
     } catch (error) {
       if (state.requestId === requestId) failRequest(commit, requestId, error);
+    }
+  },
+  async loadMovementRequests({ state, commit }) {
+    if (!state.campaignId || typeof movementRequestApi?.list !== "function")
+      return;
+    commit("SET_MOVEMENT_REQUEST_PHASE", "loading");
+    try {
+      const result = await movementRequestApi.list(state.campaignId);
+      commit("RECEIVE_MOVEMENT_REQUESTS", result);
+    } catch (error) {
+      commit("MOVEMENT_REQUEST_FAILED", normalizedError(error));
+      throw error;
     }
   },
   async selectScene({ state, commit, dispatch }, sceneId) {

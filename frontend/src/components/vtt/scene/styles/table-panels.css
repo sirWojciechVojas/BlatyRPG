@@ -57,6 +57,29 @@
   white-space: nowrap;
 }
 
+.table-utility-rail__button b {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  display: grid;
+  min-width: 15px;
+  height: 15px;
+  place-items: center;
+  padding: 0 3px;
+  color: #1b0d06;
+  font-size: 8px;
+  line-height: 1;
+  background: #f2a84b;
+  border: 1px solid #ffe0a4;
+  border-radius: 8px;
+  box-shadow: 0 0 0 2px #121821, 0 0 9px rgb(242 168 75 / 62%);
+  animation: table-utility-badge-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes table-utility-badge-pulse {
+  50% { transform: scale(1.12); }
+}
+
 .table-utility-drawer {
   display: flex;
   flex-direction: column;

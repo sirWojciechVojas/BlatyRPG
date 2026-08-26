@@ -97,6 +97,7 @@
           @camera-change="zoomPercent = $event.zoomPercent"
           @token-select="selectToken"
           @token-move="moveToken"
+          @token-movement-limit="requestTokenMovement"
           @token-update="updateToken"
           @token-target="toggleTokenTarget"
           @token-delete="deleteToken"
@@ -144,10 +145,13 @@
           :characters="characters"
           :members="members"
           :invitations="invitations"
+          :movement-requests="state.movementRequests"
           :realtime-status="realtime.status"
           :can-manage="canManage"
           :can-open-shop="canOpenShop"
           :can-create-token="canCreateToken"
+          :can-resolve-movement="state.movementRequestCapabilities.canResolve"
+          :movement-request-busy="state.movementRequestPhase === 'saving'"
           :character-id="focusedCharacterId"
           :busy="busy"
           @select-scene="selectScene"
@@ -158,6 +162,7 @@
           @activate-scene="activate"
           @character-changed="refreshCampaignContext"
           @open-window="openUtilityWindow"
+          @resolve-movement-request="resolveTokenMovement"
         />
       </TableUtilityDrawer>
 
@@ -171,6 +176,11 @@
       <TableUtilityRail
         :active-id="activePanelId"
         :available-ids="availableUtilityIds"
+        :badges="{
+          notifications: state.movementRequests.filter(
+            (request) => request.status === 'pending',
+          ).length,
+        }"
         @select="selectUtility"
         @open="openUtilityWindow"
       />
@@ -197,10 +207,13 @@
           :characters="characters"
           :members="members"
           :invitations="invitations"
+          :movement-requests="state.movementRequests"
           :realtime-status="realtime.status"
           :can-manage="canManage"
           :can-open-shop="canOpenShop"
           :can-create-token="canCreateToken"
+          :can-resolve-movement="state.movementRequestCapabilities.canResolve"
+          :movement-request-busy="state.movementRequestPhase === 'saving'"
           :character-id="focusedCharacterId"
           :busy="busy"
           @select-scene="selectScene"
@@ -211,6 +224,7 @@
           @activate-scene="activate"
           @character-changed="refreshCampaignContext"
           @open-window="openUtilityWindow"
+          @resolve-movement-request="resolveTokenMovement"
         />
       </TableFloatingWindow>
     </div>

@@ -47,6 +47,19 @@ export const tokenMoveMessage = (payload) => ({
     : [],
 });
 
+export const tokenMovementRequestMessage = (payload) => ({
+  ...tokenMoveMessage(payload),
+  type: "token.movement.request",
+});
+
+export const tokenMovementResolveMessage = (payload) => ({
+  v: REALTIME_VERSION,
+  type: "token.movement.resolve",
+  requestId: String(payload.requestId),
+  movementRequestId: Number(payload.movementRequestId),
+  decision: String(payload.decision),
+});
+
 export const sceneElementChangeMessage = (resource, payload) => ({
   v: REALTIME_VERSION,
   type: `${resource}.change`,

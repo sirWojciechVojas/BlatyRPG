@@ -27,6 +27,7 @@
     v-else-if="panelId === 'characters'"
     :campaign-id="campaignId"
     :campaign="campaign"
+    :compact="instanceId === 'drawer'"
     :can-create-token="canCreateToken"
     :initial-character-id="characterId"
     @changed="$emit('character-changed', $event)"
@@ -36,6 +37,18 @@
     v-else-if="panelId === 'shop'"
     :compact="instanceId === 'drawer'"
     @promote="$emit('open-window', 'shop')"
+  />
+
+  <TableMovementRequestsPanel
+    v-else-if="panelId === 'notifications'"
+    :requests="movementRequests"
+    :members="members"
+    :invitations="invitations"
+    :realtime-status="realtimeStatus"
+    :can-manage="canManage"
+    :can-resolve="canResolveMovement"
+    :busy="movementRequestBusy"
+    @resolve="$emit('resolve-movement-request', $event)"
   />
 
   <TableContextPanel
@@ -57,6 +70,7 @@ import { defineAsyncComponent } from "vue";
 import CampaignChatPanel from "@/components/chat/CampaignChatPanel.vue";
 import SceneManagerPanel from "@/components/vtt/scene/SceneManagerPanel.vue";
 import TableContextPanel from "./TableContextPanel.vue";
+import TableMovementRequestsPanel from "./TableMovementRequestsPanel.vue";
 import TableShopPanel from "./TableShopPanel.vue";
 
 const TableCharacterPanel = defineAsyncComponent(
@@ -73,6 +87,7 @@ export default {
     SceneManagerPanel,
     TableCharacterPanel,
     TableContextPanel,
+    TableMovementRequestsPanel,
     TableShopPanel,
   },
   props: {
@@ -87,10 +102,13 @@ export default {
     characters: { type: Array, default: () => [] },
     members: { type: Array, default: () => [] },
     invitations: { type: Array, default: () => [] },
+    movementRequests: { type: Array, default: () => [] },
     realtimeStatus: { type: String, default: "disconnected" },
     canManage: { type: Boolean, default: false },
     canOpenShop: { type: Boolean, default: false },
     canCreateToken: { type: Boolean, default: false },
+    canResolveMovement: { type: Boolean, default: false },
+    movementRequestBusy: { type: Boolean, default: false },
     busy: { type: Boolean, default: false },
   },
   emits: [
@@ -102,6 +120,7 @@ export default {
     "activate-scene",
     "character-changed",
     "open-window",
+    "resolve-movement-request",
   ],
   computed: {
     selectedScene() {

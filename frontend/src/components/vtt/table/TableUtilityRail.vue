@@ -17,6 +17,7 @@
     >
       <TableRailIcon :name="utility.icon" />
       <span>{{ $t(utility.labelKey) }}</span>
+      <b v-if="badge(utility.id)" aria-hidden="true">{{ badge(utility.id) }}</b>
     </button>
   </nav>
 </template>
@@ -34,6 +35,7 @@ export default {
       type: Array,
       default: () => [...IMPLEMENTED_TABLE_UTILITIES],
     },
+    badges: { type: Object, default: () => ({}) },
   },
   emits: ["select", "open"],
   data: () => ({ utilities: TABLE_UTILITIES, clickTimer: null }),
@@ -43,6 +45,10 @@ export default {
   methods: {
     available(id) {
       return this.availableIds.includes(id);
+    },
+    badge(id) {
+      const count = Math.max(0, Number(this.badges[id]) || 0);
+      return count > 99 ? "99+" : count;
     },
     label(utility) {
       const value = this.$t(utility.labelKey);

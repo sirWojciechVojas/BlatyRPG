@@ -1,0 +1,37 @@
+export const campaignMutations = {
+  SET_CAMPAIGN(state, campaignId) {
+    if (state.campaignId === campaignId) return;
+    Object.assign(state, {
+      campaignId,
+      scenes: [],
+      activeSceneId: null,
+      selectedSceneId: null,
+      tokensByScene: {},
+      tokenCapabilitiesByScene: {},
+      selectedTokenId: null,
+      selectedTokenIds: [],
+      targetedTokenIds: [],
+      tokenPhase: "idle",
+      movementRequests: [],
+      movementRequestCapabilities: { canResolve: false },
+      movementRequestPhase: "idle",
+      wallsByScene: {},
+      wallCapabilitiesByScene: {},
+      selectedWallId: null,
+      wallPhase: "idle",
+      lightsByScene: {},
+      lightCapabilitiesByScene: {},
+      selectedLightId: null,
+      lightPhase: "idle",
+      tilesByScene: {},
+      tileCapabilitiesByScene: {},
+      selectedTileId: null,
+      tilePhase: "idle",
+      capabilities: { canManage: false, canViewHidden: false },
+      phase: "idle",
+      error: null,
+      unauthorized: false,
+      requestId: state.requestId + 1,
+    });
+  },
+};
