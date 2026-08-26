@@ -113,7 +113,6 @@
           :tokens="tokens"
           :selected-id="selectedTokenId"
           :selected-ids="selectedTokenIds"
-          :scale="camera.scale"
           :enabled="['select', 'tokens'].includes(activeTool)"
         />
         <SceneTokenLayer

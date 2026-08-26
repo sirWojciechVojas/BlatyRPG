@@ -43,6 +43,15 @@ describe("token presentation layout", () => {
     expect(styles).toContain(".scene-token-wrap--hud");
   });
 
+  it("shows movement reach without duplicating the movement resource label", () => {
+    const range = template("TokenMovementRange");
+
+    expect(range).toContain("token-movement-range__shade");
+    expect(range).toContain("token-movement-range__reachable");
+    expect(range).not.toContain("<output");
+    expect(range).not.toContain("rangePreview");
+  });
+
   it("positions the resource stack independently from the token name", () => {
     const source = template("TokenInfoStack");
 

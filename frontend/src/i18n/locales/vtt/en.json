@@ -182,7 +182,6 @@
         "manual": "Manual only",
         "reset": "Reset MP",
         "resourceSource": "MP source: bar {bar}",
-        "rangePreview": "Available: {remaining} MP",
         "waypointHint": "Space: route point · Backspace: remove point"
       },
       "permissions": {

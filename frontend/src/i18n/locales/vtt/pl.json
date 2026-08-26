@@ -182,7 +182,6 @@
         "manual": "Tylko ręcznie",
         "reset": "Resetuj PR",
         "resourceSource": "Źródło PR: pasek {bar}",
-        "rangePreview": "Dostępne: {remaining} PR",
         "waypointHint": "Spacja: punkt trasy · Backspace: usuń punkt"
       },
       "permissions": {
