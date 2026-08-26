@@ -50,6 +50,14 @@ export const normalizeScene = (source) => {
       read(source, "darkness_level", "darknessLevel"),
       0.2,
     ),
+    globalIllumination:
+      read(source, "global_illumination", "globalIllumination") === true ||
+      read(source, "global_illumination", "globalIllumination") === 1 ||
+      read(source, "global_illumination", "globalIllumination") === "1",
+    fogExploration:
+      read(source, "fog_exploration", "fogExploration") !== false &&
+      read(source, "fog_exploration", "fogExploration") !== 0 &&
+      read(source, "fog_exploration", "fogExploration") !== "0",
     isVisible: read(source, "is_visible", "isVisible") !== false,
     sortOrder: numberOr(read(source, "sort_order", "sortOrder"), 0),
     revision: numberOr(source.revision, 0),
@@ -83,6 +91,8 @@ const WRITE_FIELDS = [
   ["gridOpacity", "grid_opacity"],
   ["backgroundColor", "background_color"],
   ["darknessLevel", "darkness_level"],
+  ["globalIllumination", "global_illumination"],
+  ["fogExploration", "fog_exploration"],
   ["isVisible", "is_visible"],
   ["sortOrder", "sort_order"],
 ];

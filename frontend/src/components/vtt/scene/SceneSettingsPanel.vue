@@ -83,6 +83,14 @@
           step="0.05"
         />
       </label>
+      <label class="scene-field scene-field--checkbox">
+        <input v-model="form.globalIllumination" type="checkbox" />
+        <span>{{ $t("vtt.scene.fields.globalIllumination") }}</span>
+      </label>
+      <label class="scene-field scene-field--checkbox">
+        <input v-model="form.fogExploration" type="checkbox" />
+        <span>{{ $t("vtt.scene.fields.fogExploration") }}</span>
+      </label>
 
       <fieldset class="scene-settings__group">
         <legend>{{ $t("vtt.scene.settings.grid") }}</legend>
@@ -217,6 +225,8 @@ const emptyScene = () => ({
   padding: 0,
   backgroundColor: "#20242b",
   darknessLevel: 0.2,
+  globalIllumination: false,
+  fogExploration: true,
   gridType: GRID_TYPES.SQUARE,
   gridSize: 100,
   gridDistance: 5,

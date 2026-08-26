@@ -12,7 +12,8 @@ class SceneModel extends Model
     protected $useSoftDeletes = true;
     protected $allowedFields = [
         'campaign_id', 'name', 'description', 'background_url', 'width', 'height', 'padding',
-        'background_color', 'darkness_level', 'grid_type', 'grid_size', 'grid_distance', 'grid_unit',
+        'background_color', 'darkness_level', 'global_illumination', 'fog_exploration',
+        'grid_type', 'grid_size', 'grid_distance', 'grid_unit',
         'grid_offset_x', 'grid_offset_y', 'grid_color', 'grid_opacity', 'is_visible',
         'sort_order', 'revision',
     ];
@@ -42,8 +43,8 @@ class SceneModel extends Model
                     $row[$field] = (float) $row[$field];
                 }
             }
-            if (isset($row['is_visible'])) {
-                $row['is_visible'] = (bool) $row['is_visible'];
+            foreach (['is_visible', 'global_illumination', 'fog_exploration'] as $field) {
+                if (isset($row[$field])) $row[$field] = (bool) $row[$field];
             }
         };
         if (($data['singleton'] ?? false) === false && is_array($data['data'])) {

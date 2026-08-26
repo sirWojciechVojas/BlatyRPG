@@ -53,6 +53,8 @@
         "padding": "Margines mapy",
         "backgroundColor": "Kolor tła",
         "darknessLevel": "Poziom ciemności",
+        "globalIllumination": "Global Illumination",
+        "fogExploration": "Eksploracja Fog of War",
         "gridType": "Typ siatki",
         "gridSize": "Rozmiar pola",
         "gridDistance": "Odległość pola",

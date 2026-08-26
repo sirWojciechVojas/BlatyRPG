@@ -8,7 +8,7 @@ class ScenePayloadValidator
         'name', 'description', 'background_url', 'width', 'height', 'padding',
         'background_color', 'grid_type', 'grid_size', 'grid_distance', 'grid_unit',
         'grid_offset_x', 'grid_offset_y', 'grid_color', 'grid_opacity', 'is_visible',
-        'sort_order', 'darkness_level',
+        'sort_order', 'darkness_level', 'global_illumination', 'fog_exploration',
     ];
 
     public function validateCreate(array $payload): array
@@ -108,12 +108,13 @@ class ScenePayloadValidator
                 $data[$field] = $color;
             }
         }
-        if (array_key_exists('is_visible', $payload)) {
-            $visible = filter_var($payload['is_visible'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-            if ($visible === null) {
-                $errors['is_visible'] = 'Value must be boolean.';
+        foreach (['is_visible', 'global_illumination', 'fog_exploration'] as $field) {
+            if (!array_key_exists($field, $payload)) continue;
+            $value = filter_var($payload[$field], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            if ($value === null) {
+                $errors[$field] = 'Value must be boolean.';
             } else {
-                $data['is_visible'] = $visible ? 1 : 0;
+                $data[$field] = $value ? 1 : 0;
             }
         }
 

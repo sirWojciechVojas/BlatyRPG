@@ -15,12 +15,16 @@ final class ScenePayloadValidatorTest extends CIUnitTestCase
             'grid_type' => 'HEX_POINTY',
             'grid_opacity' => 0.5,
             'is_visible' => false,
+            'global_illumination' => true,
+            'fog_exploration' => false,
         ]);
 
         $this->assertTrue($result['valid']);
         $this->assertSame('Ruins', $result['data']['name']);
         $this->assertSame('hex_pointy', $result['data']['grid_type']);
         $this->assertSame(0, $result['data']['is_visible']);
+        $this->assertSame(1, $result['data']['global_illumination']);
+        $this->assertSame(0, $result['data']['fog_exploration']);
     }
 
     public function testUpdateRequiresRevision(): void

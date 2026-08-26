@@ -12,6 +12,8 @@ const apiScene = {
   grid_type: "hex_pointy",
   grid_size: 72,
   darkness_level: "0.650",
+  global_illumination: 1,
+  fog_exploration: 0,
   revision: 3,
 };
 
@@ -54,6 +56,8 @@ describe("sceneApiClient", () => {
       gridType: "hex_pointy",
       gridSize: 72,
       darknessLevel: 0.65,
+      globalIllumination: true,
+      fogExploration: false,
     });
   });
 

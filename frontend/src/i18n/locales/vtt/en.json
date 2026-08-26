@@ -53,6 +53,8 @@
         "padding": "Map padding",
         "backgroundColor": "Background color",
         "darknessLevel": "Darkness level",
+        "globalIllumination": "Global Illumination",
+        "fogExploration": "Fog of War exploration",
         "gridType": "Grid type",
         "gridSize": "Cell size",
         "gridDistance": "Cell distance",
