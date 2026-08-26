@@ -58,7 +58,7 @@
           r="16"
           @pointerdown.stop="startMove($event, light)"
           @click.stop="$emit('select', light.id)"
-          @dblclick.stop="propertiesOpen = true"
+          @dblclick.stop="openProperties"
         />
       </g>
       <g v-if="creationPreview" class="scene-light scene-light--draft">
@@ -94,42 +94,51 @@
       :style="hudStyle"
       @update="$emit('update', { light: selectedLight, changes: $event })"
       @copy="copySelected"
-      @edit="propertiesOpen = true"
+      @edit="openProperties"
       @delete="$emit('delete', selectedLight)"
     />
     <LightToolToolbar
       v-if="canManage && active"
       :light="selectedLight"
       :source-type="selectedLight?.sourceType || creationType"
-      :count="lights.length"
+      :count="lights.length + 1"
       :list-open="listOpen"
       :busy="busy"
+      :global-light-level="scene.globalLightLevel"
       @add="addDefault"
       @copy="copySelected"
       @update="updateSelected"
+      @global-update="$emit('global-update', $event)"
       @source-type="setSourceType"
-      @edit="propertiesOpen = true"
+      @edit="openProperties"
       @toggle-list="listOpen = !listOpen"
       @delete="$emit('delete', selectedLight)"
     />
     <LightManagementPanel
       v-if="canManage && active && listOpen"
       :lights="lights"
+      :global-light-level="scene.globalLightLevel"
       :selected-id="selectedId"
       :busy="busy"
       @select="$emit('select', $event)"
       @add="addDefault"
       @update="$emit('update', $event)"
+      @global-update="$emit('global-update', $event)"
       @edit="editLight"
       @copy="copyLight"
       @delete="$emit('delete', $event)"
     />
     <LightPropertiesPanel
       v-if="canManage && active && selectedLight && propertiesOpen"
+      ref="properties"
       :light="selectedLight"
       :busy="busy"
-      @close="propertiesOpen = false"
-      @save="$emit('update', { light: selectedLight, changes: $event })"
+      :status="propertySaveStatus"
+      :error="propertySaveError"
+      @close="closeProperties"
+      @save="saveProperties"
+      @preview="propertiesPreview = $event"
+      @unchanged="propertySaveStatus = 'saved'"
     />
     <LightContextMenu
       v-if="canManage && active && contextMenu"
@@ -158,6 +167,7 @@ import LightPropertiesPanel from "./LightPropertiesPanel.vue";
 import LightToolToolbar from "./LightToolToolbar.vue";
 import SceneLightingVisual from "./SceneLightingVisual.vue";
 import { lightLayerEditorMethods } from "./lightLayerEditorMethods";
+import { lightPropertyEditorMethods } from "./lightPropertyEditorMethods";
 import { lightTechnicalPath } from "@/lib/vtt/lightGeometry";
 import { effectiveLight } from "@/lib/vtt/lightPhotometry";
 
@@ -180,13 +190,16 @@ export default {
     canManage: { type: Boolean, default: false },
     busy: { type: Boolean, default: false },
   },
-  emits: ["select", "create", "update", "delete"],
+  emits: ["select", "create", "update", "global-update", "delete"],
   data() {
     return {
       uid: getCurrentInstance().uid,
       drag: null,
       preview: null,
       propertiesOpen: false,
+      propertiesPreview: null,
+      propertySaveStatus: "idle",
+      propertySaveError: "",
       listOpen: true,
       creationType: "omni",
       contextMenu: null,
@@ -239,6 +252,13 @@ export default {
           },
         ];
       }
+      if (this.propertiesPreview && this.selectedLight) {
+        return this.lights.map((light) =>
+          light.id === this.selectedLight.id
+            ? { ...light, ...this.propertiesPreview }
+            : light,
+        );
+      }
       return this.lights;
     },
     viewBox() {
@@ -259,16 +279,12 @@ export default {
   },
   methods: {
     ...lightLayerEditorMethods,
+    ...lightPropertyEditorMethods,
     technicalPath(light, bright) {
       return lightTechnicalPath(light, this.walls, this.scene, bright);
     },
     isDirected(light) {
       return ["directional", "cone"].includes(light?.sourceType);
-    },
-    defaultAngle(sourceType) {
-      if (sourceType === "cone") return 60;
-      if (sourceType === "directional") return 120;
-      return 360;
     },
     directionEnd(light) {
       const geometry = effectiveLight(light);

@@ -47,6 +47,10 @@
 .light-properties__groups button { flex: 0 0 auto; padding: 3px 6px; font-size: 10px; }
 .light-properties__groups button.active { color: #ffe29b; border-color: #d39a4c; }
 .light-properties__hint { margin: 6px 0; color: #a99a86; font-size: 10px; }
+.light-properties__status { min-height: 16px; margin: 6px 0; font-size: 10px; }
+.light-properties__status--saving { color: #d8c38f; }
+.light-properties__status--saved { color: #9ed7a4; }
+.light-properties__status--error { color: #ff9e9e; }
 .light-tool-toolbar { position: absolute; z-index: 3; top: 8px; left: 50%; display: flex; align-items: center; gap: 3px; max-width: calc(100% - 24px); padding: 4px; overflow-x: auto; color: #d8cbb9; background: rgb(18 13 10 / 96%); border: 1px solid #80613d; border-radius: 5px; box-shadow: 0 4px 16px rgb(0 0 0 / 60%); transform: translateX(-50%); pointer-events: auto; }
 .light-tool-toolbar button,
 .light-tool-toolbar select,
@@ -55,6 +59,8 @@
 .light-tool-toolbar input[type="color"] { width: 30px; padding: 2px; }
 .light-tool-toolbar__lumens { display: flex; align-items: center; gap: 3px; font-size: 10px; }
 .light-tool-toolbar__lumens input { width: 76px; }
+.light-tool-toolbar__global { display: flex; align-items: center; gap: 2px; font-size: 10px; }
+.light-tool-toolbar__global input { width: 48px; }
 .light-tool-toolbar button.active { color: #ffe29b; border-color: #d39a4c; }
 .light-tool-toolbar__danger,
 .light-management__danger { color: #ff9e9e !important; }
@@ -69,9 +75,14 @@
 .light-management__head { padding: 0 4px 3px; color: #918572; font-size: 9px; text-transform: uppercase; }
 .light-management li { padding: 3px; border: 1px solid transparent; border-radius: 3px; cursor: pointer; }
 .light-management li.selected { background: rgb(211 154 76 / 12%); border-color: #80613d; }
+.light-management__global { border-color: #604b38 !important; cursor: default !important; }
+.light-management__level { display: flex; align-items: center; gap: 2px; font-size: 10px; }
+.light-management__level input { width: 57px; }
+.light-management__lock { text-align: center; opacity: .65; }
 .light-management__name { overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
 .light-management__type { overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
 .light-management__swatch { width: 18px; height: 18px; border: 1px solid #fff8; border-radius: 50%; }
+.light-management__swatch--global { background: #fff; box-shadow: 0 0 5px #fff9; }
 .light-management__toggle.active { color: #ffe29b; border-color: #d39a4c; }
 .light-management__actions { display: flex; gap: 2px; }
 .light-management__actions button { width: 27px; padding: 0; }

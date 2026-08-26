@@ -32,12 +32,12 @@
           <stop
             offset="0%"
             :stop-color="light.color"
-            :stop-opacity="strength(light) * 0.42"
+            :stop-opacity="strength(light) * 0.58"
           />
           <stop
             :offset="brightOffset(light)"
             :stop-color="light.color"
-            :stop-opacity="strength(light) * 0.28"
+            :stop-opacity="strength(light) * 0.36"
           />
           <stop offset="100%" :stop-color="light.color" stop-opacity="0" />
         </radialGradient>
@@ -103,8 +103,8 @@
       :key="`clarity-${light.id}`"
       class="scene-lighting__clarity"
       :d="path(light)"
-      fill="#fff7df"
-      :fill-opacity="strength(light) * 0.1"
+      :fill="light.color"
+      :fill-opacity="strength(light) * 0.14"
     />
     <path
       v-for="light in darknessSources"

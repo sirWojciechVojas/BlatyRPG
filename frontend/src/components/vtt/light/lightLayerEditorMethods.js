@@ -6,6 +6,11 @@ import {
 } from "@/lib/vtt/lightInteraction";
 
 export const lightLayerEditorMethods = {
+  defaultAngle(sourceType) {
+    if (sourceType === "cone") return 60;
+    if (sourceType === "directional") return 120;
+    return 360;
+  },
   point(event) {
     return wallPoint(event, this.$refs.editor, this.scene, !event.altKey);
   },
@@ -157,9 +162,7 @@ export const lightLayerEditorMethods = {
     this.closeContext(() => this.copySelected());
   },
   editFromContext() {
-    this.closeContext(() => {
-      this.propertiesOpen = true;
-    });
+    this.closeContext(() => this.openProperties());
   },
   deleteFromContext() {
     this.closeContext(() => this.$emit("delete", this.selectedLight));
@@ -187,7 +190,7 @@ export const lightLayerEditorMethods = {
   },
   editLight(lightId) {
     this.$emit("select", lightId);
-    this.propertiesOpen = true;
+    this.$nextTick(() => this.openProperties());
   },
   keyboard(event) {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "d") {
@@ -202,7 +205,7 @@ export const lightLayerEditorMethods = {
     } else if (event.key === "Escape") {
       if (this.drag?.type === "create") this.cancel();
       this.contextMenu = null;
-      this.propertiesOpen = false;
+      this.closeProperties();
       this.$emit("select", null);
     }
   },

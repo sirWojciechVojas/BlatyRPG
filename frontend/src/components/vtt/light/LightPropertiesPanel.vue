@@ -71,11 +71,21 @@
     <p v-if="activeGroup === 'light'" class="light-properties__hint">
       {{ $t("vtt.light.lumensHint") }}
     </p>
+    <p
+      v-if="status !== 'idle'"
+      class="light-properties__status"
+      :class="`light-properties__status--${status}`"
+      role="status"
+    >
+      {{ statusMessage }}
+    </p>
     <footer>
-      <button type="button" :disabled="busy" @click="reset">
+      <button type="button" :disabled="saving" @click="reset">
         {{ $t("vtt.light.cancel") }}
       </button>
-      <button type="submit" :disabled="busy">{{ $t("vtt.light.save") }}</button>
+      <button type="submit" :disabled="saving">
+        {{ saving ? $t("vtt.light.saving") : $t("vtt.light.save") }}
+      </button>
     </footer>
   </form>
 </template>
@@ -86,32 +96,11 @@ import {
   LIGHT_SETTING_GROUPS,
   LIGHT_TYPES,
 } from "@/lib/vtt/lightOptions";
-
-const EDIT_FIELDS = [
-  "name",
-  "sourceType",
-  "lumens",
-  "direction",
-  "angle",
-  "areaWidth",
-  "areaHeight",
-  "brightRadius",
-  "dimRadius",
-  "color",
-  "opacity",
-  "softness",
-  "gradualIllumination",
-  "darknessMin",
-  "darknessMax",
-  "providesVision",
-  "constrainedByWalls",
-  "animation",
-  "animationSpeed",
-  "animationIntensity",
-  "elevation",
-  "enabled",
-  "hidden",
-];
+import {
+  changedLightProperties,
+  lightPropertiesSnapshot,
+  normalizeLightProperties,
+} from "./lightPropertiesDraft";
 
 const numberFields = [
   ["geometry", "brightRadius", "vtt.light.bright", 0, 100000, 1, "radial"],
@@ -167,16 +156,29 @@ export default {
   props: {
     light: { type: Object, required: true },
     busy: { type: Boolean, default: false },
+    status: { type: String, default: "idle" },
+    error: { type: String, default: "" },
   },
-  emits: ["close", "save"],
+  emits: ["close", "save", "preview", "unchanged"],
   data: () => ({
     form: {},
+    initial: {},
+    ready: false,
     activeGroup: "basic",
     groups: LIGHT_SETTING_GROUPS,
     types: LIGHT_TYPES,
     animations: LIGHT_ANIMATIONS,
   }),
   computed: {
+    saving() {
+      return this.busy || this.status === "saving";
+    },
+    statusMessage() {
+      if (this.status === "error") {
+        return this.error || this.$t("vtt.light.saveError");
+      }
+      return this.$t(`vtt.light.${this.status}`);
+    },
     activeNumberFields() {
       return numberFields.filter(
         (field) => field.group === this.activeGroup && this.visible(field.when),
@@ -188,6 +190,12 @@ export default {
   },
   watch: {
     "light.id": { immediate: true, handler: "reset" },
+    form: {
+      deep: true,
+      handler() {
+        if (this.ready) this.$emit("preview", this.changedFields());
+      },
+    },
   },
   methods: {
     visible(condition) {
@@ -200,14 +208,24 @@ export default {
       return condition !== "animated" || this.form.animation !== "none";
     },
     reset() {
-      this.form = Object.fromEntries(
-        EDIT_FIELDS.map((field) => [field, this.light[field]]),
-      );
+      this.ready = false;
+      this.initial = lightPropertiesSnapshot(this.light);
+      this.form = { ...this.initial };
+      this.$nextTick(() => {
+        this.ready = true;
+        this.$emit("preview", {});
+      });
+    },
+    changedFields() {
+      return changedLightProperties(this.initial, this.form);
     },
     save() {
-      const changes = { ...this.form, lumens: Math.round(this.form.lumens) };
-      changes.brightRadius = Math.min(changes.brightRadius, changes.dimRadius);
-      changes.darknessMin = Math.min(changes.darknessMin, changes.darknessMax);
+      this.form = normalizeLightProperties(this.form);
+      const changes = this.changedFields();
+      if (!Object.keys(changes).length) {
+        this.$emit("unchanged");
+        return;
+      }
       this.$emit("save", changes);
     },
   },
