@@ -14,6 +14,7 @@
           !drag?.blocked && drag?.token.id === token.id,
         'scene-token-wrap--moving': movingTokenIds[token.id],
         'scene-token-wrap--selected': tokenStates[token.id].selected,
+        'scene-token-wrap--hud': token.id === hudTokenId,
       }"
       :style="tokenStyle(token)"
       @transitionstart="startMotion($event, token.id)"

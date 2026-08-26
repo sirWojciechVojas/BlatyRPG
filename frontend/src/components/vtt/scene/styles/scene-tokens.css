@@ -16,13 +16,21 @@
   pointer-events: auto;
 }
 
+.scene-token-wrap--selected {
+  z-index: 600 !important;
+}
+
+.scene-token-wrap--hud {
+  z-index: 620 !important;
+}
+
 .scene-token-wrap--dragging {
-  z-index: 500 !important;
+  z-index: 640 !important;
   transition: none;
 }
 
 .scene-token-wrap--moving {
-  z-index: 490 !important;
+  z-index: 590 !important;
 }
 
 .scene-token-wrap--moving .scene-token {

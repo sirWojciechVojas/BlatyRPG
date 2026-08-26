@@ -27,6 +27,22 @@ describe("token presentation layout", () => {
     );
   });
 
+  it("raises the complete selected token presentation above collisions", () => {
+    const layer = template("SceneTokenLayer");
+    const styles = readFileSync(
+      resolve(
+        process.cwd(),
+        "src/components/vtt/scene/styles/scene-tokens.css",
+      ),
+      "utf8",
+    );
+
+    expect(layer).toContain("scene-token-wrap--selected");
+    expect(layer).toContain("scene-token-wrap--hud");
+    expect(styles).toContain(".scene-token-wrap--selected");
+    expect(styles).toContain(".scene-token-wrap--hud");
+  });
+
   it("positions the resource stack independently from the token name", () => {
     const source = template("TokenInfoStack");
 
