@@ -46,7 +46,10 @@
         </button>
       </aside>
 
-      <main class="admin-main" :class="{ 'ps-0': activeTab === 'users' }">
+      <main
+        class="admin-main"
+        :class="{ 'ps-0': activeTab === 'users' || activeTab === 'characters' }"
+      >
         <p v-if="error" class="admin-alert error" role="alert">
           {{ error }}
           <button type="button" @click="load">
@@ -82,6 +85,18 @@
             :campaigns="campaigns"
             :analytics="analytics"
           />
+          <AdminCharactersTab
+            v-else-if="activeTab === 'characters'"
+            :characters="characters"
+            :campaigns="campaigns"
+            :character-campaigns="characterCampaigns"
+            :character-owners="characterOwners"
+            :game-masters="characterGameMasters"
+            :busy-key="busyAssignmentKey"
+            :error="characterError"
+            @campaign-change="setCharacterCampaign"
+            @owner-change="setCharacterOwner"
+          />
           <AdminActivityTab
             v-else-if="activeTab === 'activity'"
             :activity="activity"
@@ -98,3 +113,4 @@
 <style src="./styles/AdminView.css"></style>
 <style src="./styles/AdminTables.css"></style>
 <style src="./styles/AdminOperations.css"></style>
+<style src="./styles/AdminCharacters.css"></style>

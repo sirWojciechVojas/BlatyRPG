@@ -10,6 +10,7 @@
       "refresh": "Refresh",
       "searchUsers": "Search users…",
       "searchCampaigns": "Search Tables…",
+      "searchCharacters": "Search characters, Tables or owners…",
       "createUser": "Create account",
       "saving": "Saving…"
     },
@@ -35,6 +36,7 @@
       "overview": "Overview",
       "users": "Users",
       "campaigns": "Tables",
+      "characters": "Characters",
       "activity": "Activity",
       "system": "System"
     },
@@ -71,6 +73,21 @@
       "description": "Overview of owners and active memberships.",
       "empty": "No Tables match the criteria."
     },
+    "characters": {
+      "title": "All characters",
+      "description": "Drag characters into multiple Table and owner containers. A GM always comes from their role at a specific Table.",
+      "catalog": "Character catalog",
+      "dragHint": "Drag a character into any number of containers.",
+      "tableContainers": "Table containers",
+      "ownerContainers": "Owner containers",
+      "multiTableHint": "One character may belong to multiple Tables.",
+      "multiOwnerHint": "One character may have multiple GMs across Tables.",
+      "assignmentCount": "Tables: {tables} · GMs: {owners}",
+      "dropHere": "Drop a character here",
+      "removeFromTable": "Remove character from this Table",
+      "removeFromOwner": "Remove this GM from the character owners",
+      "empty": "No characters match the criteria."
+    },
     "fields": {
       "user": "User",
       "username": "Username",
@@ -78,9 +95,12 @@
       "password": "Temporary password",
       "role": "Application privileges",
       "campaign": "Campaign",
+      "character": "Character",
       "campaigns": "Campaigns",
       "system": "System",
       "gameMaster": "Game master",
+      "currentOwner": "Current owner",
+      "gameMasterOwner": "GM owner",
       "members": "Members",
       "status": "Status",
       "created": "Created",
@@ -129,6 +149,9 @@
       "load": "The panel could not be loaded.",
       "create": "The account could not be created.",
       "role": "The role could not be changed.",
+      "characterAssignment": "The character assignment could not be changed.",
+      "characterCampaign": "The character and Table must use the same RPG system and world.",
+      "characterCandidate": "The selected user is not an active GM at this Table.",
       "validation": "The account could not be created. Correct the marked fields.",
       "lastAdmin": "The last administrator cannot be demoted.",
       "fields": {

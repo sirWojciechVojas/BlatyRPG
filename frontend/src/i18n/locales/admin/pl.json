@@ -10,6 +10,7 @@
       "refresh": "Odśwież",
       "searchUsers": "Szukaj użytkownika…",
       "searchCampaigns": "Szukaj Stołu…",
+      "searchCharacters": "Szukaj postaci, Stołu lub właściciela…",
       "createUser": "Utwórz konto",
       "saving": "Zapisywanie…"
     },
@@ -35,6 +36,7 @@
       "overview": "Przegląd",
       "users": "Użytkownicy",
       "campaigns": "Stoły",
+      "characters": "Postacie",
       "activity": "Aktywność",
       "system": "System"
     },
@@ -71,6 +73,21 @@
       "description": "Przegląd właścicieli i aktywnych członkostw.",
       "empty": "Brak Stołów spełniających kryteria."
     },
+    "characters": {
+      "title": "Wszystkie postacie",
+      "description": "Przeciągaj postacie do wielu kontenerów Stołów i właścicieli. MG zawsze wynika z roli w konkretnym Stole.",
+      "catalog": "Katalog postaci",
+      "dragHint": "Przeciągnij postać do dowolnej liczby kontenerów.",
+      "tableContainers": "Kontenery Stołów",
+      "ownerContainers": "Kontenery właścicieli",
+      "multiTableHint": "Jedna postać może należeć do wielu Stołów.",
+      "multiOwnerHint": "Jedna postać może mieć wielu MG w różnych Stołach.",
+      "assignmentCount": "Stoły: {tables} · MG: {owners}",
+      "dropHere": "Upuść postać tutaj",
+      "removeFromTable": "Usuń postać z tego Stołu",
+      "removeFromOwner": "Usuń tego MG z właścicieli postaci",
+      "empty": "Brak postaci spełniających kryteria."
+    },
     "fields": {
       "user": "Użytkownik",
       "username": "Login",
@@ -78,9 +95,12 @@
       "password": "Hasło tymczasowe",
       "role": "Uprawnienia aplikacji",
       "campaign": "Kampania",
+      "character": "Postać",
       "campaigns": "Kampanie",
       "system": "System",
       "gameMaster": "Mistrz gry",
+      "currentOwner": "Obecny właściciel",
+      "gameMasterOwner": "Właściciel MG",
       "members": "Członkowie",
       "status": "Status",
       "created": "Utworzono",
@@ -126,6 +146,9 @@
       "load": "Nie udało się wczytać panelu.",
       "create": "Nie udało się utworzyć konta.",
       "role": "Nie udało się zmienić roli.",
+      "characterAssignment": "Nie udało się zmienić przypisania postaci.",
+      "characterCampaign": "Postać i Stół muszą korzystać z tego samego systemu RPG i świata.",
+      "characterCandidate": "Wybrany użytkownik nie jest aktywnym MG tego Stołu.",
       "validation": "Nie udało się utworzyć konta. Popraw oznaczone pola.",
       "lastAdmin": "Nie można odebrać roli ostatniemu administratorowi.",
       "fields": {

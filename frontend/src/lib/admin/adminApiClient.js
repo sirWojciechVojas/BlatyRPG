@@ -30,6 +30,31 @@ const normalizeCampaign = (campaign = {}) => ({
   lastActivityAt: campaign.lastActivityAt || campaign.last_activity_at || null,
 });
 
+const normalizeCharacter = (character = {}) => ({
+  id: Number(character.id) || null,
+  name: String(character.name || ""),
+  updatedAt: character.updatedAt || character.updated_at || null,
+});
+
+const normalizeCharacterCampaign = (item = {}) => ({
+  characterId: Number(item.characterId ?? item.character_id) || null,
+  campaignId: Number(item.campaignId ?? item.campaign_id) || null,
+  campaignName: String(item.campaignName || item.campaign_name || ""),
+});
+
+const normalizeCharacterOwner = (item = {}) => ({
+  ...normalizeCharacterCampaign(item),
+  userId: Number(item.userId ?? item.user_id) || null,
+  username: String(item.username || ""),
+});
+
+const normalizeCharacterGameMaster = (item = {}) => ({
+  campaignId: Number(item.campaignId ?? item.campaign_id) || null,
+  userId: Number(item.userId ?? item.user_id) || null,
+  username: String(item.username || ""),
+  isCampaignOwner: Boolean(item.isCampaignOwner ?? item.is_campaign_owner),
+});
+
 const normalizeDistribution = (items) =>
   Array.isArray(items)
     ? items.map((item) => ({
@@ -62,6 +87,26 @@ export const createAdminApiClient = (client = jsonApiClient) => ({
         : [],
       campaigns: Array.isArray(payload?.campaigns)
         ? payload.campaigns.map(normalizeCampaign).filter((item) => item.id)
+        : [],
+      characters: Array.isArray(payload?.characters)
+        ? payload.characters.map(normalizeCharacter).filter((item) => item.id)
+        : [],
+      characterCampaigns: Array.isArray(payload?.characterCampaigns)
+        ? payload.characterCampaigns
+            .map(normalizeCharacterCampaign)
+            .filter((item) => item.characterId && item.campaignId)
+        : [],
+      characterOwners: Array.isArray(payload?.characterOwners)
+        ? payload.characterOwners
+            .map(normalizeCharacterOwner)
+            .filter(
+              (item) => item.characterId && item.campaignId && item.userId,
+            )
+        : [],
+      characterGameMasters: Array.isArray(payload?.characterGameMasters)
+        ? payload.characterGameMasters
+            .map(normalizeCharacterGameMaster)
+            .filter((item) => item.campaignId && item.userId)
         : [],
       metrics: {
         users: Number(payload?.metrics?.users || 0),
@@ -106,6 +151,21 @@ export const createAdminApiClient = (client = jsonApiClient) => ({
       },
     );
     return normalizeUser(payload?.user);
+  },
+
+  setCharacterCampaign(characterId, campaignId, assigned) {
+    return client.request(
+      `/admin/characters/${Number(characterId)}/campaigns/${Number(campaignId)}`,
+      { method: assigned ? "PUT" : "DELETE" },
+    );
+  },
+
+  setCharacterOwner(characterId, campaignId, userId, assigned) {
+    return client.request(
+      `/admin/characters/${Number(characterId)}/campaigns/${Number(campaignId)}` +
+        `/owners/${Number(userId)}`,
+      { method: assigned ? "PUT" : "DELETE" },
+    );
   },
 });
 

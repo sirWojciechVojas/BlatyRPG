@@ -1,5 +1,6 @@
 import AdminActivityTab from "@/components/admin/AdminActivityTab.vue";
 import AdminCampaignsTab from "@/components/admin/AdminCampaignsTab.vue";
+import AdminCharactersTab from "@/components/admin/AdminCharactersTab.vue";
 import AdminOverviewTab from "@/components/admin/AdminOverviewTab.vue";
 import AdminSystemTab from "@/components/admin/AdminSystemTab.vue";
 import AdminUsersTab from "@/components/admin/AdminUsersTab.vue";
@@ -21,6 +22,7 @@ export default {
   components: {
     AdminActivityTab,
     AdminCampaignsTab,
+    AdminCharactersTab,
     AdminOverviewTab,
     AdminSystemTab,
     AdminUsersTab,
@@ -30,6 +32,10 @@ export default {
     activeTab: "overview",
     users: [],
     campaigns: [],
+    characters: [],
+    characterCampaigns: [],
+    characterOwners: [],
+    characterGameMasters: [],
     activity: [],
     analytics: emptyAnalytics(),
     system: {},
@@ -45,10 +51,12 @@ export default {
     loading: true,
     creating: false,
     busyUserId: 0,
+    busyAssignmentKey: "",
     error: "",
     createError: "",
     createFieldErrors: {},
     roleError: "",
+    characterError: "",
   }),
   computed: {
     tabs() {
@@ -56,6 +64,7 @@ export default {
         { id: "overview", icon: "overview", count: null },
         { id: "users", icon: "users", count: this.metrics.users },
         { id: "campaigns", icon: "campaigns", count: this.metrics.campaigns },
+        { id: "characters", icon: "characters", count: this.characters.length },
         { id: "activity", icon: "activity", count: this.activity.length },
         { id: "system", icon: "system", count: null },
       ].map((tab) => ({ ...tab, label: this.$t(`admin.tabs.${tab.id}`) }));
@@ -157,6 +166,100 @@ export default {
         }
       } finally {
         this.busyUserId = 0;
+      }
+    },
+    async setCharacterCampaign({ character, campaignId, assigned }) {
+      this.busyAssignmentKey = `campaign:${character.id}:${campaignId}`;
+      this.characterError = "";
+      try {
+        await adminApiClient.setCharacterCampaign(
+          character.id,
+          campaignId,
+          assigned,
+        );
+        if (assigned) {
+          const campaign = this.campaigns.find(
+            (item) => item.id === campaignId,
+          );
+          this.characterCampaigns.push({
+            characterId: character.id,
+            campaignId,
+            campaignName: campaign?.name || "",
+          });
+        } else {
+          this.characterCampaigns = this.characterCampaigns.filter(
+            (item) =>
+              item.characterId !== character.id ||
+              item.campaignId !== campaignId,
+          );
+          this.characterOwners = this.characterOwners.filter(
+            (item) =>
+              item.characterId !== character.id ||
+              item.campaignId !== campaignId,
+          );
+        }
+      } catch (error) {
+        if (!this.handleAuthorization(error)) {
+          this.characterError =
+            error?.status === 422
+              ? this.$t("admin.errors.characterCampaign")
+              : this.message(error, "admin.errors.characterAssignment");
+        }
+      } finally {
+        this.busyAssignmentKey = "";
+      }
+    },
+    async setCharacterOwner({ character, gameMaster, assigned }) {
+      const { campaignId, userId } = gameMaster;
+      this.busyAssignmentKey = `owner:${character.id}:${campaignId}:${userId}`;
+      this.characterError = "";
+      try {
+        await adminApiClient.setCharacterOwner(
+          character.id,
+          campaignId,
+          userId,
+          assigned,
+        );
+        if (assigned) {
+          if (
+            !this.characterCampaigns.some(
+              (item) =>
+                item.characterId === character.id &&
+                item.campaignId === campaignId,
+            )
+          ) {
+            const campaign = this.campaigns.find(
+              (item) => item.id === campaignId,
+            );
+            this.characterCampaigns.push({
+              characterId: character.id,
+              campaignId,
+              campaignName: campaign?.name || "",
+            });
+          }
+          this.characterOwners.push({
+            characterId: character.id,
+            campaignId,
+            userId,
+            username: gameMaster.username,
+          });
+        } else {
+          this.characterOwners = this.characterOwners.filter(
+            (item) =>
+              item.characterId !== character.id ||
+              item.campaignId !== campaignId ||
+              item.userId !== userId,
+          );
+        }
+      } catch (error) {
+        if (!this.handleAuthorization(error)) {
+          this.characterError =
+            error?.status === 422
+              ? this.$t("admin.errors.characterCandidate")
+              : this.message(error, "admin.errors.characterAssignment");
+        }
+      } finally {
+        this.busyAssignmentKey = "";
       }
     },
   },

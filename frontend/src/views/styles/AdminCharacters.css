@@ -1,0 +1,178 @@
+.admin-characters-layout {
+  min-width: 0;
+}
+.admin-character-search {
+  width: min(22rem, 42%);
+}
+.admin-character-search input {
+  width: 100%;
+  min-height: var(--ui-control-height);
+  padding: 0.28rem 0.48rem;
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: rgba(9, 7, 5, 0.88);
+  color: var(--ui-color-text);
+  font: inherit;
+}
+.admin-character-workspace {
+  min-height: 0;
+  flex: 1;
+}
+.admin-character-workspace > section {
+  min-height: 0;
+}
+.admin-character-column {
+  display: grid;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr);
+  border: 1px solid rgba(111, 90, 59, 0.6);
+  border-radius: var(--ui-radius-sm);
+  background: rgba(9, 7, 5, 0.42);
+  overflow: hidden;
+}
+.admin-character-column > header {
+  padding: 0.55rem 0.65rem;
+  border-bottom: var(--ui-border);
+}
+.admin-character-column h3 {
+  margin: 0;
+  font-size: var(--ui-font-size-md);
+}
+.admin-character-column header small {
+  color: var(--ui-color-text-faint);
+  font-size: 0.62rem;
+}
+.admin-character-list,
+.admin-container-list {
+  min-height: 0;
+  overflow: auto;
+  padding: 0.45rem;
+}
+.admin-character-list {
+  display: grid;
+  align-content: start;
+  gap: 0.35rem;
+}
+.admin-character-card {
+  display: grid;
+  grid-template-columns: 1.8rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.08rem 0.5rem;
+  padding: 0.42rem;
+  border: 1px solid rgba(111, 90, 59, 0.58);
+  border-radius: var(--ui-radius-sm);
+  background: rgba(20, 14, 10, 0.78);
+  cursor: grab;
+}
+.admin-character-card:active {
+  cursor: grabbing;
+}
+.admin-character-card > span {
+  display: grid;
+  width: 1.8rem;
+  grid-row: span 2;
+  aspect-ratio: 1;
+  place-items: center;
+  border: 1px solid rgba(216, 183, 120, 0.34);
+  border-radius: 50%;
+  color: var(--ui-color-accent);
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+.admin-character-card > strong {
+  overflow: hidden;
+  font-size: var(--ui-font-size-sm);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-character-card > small {
+  color: var(--ui-color-text-faint);
+  font-size: 0.6rem;
+}
+.admin-container-list {
+  display: grid;
+  align-content: start;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.42rem;
+}
+.admin-assignment-container {
+  min-height: 6rem;
+  padding: 0.45rem;
+  border: 1px dashed rgba(216, 183, 120, 0.32);
+  border-radius: var(--ui-radius-sm);
+  background: rgba(20, 14, 10, 0.6);
+}
+.admin-assignment-container.busy {
+  opacity: 0.58;
+  pointer-events: none;
+}
+.admin-assignment-container > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.4rem;
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid rgba(111, 90, 59, 0.4);
+}
+.admin-assignment-container > header strong {
+  overflow: hidden;
+  font-size: var(--ui-font-size-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-assignment-container > header small {
+  color: var(--ui-color-accent);
+  white-space: nowrap;
+}
+.admin-assignment-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.28rem;
+  padding-top: 0.38rem;
+}
+.admin-assignment-chips span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  max-width: 100%;
+  padding: 0.18rem 0.22rem 0.18rem 0.38rem;
+  border-radius: 1rem;
+  background: var(--ui-color-accent-soft);
+  color: var(--ui-color-text-muted);
+  font-size: 0.62rem;
+}
+.admin-assignment-chips button {
+  display: grid;
+  width: 1rem;
+  height: 1rem;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.24);
+  color: var(--ui-color-text-faint);
+  cursor: pointer;
+}
+.admin-assignment-chips em,
+.admin-character-empty {
+  color: var(--ui-color-text-faint);
+  font-size: 0.62rem;
+  font-style: normal;
+}
+@media (max-width: 1199.98px) {
+  .admin-character-workspace,
+  .admin-character-workspace > section {
+    height: auto !important;
+  }
+  .admin-character-column {
+    max-height: 26rem;
+  }
+}
+@media (max-width: 650px) {
+  .admin-character-search {
+    width: 100%;
+  }
+  .admin-container-list {
+    grid-template-columns: 1fr;
+  }
+}

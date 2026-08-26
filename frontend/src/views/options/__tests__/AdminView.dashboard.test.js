@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 
 vi.mock("@/components/admin/AdminActivityTab.vue", () => ({ default: {} }));
 vi.mock("@/components/admin/AdminCampaignsTab.vue", () => ({ default: {} }));
+vi.mock("@/components/admin/AdminCharactersTab.vue", () => ({ default: {} }));
 vi.mock("@/components/admin/AdminOverviewTab.vue", () => ({ default: {} }));
 vi.mock("@/components/admin/AdminSystemTab.vue", () => ({ default: {} }));
 vi.mock("@/components/admin/AdminUsersTab.vue", () => ({ default: {} }));
@@ -15,6 +16,7 @@ describe("AdminView dashboard", () => {
   it("provides compact operational tabs with live counters", () => {
     const tabs = options.computed.tabs.call({
       metrics: { users: 12, campaigns: 4 },
+      characters: [{}, {}, {}],
       activity: [{}, {}],
       $t: (key) => key,
     });
@@ -23,6 +25,7 @@ describe("AdminView dashboard", () => {
       "overview",
       "users",
       "campaigns",
+      "characters",
       "activity",
       "system",
     ]);
@@ -32,6 +35,7 @@ describe("AdminView dashboard", () => {
       "overview",
       "users",
       "campaigns",
+      "characters",
       "activity",
       "system",
     ]);
@@ -76,7 +80,9 @@ describe("AdminView dashboard", () => {
     expect(usersTab).toContain("container-fluid h-100 p-0");
     expect(usersTab).toContain("col-12 col-xl-9 col-xxl-10");
     expect(usersTab).toContain("col-12 col-xl-3 col-xxl-2");
-    expect(adminView).toContain("'ps-0': activeTab === 'users'");
+    expect(adminView).toContain(
+      "activeTab === 'users' || activeTab === 'characters'",
+    );
   });
 
   it("keeps every administrator navigation label fully visible", () => {
