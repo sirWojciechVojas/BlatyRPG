@@ -138,6 +138,30 @@
       @edit="propertiesOpen = true"
       @delete="$emit('delete', selectedLight)"
     />
+    <LightToolToolbar
+      v-if="canManage && active"
+      :light="selectedLight"
+      :count="lights.length"
+      :list-open="listOpen"
+      :busy="busy"
+      @add="addDefault"
+      @copy="copySelected"
+      @update="updateSelected"
+      @edit="propertiesOpen = true"
+      @toggle-list="listOpen = !listOpen"
+      @delete="$emit('delete', selectedLight)"
+    />
+    <LightManagementPanel
+      v-if="canManage && active && listOpen"
+      :lights="lights"
+      :selected-id="selectedId"
+      :busy="busy"
+      @select="$emit('select', $event)"
+      @add="addDefault"
+      @update="$emit('update', $event)"
+      @edit="editLight"
+      @delete="$emit('delete', $event)"
+    />
     <LightPropertiesPanel
       v-if="canManage && active && selectedLight && propertiesOpen"
       :light="selectedLight"
@@ -152,12 +176,19 @@
 import { getCurrentInstance } from "vue";
 import { lightPolygonPath } from "@/lib/vtt/lightGeometry";
 import LightHud from "./LightHud.vue";
+import LightManagementPanel from "./LightManagementPanel.vue";
 import LightPropertiesPanel from "./LightPropertiesPanel.vue";
+import LightToolToolbar from "./LightToolToolbar.vue";
 import { lightLayerEditorMethods } from "./lightLayerEditorMethods";
 
 export default {
   name: "SceneLightLayer",
-  components: { LightHud, LightPropertiesPanel },
+  components: {
+    LightHud,
+    LightManagementPanel,
+    LightPropertiesPanel,
+    LightToolToolbar,
+  },
   props: {
     scene: { type: Object, required: true },
     lights: { type: Array, default: () => [] },
@@ -174,6 +205,7 @@ export default {
       drag: null,
       preview: null,
       propertiesOpen: false,
+      listOpen: true,
     };
   },
   computed: {

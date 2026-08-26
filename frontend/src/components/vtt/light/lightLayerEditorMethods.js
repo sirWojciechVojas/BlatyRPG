@@ -71,6 +71,24 @@ export const lightLayerEditorMethods = {
     if (!this.selectedLight || this.busy) return;
     this.$emit("create", lightCopyDraft(this.selectedLight, this.scene));
   },
+  addDefault() {
+    if (this.busy) return;
+    const grid = Math.max(1, Number(this.scene.gridSize) || 100);
+    this.$emit("create", {
+      x: Number(this.scene.width) / 2,
+      y: Number(this.scene.height) / 2,
+      brightRadius: grid * 2,
+      dimRadius: grid * 4,
+    });
+  },
+  updateSelected(changes) {
+    if (!this.selectedLight || this.busy) return;
+    this.$emit("update", { light: this.selectedLight, changes });
+  },
+  editLight(lightId) {
+    this.$emit("select", lightId);
+    this.propertiesOpen = true;
+  },
   keyboard(event) {
     if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "d") {
       event.preventDefault();

@@ -31,3 +31,24 @@
 .light-properties__toggles label { display: flex; align-items: center; gap: 5px; }
 .light-properties footer { justify-content: flex-end; }
 .light-properties footer button { padding: 3px 10px; }
+.light-tool-toolbar { position: absolute; z-index: 3; top: 8px; left: 50%; display: flex; align-items: center; gap: 3px; max-width: calc(100% - 24px); padding: 4px; overflow-x: auto; color: #d8cbb9; background: rgb(18 13 10 / 96%); border: 1px solid #80613d; border-radius: 5px; box-shadow: 0 4px 16px rgb(0 0 0 / 60%); transform: translateX(-50%); pointer-events: auto; }
+.light-tool-toolbar button,
+.light-tool-toolbar select,
+.light-tool-toolbar input { flex: 0 0 auto; min-height: 27px; color: #d8cbb9; background: #2b2119; border: 1px solid #604b38; border-radius: 3px; }
+.light-tool-toolbar button { padding: 3px 7px; }
+.light-tool-toolbar input[type="color"] { width: 30px; padding: 2px; }
+.light-tool-toolbar button.active { color: #ffe29b; border-color: #d39a4c; }
+.light-tool-toolbar__danger,
+.light-management__danger { color: #ff9e9e !important; }
+.light-management { position: absolute; z-index: 3; top: 48px; right: 8px; width: min(560px, calc(100% - 16px)); max-height: min(52%, 430px); padding: 6px; overflow: auto; color: #d8cbb9; background: rgb(18 13 10 / 96%); border: 1px solid #80613d; border-radius: 5px; pointer-events: auto; }
+.light-management header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+.light-management button,
+.light-management select,
+.light-management input { min-width: 0; min-height: 25px; color: #d8cbb9; background: #2b2119; border: 1px solid #604b38; border-radius: 3px; }
+.light-management ol { display: grid; gap: 3px; padding: 0; margin: 0; list-style: none; }
+.light-management li { display: grid; grid-template-columns: 48px 105px 30px minmax(72px, 1fr) minmax(72px, 1fr) 28px 28px; gap: 3px; align-items: center; padding: 3px; border: 1px solid transparent; border-radius: 3px; }
+.light-management li.selected { background: rgb(211 154 76 / 12%); border-color: #80613d; }
+.light-management label { display: flex; align-items: center; gap: 3px; font-size: 10px; }
+.light-management label input { width: 100%; }
+.light-management__select { display: flex; align-items: center; gap: 4px; }
+.light-management__select i { width: 12px; height: 12px; border: 1px solid #fff8; border-radius: 50%; }
