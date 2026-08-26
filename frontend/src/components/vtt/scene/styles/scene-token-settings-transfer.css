@@ -28,10 +28,6 @@
   box-shadow: 0 8px 22px rgb(0 0 0 / 62%);
 }
 
-.token-settings-transfer[open] summary {
-  display: none;
-}
-
 .token-settings-transfer__actions {
   display: flex;
   gap: 4px;
