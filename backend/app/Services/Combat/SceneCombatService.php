@@ -15,19 +15,22 @@ final class SceneCombatService
     private $sceneAccess;
     private $tokens;
     private $movement;
+    private $turns;
 
     public function __construct(
         ?BaseConnection $db = null,
         ?SceneService $scenes = null,
         ?SceneResourceAccessService $sceneAccess = null,
         ?SceneTokenService $tokens = null,
-        ?TokenMovementResetService $movement = null
+        ?TokenMovementResetService $movement = null,
+        ?CombatTurnCoordinator $turns = null
     ) {
         $this->db = $db ?: \Config\Database::connect();
         $this->scenes = $scenes ?: new SceneService($this->db);
         $this->sceneAccess = $sceneAccess ?: new SceneResourceAccessService();
         $this->tokens = $tokens ?: new SceneTokenService($this->db);
         $this->movement = $movement ?: new TokenMovementResetService($this->db);
+        $this->turns = $turns ?: new CombatTurnCoordinator($this->db, $this->movement);
     }
 
     public function get(int $campaignId, int $sceneId, array $auth): array
@@ -78,6 +81,7 @@ final class SceneCombatService
         }
         $now = date('Y-m-d H:i:s');
         $this->db->transBegin();
+        $movementChanged = false;
         try {
             if ($combat) {
                 $this->db->table('scene_combats')->set([
@@ -101,12 +105,15 @@ final class SceneCombatService
                 'created_at' => $now, 'updated_at' => $now,
             ];
             $this->db->table('scene_combatants')->insertBatch($rows);
+            $movementChanged = $this->movement->resetForAdvance(
+                $campaignId, 'turn', [$tokenIds[0]]
+            ) > 0;
             $this->finishTransaction();
         } catch (\Throwable $exception) {
             $this->db->transRollback();
             throw $exception;
         }
-        return $this->movement->resetForAdvance($campaignId, 'turn', [$tokenIds[0]]) > 0;
+        return $movementChanged;
     }
 
     private function end(int $campaignId, int $sceneId, array $payload): void
@@ -119,23 +126,10 @@ final class SceneCombatService
     {
         $combat = $this->requiredCombat($campaignId, $sceneId, $payload, true);
         $rows = $this->combatants((int) $combat['id']);
-        $next = CombatTurnSequence::advance(
-            (int) $combat['round'], (int) $combat['turn_index'], count($rows), $direction
+        return $this->turns->advance(
+            $campaignId, $combat, $rows, $direction,
+            fn (array $state, array $changes) => $this->writeCombat($state, $changes)
         );
-        $this->writeCombat($combat, [
-            'round' => $next['round'], 'turn_index' => $next['turnIndex'],
-        ]);
-        if ($direction < 0) return false;
-        $changed = 0;
-        if ($next['newRound']) {
-            $changed += $this->movement->resetForAdvance(
-                $campaignId, 'round', array_column($rows, 'token_id')
-            );
-        }
-        $changed += $this->movement->resetForAdvance(
-            $campaignId, 'turn', [(int) $rows[$next['turnIndex']]['token_id']]
-        );
-        return $changed > 0;
     }
 
     private function toggleCombatant(int $campaignId, int $sceneId, array $payload): void
