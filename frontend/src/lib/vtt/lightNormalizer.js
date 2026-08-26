@@ -8,11 +8,22 @@ const boolean = (value, fallback = false) => {
   return value === true || value === 1 || value === "1";
 };
 
+const sourceType = (source) => {
+  const value = String(source.sourceType ?? source.source_type ?? "omni");
+  return value === "light" ? "omni" : value;
+};
+
 export const normalizeLight = (source = {}) => ({
   id: number(source.id),
   sceneId: number(source.sceneId ?? source.scene_id),
   x: number(source.x),
   y: number(source.y),
+  name: String(source.name || "Light"),
+  lumens: number(source.lumens, number(source.intensity, 1) * 800),
+  direction: number(source.direction),
+  angle: number(source.angle, 90),
+  areaWidth: number(source.areaWidth ?? source.area_width, 400),
+  areaHeight: number(source.areaHeight ?? source.area_height, 400),
   brightRadius: number(source.brightRadius ?? source.bright_radius, 200),
   dimRadius: number(source.dimRadius ?? source.dim_radius, 400),
   color: String(source.color || "#FFD27A"),
@@ -25,7 +36,7 @@ export const normalizeLight = (source = {}) => ({
   ),
   darknessMin: number(source.darknessMin ?? source.darkness_min, 0),
   darknessMax: number(source.darknessMax ?? source.darkness_max, 1),
-  sourceType: String(source.sourceType ?? source.source_type ?? "light"),
+  sourceType: sourceType(source),
   providesVision: boolean(source.providesVision ?? source.provides_vision),
   constrainedByWalls: boolean(
     source.constrainedByWalls ?? source.constrained_by_walls,
@@ -46,6 +57,12 @@ export const normalizeLight = (source = {}) => ({
 
 export const lightWritePayload = (changes = {}, includeRevision = false) => {
   const allowed = [
+    "name",
+    "lumens",
+    "direction",
+    "angle",
+    "areaWidth",
+    "areaHeight",
     "x",
     "y",
     "brightRadius",

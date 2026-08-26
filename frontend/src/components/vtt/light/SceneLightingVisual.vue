@@ -7,7 +7,7 @@
           gradientUnits="userSpaceOnUse"
           :cx="light.x"
           :cy="light.y"
-          :r="light.dimRadius"
+          :r="geometry(light).dimRadius"
         >
           <stop offset="0%" stop-color="#000" :stop-opacity="strength(light)" />
           <stop
@@ -27,7 +27,7 @@
           gradientUnits="userSpaceOnUse"
           :cx="light.x"
           :cy="light.y"
-          :r="light.dimRadius"
+          :r="geometry(light).dimRadius"
         >
           <stop
             offset="0%"
@@ -46,7 +46,7 @@
           gradientUnits="userSpaceOnUse"
           :cx="light.x"
           :cy="light.y"
-          :r="light.dimRadius"
+          :r="geometry(light).dimRadius"
         >
           <stop
             offset="0%"
@@ -67,7 +67,8 @@
           v-for="light in lightSources"
           :key="`mask-${light.id}`"
           :d="path(light)"
-          :fill="`url(#${maskId(light)})`"
+          :fill="areaFill(light, `url(#${maskId(light)})`, '#000')"
+          :fill-opacity="areaOpacity(light, 1)"
         />
       </mask>
       <mask :id="visionMaskId" mask-type="luminance">
@@ -94,7 +95,16 @@
       :class="animationClass(light)"
       :style="animationStyle(light)"
       :d="path(light)"
-      :fill="`url(#${glowId(light)})`"
+      :fill="areaFill(light, `url(#${glowId(light)})`, light.color)"
+      :fill-opacity="areaOpacity(light, 0.32)"
+    />
+    <path
+      v-for="light in lightSources"
+      :key="`clarity-${light.id}`"
+      class="scene-lighting__clarity"
+      :d="path(light)"
+      fill="#fff7df"
+      :fill-opacity="strength(light) * 0.1"
     />
     <path
       v-for="light in darknessSources"
@@ -102,7 +112,8 @@
       :class="animationClass(light)"
       :style="animationStyle(light)"
       :d="path(light)"
-      :fill="`url(#${darkId(light)})`"
+      :fill="areaFill(light, `url(#${darkId(light)})`, '#01020a')"
+      :fill-opacity="areaOpacity(light, 0.85)"
     />
     <rect
       v-if="visionConstrained"
@@ -123,6 +134,7 @@ import {
   lightTransitionOffsets,
   tokenVisionSource,
 } from "@/lib/vtt/lightGeometry";
+import { effectiveLight, lumenStrength } from "@/lib/vtt/lightPhotometry";
 
 export default {
   name: "SceneLightingVisual",
@@ -135,10 +147,12 @@ export default {
   },
   computed: {
     darkness() {
+      const global = Number(this.scene.globalLightLevel);
+      if (Number.isFinite(global)) return 1 - Math.min(1, Math.max(0, global));
       return Math.min(1, Math.max(0, Number(this.scene.darknessLevel) || 0));
     },
     ambientOpacity() {
-      return this.darkness * (this.scene.globalIllumination ? 0.18 : 1);
+      return this.darkness;
     },
     activeLights() {
       return this.lights.filter((light) => lightIsActive(light, this.darkness));
@@ -208,7 +222,16 @@ export default {
       );
     },
     strength(light) {
-      return light.intensity * light.opacity;
+      return lumenStrength(light) * light.opacity;
+    },
+    geometry(light) {
+      return effectiveLight(light);
+    },
+    areaFill(light, gradient, solid) {
+      return light.sourceType === "area" ? solid : gradient;
+    },
+    areaOpacity(light, multiplier) {
+      return light.sourceType === "area" ? this.strength(light) * multiplier : 1;
     },
     brightOffset(light) {
       return `${lightTransitionOffsets(light).bright}%`;

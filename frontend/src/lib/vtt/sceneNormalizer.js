@@ -24,6 +24,18 @@ export const normalizeCapabilities = (value = {}) => ({
 export const normalizeScene = (source) => {
   if (!source || typeof source !== "object") return null;
   const gridType = String(read(source, "grid_type", "gridType") || "square");
+  const legacyDarkness = numberOr(
+    read(source, "darkness_level", "darknessLevel"),
+    0.2,
+  );
+  const legacyGlobal =
+    read(source, "global_illumination", "globalIllumination") === true ||
+    read(source, "global_illumination", "globalIllumination") === 1 ||
+    read(source, "global_illumination", "globalIllumination") === "1";
+  const globalLightLevel = numberOr(
+    read(source, "global_light_level", "globalLightLevel"),
+    1 - legacyDarkness * (legacyGlobal ? 0.18 : 1),
+  );
   return {
     id: idOrNull(source.id),
     campaignId: idOrNull(read(source, "campaign_id", "campaignId")),
@@ -46,14 +58,9 @@ export const normalizeScene = (source) => {
     backgroundColor: String(
       read(source, "background_color", "backgroundColor") || "#20242b",
     ),
-    darknessLevel: numberOr(
-      read(source, "darkness_level", "darknessLevel"),
-      0.2,
-    ),
-    globalIllumination:
-      read(source, "global_illumination", "globalIllumination") === true ||
-      read(source, "global_illumination", "globalIllumination") === 1 ||
-      read(source, "global_illumination", "globalIllumination") === "1",
+    globalLightLevel: Math.min(1, Math.max(0, globalLightLevel)),
+    darknessLevel: 1 - Math.min(1, Math.max(0, globalLightLevel)),
+    globalIllumination: legacyGlobal,
     fogExploration:
       read(source, "fog_exploration", "fogExploration") !== false &&
       read(source, "fog_exploration", "fogExploration") !== 0 &&
@@ -90,8 +97,7 @@ const WRITE_FIELDS = [
   ["gridColor", "grid_color"],
   ["gridOpacity", "grid_opacity"],
   ["backgroundColor", "background_color"],
-  ["darknessLevel", "darkness_level"],
-  ["globalIllumination", "global_illumination"],
+  ["globalLightLevel", "global_light_level"],
   ["fogExploration", "fog_exploration"],
   ["isVisible", "is_visible"],
   ["sortOrder", "sort_order"],

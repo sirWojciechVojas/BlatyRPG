@@ -4,6 +4,7 @@ import {
   lightPolygonPoints,
   lightIsActive,
   lightTransitionOffsets,
+  lightTechnicalPath,
   tokenVisionSource,
   wallBlocksLight,
 } from "../lightGeometry";
@@ -36,6 +37,30 @@ describe("light visibility polygon", () => {
 
   it("builds a closed SVG path", () => {
     expect(lightPolygonPath(light, [wall], scene)).toMatch(/^M .+ Z$/);
+  });
+
+  it("limits directional and cone lights to the configured angle", () => {
+    const points = lightPolygonPoints(
+      { ...light, sourceType: "cone", direction: 0, angle: 60 },
+      [],
+      scene,
+    );
+    expect(points[0]).toEqual({ x: 100, y: 100 });
+    expect(points.every((point) => point.x >= 100)).toBe(true);
+  });
+
+  it("renders a uniform area using its rectangular geometry", () => {
+    const points = lightPolygonPoints(
+      { ...light, sourceType: "area", areaWidth: 200, areaHeight: 100 },
+      [],
+      scene,
+    );
+    expect(Math.max(...points.map((point) => point.x))).toBe(200);
+    expect(Math.min(...points.map((point) => point.x))).toBe(0);
+    expect(Math.max(...points.map((point) => point.y))).toBe(150);
+    expect(
+      lightTechnicalPath({ ...light, sourceType: "area" }, [], scene),
+    ).toMatch(/^M/);
   });
 
   it("does not clip a source configured to ignore walls", () => {

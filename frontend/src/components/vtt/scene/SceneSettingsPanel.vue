@@ -72,20 +72,16 @@
       </label>
       <label class="scene-field scene-field--wide">
         <span>
-          {{ $t("vtt.scene.fields.darknessLevel") }}:
-          {{ Math.round(form.darknessLevel * 100) }}%
+          {{ $t("vtt.scene.fields.globalLightLevel") }}:
+          {{ Math.round(form.globalLightLevel * 100) }}%
         </span>
         <input
-          v-model.number="form.darknessLevel"
+          v-model.number="form.globalLightLevel"
           type="range"
           min="0"
           max="1"
           step="0.05"
         />
-      </label>
-      <label class="scene-field scene-field--checkbox">
-        <input v-model="form.globalIllumination" type="checkbox" />
-        <span>{{ $t("vtt.scene.fields.globalIllumination") }}</span>
       </label>
       <label class="scene-field scene-field--checkbox">
         <input v-model="form.fogExploration" type="checkbox" />
@@ -224,8 +220,7 @@ const emptyScene = () => ({
   height: 1080,
   padding: 0,
   backgroundColor: "#20242b",
-  darknessLevel: 0.2,
-  globalIllumination: false,
+  globalLightLevel: 0.8,
   fogExploration: true,
   gridType: GRID_TYPES.SQUARE,
   gridSize: 100,

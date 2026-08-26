@@ -34,6 +34,8 @@ describe("lightApiClient", () => {
       brightRadius: 150,
       dimRadius: 350,
       intensity: 0.8,
+      lumens: 640,
+      name: "Light",
       enabled: true,
       opacity: 0.7,
       sourceType: "darkness",
@@ -47,7 +49,10 @@ describe("lightApiClient", () => {
 
     await client.update(7, 4, 6, {
       id: 99,
-      intensity: 0.5,
+      lumens: 1200,
+      direction: 45,
+      angle: 60,
+      sourceType: "cone",
       opacity: 0.6,
       providesVision: true,
       revision: 2,
@@ -55,7 +60,10 @@ describe("lightApiClient", () => {
     expect(request).toHaveBeenCalledWith("/campaigns/7/scenes/4/lights/6", {
       method: "PATCH",
       body: {
-        intensity: 0.5,
+        lumens: 1200,
+        direction: 45,
+        angle: 60,
+        sourceType: "cone",
         opacity: 0.6,
         providesVision: true,
         revision: 2,

@@ -1,3 +1,5 @@
+import { effectiveLight } from "./lightPhotometry";
+
 const TAU = Math.PI * 2;
 const EPSILON = 0.00001;
 const BASE_RAYS = 96;
@@ -46,9 +48,9 @@ const endpointAngles = (origin, segment) =>
     Math.atan2(segment.y2 - origin.y, segment.x2 - origin.x),
   ].flatMap((angle) => [angle - EPSILON, angle, angle + EPSILON]);
 
-const rayDistance = (origin, angle, radius, segments) => {
+const rayDistance = (origin, angle, maximum, segments) => {
   const direction = { x: Math.cos(angle), y: Math.sin(angle) };
-  let nearest = radius;
+  let nearest = maximum;
   for (const segment of segments) {
     const start = { x: Number(segment.x1), y: Number(segment.y1) };
     const edge = {
@@ -74,26 +76,79 @@ const rayDistance = (origin, angle, radius, segments) => {
 
 const rounded = (value) => Math.round(value * 1000) / 1000;
 
-export const lightPolygonPoints = (light, walls = [], scene = {}) => {
-  const origin = { x: Number(light?.x) || 0, y: Number(light?.y) || 0 };
-  const radius = Math.max(0, Number(light?.dimRadius) || 0);
-  const segments = segmentsFor(light, walls, scene);
-  const angles = Array.from(
-    { length: BASE_RAYS },
-    (_, index) => (index / BASE_RAYS) * TAU - Math.PI,
-  );
-  for (const segment of segments) {
-    angles.push(...endpointAngles(origin, segment));
+const directional = (light) =>
+  ["directional", "cone"].includes(light?.sourceType) &&
+  Number(light?.angle ?? 90) < 360;
+
+const angleDelta = (left, right) =>
+  Math.atan2(Math.sin(left - right), Math.cos(left - right));
+
+const withinSector = (angle, light) => {
+  if (!directional(light)) return true;
+  const center = ((Number(light.direction) || 0) * Math.PI) / 180;
+  const half = ((Number(light.angle) || 90) * Math.PI) / 360;
+  return Math.abs(angleDelta(angle, center)) <= half + EPSILON;
+};
+
+const alignedAngle = (angle, light) => {
+  if (!directional(light)) return angle;
+  const center = ((Number(light.direction) || 0) * Math.PI) / 180;
+  return center + angleDelta(angle, center);
+};
+
+const baseAngles = (light) => {
+  if (!directional(light)) {
+    return Array.from(
+      { length: BASE_RAYS },
+      (_, index) => (index / BASE_RAYS) * TAU - Math.PI,
+    );
   }
-  return angles
+  const center = ((Number(light.direction) || 0) * Math.PI) / 180;
+  const span = (Math.max(1, Number(light.angle) || 90) * Math.PI) / 180;
+  const count = Math.max(3, Math.ceil((BASE_RAYS * span) / TAU));
+  return Array.from(
+    { length: count + 1 },
+    (_, index) => center - span / 2 + (span * index) / count,
+  );
+};
+
+const shapeDistance = (light, angle) => {
+  if (light.sourceType !== "area") return Math.max(0, light.dimRadius);
+  const horizontal = Math.abs(Math.cos(angle));
+  const vertical = Math.abs(Math.sin(angle));
+  return Math.min(
+    horizontal < EPSILON ? Infinity : light.areaWidth / 2 / horizontal,
+    vertical < EPSILON ? Infinity : light.areaHeight / 2 / vertical,
+  );
+};
+
+export const lightPolygonPoints = (light, walls = [], scene = {}) => {
+  const geometry = effectiveLight(light);
+  const origin = { x: Number(geometry.x) || 0, y: Number(geometry.y) || 0 };
+  const segments = segmentsFor(geometry, walls, scene);
+  const angles = baseAngles(geometry);
+  for (const segment of segments) {
+    angles.push(
+      ...endpointAngles(origin, segment)
+        .filter((angle) => withinSector(angle, geometry))
+        .map((angle) => alignedAngle(angle, geometry)),
+    );
+  }
+  const points = angles
     .sort((left, right) => left - right)
     .map((angle) => {
-      const distance = rayDistance(origin, angle, radius, segments);
+      const distance = rayDistance(
+        origin,
+        angle,
+        shapeDistance(geometry, angle),
+        segments,
+      );
       return {
         x: rounded(origin.x + Math.cos(angle) * distance),
         y: rounded(origin.y + Math.sin(angle) * distance),
       };
     });
+  return directional(geometry) ? [origin, ...points] : points;
 };
 
 export const lightIsActive = (light, darkness) => {
@@ -146,4 +201,23 @@ export const lightPolygonPath = (light, walls, scene) => {
   return `${points
     .map((point, index) => `${index ? "L" : "M"} ${point.x} ${point.y}`)
     .join(" ")} Z`;
+};
+
+export const lightTechnicalPath = (light, walls, scene, bright = false) => {
+  if (!bright) return lightPolygonPath(light, walls, scene);
+  const ratio = Math.min(
+    1,
+    Math.max(0, Number(light?.brightRadius) || 0) /
+      Math.max(1, Number(light?.dimRadius) || 0),
+  );
+  return lightPolygonPath(
+    {
+      ...light,
+      dimRadius: Number(light?.brightRadius) || 0,
+      areaWidth: (Number(light?.areaWidth) || 400) * ratio,
+      areaHeight: (Number(light?.areaHeight) || 400) * ratio,
+    },
+    walls,
+    scene,
+  );
 };

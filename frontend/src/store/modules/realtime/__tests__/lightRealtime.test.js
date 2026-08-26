@@ -58,7 +58,7 @@ describe("realtime light synchronization", () => {
     );
   });
 
-  it("applies synchronized scene Darkness without polling", () => {
+  it("applies synchronized global illumination without polling", () => {
     const context = {
       rootState: { vtt: {} },
       commit: vi.fn(),
@@ -67,12 +67,12 @@ describe("realtime light synchronization", () => {
     routeRealtimeLightEvent(context, {
       type: "scene.updated",
       payload: {
-        scene: { id: 4, darkness_level: "0.8", revision: 3 },
+        scene: { id: 4, global_light_level: "0.2", revision: 3 },
       },
     });
     expect(context.commit).toHaveBeenCalledWith(
       "vtt/UPSERT_SCENE",
-      expect.objectContaining({ id: 4, darknessLevel: 0.8, revision: 3 }),
+      expect.objectContaining({ id: 4, globalLightLevel: 0.2, revision: 3 }),
       { root: true },
     );
   });

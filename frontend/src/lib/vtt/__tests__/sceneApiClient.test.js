@@ -55,10 +55,11 @@ describe("sceneApiClient", () => {
       backgroundUrl: "https://example.test/ruins.webp",
       gridType: "hex_pointy",
       gridSize: 72,
-      darknessLevel: 0.65,
+      globalLightLevel: 0.883,
       globalIllumination: true,
       fogExploration: false,
     });
+    expect(result.scene.darknessLevel).toBeCloseTo(0.117);
   });
 
   it("whitelists update fields and sends the optimistic revision", async () => {

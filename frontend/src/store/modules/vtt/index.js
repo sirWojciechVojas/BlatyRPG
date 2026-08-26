@@ -30,6 +30,7 @@ export const createVttModule = (
   actions.updateSelectedScene = async (context, changes) => {
     const scene = await updateSelectedScene(context, changes);
     const lightingFields = [
+      "globalLightLevel",
       "darknessLevel",
       "globalIllumination",
       "fogExploration",
