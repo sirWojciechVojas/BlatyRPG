@@ -5,7 +5,10 @@ namespace App\Services\Light;
 final class LightPayloadValidator
 {
     private const FIELDS = [
-        'x', 'y', 'brightRadius', 'dimRadius', 'color', 'intensity', 'enabled', 'hidden',
+        'x', 'y', 'brightRadius', 'dimRadius', 'color', 'intensity', 'opacity',
+        'softness', 'gradualIllumination', 'darknessMin', 'darknessMax',
+        'sourceType', 'providesVision', 'constrainedByWalls', 'animation',
+        'animationSpeed', 'animationIntensity', 'elevation', 'enabled', 'hidden',
     ];
 
     public function create(array $payload): array
@@ -43,8 +46,19 @@ final class LightPayloadValidator
                 $this->number($payload[$field], $db, 0, 100000, $data, $errors, $field);
             }
         }
-        if (array_key_exists('intensity', $payload)) {
-            $this->number($payload['intensity'], 'intensity', 0, 1, $data, $errors);
+        foreach (['intensity' => 'intensity', 'opacity' => 'opacity',
+            'softness' => 'softness', 'darknessMin' => 'darkness_min',
+            'darknessMax' => 'darkness_max', 'animationIntensity' => 'animation_intensity']
+            as $field => $db) {
+            if (array_key_exists($field, $payload)) {
+                $this->number($payload[$field], $db, 0, 1, $data, $errors, $field);
+            }
+        }
+        if (array_key_exists('animationSpeed', $payload)) {
+            $this->number($payload['animationSpeed'], 'animation_speed', 0.1, 10, $data, $errors, 'animationSpeed');
+        }
+        if (array_key_exists('elevation', $payload)) {
+            $this->number($payload['elevation'], 'elevation', -1000000, 1000000, $data, $errors);
         }
         if (array_key_exists('color', $payload)) {
             $color = strtoupper(trim((string) $payload['color']));
@@ -52,21 +66,42 @@ final class LightPayloadValidator
                 $errors['color'] = 'Color is invalid.';
             } else $data['color'] = $color;
         }
-        foreach (['enabled', 'hidden'] as $field) {
+        foreach (['enabled' => 'enabled', 'hidden' => 'hidden',
+            'gradualIllumination' => 'gradual_illumination',
+            'providesVision' => 'provides_vision',
+            'constrainedByWalls' => 'constrained_by_walls'] as $field => $db) {
             if (!array_key_exists($field, $payload)) continue;
             $value = filter_var($payload[$field], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
             if ($value === null) $errors[$field] = 'A boolean is required.';
-            else $data[$field] = $value ? 1 : 0;
+            else $data[$db] = $value ? 1 : 0;
+        }
+        foreach (['sourceType' => ['source_type', ['light', 'darkness']],
+            'animation' => ['animation', ['none', 'flicker', 'pulse', 'vortex']]]
+            as $field => [$db, $allowedValues]) {
+            if (!array_key_exists($field, $payload)) continue;
+            $value = strtolower(trim((string) $payload[$field]));
+            if (!in_array($value, $allowedValues, true)) $errors[$field] = 'Value is invalid.';
+            else $data[$db] = $value;
         }
         if (!$partial) {
             $data += [
                 'bright_radius' => 200, 'dim_radius' => 400, 'color' => '#FFD27A',
-                'intensity' => 1, 'enabled' => 1, 'hidden' => 0,
+                'intensity' => 1, 'opacity' => 1, 'softness' => 0.5,
+                'gradual_illumination' => 1, 'darkness_min' => 0,
+                'darkness_max' => 1, 'source_type' => 'light',
+                'provides_vision' => 0, 'constrained_by_walls' => 1,
+                'animation' => 'none', 'animation_speed' => 1,
+                'animation_intensity' => 0.5, 'elevation' => 0,
+                'enabled' => 1, 'hidden' => 0,
             ];
         }
         if (isset($data['bright_radius'], $data['dim_radius'])
             && $data['bright_radius'] > $data['dim_radius']) {
             $errors['dimRadius'] = 'Dim radius must include the bright radius.';
+        }
+        if (isset($data['darkness_min'], $data['darkness_max'])
+            && $data['darkness_min'] > $data['darkness_max']) {
+            $errors['darknessMax'] = 'Maximum darkness must include the minimum.';
         }
         return $partial ? $this->revision($payload, $data, $errors) : [
             'valid' => !$errors, 'data' => $data, 'errors' => $errors,

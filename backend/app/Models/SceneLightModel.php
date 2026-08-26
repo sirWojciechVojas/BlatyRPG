@@ -12,7 +12,10 @@ class SceneLightModel extends Model
     protected $useSoftDeletes = true;
     protected $allowedFields = [
         'campaign_id', 'scene_id', 'x', 'y', 'bright_radius', 'dim_radius',
-        'color', 'intensity', 'enabled', 'hidden', 'revision',
+        'color', 'intensity', 'opacity', 'softness', 'gradual_illumination',
+        'darkness_min', 'darkness_max', 'source_type', 'provides_vision',
+        'constrained_by_walls', 'animation', 'animation_speed',
+        'animation_intensity', 'elevation', 'enabled', 'hidden', 'revision',
     ];
     protected $useTimestamps = true;
     protected $afterFind = ['normalizeRows'];
@@ -25,10 +28,13 @@ class SceneLightModel extends Model
             foreach (['id', 'campaign_id', 'scene_id', 'revision'] as $field) {
                 if (isset($row[$field])) $row[$field] = (int) $row[$field];
             }
-            foreach (['x', 'y', 'bright_radius', 'dim_radius', 'intensity'] as $field) {
+            foreach (['x', 'y', 'bright_radius', 'dim_radius', 'intensity', 'opacity',
+                'softness', 'darkness_min', 'darkness_max', 'animation_speed',
+                'animation_intensity', 'elevation'] as $field) {
                 if (isset($row[$field])) $row[$field] = (float) $row[$field];
             }
-            foreach (['enabled', 'hidden'] as $field) {
+            foreach (['gradual_illumination', 'provides_vision', 'constrained_by_walls',
+                'enabled', 'hidden'] as $field) {
                 if (isset($row[$field])) $row[$field] = (bool) $row[$field];
             }
         };

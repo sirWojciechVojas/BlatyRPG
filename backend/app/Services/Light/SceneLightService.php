@@ -146,9 +146,10 @@ final class SceneLightService
     {
         $outside = $light['x'] < 0 || $light['y'] < 0
             || $light['x'] > $scene['width'] || $light['y'] > $scene['height'];
-        if ($outside || $light['bright_radius'] > $light['dim_radius']) {
+        $invalidRange = ($light['darkness_min'] ?? 0) > ($light['darkness_max'] ?? 1);
+        if ($outside || $light['bright_radius'] > $light['dim_radius'] || $invalidRange) {
             throw new LightException('validation_failed', 'Light geometry is invalid.', 422, [
-                'geometry' => 'Light must be inside the scene and its radii must be ordered.',
+                'geometry' => 'Light must be inside the scene and its ranges must be ordered.',
             ]);
         }
     }
