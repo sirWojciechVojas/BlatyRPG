@@ -6,7 +6,7 @@
     <SceneLightingVisual
       :uid="uid"
       :scene="scene"
-      :lights="lights"
+      :lights="visualLights"
       :walls="walls"
       :can-manage="canManage"
     />
@@ -160,6 +160,39 @@ export default {
     },
     creationPreview() {
       return this.drag?.type === "create" ? this.preview : null;
+    },
+    visualLights() {
+      if (this.drag?.type === "move") {
+        return this.lights.map((light) =>
+          light.id === this.drag.light.id
+            ? { ...light, ...this.preview }
+            : light,
+        );
+      }
+      if (this.creationPreview) {
+        return [
+          ...this.lights,
+          {
+            ...this.creationPreview,
+            id: "draft",
+            color: "#FFD27A",
+            intensity: 1,
+            opacity: 1,
+            softness: 0.5,
+            gradualIllumination: true,
+            darknessMin: 0,
+            darknessMax: 1,
+            sourceType: "light",
+            constrainedByWalls: true,
+            animation: "none",
+            animationSpeed: 1,
+            animationIntensity: 0.5,
+            elevation: 0,
+            enabled: true,
+          },
+        ];
+      }
+      return this.lights;
     },
     viewBox() {
       return `0 0 ${this.scene.width} ${this.scene.height}`;
