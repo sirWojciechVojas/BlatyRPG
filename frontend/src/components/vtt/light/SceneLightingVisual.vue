@@ -70,6 +70,15 @@
           :fill="`url(#${maskId(light)})`"
         />
       </mask>
+      <mask :id="visionMaskId" mask-type="luminance">
+        <rect width="100%" height="100%" fill="#fff" />
+        <path
+          v-for="source in visionSources"
+          :key="`vision-${source.id}`"
+          :d="visionPath(source)"
+          fill="#000"
+        />
+      </mask>
     </defs>
     <rect
       class="scene-lighting__ambient"
@@ -95,6 +104,15 @@
       :d="path(light)"
       :fill="`url(#${darkId(light)})`"
     />
+    <rect
+      v-if="visionConstrained"
+      class="scene-lighting__fog"
+      width="100%"
+      height="100%"
+      fill="#010208"
+      :fill-opacity="scene.fogExploration ? 0.86 : 0.98"
+      :mask="`url(#${visionMaskId})`"
+    />
   </svg>
 </template>
 
@@ -103,6 +121,7 @@ import {
   lightIsActive,
   lightPolygonPath,
   lightTransitionOffsets,
+  tokenVisionSource,
 } from "@/lib/vtt/lightGeometry";
 
 export default {
@@ -112,6 +131,7 @@ export default {
     scene: { type: Object, required: true },
     lights: { type: Array, default: () => [] },
     walls: { type: Array, default: () => [] },
+    canManage: { type: Boolean, default: false },
   },
   computed: {
     darkness() {
@@ -133,6 +153,23 @@ export default {
         (light) => light.sourceType === "darkness",
       );
     },
+    tokens() {
+      return this.$store?.getters?.["vtt/selectedSceneTokens"] || [];
+    },
+    tokenVisionSources() {
+      return this.tokens
+        .map((token) => tokenVisionSource(token, this.scene))
+        .filter(Boolean);
+    },
+    visionSources() {
+      return [
+        ...this.tokenVisionSources,
+        ...this.activeLights.filter((light) => light.providesVision),
+      ];
+    },
+    visionConstrained() {
+      return !this.canManage && this.tokenVisionSources.length > 0;
+    },
     paths() {
       return Object.fromEntries(
         this.activeLights.map((light) => [
@@ -147,6 +184,9 @@ export default {
     darknessMaskId() {
       return `scene-darkness-${this.uid}`;
     },
+    visionMaskId() {
+      return `scene-vision-${this.uid}`;
+    },
   },
   methods: {
     maskId(light) {
@@ -160,6 +200,12 @@ export default {
     },
     path(light) {
       return this.paths[light.id] || "";
+    },
+    visionPath(source) {
+      return (
+        this.paths[source.id] ||
+        lightPolygonPath(source, this.walls, this.scene)
+      );
     },
     strength(light) {
       return light.intensity * light.opacity;

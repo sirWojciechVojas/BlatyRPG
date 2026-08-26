@@ -3,6 +3,7 @@
 .scene-light-layer__editor { position: absolute; inset: 0; width: 100%; height: 100%; }
 .scene-light-layer__visual { overflow: hidden; pointer-events: none; }
 .scene-lighting__ambient { transition: fill-opacity 600ms ease; }
+.scene-lighting__fog { transition: fill-opacity 300ms ease; }
 .scene-lighting--flicker { animation: scene-light-flicker var(--light-animation-duration) steps(5, end) infinite; }
 .scene-lighting--pulse { animation: scene-light-pulse var(--light-animation-duration) ease-in-out infinite; }
 .scene-lighting--vortex { animation: scene-light-vortex var(--light-animation-duration) linear infinite; }

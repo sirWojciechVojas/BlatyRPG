@@ -8,6 +8,7 @@
       :scene="scene"
       :lights="lights"
       :walls="walls"
+      :can-manage="canManage"
     />
     <svg
       v-if="canManage && active"

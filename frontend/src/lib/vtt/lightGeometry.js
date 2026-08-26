@@ -120,6 +120,26 @@ export const lightTransitionOffsets = (light) => {
   };
 };
 
+export const tokenVisionSource = (token, scene = {}) => {
+  const vision = token?.vision || {};
+  if (vision.enabled !== true || token?.capabilities?.canControl !== true)
+    return null;
+  const radius = Number(
+    vision.dimRadius ??
+      vision.radius ??
+      vision.range ??
+      (Number(scene.gridSize) || 100) * 6,
+  );
+  return {
+    id: `token-${token.id}`,
+    x: Number(token.x) + Number(token.width || scene.gridSize || 100) / 2,
+    y: Number(token.y) + Number(token.height || scene.gridSize || 100) / 2,
+    dimRadius: Math.max(0, radius),
+    constrainedByWalls: vision.constrainedByWalls !== false,
+    elevation: Number(token.elevation) || 0,
+  };
+};
+
 export const lightPolygonPath = (light, walls, scene) => {
   const points = lightPolygonPoints(light, walls, scene);
   if (!points.length) return "";

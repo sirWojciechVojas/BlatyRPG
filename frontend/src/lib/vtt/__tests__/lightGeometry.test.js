@@ -4,6 +4,7 @@ import {
   lightPolygonPoints,
   lightIsActive,
   lightTransitionOffsets,
+  tokenVisionSource,
   wallBlocksLight,
 } from "../lightGeometry";
 
@@ -70,5 +71,29 @@ describe("light visibility polygon", () => {
         gradualIllumination: false,
       }),
     ).toEqual({ bright: 50, fade: 100 });
+  });
+
+  it("builds wall-aware Vision only for a controlled enabled token", () => {
+    const token = {
+      id: 7,
+      x: 100,
+      y: 200,
+      width: 80,
+      height: 80,
+      elevation: 2,
+      vision: { enabled: true, range: 450 },
+      capabilities: { canControl: true },
+    };
+    expect(tokenVisionSource(token, { gridSize: 80 })).toMatchObject({
+      id: "token-7",
+      x: 140,
+      y: 240,
+      dimRadius: 450,
+      constrainedByWalls: true,
+      elevation: 2,
+    });
+    expect(
+      tokenVisionSource({ ...token, capabilities: { canControl: false } }),
+    ).toBeNull();
   });
 });
