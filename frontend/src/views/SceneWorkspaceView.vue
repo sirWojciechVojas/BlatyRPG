@@ -46,8 +46,27 @@
       />
 
       <section class="scene-workspace__main">
-        <div v-if="state.error" class="scene-workspace__notice" role="alert">
-          <span>{{ errorMessage }}</span>
+        <div
+          v-if="state.error"
+          class="scene-workspace__notice"
+          :class="{
+            'scene-workspace__notice--movement':
+              state.error?.code === 'movement_points_depleted',
+          }"
+          role="alert"
+        >
+          <span class="scene-workspace__notice-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M12 3 2.8 20h18.4L12 3Z" />
+              <path d="M12 9v5m0 3h.01" />
+            </svg>
+          </span>
+          <span class="scene-workspace__notice-copy">
+            <strong v-if="state.error?.code === 'movement_points_depleted'">
+              {{ $t("vtt.scene.errors.movementPointsDepletedTitle") }}
+            </strong>
+            <span>{{ errorMessage }}</span>
+          </span>
           <button
             v-if="state.error?.code === 'movement_points_depleted'"
             type="button"

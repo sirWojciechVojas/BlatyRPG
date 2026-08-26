@@ -79,7 +79,8 @@
       "errors": {
         "network": "Brak połączenia z serwerem.",
         "conflict": "Scena została zmieniona przez innego użytkownika. Odśwież dane.",
-        "movementPointsDepleted": "Brak punktów ruchu. Ruch tokena jest zablokowany — nowe punkty ruchu przydziela lub resetuje MG.",
+        "movementPointsDepletedTitle": "Brak punktów ruchu",
+        "movementPointsDepleted": "Ten token wykorzystał dostępne PR. Nowe punkty ruchu przydziela lub resetuje MG.",
         "generic": "Nie udało się wykonać operacji na scenie.",
         "validation": "Popraw pola: {fields}."
       }

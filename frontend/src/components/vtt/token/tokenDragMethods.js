@@ -15,6 +15,12 @@ const hasNoMovementPoints = (token) => {
   );
 };
 
+const exceedsDragThreshold = (drag, event) =>
+  Math.hypot(
+    pointerValue(event, "clientX") - drag.clientX,
+    pointerValue(event, "clientY") - drag.clientY,
+  ) >= 5;
+
 const removeListeners = (vm) => {
   window.removeEventListener("pointermove", vm.moveDrag);
   window.removeEventListener("pointerup", vm.finishDrag);
@@ -47,10 +53,6 @@ export const tokenDragMethods = {
     ) {
       return;
     }
-    if (hasNoMovementPoints(token)) {
-      this.$emit("movement-depleted", token);
-      return;
-    }
     this.cancelDrag();
     this.drag = {
       id: event.pointerId,
@@ -60,6 +62,7 @@ export const tokenDragMethods = {
       clientY: pointerValue(event, "clientY"),
       waypoints: [],
       movement: null,
+      blocked: hasNoMovementPoints(token),
     };
     event.currentTarget.setPointerCapture?.(event.pointerId);
     window.addEventListener("pointermove", this.moveDrag);
@@ -70,6 +73,13 @@ export const tokenDragMethods = {
   },
   moveDrag(event) {
     if (!this.drag || event.pointerId !== this.drag.id) return;
+    if (this.drag.blocked) {
+      if (!exceedsDragThreshold(this.drag, event)) return;
+      const token = this.drag.token;
+      this.clearDrag();
+      this.$emit("movement-depleted", token);
+      return;
+    }
     const scale = Math.max(0.05, Number(this.scale) || 1);
     const position = snapTokenPosition(
       this.scene,
@@ -129,6 +139,7 @@ export const tokenDragMethods = {
   finishDrag(event) {
     if (!this.drag || event.pointerId !== this.drag.id) return;
     this.moveDrag(event);
+    if (!this.drag) return;
     const { token, waypoints, movement } = this.drag;
     const position = this.preview[token.id];
     this.clearDrag();

@@ -10,7 +10,8 @@
       :key="token.id"
       class="scene-token-wrap"
       :class="{
-        'scene-token-wrap--dragging': drag?.token.id === token.id,
+        'scene-token-wrap--dragging':
+          !drag?.blocked && drag?.token.id === token.id,
         'scene-token-wrap--moving': movingTokenIds[token.id],
         'scene-token-wrap--selected': tokenStates[token.id].selected,
       }"
@@ -215,7 +216,7 @@ export default {
           tokenUiFlags(token, {
             selectedIds: this.effectiveSelectedIds,
             hoveredId: this.hoveredTokenId,
-            draggingId: this.drag?.token.id,
+            draggingId: this.drag?.blocked ? null : this.drag?.token.id,
             activeTurnId: this.activeTurnId,
             waitingTurnIds: this.waitingTurnIds,
             targetedIds: this.targetedIds,
@@ -225,7 +226,7 @@ export default {
       );
     },
     dragIndicator() {
-      if (!this.drag) return null;
+      if (!this.drag || this.drag.blocked) return null;
       return buildTokenDragIndicator(
         this.scene,
         this.drag.token,

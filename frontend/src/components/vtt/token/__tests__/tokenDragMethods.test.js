@@ -148,7 +148,7 @@ describe("token pointer drag", () => {
     expect(vm.drag).toBeNull();
   });
 
-  it("blocks a player before dragging when no movement points remain", () => {
+  it("warns a depleted player only after a real drag gesture", () => {
     const vm = context();
     const token = {
       id: 10,
@@ -161,12 +161,42 @@ describe("token pointer drag", () => {
       {
         pointerId: 2,
         button: 0,
+        clientX: 20,
+        clientY: 30,
         currentTarget: target(),
         preventDefault: vi.fn(),
       },
       token,
     );
 
+    expect(vm.$emit).not.toHaveBeenCalledWith("movement-depleted", token);
+    expect(vm.drag).toMatchObject({ token, blocked: true });
+    window.dispatchEvent(
+      pointer("pointerup", { pointerId: 2, clientX: 20, clientY: 30 }),
+    );
+    expect(vm.$emit).not.toHaveBeenCalledWith("movement-depleted", token);
+    expect(vm.drag).toBeNull();
+
+    vm.startDrag(
+      {
+        pointerId: 3,
+        button: 0,
+        clientX: 20,
+        clientY: 30,
+        currentTarget: target(),
+        preventDefault: vi.fn(),
+      },
+      token,
+    );
+
+    window.dispatchEvent(
+      pointer("pointermove", { pointerId: 3, clientX: 22, clientY: 32 }),
+    );
+    expect(vm.$emit).not.toHaveBeenCalledWith("movement-depleted", token);
+
+    window.dispatchEvent(
+      pointer("pointermove", { pointerId: 3, clientX: 28, clientY: 30 }),
+    );
     expect(vm.$emit).toHaveBeenCalledWith("movement-depleted", token);
     expect(vm.$emit).not.toHaveBeenCalledWith(
       "movement-limit",

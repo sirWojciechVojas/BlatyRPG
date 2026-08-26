@@ -79,7 +79,8 @@
       "errors": {
         "network": "Could not connect to the server.",
         "conflict": "Another user changed this scene. Refresh its data.",
-        "movementPointsDepleted": "No movement points remain. Token movement is blocked until the GM assigns or resets movement points.",
+        "movementPointsDepletedTitle": "No movement points remain",
+        "movementPointsDepleted": "This token has spent its available movement. The GM must assign or reset its movement points.",
         "generic": "The scene operation failed.",
         "validation": "Correct these fields: {fields}."
       }
