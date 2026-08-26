@@ -57,3 +57,36 @@ test("broadcasts combat invalidation after the authoritative command", async () 
   assert.equal(updated.payload.sceneId, 4);
   assert.equal(ack.payload.requestId, "combat-next-1");
 });
+
+test("does not reveal hidden-scene combat commands to regular players", async () => {
+  const setup = await startTestServer({}, {
+    combatBackend: {
+      command: async () => ({
+        action: "next",
+        movementChanged: false,
+        publishToPlayers: false,
+      }),
+    },
+  });
+  running.push(setup);
+  const gm = await connect(setup.url, 1, "hidden-combat-0001", {
+    canManage: true,
+  });
+  const player = await connect(setup.url, 2, "hidden-combat-0002");
+
+  gm.send({
+    v: 1,
+    type: "combat.command",
+    requestId: "hidden-combat-next",
+    sceneId: 77,
+    command: { action: "next", revision: 2 },
+  });
+  const [updated, marker] = await Promise.all([
+    gm.event("combat.updated"),
+    player.event("sync.marker"),
+  ]);
+
+  assert.equal(updated.payload.sceneId, 77);
+  assert.deepEqual(marker.payload, {});
+  assert.equal(player.history.some(({ type }) => type === "combat.updated"), false);
+});
