@@ -149,6 +149,17 @@ export const parseSceneElementMessage = (message) => {
   const definition = definitions[resource];
   if (!definition || message.type !== `${resource}.change`) return null;
   const operation = String(message.operation || "");
+  if (resource === "light" && operation === "syncScene") {
+    exactKeys(message, ["v", "type", "requestId", "operation", "sceneId"]);
+    const sceneId = positiveId(message.sceneId, "scene_id_invalid");
+    if (!sceneId) throw new ProtocolError("light_change_invalid");
+    return {
+      type: message.type,
+      requestId: requestId(message.requestId),
+      operation,
+      sceneId,
+    };
+  }
   if (!["create", "update", "delete"].includes(operation)) {
     throw new ProtocolError(`${resource}_operation_invalid`);
   }

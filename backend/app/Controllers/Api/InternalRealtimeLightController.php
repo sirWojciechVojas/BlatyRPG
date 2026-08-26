@@ -8,6 +8,7 @@ use App\Services\Chat\CampaignChatException;
 use App\Services\Light\LightException;
 use App\Services\Light\SceneLightService;
 use App\Services\Realtime\RealtimePrincipalService;
+use App\Services\Scene\SceneService;
 use CodeIgniter\API\ResponseTrait;
 
 /** Docker-network adapter; SceneLightService remains the authority. */
@@ -17,13 +18,16 @@ class InternalRealtimeLightController extends BaseController
 
     private $principals;
     private $lights;
+    private $scenes;
 
     public function __construct(
         ?RealtimePrincipalService $principals = null,
-        ?SceneLightService $lights = null
+        ?SceneLightService $lights = null,
+        ?SceneService $scenes = null
     ) {
         $this->principals = $principals ?: new RealtimePrincipalService();
         $this->lights = $lights ?: new SceneLightService();
+        $this->scenes = $scenes ?: new SceneService();
     }
 
     public function change($campaignId = null)
@@ -39,6 +43,9 @@ class InternalRealtimeLightController extends BaseController
                 $this->request->getHeaderLine('X-Realtime-Client-Instance'),
                 $id
             );
+            if ($operation === 'syncScene') {
+                return $this->respond($this->scenes->getScene($id, $sceneId, $auth));
+            }
             if ($operation === 'create') {
                 return $this->respond($this->lights->create(
                     $id,
@@ -96,11 +103,15 @@ class InternalRealtimeLightController extends BaseController
 
     private function exactKeys(array $payload, string $operation): void
     {
-        $allowed = $operation === 'create'
-            ? ['operation', 'sceneId', 'changes']
-            : ['operation', 'sceneId', 'lightId', 'revision', 'changes'];
-        if ($operation === 'delete') {
-            $allowed = ['operation', 'sceneId', 'lightId', 'revision'];
+        if ($operation === 'syncScene') {
+            $allowed = ['operation', 'sceneId'];
+        } else {
+            $allowed = $operation === 'create'
+                ? ['operation', 'sceneId', 'changes']
+                : ['operation', 'sceneId', 'lightId', 'revision', 'changes'];
+            if ($operation === 'delete') {
+                $allowed = ['operation', 'sceneId', 'lightId', 'revision'];
+            }
         }
         $unexpected = array_diff(array_keys($payload), $allowed);
         if ($unexpected) {

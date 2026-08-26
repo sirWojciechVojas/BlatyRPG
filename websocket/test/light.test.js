@@ -79,3 +79,41 @@ test("broadcasts committed light effects to every campaign session", async () =>
   assert.equal(ack.payload.requestId, request.requestId);
   assert.equal(regularUpdate.payload.light.intensity, 0.5);
 });
+
+test("broadcasts the authoritative scene Darkness snapshot", async () => {
+  const setup = await startTestServer(
+    {},
+    {
+      lightBackend: {
+        change: async () => ({
+          operation: "syncScene",
+          scene: {
+            id: 4,
+            name: "Crypt",
+            darknessLevel: 0.8,
+            globalIllumination: false,
+            fogExploration: true,
+            revision: 3,
+          },
+        }),
+      },
+    },
+  );
+  running.push(setup);
+  const sender = await connect(setup.url, 1, "client-instance-0001");
+  const regular = await connect(setup.url, 2, "client-instance-0002");
+
+  sender.send({
+    v: 1,
+    type: "light.change",
+    requestId: "scene-lighting-sync-1",
+    operation: "syncScene",
+    sceneId: 4,
+  });
+  const [updated, ack] = await Promise.all([
+    regular.event("scene.updated"),
+    sender.event("light.ack"),
+  ]);
+  assert.equal(updated.payload.scene.darknessLevel, 0.8);
+  assert.equal(ack.payload.revision, 3);
+});

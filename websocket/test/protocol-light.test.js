@@ -97,3 +97,21 @@ test("requires optimistic revisions for light updates", () => {
       error instanceof ProtocolError && error.code === "light_change_invalid",
   );
 });
+
+test("accepts a bounded request to synchronize authoritative scene lighting", () => {
+  assert.deepEqual(
+    parseAuthenticatedMessage({
+      v: 1,
+      type: "light.change",
+      requestId: "scene-lighting-sync-1",
+      operation: "syncScene",
+      sceneId: 4,
+    }),
+    {
+      type: "light.change",
+      requestId: "scene-lighting-sync-1",
+      operation: "syncScene",
+      sceneId: 4,
+    },
+  );
+});

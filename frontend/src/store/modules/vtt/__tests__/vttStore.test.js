@@ -32,8 +32,10 @@ const apiMock = (canManage) => {
   };
 };
 
-const setup = (api) => {
-  const store = createStore({ modules: { vtt: createVttModule(api) } });
+const setup = (api, realtime = null) => {
+  const modules = { vtt: createVttModule(api) };
+  if (realtime) modules.realtime = realtime;
+  const store = createStore({ modules });
   store.commit("vtt/SET_CAMPAIGN", 7);
   return store;
 };
@@ -85,5 +87,25 @@ describe("VTT scene store", () => {
     );
     expect(api.create.mock.calls[0][1]).not.toHaveProperty("id");
     expect(api.create.mock.calls[0][1]).not.toHaveProperty("revision");
+  });
+
+  it("publishes authoritative Darkness after a scene update", async () => {
+    const api = apiMock(true);
+    api.update.mockResolvedValue({
+      scene: scene({ darknessLevel: 0.8, revision: 2 }),
+      capabilities: { canManage: true, canViewHidden: true },
+    });
+    const syncSceneLighting = vi.fn();
+    const store = setup(api, {
+      namespaced: true,
+      actions: { syncSceneLighting },
+    });
+    await store.dispatch("vtt/initialize");
+    await store.dispatch("vtt/updateSelectedScene", { darknessLevel: 0.8 });
+
+    expect(syncSceneLighting).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining({ id: 1, darknessLevel: 0.8, revision: 2 }),
+    );
   });
 });

@@ -39,12 +39,15 @@ export const createSceneElementHandler = ({
 
   const publish = (session, request, result) => {
     const sequence = rooms.nextSequence(session.campaignId);
-    const type =
-      result.operation === "delete"
+    const type = result.scene
+      ? "scene.updated"
+      : result.operation === "delete"
         ? `${resource}.deleted`
         : `${resource}.updated`;
     const item = result[resource];
-    const payload = item
+    const payload = result.scene
+      ? { scene: result.scene }
+      : item
       ? { [resource]: item }
       : { sceneId: result.sceneId, [idKey]: result[idKey] };
     const event = eventFor(session, type, payload, sequence);
@@ -63,12 +66,16 @@ export const createSceneElementHandler = ({
           sequence,
         )
       : null;
+    const hiddenScene =
+      result.scene &&
+      (result.scene.isVisible === false || result.scene.is_visible === false);
     for (const recipient of rooms.sessions(session.campaignId)) {
       const canManage =
         recipient.id === session.id ||
         recipient.capabilities?.canManage === true ||
         recipient.capabilities?.canViewHidden === true;
       let recipientEvent = publicUpdates ? event : marker;
+      if (hiddenScene && !canManage) recipientEvent = marker;
       if (hideHidden && result.operation === "delete" && result.hidden) {
         recipientEvent = marker;
       } else if (hideHidden && hiddenEvent) {
@@ -81,8 +88,8 @@ export const createSceneElementHandler = ({
       eventFor(session, `${resource}.ack`, {
         requestId: request.requestId,
         operation: result.operation,
-        [idKey]: item?.id ?? result[idKey],
-        revision: item?.revision ?? null,
+        [idKey]: item?.id ?? result[idKey] ?? null,
+        revision: item?.revision ?? result.scene?.revision ?? null,
       }),
     );
   };

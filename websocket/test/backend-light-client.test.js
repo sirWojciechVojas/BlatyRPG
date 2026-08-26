@@ -76,3 +76,39 @@ test("fails closed on malformed committed lights", async () => {
     (error) => error instanceof BackendLightError && error.status === 502,
   );
 });
+
+test("reads an authoritative scene lighting snapshot", async () => {
+  const client = new BackendLightClient(testConfig(), {
+    fetch: async () =>
+      new Response(
+        JSON.stringify({
+          scene: {
+            id: 4,
+            darkness_level: 0.8,
+            global_illumination: true,
+            fog_exploration: false,
+            revision: 3,
+          },
+        }),
+        { status: 200 },
+      ),
+  });
+  const result = await client.change(session, {
+    operation: "syncScene",
+    sceneId: 4,
+  });
+  assert.deepEqual(result, {
+    operation: "syncScene",
+    scene: {
+      id: 4,
+      darkness_level: 0.8,
+      global_illumination: true,
+      fog_exploration: false,
+      darknessLevel: 0.8,
+      globalIllumination: true,
+      fogExploration: false,
+      isVisible: true,
+      revision: 3,
+    },
+  });
+});

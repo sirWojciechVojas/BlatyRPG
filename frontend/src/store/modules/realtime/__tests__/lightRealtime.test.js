@@ -58,6 +58,25 @@ describe("realtime light synchronization", () => {
     );
   });
 
+  it("applies synchronized scene Darkness without polling", () => {
+    const context = {
+      rootState: { vtt: {} },
+      commit: vi.fn(),
+      dispatch: vi.fn(),
+    };
+    routeRealtimeLightEvent(context, {
+      type: "scene.updated",
+      payload: {
+        scene: { id: 4, darkness_level: "0.8", revision: 3 },
+      },
+    });
+    expect(context.commit).toHaveBeenCalledWith(
+      "vtt/UPSERT_SCENE",
+      expect.objectContaining({ id: 4, darknessLevel: 0.8, revision: 3 }),
+      { root: true },
+    );
+  });
+
   it("sends the loaded light revision through the current session", () => {
     const changeLight = vi.fn().mockReturnValue(true);
     const actions = createRealtimeLightActions(() => ({ changeLight }));

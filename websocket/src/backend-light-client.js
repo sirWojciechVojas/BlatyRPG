@@ -103,6 +103,30 @@ const light = (value) => {
   };
 };
 
+const scene = (value) => {
+  const id = positiveId(value?.id);
+  const revision = positiveId(value?.revision);
+  const darknessLevel = finiteNumber(
+    value?.darknessLevel ?? value?.darkness_level,
+    0,
+    1,
+  );
+  if (!id || !revision || darknessLevel === null) {
+    throw new BackendLightError("backend_response_invalid", 502);
+  }
+  return {
+    ...value,
+    id,
+    revision,
+    darknessLevel,
+    globalIllumination:
+      value.globalIllumination === true || value.global_illumination === true,
+    fogExploration:
+      value.fogExploration !== false && value.fog_exploration !== false,
+    isVisible: value.isVisible !== false && value.is_visible !== false,
+  };
+};
+
 export class BackendLightClient {
   constructor(config, options = {}) {
     this.baseUrl = config.backendInternalUrl;
@@ -147,6 +171,9 @@ export class BackendLightClient {
       throw new BackendLightError(result?.code, response.status, {
         errors: result?.errors,
       });
+    }
+    if (payload.operation === "syncScene") {
+      return { operation: payload.operation, scene: scene(result?.scene) };
     }
     if (payload.operation === "delete") {
       if (

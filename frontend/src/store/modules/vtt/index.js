@@ -21,15 +21,31 @@ export const createVttModule = (
     ? tokenMovementRequestApiClient
     : null,
   combats = api === sceneApiClient ? combatApiClient : null,
-) => ({
-  namespaced: true,
-  state: createVttState,
-  getters: vttGetters,
-  mutations: vttMutations,
-  actions: {
+) => {
+  const actions = {
     ...createVttActions(api, tokens, walls, lights, tiles, movementRequests),
     ...createCombatActions(combats),
-  },
-});
+  };
+  const updateSelectedScene = actions.updateSelectedScene;
+  actions.updateSelectedScene = async (context, changes) => {
+    const scene = await updateSelectedScene(context, changes);
+    const lightingFields = [
+      "darknessLevel",
+      "globalIllumination",
+      "fogExploration",
+    ];
+    if (scene && lightingFields.some((field) => field in changes)) {
+      context.dispatch("realtime/syncSceneLighting", scene, { root: true });
+    }
+    return scene;
+  };
+  return {
+    namespaced: true,
+    state: createVttState,
+    getters: vttGetters,
+    mutations: vttMutations,
+    actions,
+  };
+};
 
 export default createVttModule();

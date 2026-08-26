@@ -1,9 +1,15 @@
 import { normalizeLight } from "@/lib/vtt/lightNormalizer";
+import { normalizeScene } from "@/lib/vtt/sceneNormalizer";
 
 let requestSerial = 0;
 
 export const routeRealtimeLightEvent = (context, event) => {
   if (!context.rootState.vtt) return;
+  if (event.type === "scene.updated") {
+    const scene = normalizeScene(event.payload.scene);
+    if (scene?.id) context.commit("vtt/UPSERT_SCENE", scene, { root: true });
+    return;
+  }
   if (event.type === "light.updated") {
     const light = normalizeLight(event.payload.light);
     if (light.id > 0 && light.sceneId > 0) {
@@ -25,6 +31,14 @@ export const routeRealtimeLightEvent = (context, event) => {
 };
 
 export const createRealtimeLightActions = (ensureSession) => ({
+  syncSceneLighting(context, scene) {
+    if (!scene?.id) return false;
+    return ensureSession(context).changeLight({
+      requestId: `scene-lighting-sync-${++requestSerial}`,
+      operation: "syncScene",
+      sceneId: Number(scene.id),
+    });
+  },
   changeLight(context, { operation, light, changes }) {
     const sceneId = Number(
       light?.sceneId ?? context.rootState.vtt?.selectedSceneId,
