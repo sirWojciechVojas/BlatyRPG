@@ -1,0 +1,186 @@
+<template>
+  <svg class="scene-light-layer__visual" :viewBox="viewBox" aria-hidden="true">
+    <defs>
+      <template v-for="light in activeLights" :key="`defs-${light.id}`">
+        <radialGradient
+          :id="maskId(light)"
+          gradientUnits="userSpaceOnUse"
+          :cx="light.x"
+          :cy="light.y"
+          :r="light.dimRadius"
+        >
+          <stop offset="0%" stop-color="#000" :stop-opacity="strength(light)" />
+          <stop
+            :offset="brightOffset(light)"
+            stop-color="#000"
+            :stop-opacity="strength(light)"
+          />
+          <stop
+            :offset="fadeOffset(light)"
+            stop-color="#777"
+            :stop-opacity="strength(light)"
+          />
+          <stop offset="100%" stop-color="#fff" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient
+          :id="glowId(light)"
+          gradientUnits="userSpaceOnUse"
+          :cx="light.x"
+          :cy="light.y"
+          :r="light.dimRadius"
+        >
+          <stop
+            offset="0%"
+            :stop-color="light.color"
+            :stop-opacity="strength(light) * 0.42"
+          />
+          <stop
+            :offset="brightOffset(light)"
+            :stop-color="light.color"
+            :stop-opacity="strength(light) * 0.28"
+          />
+          <stop offset="100%" :stop-color="light.color" stop-opacity="0" />
+        </radialGradient>
+        <radialGradient
+          :id="darkId(light)"
+          gradientUnits="userSpaceOnUse"
+          :cx="light.x"
+          :cy="light.y"
+          :r="light.dimRadius"
+        >
+          <stop
+            offset="0%"
+            stop-color="#000108"
+            :stop-opacity="strength(light)"
+          />
+          <stop
+            :offset="fadeOffset(light)"
+            stop-color="#01020a"
+            :stop-opacity="strength(light) * 0.8"
+          />
+          <stop offset="100%" stop-color="#020307" stop-opacity="0" />
+        </radialGradient>
+      </template>
+      <mask :id="darknessMaskId" mask-type="luminance">
+        <rect width="100%" height="100%" fill="#fff" />
+        <path
+          v-for="light in lightSources"
+          :key="`mask-${light.id}`"
+          :d="path(light)"
+          :fill="`url(#${maskId(light)})`"
+        />
+      </mask>
+    </defs>
+    <rect
+      class="scene-lighting__ambient"
+      width="100%"
+      height="100%"
+      fill="#020307"
+      :fill-opacity="ambientOpacity"
+      :mask="`url(#${darknessMaskId})`"
+    />
+    <path
+      v-for="light in lightSources"
+      :key="`glow-${light.id}`"
+      :class="animationClass(light)"
+      :style="animationStyle(light)"
+      :d="path(light)"
+      :fill="`url(#${glowId(light)})`"
+    />
+    <path
+      v-for="light in darknessSources"
+      :key="`dark-${light.id}`"
+      :class="animationClass(light)"
+      :style="animationStyle(light)"
+      :d="path(light)"
+      :fill="`url(#${darkId(light)})`"
+    />
+  </svg>
+</template>
+
+<script>
+import {
+  lightIsActive,
+  lightPolygonPath,
+  lightTransitionOffsets,
+} from "@/lib/vtt/lightGeometry";
+
+export default {
+  name: "SceneLightingVisual",
+  props: {
+    uid: { type: Number, required: true },
+    scene: { type: Object, required: true },
+    lights: { type: Array, default: () => [] },
+    walls: { type: Array, default: () => [] },
+  },
+  computed: {
+    darkness() {
+      return Math.min(1, Math.max(0, Number(this.scene.darknessLevel) || 0));
+    },
+    ambientOpacity() {
+      return this.darkness * (this.scene.globalIllumination ? 0.18 : 1);
+    },
+    activeLights() {
+      return this.lights.filter((light) => lightIsActive(light, this.darkness));
+    },
+    lightSources() {
+      return this.activeLights.filter(
+        (light) => light.sourceType !== "darkness",
+      );
+    },
+    darknessSources() {
+      return this.activeLights.filter(
+        (light) => light.sourceType === "darkness",
+      );
+    },
+    paths() {
+      return Object.fromEntries(
+        this.activeLights.map((light) => [
+          light.id,
+          lightPolygonPath(light, this.walls, this.scene),
+        ]),
+      );
+    },
+    viewBox() {
+      return `0 0 ${this.scene.width} ${this.scene.height}`;
+    },
+    darknessMaskId() {
+      return `scene-darkness-${this.uid}`;
+    },
+  },
+  methods: {
+    maskId(light) {
+      return `light-mask-${this.uid}-${light.id}`;
+    },
+    glowId(light) {
+      return `light-glow-${this.uid}-${light.id}`;
+    },
+    darkId(light) {
+      return `light-dark-${this.uid}-${light.id}`;
+    },
+    path(light) {
+      return this.paths[light.id] || "";
+    },
+    strength(light) {
+      return light.intensity * light.opacity;
+    },
+    brightOffset(light) {
+      return `${lightTransitionOffsets(light).bright}%`;
+    },
+    fadeOffset(light) {
+      return `${lightTransitionOffsets(light).fade}%`;
+    },
+    animationClass(light) {
+      return `scene-lighting--${light.animation}`;
+    },
+    animationStyle(light) {
+      return {
+        "--light-animation-duration": `${3 / Math.max(0.1, light.animationSpeed)}s`,
+        "--light-animation-opacity": 1 - light.animationIntensity * 0.45,
+        "--light-animation-scale": 1 - light.animationIntensity * 0.05,
+        transformOrigin: `${light.x}px ${light.y}px`,
+      };
+    },
+  },
+};
+</script>

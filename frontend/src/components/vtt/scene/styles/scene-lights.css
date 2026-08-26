@@ -2,6 +2,13 @@
 .scene-light-layer__visual,
 .scene-light-layer__editor { position: absolute; inset: 0; width: 100%; height: 100%; }
 .scene-light-layer__visual { overflow: hidden; pointer-events: none; }
+.scene-lighting__ambient { transition: fill-opacity 600ms ease; }
+.scene-lighting--flicker { animation: scene-light-flicker var(--light-animation-duration) steps(5, end) infinite; }
+.scene-lighting--pulse { animation: scene-light-pulse var(--light-animation-duration) ease-in-out infinite; }
+.scene-lighting--vortex { animation: scene-light-vortex var(--light-animation-duration) linear infinite; }
+@keyframes scene-light-flicker { 0%, 100% { opacity: 1; } 35% { opacity: var(--light-animation-opacity); } 70% { opacity: .9; } }
+@keyframes scene-light-pulse { 50% { opacity: var(--light-animation-opacity); transform: scale(var(--light-animation-scale)); } }
+@keyframes scene-light-vortex { 50% { opacity: .9; transform: rotate(180deg) scale(var(--light-animation-scale)); } to { transform: rotate(360deg); } }
 .scene-light-layer__editor { z-index: 1; overflow: visible; pointer-events: auto; cursor: crosshair; }
 .scene-light > circle:first-child { fill: rgb(255 210 122 / 8%); stroke: #e7b64e; stroke-width: 2; stroke-dasharray: 8 5; vector-effect: non-scaling-stroke; }
 .scene-light__bright { fill: none; stroke: #fff0a6; stroke-width: 1; stroke-dasharray: 4 3; vector-effect: non-scaling-stroke; }

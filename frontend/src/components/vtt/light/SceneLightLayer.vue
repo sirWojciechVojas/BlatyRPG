@@ -3,71 +3,12 @@
     class="scene-light-layer"
     :class="{ 'scene-light-layer--active': active }"
   >
-    <svg
-      class="scene-light-layer__visual"
-      :viewBox="viewBox"
-      aria-hidden="true"
-    >
-      <defs>
-        <template v-for="light in activeLights" :key="`defs-${light.id}`">
-          <radialGradient
-            :id="maskId(light)"
-            gradientUnits="userSpaceOnUse"
-            :cx="light.x"
-            :cy="light.y"
-            :r="light.dimRadius"
-          >
-            <stop
-              offset="0%"
-              stop-color="#000"
-              :stop-opacity="light.intensity"
-            />
-            <stop
-              :offset="brightOffset(light)"
-              stop-color="#000"
-              :stop-opacity="light.intensity"
-            />
-            <stop offset="100%" stop-color="#fff" stop-opacity="0" />
-          </radialGradient>
-          <radialGradient
-            :id="glowId(light)"
-            gradientUnits="userSpaceOnUse"
-            :cx="light.x"
-            :cy="light.y"
-            :r="light.dimRadius"
-          >
-            <stop
-              offset="0%"
-              :stop-color="light.color"
-              :stop-opacity="light.intensity * 0.38"
-            />
-            <stop offset="100%" :stop-color="light.color" stop-opacity="0" />
-          </radialGradient>
-        </template>
-        <mask :id="darknessMaskId" mask-type="luminance">
-          <rect width="100%" height="100%" fill="#fff" />
-          <path
-            v-for="light in activeLights"
-            :key="`mask-${light.id}`"
-            :d="lightPath(light)"
-            :fill="`url(#${maskId(light)})`"
-          />
-        </mask>
-      </defs>
-      <rect
-        width="100%"
-        height="100%"
-        fill="#020307"
-        :fill-opacity="darkness"
-        :mask="`url(#${darknessMaskId})`"
-      />
-      <path
-        v-for="light in activeLights"
-        :key="`glow-${light.id}`"
-        :d="lightPath(light)"
-        :fill="`url(#${glowId(light)})`"
-      />
-    </svg>
+    <SceneLightingVisual
+      :uid="uid"
+      :scene="scene"
+      :lights="lights"
+      :walls="walls"
+    />
     <svg
       v-if="canManage && active"
       ref="editor"
@@ -174,11 +115,11 @@
 
 <script>
 import { getCurrentInstance } from "vue";
-import { lightPolygonPath } from "@/lib/vtt/lightGeometry";
 import LightHud from "./LightHud.vue";
 import LightManagementPanel from "./LightManagementPanel.vue";
 import LightPropertiesPanel from "./LightPropertiesPanel.vue";
 import LightToolToolbar from "./LightToolToolbar.vue";
+import SceneLightingVisual from "./SceneLightingVisual.vue";
 import { lightLayerEditorMethods } from "./lightLayerEditorMethods";
 
 export default {
@@ -188,6 +129,7 @@ export default {
     LightManagementPanel,
     LightPropertiesPanel,
     LightToolToolbar,
+    SceneLightingVisual,
   },
   props: {
     scene: { type: Object, required: true },
@@ -212,31 +154,14 @@ export default {
     active() {
       return this.activeTool === "lights";
     },
-    activeLights() {
-      return this.lights.filter((light) => light.enabled);
-    },
-    lightPaths() {
-      return Object.fromEntries(
-        this.activeLights.map((light) => [
-          light.id,
-          lightPolygonPath(light, this.walls, this.scene),
-        ]),
-      );
-    },
     selectedLight() {
       return this.lights.find((light) => light.id === this.selectedId) || null;
     },
     creationPreview() {
       return this.drag?.type === "create" ? this.preview : null;
     },
-    darkness() {
-      return Math.min(1, Math.max(0, Number(this.scene.darknessLevel) || 0));
-    },
     viewBox() {
       return `0 0 ${this.scene.width} ${this.scene.height}`;
-    },
-    darknessMaskId() {
-      return `scene-darkness-${this.uid}`;
     },
     hudStyle() {
       return {
@@ -247,18 +172,6 @@ export default {
   },
   methods: {
     ...lightLayerEditorMethods,
-    maskId(light) {
-      return `light-mask-${this.uid}-${light.id}`;
-    },
-    glowId(light) {
-      return `light-glow-${this.uid}-${light.id}`;
-    },
-    lightPath(light) {
-      return this.lightPaths[light.id] || "";
-    },
-    brightOffset(light) {
-      return `${Math.min(100, (light.brightRadius / Math.max(1, light.dimRadius)) * 100)}%`;
-    },
   },
 };
 </script>

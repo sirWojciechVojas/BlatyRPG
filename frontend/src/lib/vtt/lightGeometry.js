@@ -19,9 +19,25 @@ export const wallBlocksLight = (wall) =>
   wall?.blocksLight === true &&
   !(wall.type !== "wall" && wall.doorState === "open");
 
-const segmentsFor = (walls, scene) => [
+const wallAtElevation = (wall, elevation) => {
+  if (wall?.bottomElevation === undefined && wall?.topElevation === undefined)
+    return true;
+  const bottom = Number(wall.bottomElevation ?? -Infinity);
+  const top = Number(wall.topElevation ?? Infinity);
+  return (
+    elevation >= Math.min(bottom, top) && elevation <= Math.max(bottom, top)
+  );
+};
+
+const segmentsFor = (light, walls, scene) => [
   ...sceneEdges(scene),
-  ...walls.filter(wallBlocksLight),
+  ...(light?.constrainedByWalls === false
+    ? []
+    : walls.filter(
+        (wall) =>
+          wallBlocksLight(wall) &&
+          wallAtElevation(wall, Number(light?.elevation) || 0),
+      )),
 ];
 
 const endpointAngles = (origin, segment) =>
@@ -61,7 +77,7 @@ const rounded = (value) => Math.round(value * 1000) / 1000;
 export const lightPolygonPoints = (light, walls = [], scene = {}) => {
   const origin = { x: Number(light?.x) || 0, y: Number(light?.y) || 0 };
   const radius = Math.max(0, Number(light?.dimRadius) || 0);
-  const segments = segmentsFor(walls, scene);
+  const segments = segmentsFor(light, walls, scene);
   const angles = Array.from(
     { length: BASE_RAYS },
     (_, index) => (index / BASE_RAYS) * TAU - Math.PI,
@@ -78,6 +94,30 @@ export const lightPolygonPoints = (light, walls = [], scene = {}) => {
         y: rounded(origin.y + Math.sin(angle) * distance),
       };
     });
+};
+
+export const lightIsActive = (light, darkness) => {
+  const level = Math.min(1, Math.max(0, Number(darkness) || 0));
+  return (
+    light?.enabled === true &&
+    level >= Number(light.darknessMin ?? 0) &&
+    level <= Number(light.darknessMax ?? 1)
+  );
+};
+
+export const lightTransitionOffsets = (light) => {
+  const bright = Math.min(
+    100,
+    (Math.max(0, Number(light?.brightRadius) || 0) /
+      Math.max(1, Number(light?.dimRadius) || 0)) *
+      100,
+  );
+  const softness =
+    light?.gradualIllumination === false ? 0 : Number(light?.softness ?? 0.5);
+  return {
+    bright,
+    fade: bright + (100 - bright) * (1 - Math.min(1, Math.max(0, softness))),
+  };
 };
 
 export const lightPolygonPath = (light, walls, scene) => {
