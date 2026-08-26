@@ -94,7 +94,11 @@ export const createTokenHandler = ({ backend, rooms, onAuthenticationFailure }) 
     const previous = writes.get(key) || Promise.resolve();
     const current = previous
       .catch(() => {})
-      .then(() => backend.move(session, request))
+      .then(() =>
+        request.type === "token.change"
+          ? backend.change(session, request)
+          : backend.move(session, request),
+      )
       .then((result) => publish(session, request, result));
     writes.set(key, current);
     const cleanup = () => {

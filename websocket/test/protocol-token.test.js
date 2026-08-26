@@ -39,6 +39,38 @@ test("validates token movement without accepting client campaign scope", () => {
   );
 });
 
+test("accepts only realtime token angle changes", () => {
+  const change = {
+    v: 1,
+    type: "token.change",
+    requestId: "change-1",
+    sceneId: 4,
+    tokenId: 9,
+    revision: 3,
+    changes: { rotation: 72.5, facing: 185 },
+  };
+  assert.deepEqual(parseAuthenticatedMessage(change), {
+    type: "token.change",
+    requestId: "change-1",
+    sceneId: 4,
+    tokenId: 9,
+    revision: 3,
+    changes: { rotation: 72.5, facing: 185 },
+  });
+  assert.throws(
+    () => parseAuthenticatedMessage({ ...change, changes: { locked: false } }),
+    (error) => error instanceof ProtocolError && error.code === "unexpected_field",
+  );
+  assert.throws(
+    () => parseAuthenticatedMessage({ ...change, changes: {} }),
+    (error) => error instanceof ProtocolError && error.code === "token_changes_invalid",
+  );
+  assert.throws(
+    () => parseAuthenticatedMessage({ ...change, changes: { facing: NaN } }),
+    (error) => error instanceof ProtocolError && error.code === "token_facing_invalid",
+  );
+});
+
 test("validates movement approval requests and GM decisions", () => {
   const request = parseAuthenticatedMessage({
     v: 1,

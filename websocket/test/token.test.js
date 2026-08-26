@@ -53,6 +53,48 @@ test("broadcasts only the token snapshot committed by the backend", async () => 
   assert.equal(ack.payload.requestId, request.requestId);
 });
 
+test("broadcasts committed rotation and facing through token.updated", async () => {
+  let received;
+  const setup = await startTestServer({}, {
+    tokenBackend: {
+      change: async (_session, payload) => {
+        received = payload;
+        return {
+          token: {
+            id: 9, sceneId: 4, name: "Guard", x: 300, y: 400,
+            rotation: 72.5, facing: 185, revision: 4,
+          },
+          publishToPlayers: true,
+        };
+      },
+    },
+  });
+  running.push(setup);
+  const player = await connect(setup.url, 2, "client-instance-0002");
+  const gameMaster = await connect(setup.url, 3, "client-instance-0003", {
+    canManage: true,
+  });
+
+  player.send({
+    v: 1,
+    type: "token.change",
+    requestId: "token-change-1",
+    sceneId: 4,
+    tokenId: 9,
+    revision: 3,
+    changes: { rotation: 72.5, facing: 185 },
+  });
+  const [updated, ack] = await Promise.all([
+    gameMaster.event("token.updated"),
+    player.event("token.ack"),
+  ]);
+
+  assert.deepEqual(received.changes, { rotation: 72.5, facing: 185 });
+  assert.equal(updated.payload.token.rotation, 72.5);
+  assert.equal(updated.payload.token.facing, 185);
+  assert.equal(ack.payload.requestId, "token-change-1");
+});
+
 test("does not leak hidden-scene movement to regular campaign members", async () => {
   const setup = await startTestServer({}, {
     tokenBackend: {

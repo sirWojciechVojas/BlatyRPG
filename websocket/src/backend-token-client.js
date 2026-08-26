@@ -119,6 +119,19 @@ export class BackendTokenClient {
     };
   }
 
+  async change(session, payload) {
+    const result = await this.post(session, "tokens/change", {
+      sceneId: payload.sceneId,
+      tokenId: payload.tokenId,
+      revision: payload.revision,
+      changes: payload.changes,
+    });
+    return {
+      token: normalizeBackendToken(result?.token),
+      publishToPlayers: result?.visibility?.publishToPlayers === true,
+    };
+  }
+
   async requestMovement(session, payload) {
     const result = await this.post(session, "tokens/movement-requests", {
       sceneId: payload.sceneId,

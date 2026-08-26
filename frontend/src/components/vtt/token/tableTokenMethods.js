@@ -1,5 +1,13 @@
 import { snapTokenPosition } from "@/lib/vtt/grid";
 
+const isRealtimeAngleChange = (changes) => {
+  const fields = Object.keys(changes || {});
+  return (
+    fields.length > 0 &&
+    fields.every((field) => ["rotation", "facing"].includes(field))
+  );
+};
+
 export const tableTokenMethods = {
   selectToken(selection) {
     const tokenId =
@@ -79,6 +87,17 @@ export const tableTokenMethods = {
     });
   },
   async updateToken({ token, changes }) {
+    if (isRealtimeAngleChange(changes)) {
+      try {
+        const sent = await this.$store.dispatch("realtime/changeToken", {
+          token,
+          changes,
+        });
+        if (sent) return token;
+      } catch (_error) {
+        // Preserve the existing REST path when realtime is unavailable.
+      }
+    }
     try {
       const updated = await this.$store.dispatch("vtt/updateToken", {
         token,

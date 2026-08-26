@@ -60,6 +60,40 @@ test("fails closed on malformed committed tokens", async () => {
   );
 });
 
+test("forwards angle changes through the authoritative token endpoint", async () => {
+  let call;
+  const client = new BackendTokenClient(testConfig(), {
+    fetch: async (url, options) => {
+      call = { url, body: JSON.parse(options.body) };
+      return new Response(JSON.stringify({
+        token: {
+          id: 9, sceneId: 4, name: "Guard", x: 30, y: 40,
+          rotation: 72.5, facing: 185, revision: 4,
+        },
+        visibility: { publishToPlayers: true },
+      }), { status: 200 });
+    },
+  });
+
+  const result = await client.change(session, {
+    sceneId: 4,
+    tokenId: 9,
+    revision: 3,
+    changes: { rotation: 72.5, facing: 185 },
+  });
+
+  assert.match(call.url, /campaigns\/7\/tokens\/change$/);
+  assert.deepEqual(call.body, {
+    sceneId: 4,
+    tokenId: 9,
+    revision: 3,
+    changes: { rotation: 72.5, facing: 185 },
+  });
+  assert.equal(result.token.rotation, 72.5);
+  assert.equal(result.token.facing, 185);
+  assert.equal(result.publishToPlayers, true);
+});
+
 test("creates and resolves authoritative movement requests", async () => {
   const calls = [];
   const movement = {

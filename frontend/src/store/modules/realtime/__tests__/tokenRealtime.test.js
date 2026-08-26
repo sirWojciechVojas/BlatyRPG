@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import {
+  tokenChangeMessage,
   tokenMoveMessage,
   tokenMovementRequestMessage,
   tokenMovementResolveMessage,
@@ -10,6 +11,26 @@ import {
 } from "@/store/modules/realtime/tokenActions";
 
 describe("realtime token synchronization", () => {
+  it("builds a scoped token angle change message", () => {
+    expect(
+      tokenChangeMessage({
+        requestId: "change-1",
+        sceneId: 4,
+        tokenId: 9,
+        revision: 3,
+        changes: { rotation: 72.5, facing: 185 },
+      }),
+    ).toEqual({
+      v: 1,
+      type: "token.change",
+      requestId: "change-1",
+      sceneId: 4,
+      tokenId: 9,
+      revision: 3,
+      changes: { rotation: 72.5, facing: 185 },
+    });
+  });
+
   it("builds a scoped token movement protocol message", () => {
     expect(
       tokenMoveMessage({
@@ -131,6 +152,24 @@ describe("realtime token synchronization", () => {
         revision: 3,
         x: 50,
         y: 60,
+      }),
+    );
+  });
+
+  it("sends angle changes through the existing session", () => {
+    const changeToken = vi.fn().mockReturnValue(true);
+    const actions = createRealtimeTokenActions(() => ({ changeToken }));
+    const token = { id: 9, sceneId: 4, revision: 3 };
+
+    expect(actions.changeToken({}, { token, changes: { facing: 135 } })).toBe(
+      true,
+    );
+    expect(changeToken).toHaveBeenCalledWith(
+      expect.objectContaining({
+        sceneId: 4,
+        tokenId: 9,
+        revision: 3,
+        changes: { facing: 135 },
       }),
     );
   });

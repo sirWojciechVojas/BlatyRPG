@@ -47,6 +47,20 @@ export const tokenMoveMessage = (payload) => ({
     : [],
 });
 
+export const tokenChangeMessage = (payload) => ({
+  v: REALTIME_VERSION,
+  type: "token.change",
+  requestId: String(payload.requestId),
+  sceneId: Number(payload.sceneId),
+  tokenId: Number(payload.tokenId),
+  revision: Number(payload.revision),
+  changes: Object.fromEntries(
+    ["rotation", "facing"]
+      .filter((field) => Object.hasOwn(payload.changes || {}, field))
+      .map((field) => [field, Number(payload.changes[field])]),
+  ),
+});
+
 export const tokenMovementRequestMessage = (payload) => ({
   ...tokenMoveMessage(payload),
   type: "token.movement.request",

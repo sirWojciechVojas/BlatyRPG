@@ -91,6 +91,31 @@ class InternalRealtimeTokenController extends BaseController
         }
     }
 
+    public function change($campaignId = null)
+    {
+        try {
+            $id = $this->positiveId($campaignId);
+            $payload = $this->jsonPayload();
+            $this->exactKeys($payload, ['sceneId', 'tokenId', 'revision', 'changes']);
+            $changes = $payload['changes'] ?? null;
+            if (!is_array($changes) || !$changes) {
+                throw new CampaignException('validation_failed', 'Token changes are invalid.', 422);
+            }
+            $this->exactKeys($changes, ['rotation', 'facing']);
+            return $this->respond($this->tokens->update(
+                $id,
+                $this->positiveId($payload['sceneId'] ?? null),
+                $this->positiveId($payload['tokenId'] ?? null),
+                $this->principal($id),
+                ['revision' => $payload['revision'] ?? null] + $changes
+            ));
+        } catch (CampaignException $exception) {
+            return $this->failure($exception);
+        } catch (CampaignChatException $exception) {
+            return $this->failure($exception);
+        }
+    }
+
     private function jsonPayload(): array
     {
         try {

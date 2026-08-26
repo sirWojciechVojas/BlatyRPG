@@ -59,6 +59,41 @@ describe("tableTokenMethods resources", () => {
     expect(dispatch).toHaveBeenLastCalledWith("vtt/loadTokens");
   });
 
+  it("sends facing changes through realtime instead of REST", async () => {
+    const dispatch = vi.fn().mockResolvedValue(true);
+    const vm = { $store: { dispatch } };
+    const payload = {
+      token: { id: 7, sceneId: 4, revision: 2 },
+      changes: { facing: 135 },
+    };
+
+    await tableTokenMethods.updateToken.call(vm, payload);
+
+    expect(dispatch).toHaveBeenCalledWith("realtime/changeToken", payload);
+    expect(dispatch).not.toHaveBeenCalledWith("vtt/updateToken", payload);
+  });
+
+  it("falls back to REST when realtime angle delivery is unavailable", async () => {
+    const updated = { id: 7, revision: 3, rotation: 90 };
+    const dispatch = vi
+      .fn()
+      .mockResolvedValueOnce(false)
+      .mockResolvedValueOnce(updated);
+    const vm = { $store: { dispatch } };
+    const payload = {
+      token: { id: 7, sceneId: 4, revision: 2 },
+      changes: { rotation: 90 },
+    };
+
+    expect(await tableTokenMethods.updateToken.call(vm, payload)).toBe(updated);
+    expect(dispatch).toHaveBeenNthCalledWith(
+      1,
+      "realtime/changeToken",
+      payload,
+    );
+    expect(dispatch).toHaveBeenNthCalledWith(2, "vtt/updateToken", payload);
+  });
+
   it("shows and dismisses the depleted movement notice", () => {
     const commit = vi.fn();
     const vm = { $store: { commit } };

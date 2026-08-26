@@ -36,6 +36,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
     $routes->post('internal/realtime/campaigns/(:num)/chat/sync', 'InternalRealtimeChatController::sync/$1');
     $routes->post('internal/realtime/campaigns/(:num)/chat/send', 'InternalRealtimeChatController::send/$1');
     $routes->post('internal/realtime/campaigns/(:num)/tokens/move', 'InternalRealtimeTokenController::move/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/tokens/change', 'InternalRealtimeTokenController::change/$1');
     $routes->post('internal/realtime/campaigns/(:num)/tokens/movement-requests', 'InternalRealtimeTokenController::requestMovement/$1');
     $routes->post('internal/realtime/campaigns/(:num)/tokens/movement-requests/(:num)/resolve', 'InternalRealtimeTokenController::resolveMovement/$1/$2');
     $routes->post('internal/realtime/campaigns/(:num)/walls/change', 'InternalRealtimeWallController::change/$1');
@@ -118,6 +119,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->delete('campaigns/(:num)/resources/(:segment)/(:num)/permissions/(:num)', 'ResourcePermissionController::delete/$1/$2/$3/$4');
         $routes->patch('campaigns/(:num)/characters/(:num)/visibility', 'ResourcePermissionController::characterVisibility/$1/$2');
         $routes->post('campaigns/(:num)/characters/(:num)/owners', 'ResourcePermissionController::assignCharacterOwner/$1/$2');
+        $routes->post('characters/(:num)/purchase', 'CharacterController::purchase/$1');
         $routes->get('characters/(:num)/assets', 'CharacterController::assets/$1');
         $routes->put('characters/(:num)/asset-set', 'CharacterController::assignAssetSet/$1');
         $routes->get('characters', 'CharacterController::index');
