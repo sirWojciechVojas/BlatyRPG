@@ -4,6 +4,7 @@ import { ProtocolError } from "./protocol-error.js";
 import { parseSceneElementMessage } from "./scene-element-protocol.js";
 import { parseTokenChangeMessage } from "./token-change-protocol.js";
 import { parseTokenMovementMessage } from "./token-movement-protocol.js";
+import { parseCombatCommandMessage } from "./combat-protocol.js";
 
 export { ProtocolError } from "./protocol-error.js";
 
@@ -134,6 +135,8 @@ export const parseAuthMessage = (message) => {
 };
 
 export const parseAuthenticatedMessage = (message) => {
+  const combatCommand = parseCombatCommandMessage(message);
+  if (combatCommand) return combatCommand;
   const tokenChange = parseTokenChangeMessage(message);
   if (tokenChange) return tokenChange;
   const tokenMovement = parseTokenMovementMessage(message);

@@ -15,6 +15,10 @@ export const routeRealtimeFeature = (handlers, session, message) => {
     handlers.tokens.resolveMovement(session, message);
     return true;
   }
+  if (message.type === "combat.command") {
+    handlers.combat.handle(session, message);
+    return true;
+  }
   if (message.type === "wall.change") {
     handlers.walls.handle(session, message);
     return true;
