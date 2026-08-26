@@ -1,4 +1,7 @@
 export const sceneErrorMessage = (translate, error) => {
+  if (error?.code === "movement_points_depleted") {
+    return translate("vtt.scene.errors.movementPointsDepleted");
+  }
   if (error?.network) return translate("vtt.scene.errors.network");
   if (error?.status === 409) return translate("vtt.scene.errors.conflict");
   const details = error?.details;

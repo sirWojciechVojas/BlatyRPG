@@ -147,4 +147,31 @@ describe("token pointer drag", () => {
     expect(vm.$emit).not.toHaveBeenCalled();
     expect(vm.drag).toBeNull();
   });
+
+  it("blocks a player before dragging when no movement points remain", () => {
+    const vm = context();
+    const token = {
+      id: 10,
+      movementPoints: 0,
+      locked: false,
+      capabilities: { canControl: true, canManage: false },
+    };
+
+    vm.startDrag(
+      {
+        pointerId: 2,
+        button: 0,
+        currentTarget: target(),
+        preventDefault: vi.fn(),
+      },
+      token,
+    );
+
+    expect(vm.$emit).toHaveBeenCalledWith("movement-depleted", token);
+    expect(vm.$emit).not.toHaveBeenCalledWith(
+      "movement-limit",
+      expect.anything(),
+    );
+    expect(vm.drag).toBeNull();
+  });
 });

@@ -167,6 +167,7 @@ export default {
   emits: [
     "select",
     "move",
+    "movement-depleted",
     "movement-limit",
     "update",
     "target",

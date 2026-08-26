@@ -58,4 +58,18 @@ describe("tableTokenMethods resources", () => {
 
     expect(dispatch).toHaveBeenLastCalledWith("vtt/loadTokens");
   });
+
+  it("shows and dismisses the depleted movement notice", () => {
+    const commit = vi.fn();
+    const vm = { $store: { commit } };
+
+    tableTokenMethods.blockDepletedTokenMovement.call(vm);
+    expect(commit).toHaveBeenCalledWith(
+      "vtt/SHOW_NOTICE",
+      expect.objectContaining({ code: "movement_points_depleted" }),
+    );
+
+    tableTokenMethods.dismissSceneNotice.call(vm);
+    expect(commit).toHaveBeenLastCalledWith("vtt/CLEAR_ERROR");
+  });
 });

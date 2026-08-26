@@ -128,6 +128,7 @@
           :busy="tokenBusy"
           @select="$emit('token-select', $event)"
           @move="$emit('token-move', $event)"
+          @movement-depleted="$emit('token-movement-depleted', $event)"
           @movement-limit="$emit('token-movement-limit', $event)"
           @update="$emit('token-update', $event)"
           @target="$emit('token-target', $event)"
@@ -196,6 +197,7 @@ export default {
     "camera-change",
     "token-select",
     "token-move",
+    "token-movement-depleted",
     "token-movement-limit",
     "token-update",
     "token-target",

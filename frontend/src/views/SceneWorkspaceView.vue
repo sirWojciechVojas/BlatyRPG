@@ -48,7 +48,15 @@
       <section class="scene-workspace__main">
         <div v-if="state.error" class="scene-workspace__notice" role="alert">
           <span>{{ errorMessage }}</span>
-          <button type="button" class="scene-button" @click="refresh">
+          <button
+            v-if="state.error?.code === 'movement_points_depleted'"
+            type="button"
+            class="scene-button"
+            @click="dismissSceneNotice"
+          >
+            {{ $t("vtt.scene.actions.acknowledge") }}
+          </button>
+          <button v-else type="button" class="scene-button" @click="refresh">
             {{ $t("vtt.scene.actions.retry") }}
           </button>
         </div>
@@ -97,6 +105,7 @@
           @camera-change="zoomPercent = $event.zoomPercent"
           @token-select="selectToken"
           @token-move="moveToken"
+          @token-movement-depleted="blockDepletedTokenMovement"
           @token-movement-limit="requestTokenMovement"
           @token-update="updateToken"
           @token-target="toggleTokenTarget"

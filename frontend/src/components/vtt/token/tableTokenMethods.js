@@ -61,6 +61,17 @@ export const tableTokenMethods = {
     });
     if (sent) this.selectUtility("notifications");
   },
+  blockDepletedTokenMovement() {
+    this.$store.commit("vtt/SHOW_NOTICE", {
+      code: "movement_points_depleted",
+      status: 422,
+      network: false,
+      details: null,
+    });
+  },
+  dismissSceneNotice() {
+    this.$store.commit("vtt/CLEAR_ERROR");
+  },
   resolveTokenMovement({ requestId, decision }) {
     this.$store.dispatch("realtime/resolveTokenMovement", {
       movementRequestId: requestId,

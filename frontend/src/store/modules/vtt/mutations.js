@@ -13,6 +13,12 @@ export const vttMutations = {
     state.error = null;
     state.unauthorized = false;
   },
+  CLEAR_ERROR(state) {
+    state.error = null;
+  },
+  SHOW_NOTICE(state, notice) {
+    state.error = notice;
+  },
   RECEIVE_COLLECTION(state, collection) {
     state.scenes = collection.items;
     state.activeSceneId = collection.activeSceneId;

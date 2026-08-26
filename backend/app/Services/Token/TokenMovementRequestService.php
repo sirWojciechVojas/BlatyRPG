@@ -69,6 +69,7 @@ final class TokenMovementRequestService
             throw new TokenException('revision_conflict', 'Token changed since it was loaded.', 409,
                 ['currentRevision' => (int) $token['revision']]);
         }
+        TokenMovementBudget::assertAvailable($token);
         $target = $this->grid->snap($scene, [
             'x' => $this->coordinate($payload['x'] ?? null),
             'y' => $this->coordinate($payload['y'] ?? null),

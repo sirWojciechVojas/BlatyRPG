@@ -6,6 +6,15 @@ const pointerValue = (event, field) => {
   return Number.isFinite(value) ? value : 0;
 };
 
+const hasNoMovementPoints = (token) => {
+  const remaining = Number(token?.movementPoints);
+  return (
+    token?.capabilities?.canManage !== true &&
+    Number.isFinite(remaining) &&
+    remaining <= 0
+  );
+};
+
 const removeListeners = (vm) => {
   window.removeEventListener("pointermove", vm.moveDrag);
   window.removeEventListener("pointerup", vm.finishDrag);
@@ -36,6 +45,10 @@ export const tokenDragMethods = {
       token.locked ||
       event.button !== 0
     ) {
+      return;
+    }
+    if (hasNoMovementPoints(token)) {
+      this.$emit("movement-depleted", token);
       return;
     }
     this.cancelDrag();
