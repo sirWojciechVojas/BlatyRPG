@@ -139,6 +139,7 @@
 <script>
 import TokenStatusMenu from "./TokenStatusMenu.vue";
 import TokenResourceQuickPanel from "./TokenResourceQuickPanel.vue";
+import { tokenMovementState } from "@/lib/vtt/tokenMovement";
 import { activeTokenResources } from "@/lib/vtt/tokenResources";
 import {
   normalizeTokenResourceBarPosition,
@@ -210,10 +211,10 @@ export default {
       );
     },
     movementRange() {
-      return Math.max(0, Number(this.token.movementRange) || 0);
+      return tokenMovementState(this.token).range;
     },
     movementLeft() {
-      return Math.max(0, Number(this.token.movementPoints) || 0);
+      return tokenMovementState(this.token).remaining;
     },
   },
   methods: {

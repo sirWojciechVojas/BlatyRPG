@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
   buildGridPattern,
+  gridCellAtPoint,
+  gridCellCenter,
+  gridCellDistance,
   GRID_TYPES,
   snapPointToGrid,
   snapTokenPosition,
@@ -66,6 +69,22 @@ describe("VTT grid geometry", () => {
         { width: 1, height: 1 },
       ),
     ).toEqual({ x: 1.5, y: 1.5 });
+  });
+
+  it("uses the same square cells for snapping and movement distance", () => {
+    const scene = { gridType: GRID_TYPES.SQUARE, gridSize: 100 };
+    const start = gridCellAtPoint(scene, { x: 50, y: 50 });
+    const end = gridCellAtPoint(scene, { x: 250, y: 150 });
+
+    expect(gridCellCenter(scene, start)).toEqual({ x: 50, y: 50 });
+    expect(gridCellDistance(scene, start, end)).toBe(2);
+  });
+
+  it("measures axial distance consistently on both hex orientations", () => {
+    [GRID_TYPES.HEX_POINTY, GRID_TYPES.HEX_FLAT].forEach((gridType) => {
+      const scene = { gridType, gridSize: 100 };
+      expect(gridCellDistance(scene, { q: 0, r: 0 }, { q: 2, r: -1 })).toBe(2);
+    });
   });
 
   it.each([

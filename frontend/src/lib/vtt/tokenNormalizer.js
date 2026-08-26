@@ -1,6 +1,6 @@
 import { normalizeTokenAngle } from "./tokenFacing";
 import { normalizeTokenPermissionScope } from "./tokenPermissions";
-import { normalizeTokenResources } from "./tokenResources";
+import { tokenResourcesWithMovement } from "./tokenResources";
 import { normalizeTokenResourceBarPosition } from "./tokenResourcePosition";
 
 const number = (value, fallback = 0) => {
@@ -8,7 +8,19 @@ const number = (value, fallback = 0) => {
   return Number.isFinite(result) ? result : fallback;
 };
 
-export const normalizeToken = (source = {}) => ({
+const movementState = (source) => {
+  const range = Math.max(
+    0,
+    number(source.movementRange ?? source.movement_range, 6),
+  );
+  const spent = Math.max(
+    0,
+    number(source.movementSpent ?? source.movement_spent),
+  );
+  return { range, spent, points: Math.max(0, range - spent) };
+};
+
+const normalizeTokenWithMovement = (source, movement) => ({
   id: number(source.id),
   sceneId: number(source.sceneId ?? source.scene_id),
   characterId:
@@ -33,22 +45,9 @@ export const normalizeToken = (source = {}) => ({
   resourceBarPosition: normalizeTokenResourceBarPosition(
     source.resourceBarPosition ?? source.resource_bar_position,
   ),
-  movementRange: Math.max(
-    0,
-    number(source.movementRange ?? source.movement_range, 6),
-  ),
-  movementSpent: Math.max(
-    0,
-    number(source.movementSpent ?? source.movement_spent),
-  ),
-  movementPoints: Math.max(
-    0,
-    number(
-      source.movementPoints ?? source.movement_points,
-      number(source.movementRange ?? source.movement_range, 6) -
-        number(source.movementSpent ?? source.movement_spent),
-    ),
-  ),
+  movementRange: movement.range,
+  movementSpent: movement.spent,
+  movementPoints: movement.points,
   movementResetMode: ["turn", "round", "manual"].includes(
     source.movementResetMode ?? source.movement_reset_mode,
   )
@@ -74,8 +73,10 @@ export const normalizeToken = (source = {}) => ({
     source.observerBy ?? source.observer_by_json,
     "inherit",
   ),
-  resources: normalizeTokenResources(
+  resources: tokenResourcesWithMovement(
     source.resources || { bars: source.bars, bubbles: source.bubbles },
+    movement.range,
+    movement.points,
   ),
   statuses: Array.isArray(source.statuses) ? source.statuses : [],
   vision: source.vision || {},
@@ -88,6 +89,9 @@ export const normalizeToken = (source = {}) => ({
     canManage: source.capabilities?.canManage === true,
   },
 });
+
+export const normalizeToken = (source = {}) =>
+  normalizeTokenWithMovement(source, movementState(source));
 
 export const tokenWritePayload = (changes = {}, includeRevision = false) => {
   const allowed = [

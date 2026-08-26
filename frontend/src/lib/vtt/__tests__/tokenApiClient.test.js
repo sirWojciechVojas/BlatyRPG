@@ -71,6 +71,11 @@ describe("tokenApiClient", () => {
         canManage: false,
       },
     });
+    expect(result.items[0].resources.bars[1]).toMatchObject({
+      movementSource: true,
+      value: 5.5,
+      max: 8,
+    });
   });
 
   it("whitelists writes and sends optimistic revisions", async () => {

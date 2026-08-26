@@ -108,6 +108,14 @@
           @update="$emit('wall-update', $event)"
           @delete="$emit('wall-delete', $event)"
         />
+        <TokenMovementRange
+          :scene="scene"
+          :tokens="tokens"
+          :selected-id="selectedTokenId"
+          :selected-ids="selectedTokenIds"
+          :scale="camera.scale"
+          :enabled="['select', 'tokens'].includes(activeTool)"
+        />
         <SceneTokenLayer
           :scene="scene"
           :tokens="tokens"
@@ -145,6 +153,7 @@ import SceneLightLayer from "@/components/vtt/light/SceneLightLayer.vue";
 import SceneTileLayer from "@/components/vtt/tile/SceneTileLayer.vue";
 import SceneMeasurementOverlay from "./SceneMeasurementOverlay.vue";
 import TokenDropPreview from "@/components/vtt/token/TokenDropPreview.vue";
+import TokenMovementRange from "@/components/vtt/token/TokenMovementRange.vue";
 import { sceneCanvasCameraMethods } from "./sceneCanvasCameraMethods";
 import { sceneCanvasDropMethods } from "./sceneCanvasDropMethods";
 
@@ -155,6 +164,7 @@ export default {
     SceneMeasurementOverlay,
     SceneTokenLayer,
     TokenDropPreview,
+    TokenMovementRange,
     SceneTileLayer,
     SceneWallLayer,
   },

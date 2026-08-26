@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   tokenMovementPreview,
   tokenMovementRouteCost,
+  tokenMovementState,
 } from "@/lib/vtt/tokenMovement";
 
 describe("token movement cost", () => {
@@ -40,5 +41,15 @@ describe("token movement cost", () => {
       { x: 300, y: 0 },
     );
     expect(preview).toMatchObject({ cost: 3, projected: 7, exceeded: true });
+  });
+
+  it("derives available points from the authoritative range and spent values", () => {
+    expect(
+      tokenMovementState({
+        movementRange: 8,
+        movementSpent: 2.5,
+        movementPoints: 99,
+      }),
+    ).toEqual({ range: 8, spent: 2.5, remaining: 5.5 });
   });
 });
