@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { lightDraftFromDrag, validLightDraft } from "../lightInteraction";
+import {
+  lightCopyDraft,
+  lightDraftFromDrag,
+  validLightDraft,
+} from "../lightInteraction";
 
 describe("light creation interaction", () => {
   it("uses drag distance as dim radius and half of it as bright radius", () => {
@@ -15,5 +19,14 @@ describe("light creation interaction", () => {
     expect(
       validLightDraft(lightDraftFromDrag({ x: 5, y: 5 }, { x: 5, y: 5 })),
     ).toBe(false);
+  });
+
+  it("copies persisted settings without identifiers and offsets the source", () => {
+    expect(
+      lightCopyDraft(
+        { id: 8, x: 100, y: 200, opacity: 0.6, revision: 3 },
+        { gridSize: 80, width: 120, height: 1000 },
+      ),
+    ).toEqual({ x: 120, y: 240, opacity: 0.6 });
   });
 });

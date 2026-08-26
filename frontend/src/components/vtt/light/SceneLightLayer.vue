@@ -73,9 +73,11 @@
       ref="editor"
       class="scene-light-layer__editor"
       :viewBox="viewBox"
+      tabindex="0"
       @pointermove="move"
       @pointerup="finish"
       @pointercancel="cancel"
+      @keydown="keyboard"
     >
       <rect
         width="100%"
@@ -102,6 +104,7 @@
           r="11"
           @pointerdown.stop="startMove($event, light)"
           @click.stop="$emit('select', light.id)"
+          @dblclick.stop="propertiesOpen = true"
         />
       </g>
       <g v-if="creationPreview" class="scene-light scene-light--draft">
@@ -131,24 +134,30 @@
       :busy="busy"
       :style="hudStyle"
       @update="$emit('update', { light: selectedLight, changes: $event })"
+      @copy="copySelected"
+      @edit="propertiesOpen = true"
       @delete="$emit('delete', selectedLight)"
+    />
+    <LightPropertiesPanel
+      v-if="canManage && active && selectedLight && propertiesOpen"
+      :light="selectedLight"
+      :busy="busy"
+      @close="propertiesOpen = false"
+      @save="$emit('update', { light: selectedLight, changes: $event })"
     />
   </div>
 </template>
 
 <script>
 import { getCurrentInstance } from "vue";
-import { wallPoint } from "@/lib/vtt/wallGeometry";
 import { lightPolygonPath } from "@/lib/vtt/lightGeometry";
-import {
-  lightDraftFromDrag,
-  validLightDraft,
-} from "@/lib/vtt/lightInteraction";
 import LightHud from "./LightHud.vue";
+import LightPropertiesPanel from "./LightPropertiesPanel.vue";
+import { lightLayerEditorMethods } from "./lightLayerEditorMethods";
 
 export default {
   name: "SceneLightLayer",
-  components: { LightHud },
+  components: { LightHud, LightPropertiesPanel },
   props: {
     scene: { type: Object, required: true },
     lights: { type: Array, default: () => [] },
@@ -160,7 +169,12 @@ export default {
   },
   emits: ["select", "create", "update", "delete"],
   data() {
-    return { uid: getCurrentInstance().uid, drag: null, preview: null };
+    return {
+      uid: getCurrentInstance().uid,
+      drag: null,
+      preview: null,
+      propertiesOpen: false,
+    };
   },
   computed: {
     active() {
@@ -200,6 +214,7 @@ export default {
     },
   },
   methods: {
+    ...lightLayerEditorMethods,
     maskId(light) {
       return `light-mask-${this.uid}-${light.id}`;
     },
@@ -211,65 +226,6 @@ export default {
     },
     brightOffset(light) {
       return `${Math.min(100, (light.brightRadius / Math.max(1, light.dimRadius)) * 100)}%`;
-    },
-    point(event) {
-      return wallPoint(event, this.$refs.editor, this.scene, !event.altKey);
-    },
-    startCreate(event) {
-      if (this.busy || event.button !== 0) return;
-      const origin = this.point(event);
-      this.$emit("select", null);
-      this.drag = { type: "create", pointerId: event.pointerId, origin };
-      this.preview = lightDraftFromDrag(origin, origin);
-      this.$refs.editor.setPointerCapture?.(event.pointerId);
-    },
-    startMove(event, light) {
-      if (this.busy || event.button !== 0) return;
-      this.$emit("select", light.id);
-      this.drag = { type: "move", pointerId: event.pointerId, light };
-      this.preview = { x: light.x, y: light.y };
-      event.currentTarget.setPointerCapture?.(event.pointerId);
-    },
-    move(event) {
-      if (!this.drag || event.pointerId !== this.drag.pointerId) return;
-      const point = this.point(event);
-      this.preview =
-        this.drag.type === "create"
-          ? lightDraftFromDrag(this.drag.origin, point)
-          : point;
-    },
-    finish(event) {
-      if (!this.drag || event.pointerId !== this.drag.pointerId) return;
-      this.move(event);
-      const drag = this.drag;
-      const point = this.preview;
-      this.cancel(event);
-      if (drag.type === "create") {
-        if (validLightDraft(point)) this.$emit("create", point);
-        return;
-      }
-      if (point.x !== drag.light.x || point.y !== drag.light.y) {
-        this.$emit("update", { light: drag.light, changes: point });
-      }
-    },
-    cancel(event) {
-      if (event && this.drag) {
-        this.$refs.editor.releasePointerCapture?.(this.drag.pointerId);
-      }
-      this.drag = null;
-      this.preview = null;
-    },
-    display(light) {
-      return this.drag?.light.id === light.id ? this.preview : light;
-    },
-    lightClasses(light) {
-      return [
-        "scene-light",
-        {
-          "scene-light--selected": light.id === this.selectedId,
-          "scene-light--disabled": !light.enabled,
-        },
-      ];
     },
   },
 };

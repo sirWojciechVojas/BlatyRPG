@@ -8,6 +8,22 @@
       @change="$emit('update', { color: $event.target.value })"
     />
     <button
+      type="button"
+      :title="$t('vtt.light.copy')"
+      :disabled="busy"
+      @click="$emit('copy')"
+    >
+      ⧉
+    </button>
+    <button
+      type="button"
+      :title="$t('vtt.light.edit')"
+      :disabled="busy"
+      @click="$emit('edit')"
+    >
+      ⚙
+    </button>
+    <button
       v-for="control in radiusControls"
       :key="control.label"
       type="button"
@@ -66,7 +82,7 @@ export default {
     gridSize: { type: Number, default: 100 },
     busy: { type: Boolean, default: false },
   },
-  emits: ["update", "delete"],
+  emits: ["update", "copy", "edit", "delete"],
   computed: {
     radiusControls() {
       return [
