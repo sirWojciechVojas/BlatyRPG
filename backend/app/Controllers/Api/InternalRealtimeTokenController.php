@@ -7,6 +7,7 @@ use App\Services\Campaign\CampaignException;
 use App\Services\Chat\CampaignChatException;
 use App\Services\Realtime\RealtimePrincipalService;
 use App\Services\Token\SceneTokenService;
+use App\Services\Token\TokenMovementRequestService;
 use CodeIgniter\API\ResponseTrait;
 
 /** Docker-network adapter; SceneTokenService remains the authority. */
@@ -16,13 +17,49 @@ class InternalRealtimeTokenController extends BaseController
 
     private $principals;
     private $tokens;
+    private $movementRequests;
 
     public function __construct(
         ?RealtimePrincipalService $principals = null,
-        ?SceneTokenService $tokens = null
+        ?SceneTokenService $tokens = null,
+        ?TokenMovementRequestService $movementRequests = null
     ) {
         $this->principals = $principals ?: new RealtimePrincipalService();
         $this->tokens = $tokens ?: new SceneTokenService();
+        $this->movementRequests = $movementRequests ?: new TokenMovementRequestService();
+    }
+
+    public function requestMovement($campaignId = null)
+    {
+        try {
+            $id = $this->positiveId($campaignId);
+            $payload = $this->jsonPayload();
+            $this->exactKeys($payload, ['sceneId', 'tokenId', 'revision', 'x', 'y', 'waypoints']);
+            return $this->respond($this->movementRequests->request(
+                $id, $this->principal($id), $payload
+            ), 201);
+        } catch (CampaignException $exception) {
+            return $this->failure($exception);
+        } catch (CampaignChatException $exception) {
+            return $this->failure($exception);
+        }
+    }
+
+    public function resolveMovement($campaignId = null, $requestId = null)
+    {
+        try {
+            $id = $this->positiveId($campaignId);
+            $payload = $this->jsonPayload();
+            $this->exactKeys($payload, ['decision']);
+            return $this->respond($this->movementRequests->resolve(
+                $id, $this->positiveId($requestId), $this->principal($id),
+                (string) ($payload['decision'] ?? '')
+            ));
+        } catch (CampaignException $exception) {
+            return $this->failure($exception);
+        } catch (CampaignChatException $exception) {
+            return $this->failure($exception);
+        }
     }
 
     public function move($campaignId = null)
@@ -72,6 +109,15 @@ class InternalRealtimeTokenController extends BaseController
         $id = filter_var($value, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1]]);
         if ($id === false) throw new CampaignException('not_found', 'Resource was not found.', 404);
         return (int) $id;
+    }
+
+    private function principal(int $campaignId): array
+    {
+        return $this->principals->resolve(
+            $this->request->getHeaderLine('Authorization'),
+            $this->request->getHeaderLine('X-Realtime-Client-Instance'),
+            $campaignId
+        );
     }
 
     private function exactKeys(array $payload, array $allowed): void

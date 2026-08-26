@@ -36,6 +36,8 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
     $routes->post('internal/realtime/campaigns/(:num)/chat/sync', 'InternalRealtimeChatController::sync/$1');
     $routes->post('internal/realtime/campaigns/(:num)/chat/send', 'InternalRealtimeChatController::send/$1');
     $routes->post('internal/realtime/campaigns/(:num)/tokens/move', 'InternalRealtimeTokenController::move/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/tokens/movement-requests', 'InternalRealtimeTokenController::requestMovement/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/tokens/movement-requests/(:num)/resolve', 'InternalRealtimeTokenController::resolveMovement/$1/$2');
     $routes->post('internal/realtime/campaigns/(:num)/walls/change', 'InternalRealtimeWallController::change/$1');
     $routes->post('internal/realtime/campaigns/(:num)/lights/change', 'InternalRealtimeLightController::change/$1');
     $routes->post('internal/realtime/campaigns/(:num)/tiles/change', 'InternalRealtimeTileController::change/$1');
@@ -89,6 +91,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->post('campaign-invitations/(:num)/accept', 'CampaignInvitationController::accept/$1');
         $routes->post('campaign-invitations/(:num)/reject', 'CampaignInvitationController::reject/$1');
         $routes->post('campaigns/(:num)/realtime-ticket', 'RealtimeTicketController::create/$1');
+        $routes->get('campaigns/(:num)/token-movement-requests', 'TokenMovementRequestController::index/$1');
         $routes->get('campaigns/(:num)/chat/messages', 'CampaignChatController::index/$1');
         $routes->post('campaigns/(:num)/chat/messages', 'CampaignChatController::create/$1');
 
