@@ -1,9 +1,13 @@
 import { normalizeLight } from "@/lib/vtt/lightNormalizer";
 import { normalizeScene } from "@/lib/vtt/sceneNormalizer";
+import { lightRequestTracker } from "./lightRequestTracker";
 
 let requestSerial = 0;
 
 export const routeRealtimeLightEvent = (context, event) => {
+  if (["light.ack", "light.error"].includes(event.type)) {
+    lightRequestTracker.settle(event);
+  }
   if (!context.rootState.vtt) return;
   if (event.type === "scene.updated") {
     const scene = normalizeScene(event.payload.scene);
@@ -33,11 +37,14 @@ export const routeRealtimeLightEvent = (context, event) => {
 export const createRealtimeLightActions = (ensureSession) => ({
   syncSceneLighting(context, scene) {
     if (!scene?.id) return false;
-    return ensureSession(context).changeLight({
-      requestId: `scene-lighting-sync-${++requestSerial}`,
-      operation: "syncScene",
-      sceneId: Number(scene.id),
-    });
+    const requestId = `scene-lighting-sync-${++requestSerial}`;
+    return lightRequestTracker.send(requestId, () =>
+      ensureSession(context).changeLight({
+        requestId,
+        operation: "syncScene",
+        sceneId: Number(scene.id),
+      }),
+    );
   },
   changeLight(context, { operation, light, changes }) {
     const sceneId = Number(
@@ -49,12 +56,15 @@ export const createRealtimeLightActions = (ensureSession) => ({
     if (operation !== "create" && (!light?.id || !light?.revision)) {
       return false;
     }
-    return ensureSession(context).changeLight({
-      requestId: `light-${operation}-${++requestSerial}`,
-      operation,
-      sceneId,
-      ...(light?.id ? { lightId: light.id, revision: light.revision } : {}),
-      ...(changes ? { changes } : {}),
-    });
+    const requestId = `light-${operation}-${++requestSerial}`;
+    return lightRequestTracker.send(requestId, () =>
+      ensureSession(context).changeLight({
+        requestId,
+        operation,
+        sceneId,
+        ...(light?.id ? { lightId: light.id, revision: light.revision } : {}),
+        ...(changes ? { changes } : {}),
+      }),
+    );
   },
 });

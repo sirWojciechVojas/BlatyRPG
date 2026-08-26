@@ -77,7 +77,7 @@ describe("realtime light synchronization", () => {
     );
   });
 
-  it("sends the loaded light revision through the current session", () => {
+  it("sends the loaded revision and waits for acknowledgement", async () => {
     const changeLight = vi.fn().mockReturnValue(true);
     const actions = createRealtimeLightActions(() => ({ changeLight }));
     const sent = actions.changeLight(
@@ -88,7 +88,6 @@ describe("realtime light synchronization", () => {
         changes: { intensity: 0.5 },
       },
     );
-    expect(sent).toBe(true);
     expect(changeLight).toHaveBeenCalledWith(
       expect.objectContaining({
         operation: "update",
@@ -97,5 +96,27 @@ describe("realtime light synchronization", () => {
         revision: 2,
       }),
     );
+    const requestId = changeLight.mock.calls[0][0].requestId;
+    routeRealtimeLightEvent(
+      { rootState: {}, commit: vi.fn(), dispatch: vi.fn() },
+      { type: "light.ack", payload: { requestId } },
+    );
+    await expect(sent).resolves.toBe(true);
+  });
+
+  it("waits for global illumination synchronization acknowledgement", async () => {
+    const changeLight = vi.fn().mockReturnValue(true);
+    const actions = createRealtimeLightActions(() => ({ changeLight }));
+    const sent = actions.syncSceneLighting({}, { id: 4 });
+    const requestId = changeLight.mock.calls[0][0].requestId;
+
+    expect(changeLight).toHaveBeenCalledWith(
+      expect.objectContaining({ operation: "syncScene", sceneId: 4 }),
+    );
+    routeRealtimeLightEvent(
+      { rootState: {}, commit: vi.fn(), dispatch: vi.fn() },
+      { type: "light.ack", payload: { requestId } },
+    );
+    await expect(sent).resolves.toBe(true);
   });
 });
