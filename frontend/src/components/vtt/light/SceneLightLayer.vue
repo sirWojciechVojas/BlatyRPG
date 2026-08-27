@@ -221,6 +221,7 @@ export default {
             lumens: 800,
             opacity: 1,
             softness: 0.5,
+            clarity: 0,
             gradualIllumination: true,
             constrainedByWalls: true,
             enabled: true,

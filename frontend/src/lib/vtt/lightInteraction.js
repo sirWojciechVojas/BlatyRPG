@@ -40,6 +40,7 @@ const COPY_FIELDS = [
   "intensity",
   "opacity",
   "softness",
+  "clarity",
   "gradualIllumination",
   "darknessMin",
   "darknessMax",

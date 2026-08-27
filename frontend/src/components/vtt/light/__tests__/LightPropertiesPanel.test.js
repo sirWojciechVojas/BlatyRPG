@@ -10,6 +10,7 @@ const form = (overrides = {}) => ({
   darknessMin: 0,
   darknessMax: 1,
   lumens: 2200,
+  clarity: 0,
   color: "#FFD27A",
   ...overrides,
 });
@@ -23,6 +24,12 @@ describe("LightPropertiesPanel saves", () => {
 
   it("does not produce an empty update", () => {
     expect(changedLightProperties(form(), form())).toEqual({});
+  });
+
+  it("saves clarity independently from the remaining light data", () => {
+    expect(changedLightProperties(form(), form({ clarity: 0.6 }))).toEqual({
+      clarity: 0.6,
+    });
   });
 
   it("normalizes dependent values before saving", () => {

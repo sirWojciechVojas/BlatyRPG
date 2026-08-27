@@ -11,6 +11,7 @@ const apiLight = {
   color: "#FFD27A",
   intensity: "0.800",
   opacity: "0.700",
+  clarity: "0.350",
   source_type: "darkness",
   animation: "pulse",
   enabled: 1,
@@ -19,6 +20,18 @@ const apiLight = {
 };
 
 describe("lightApiClient", () => {
+  it("keeps existing scenes haze-free when clarity is absent", async () => {
+    const legacyLight = { ...apiLight };
+    delete legacyLight.clarity;
+    const client = createLightApiClient({
+      request: vi.fn().mockResolvedValue({ items: [legacyLight] }),
+    });
+
+    const result = await client.list(7, 4);
+
+    expect(result.items[0].clarity).toBe(0);
+  });
+
   it("normalizes light collections", async () => {
     const request = vi.fn().mockResolvedValue({
       items: [apiLight],
@@ -38,6 +51,7 @@ describe("lightApiClient", () => {
       name: "Light",
       enabled: true,
       opacity: 0.7,
+      clarity: 0.35,
       sourceType: "darkness",
       animation: "pulse",
     });
@@ -54,6 +68,7 @@ describe("lightApiClient", () => {
       angle: 60,
       sourceType: "cone",
       opacity: 0.6,
+      clarity: 0.45,
       providesVision: true,
       revision: 2,
     });
@@ -65,6 +80,7 @@ describe("lightApiClient", () => {
         angle: 60,
         sourceType: "cone",
         opacity: 0.6,
+        clarity: 0.45,
         providesVision: true,
         revision: 2,
       },

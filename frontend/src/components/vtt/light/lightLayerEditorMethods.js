@@ -76,6 +76,7 @@ export const lightLayerEditorMethods = {
       sourceType: this.creationType,
       angle: this.defaultAngle(this.creationType),
       lumens: 800,
+      clarity: 0,
     };
   },
   cancel(event) {
@@ -120,6 +121,7 @@ export const lightLayerEditorMethods = {
       sourceType: this.creationType,
       angle: this.defaultAngle(this.creationType),
       lumens: 800,
+      clarity: 0,
     });
   },
   openContextMenu(event) {

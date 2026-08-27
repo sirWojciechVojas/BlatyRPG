@@ -30,6 +30,7 @@ export const normalizeLight = (source = {}) => ({
   intensity: number(source.intensity, 1),
   opacity: number(source.opacity, 1),
   softness: number(source.softness, 0.5),
+  clarity: number(source.clarity, 0),
   gradualIllumination: boolean(
     source.gradualIllumination ?? source.gradual_illumination,
     true,
@@ -71,6 +72,7 @@ export const lightWritePayload = (changes = {}, includeRevision = false) => {
     "intensity",
     "opacity",
     "softness",
+    "clarity",
     "gradualIllumination",
     "darknessMin",
     "darknessMax",

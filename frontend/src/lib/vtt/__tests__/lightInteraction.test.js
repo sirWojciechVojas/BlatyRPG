@@ -37,9 +37,9 @@ describe("light creation interaction", () => {
   it("copies persisted settings without identifiers and offsets the source", () => {
     expect(
       lightCopyDraft(
-        { id: 8, x: 100, y: 200, opacity: 0.6, revision: 3 },
+        { id: 8, x: 100, y: 200, opacity: 0.6, clarity: 0.4, revision: 3 },
         { gridSize: 80, width: 120, height: 1000 },
       ),
-    ).toEqual({ x: 120, y: 240, opacity: 0.6 });
+    ).toEqual({ x: 120, y: 240, opacity: 0.6, clarity: 0.4 });
   });
 });

@@ -51,7 +51,7 @@
         </select>
       </label>
       <label v-for="field in activeNumberFields" :key="field.key">
-        <span>{{ $t(field.label) }}</span>
+        <span>{{ field.key === "clarity" ? field.label : $t(field.label) }}</span>
         <input
           v-model.number="form[field.key]"
           type="number"
@@ -110,6 +110,7 @@ const numberFields = [
   ["geometry", "areaWidth", "vtt.light.areaWidth", 1, 100000, 1, "area"],
   ["geometry", "areaHeight", "vtt.light.areaHeight", 1, 100000, 1, "area"],
   ["light", "lumens", "vtt.light.lumens", 0, 1000000, 50],
+  ["light", "clarity", "Clarity", 0, 1, 0.05],
   ["light", "softness", "vtt.light.softness", 0, 1, 0.05, "gradual"],
   [
     "animation",

@@ -11,6 +11,7 @@ export const LIGHT_EDIT_FIELDS = [
   "color",
   "opacity",
   "softness",
+  "clarity",
   "gradualIllumination",
   "darknessMin",
   "darknessMax",
