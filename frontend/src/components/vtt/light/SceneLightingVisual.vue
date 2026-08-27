@@ -32,12 +32,12 @@
           <stop
             offset="0%"
             :stop-color="light.color"
-            :stop-opacity="strength(light) * 0.58"
+            :stop-opacity="tintOpacity(light)"
           />
           <stop
             :offset="brightOffset(light)"
             :stop-color="light.color"
-            :stop-opacity="strength(light) * 0.36"
+            :stop-opacity="tintOpacity(light) * 0.55"
           />
           <stop offset="100%" :stop-color="light.color" stop-opacity="0" />
         </radialGradient>
@@ -96,15 +96,7 @@
       :style="animationStyle(light)"
       :d="path(light)"
       :fill="areaFill(light, `url(#${glowId(light)})`, light.color)"
-      :fill-opacity="areaOpacity(light, 0.32)"
-    />
-    <path
-      v-for="light in lightSources"
-      :key="`clarity-${light.id}`"
-      class="scene-lighting__clarity"
-      :d="path(light)"
-      :fill="light.color"
-      :fill-opacity="strength(light) * 0.14"
+      :fill-opacity="areaGlowOpacity(light)"
     />
     <path
       v-for="light in darknessSources"
@@ -135,6 +127,7 @@ import {
   tokenVisionSource,
 } from "@/lib/vtt/lightGeometry";
 import { effectiveLight, lumenStrength } from "@/lib/vtt/lightPhotometry";
+import { lightTintWeight } from "@/lib/vtt/lightAppearance";
 
 export default {
   name: "SceneLightingVisual",
@@ -224,6 +217,9 @@ export default {
     strength(light) {
       return lumenStrength(light) * light.opacity;
     },
+    tintOpacity(light) {
+      return this.strength(light) * lightTintWeight(light, this.darkness);
+    },
     geometry(light) {
       return effectiveLight(light);
     },
@@ -234,6 +230,9 @@ export default {
       return light.sourceType === "area"
         ? this.strength(light) * multiplier
         : 1;
+    },
+    areaGlowOpacity(light) {
+      return light.sourceType === "area" ? this.tintOpacity(light) * 0.7 : 1;
     },
     brightOffset(light) {
       return `${lightTransitionOffsets(light).bright}%`;
