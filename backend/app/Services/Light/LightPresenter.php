@@ -23,6 +23,7 @@ final class LightPresenter
             'intensity' => (float) $row['intensity'],
             'opacity' => (float) ($row['opacity'] ?? 1),
             'softness' => (float) ($row['softness'] ?? 0.5),
+            'clarity' => (float) ($row['clarity'] ?? 0),
             'gradualIllumination' => (bool) ($row['gradual_illumination'] ?? true),
             'darknessMin' => (float) ($row['darkness_min'] ?? 0),
             'darknessMax' => (float) ($row['darkness_max'] ?? 1),

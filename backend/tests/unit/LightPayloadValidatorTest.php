@@ -17,6 +17,7 @@ final class LightPayloadValidatorTest extends CIUnitTestCase
         $this->assertSame(1, $result['data']['gradual_illumination']);
         $this->assertSame('omni', $result['data']['source_type']);
         $this->assertSame(800, $result['data']['lumens']);
+        $this->assertSame(0, $result['data']['clarity']);
         $this->assertSame('none', $result['data']['animation']);
     }
 
@@ -26,6 +27,7 @@ final class LightPayloadValidatorTest extends CIUnitTestCase
             'revision' => 2,
             'opacity' => 0.7,
             'softness' => 0.4,
+            'clarity' => 0.65,
             'darknessMin' => 0.25,
             'darknessMax' => 0.8,
             'sourceType' => 'darkness',
@@ -42,6 +44,7 @@ final class LightPayloadValidatorTest extends CIUnitTestCase
         $this->assertSame('flicker', $result['data']['animation']);
         $this->assertSame(1, $result['data']['provides_vision']);
         $this->assertSame(0, $result['data']['constrained_by_walls']);
+        $this->assertSame(0.65, $result['data']['clarity']);
     }
 
     public function testValidatesPhotometryAndDirectionalGeometry(): void
@@ -78,6 +81,17 @@ final class LightPayloadValidatorTest extends CIUnitTestCase
         $this->assertFalse($result['valid']);
         $this->assertArrayHasKey('darknessMax', $result['errors']);
         $this->assertArrayHasKey('animation', $result['errors']);
+    }
+
+    public function testRejectsClarityOutsideItsNormalizedRange(): void
+    {
+        $result = (new LightPayloadValidator())->update([
+            'revision' => 2,
+            'clarity' => 1.01,
+        ]);
+
+        $this->assertFalse($result['valid']);
+        $this->assertArrayHasKey('clarity', $result['errors']);
     }
 
     public function testRejectsInvalidRadiiColorAndOwnedFields(): void

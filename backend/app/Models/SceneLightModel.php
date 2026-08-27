@@ -12,7 +12,8 @@ class SceneLightModel extends Model
     protected $useSoftDeletes = true;
     protected $allowedFields = [
         'campaign_id', 'scene_id', 'x', 'y', 'bright_radius', 'dim_radius',
-        'color', 'intensity', 'opacity', 'softness', 'gradual_illumination',
+        'color', 'intensity', 'opacity', 'softness', 'clarity',
+        'gradual_illumination',
         'darkness_min', 'darkness_max', 'source_type', 'provides_vision',
         'constrained_by_walls', 'animation', 'animation_speed',
         'animation_intensity', 'elevation', 'enabled', 'hidden', 'revision',
@@ -30,7 +31,8 @@ class SceneLightModel extends Model
                 if (isset($row[$field])) $row[$field] = (int) $row[$field];
             }
             foreach (['x', 'y', 'bright_radius', 'dim_radius', 'intensity', 'opacity',
-                'softness', 'darkness_min', 'darkness_max', 'animation_speed',
+                'softness', 'clarity', 'darkness_min', 'darkness_max',
+                'animation_speed',
                 'animation_intensity', 'elevation', 'direction', 'angle',
                 'area_width', 'area_height'] as $field) {
                 if (isset($row[$field])) $row[$field] = (float) $row[$field];

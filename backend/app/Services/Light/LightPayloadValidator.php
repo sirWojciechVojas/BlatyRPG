@@ -6,7 +6,8 @@ final class LightPayloadValidator
 {
     private const FIELDS = [
         'x', 'y', 'brightRadius', 'dimRadius', 'color', 'intensity', 'opacity',
-        'softness', 'gradualIllumination', 'darknessMin', 'darknessMax',
+        'softness', 'clarity', 'gradualIllumination', 'darknessMin',
+        'darknessMax',
         'sourceType', 'providesVision', 'constrainedByWalls', 'animation',
         'animationSpeed', 'animationIntensity', 'elevation', 'enabled', 'hidden',
         'name', 'lumens', 'direction', 'angle', 'areaWidth', 'areaHeight',
@@ -63,7 +64,8 @@ final class LightPayloadValidator
             }
         }
         foreach (['intensity' => 'intensity', 'opacity' => 'opacity',
-            'softness' => 'softness', 'darknessMin' => 'darkness_min',
+            'softness' => 'softness', 'clarity' => 'clarity',
+            'darknessMin' => 'darkness_min',
             'darknessMax' => 'darkness_max', 'animationIntensity' => 'animation_intensity']
             as $field => $db) {
             if (array_key_exists($field, $payload)) {
@@ -112,6 +114,7 @@ final class LightPayloadValidator
             $data += [
                 'bright_radius' => 200, 'dim_radius' => 400, 'color' => '#FFD27A',
                 'intensity' => 1, 'opacity' => 1, 'softness' => 0.5,
+                'clarity' => 0,
                 'gradual_illumination' => 1, 'darkness_min' => 0,
                 'darkness_max' => 1, 'source_type' => 'omni',
                 'provides_vision' => 0, 'constrained_by_walls' => 1,
