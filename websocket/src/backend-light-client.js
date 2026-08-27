@@ -44,6 +44,7 @@ const light = (value) => {
   const areaHeight = finiteNumber(value?.areaHeight ?? value?.area_height ?? 400, 1, 100000);
   const opacity = finiteNumber(value?.opacity ?? 1, 0, 1);
   const softness = finiteNumber(value?.softness ?? 0.5, 0, 1);
+  const clarity = finiteNumber(value?.clarity ?? 0, 0, 1);
   const darknessMin = finiteNumber(value?.darknessMin ?? value?.darkness_min ?? 0, 0, 1);
   const darknessMax = finiteNumber(value?.darknessMax ?? value?.darkness_max ?? 1, 0, 1);
   const animationSpeed = finiteNumber(value?.animationSpeed ?? value?.animation_speed ?? 1, 0.1, 10);
@@ -75,6 +76,7 @@ const light = (value) => {
     !name ||
     opacity === null ||
     softness === null ||
+    clarity === null ||
     darknessMin === null ||
     darknessMax === null ||
     darknessMin > darknessMax ||
@@ -106,6 +108,7 @@ const light = (value) => {
     intensity,
     opacity,
     softness,
+    clarity,
     gradualIllumination: value.gradualIllumination !== false,
     darknessMin,
     darknessMax,

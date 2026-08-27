@@ -17,6 +17,7 @@ test("validates light changes without accepting client campaign scope", () => {
       color: "#FFD27A",
       opacity: 0.8,
       softness: 0.4,
+      clarity: 0.65,
       gradualIllumination: true,
       darknessMin: 0.2,
       darknessMax: 0.9,
@@ -82,6 +83,10 @@ test("rejects invalid advanced light ranges", () => {
   assert.throws(
     () => parseAuthenticatedMessage({ ...base, changes: { lumens: 1000001 } }),
     (error) => error.code === "light_lumens_invalid",
+  );
+  assert.throws(
+    () => parseAuthenticatedMessage({ ...base, changes: { clarity: 1.1 } }),
+    (error) => error.code === "light_clarity_invalid",
   );
   assert.throws(
     () => parseAuthenticatedMessage({ ...base, changes: { animation: "rainbow" } }),

@@ -28,6 +28,7 @@ test("forwards light writes using authoritative session scope", async () => {
             dimRadius: 400,
             color: "#FFD27A",
             intensity: 0.8,
+            clarity: 0.35,
             enabled: true,
             hidden: false,
             revision: 2,
@@ -59,6 +60,7 @@ test("forwards light writes using authoritative session scope", async () => {
   });
   assert.equal(result.light.revision, 2);
   assert.equal(result.light.lumens, 640);
+  assert.equal(result.light.clarity, 0.35);
 });
 
 test("fails closed on malformed committed lights", async () => {

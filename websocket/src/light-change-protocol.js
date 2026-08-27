@@ -20,6 +20,7 @@ const ranges = {
   intensity: [0, 1],
   opacity: [0, 1],
   softness: [0, 1],
+  clarity: [0, 1],
   darknessMin: [0, 1],
   darknessMax: [0, 1],
   animationSpeed: [0.1, 10],
