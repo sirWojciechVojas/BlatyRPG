@@ -121,6 +121,7 @@ export const tokenWritePayload = (changes = {}, includeRevision = false) => {
     "observerBy",
     "statuses",
     "resources",
+    "vision",
     "waypoints",
   ];
   const payload = {};

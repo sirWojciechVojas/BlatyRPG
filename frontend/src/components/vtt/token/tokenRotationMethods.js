@@ -12,6 +12,10 @@ export const tokenRotationMethods = {
         [change.field]: change.value,
       },
     };
+    this.$emit("vision-angle-preview", {
+      tokenId: token.id,
+      changes: this.anglePreview[token.id],
+    });
   },
   commitTokenAngle(token, change) {
     this.clearTokenAnglePreview(token.id);
@@ -21,5 +25,6 @@ export const tokenRotationMethods = {
     const next = { ...this.anglePreview };
     delete next[tokenId];
     this.anglePreview = next;
+    this.$emit("vision-angle-preview", { tokenId, changes: null });
   },
 };

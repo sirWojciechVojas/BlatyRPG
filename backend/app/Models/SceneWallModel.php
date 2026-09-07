@@ -11,8 +11,9 @@ class SceneWallModel extends Model
     protected $returnType = 'array';
     protected $useSoftDeletes = true;
     protected $allowedFields = [
-        'campaign_id', 'scene_id', 'type', 'x1', 'y1', 'x2', 'y2',
-        'blocks_movement', 'blocks_sight', 'blocks_light', 'door_state', 'revision',
+        'campaign_id', 'scene_id', 'name', 'type', 'x1', 'y1', 'x2', 'y2',
+        'blocks_movement', 'blocks_sight', 'blocks_light', 'door_state', 'color',
+        'enabled', 'hidden', 'revision',
     ];
     protected $useTimestamps = true;
     protected $afterFind = ['normalizeRows'];
@@ -28,7 +29,7 @@ class SceneWallModel extends Model
             foreach (['x1', 'y1', 'x2', 'y2'] as $field) {
                 if (isset($row[$field])) $row[$field] = (float) $row[$field];
             }
-            foreach (['blocks_movement', 'blocks_sight', 'blocks_light'] as $field) {
+            foreach (['blocks_movement', 'blocks_sight', 'blocks_light', 'enabled', 'hidden'] as $field) {
                 if (isset($row[$field])) $row[$field] = (bool) $row[$field];
             }
         };

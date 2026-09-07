@@ -59,6 +59,30 @@
         />
         <span v-else>{{ initials(token.name) }}</span>
       </button>
+      <button
+        v-if="movementToggleVisible(token)"
+        type="button"
+        class="scene-token-movement-toggle"
+        :class="{
+          active: String(movementModeTokenId) === String(token.id),
+          depleted: movementRemaining(token) <= 0,
+        }"
+        :disabled="busy || token.locked"
+        :aria-pressed="String(movementModeTokenId) === String(token.id)"
+        :title="
+          $t('vtt.token.movement.modeHint', {
+            points: formatMovement(movementRemaining(token)),
+          })
+        "
+        @pointerdown.stop
+        @click.stop="$emit('movement-mode', token.id)"
+      >
+        <span aria-hidden="true">↗</span>
+        <b>
+          {{ formatMovement(movementRemaining(token)) }}
+          {{ $t("vtt.token.movement.pointsShort") }}
+        </b>
+      </button>
       <TokenInfoStack v-if="tokenInfoVisible(token)" :token="token" />
       <TokenRotationHandles
         v-if="tokenStates[token.id].selected && !hasMultiSelection"
@@ -165,6 +189,7 @@ export default {
     characters: { type: Array, default: () => [] },
     scale: { type: Number, default: 1 },
     busy: { type: Boolean, default: false },
+    movementModeTokenId: { type: [Number, String], default: null },
   },
   emits: [
     "select",
@@ -176,6 +201,9 @@ export default {
     "target",
     "delete",
     "open-actor",
+    "vision-preview",
+    "vision-angle-preview",
+    "movement-mode",
   ],
   data: () => ({
     drag: null,
@@ -285,7 +313,28 @@ export default {
         transform: `translate(${position.x}px, ${position.y}px)`,
         zIndex: String(100 + Math.round(token.elevation || 0)),
         "--token-travel-duration": `${this.motionDurations[token.id] || 460}ms`,
+        "--token-ui-scale": String(1 / Math.max(0.05, Number(this.scale) || 1)),
       };
+    },
+    movementToggleVisible(token) {
+      return (
+        !this.hasMultiSelection &&
+        this.tokenStates[token.id].selected &&
+        token.capabilities?.canControl === true
+      );
+    },
+    movementRemaining(token) {
+      return Math.max(
+        0,
+        Number.isFinite(Number(token.movementPoints))
+          ? Number(token.movementPoints)
+          : Number(token.movementRange || 0) - Number(token.movementSpent || 0),
+      );
+    },
+    formatMovement(value) {
+      return Number.isInteger(Number(value))
+        ? String(Number(value))
+        : Number(value).toFixed(1);
     },
     initials(name) {
       return String(name || "?")

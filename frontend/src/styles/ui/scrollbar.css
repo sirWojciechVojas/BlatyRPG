@@ -7,8 +7,15 @@
   --app-scrollbar-border: rgba(229, 191, 120, 0.18);
 }
 
+html {
+  scrollbar-gutter: stable;
+}
+
+html:has(> body.ui-shell--workspace) {
+  scrollbar-gutter: auto;
+}
+
 * {
-  scrollbar-gutter: stable !important;
   scrollbar-width: thin;
   scrollbar-color: var(--app-scrollbar-thumb) var(--app-scrollbar-track) !important;
 }

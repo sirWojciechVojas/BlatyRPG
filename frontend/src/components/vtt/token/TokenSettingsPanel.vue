@@ -80,6 +80,12 @@
             :can-manage="canManage"
           />
 
+          <TokenVisionSettings
+            v-if="canManage"
+            v-show="activeTab === 'vision'"
+            v-model="draft.vision"
+          />
+
           <div v-if="canManage" v-show="activeTab === 'permissions'">
             <section class="token-settings-panel__toggles">
               <label>
@@ -141,6 +147,7 @@ import TokenPermissionField from "./TokenPermissionField.vue";
 import TokenResourceSettings from "./TokenResourceSettings.vue";
 import TokenSettingsPreview from "./TokenSettingsPreview.vue";
 import TokenSettingsTransfer from "./TokenSettingsTransfer.vue";
+import TokenVisionSettings from "./TokenVisionSettings.vue";
 import {
   createTokenSettingsDraft,
   tokenSettingsPayload,
@@ -156,6 +163,7 @@ export default {
     TokenResourceSettings,
     TokenSettingsPreview,
     TokenSettingsTransfer,
+    TokenVisionSettings,
   },
   props: {
     token: { type: Object, required: true },
@@ -178,7 +186,7 @@ export default {
   computed: {
     tabs() {
       return this.canManage
-        ? ["general", "movement", "resources", "permissions"]
+        ? ["general", "movement", "vision", "resources", "permissions"]
         : ["general", "movement", "resources"];
     },
     canManage() {

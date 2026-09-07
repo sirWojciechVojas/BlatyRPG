@@ -136,6 +136,64 @@
         />
       </DenseField>
 
+      <div class="item-editor__text">
+        <DenseField label="Spożycie instancji">
+          <select v-model="stackInstanceDraft.consumptionMode">
+            <option value="inherit">Dziedzicz z szablonu</option>
+            <option value="disabled">Wyłącz spożycie</option>
+            <option value="override">Nadpisz profilem z katalogu</option>
+          </select>
+          <ConsumptionProfilePicker
+            v-if="stackInstanceDraft.consumptionMode === 'override'"
+            v-model="stackInstanceDraft.consumptionProfileId"
+            empty-label="Wybierz profil"
+            @selected="setStackConsumptionProfilePreview"
+          />
+          <small>
+            Profil szablonu:
+            {{ stackInstanceDraft.consumptionTemplateProfileId || "brak" }}
+          </small>
+          <small>
+            Aktualny profil:
+            {{ stackConsumptionPreview?.id || "wyłączony lub brak" }}
+            <template v-if="stackConsumptionPreview">
+              ({{
+                stackInstanceDraft.consumptionMode === "override"
+                  ? "nadpisanie instancji"
+                  : "szablon"
+              }})
+            </template>
+          </small>
+          <div
+            v-if="stackConsumptionPreview"
+            class="stack-instance-consumption-preview"
+          >
+            <strong>{{ stackConsumptionPreview.name }}</strong>
+            <span
+              >Działanie: {{ stackConsumptionPreview.effect || "brak" }}</span
+            >
+            <span>Cena: {{ stackConsumptionPreview.basePricePennies }} p</span>
+            <span>Ryzyko: {{ stackConsumptionPreview.risk || "brak" }}</span>
+            <span>Czas: {{ stackConsumptionPreview.consumeTime || "—" }}</span>
+          </div>
+        </DenseField>
+        <DenseField label="Identyfikacja">
+          <select v-model="stackInstanceDraft.consumptionIdentification">
+            <option value="unknown">Nieznany</option>
+            <option value="suspected">Podejrzewany</option>
+            <option value="identified">Rozpoznany</option>
+            <option value="examined">Zbadany</option>
+          </select>
+        </DenseField>
+        <DenseField label="Porcje">
+          <input
+            v-model.number="stackInstanceDraft.consumptionPortions"
+            min="1"
+            type="number"
+          />
+        </DenseField>
+      </div>
+
       <section class="expanded-attribute-editor">
         <header>
           <strong>{{
@@ -219,6 +277,7 @@ import DomainCombobox from "@/components/shop/common/DomainCombobox.vue";
 import SystemPriceInput from "@/components/shop/common/SystemPriceInput.vue";
 import EncumbranceInput from "@/components/shop/common/EncumbranceInput.vue";
 import StatusChip from "@/components/shop/common/StatusChip.vue";
+import ConsumptionProfilePicker from "@/components/shop/common/ConsumptionProfilePicker.vue";
 import CurrencyDisplay from "@/components/trade/CurrencyDisplay.vue";
 import { useShopWorkspaceContext } from "../shopWorkspaceContext";
 export default {
@@ -231,10 +290,24 @@ export default {
     SystemPriceInput,
     EncumbranceInput,
     StatusChip,
+    ConsumptionProfilePicker,
     CurrencyDisplay,
   },
   setup() {
     return useShopWorkspaceContext();
+  },
+  computed: {
+    stackConsumptionPreview() {
+      if (this.stackInstanceDraft.consumptionMode === "disabled") return null;
+      return this.stackInstanceDraft.consumptionMode === "override"
+        ? this.stackInstanceDraft.consumptionProfilePreview
+        : this.stackInstanceDraft.consumptionTemplateProfilePreview;
+    },
+  },
+  methods: {
+    setStackConsumptionProfilePreview(profile) {
+      this.stackInstanceDraft.consumptionProfilePreview = profile || null;
+    },
   },
 };
 </script>

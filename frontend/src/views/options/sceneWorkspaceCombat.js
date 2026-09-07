@@ -59,16 +59,34 @@ export const sceneWorkspaceCombat = {
         canResolveMovement: this.state.movementRequestCapabilities.canResolve,
         movementRequestBusy: this.state.movementRequestPhase === "saving",
         characterId: this.focusedCharacterId,
+        hudCharacterId: this.hudCharacterId,
         busy: this.busy,
         tokens: this.selectedSceneTokens,
         combat: this.selectedSceneCombat,
         combatError: this.state.combatError,
         canManageCombat: this.canManageCombat,
         combatBusy: this.combatBusy,
+        tokenX: Number.isFinite(Number(this.sceneViewCenter?.x))
+          ? Number(this.sceneViewCenter.x)
+          : Number(
+              this.selectedScene?.width || this.selectedScene?.mapWidth || 0,
+            ) / 2,
+        tokenY: Number.isFinite(Number(this.sceneViewCenter?.y))
+          ? Number(this.sceneViewCenter.y)
+          : Number(
+              this.selectedScene?.height || this.selectedScene?.mapHeight || 0,
+            ) / 2,
       };
     },
   },
   methods: {
+    handleCameraChange(camera = {}) {
+      this.zoomPercent = Number(camera.zoomPercent) || 100;
+      const x = Number(camera.centerX);
+      const y = Number(camera.centerY);
+      this.sceneViewCenter =
+        Number.isFinite(x) && Number.isFinite(y) ? { x, y } : null;
+    },
     commandCombat(command) {
       const sent = this.$store.dispatch("realtime/commandCombat", {
         sceneId: this.state.selectedSceneId,

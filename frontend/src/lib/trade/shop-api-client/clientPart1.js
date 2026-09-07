@@ -32,6 +32,13 @@ export const createApiClientPart1 = (runtime) => ({
       {},
     );
   },
+  async getConsumptionProfiles(config = {}, query = "") {
+    const merged = runtime.createShopApiConfig(config);
+    const suffix = query ? `?q=${encodeURIComponent(query)}` : "";
+    return runtime.requestJson(
+      `${runtime.buildCampaignBaseUrl(merged)}/catalog/consumption-profiles${suffix}`,
+    );
+  },
   async uploadIcon(config = {}, file) {
     const merged = runtime.createShopApiConfig(config);
     const body = new FormData();
@@ -258,6 +265,19 @@ export const createApiClientPart1 = (runtime) => ({
           ...payload,
           ownerCode: merged.ownerCode,
         }),
+      },
+    );
+  },
+  async consumeItem(config = {}, payload = {}, idempotencyKey = "") {
+    const merged = runtime.createShopApiConfig(config);
+    return runtime.requestJson(
+      `${runtime.buildCampaignBaseUrl(merged)}/consumption/consume`,
+      {
+        method: "POST",
+        headers: idempotencyKey
+          ? { "Idempotency-Key": String(idempotencyKey) }
+          : {},
+        body: JSON.stringify({ ...payload, ownerCode: merged.ownerCode }),
       },
     );
   },

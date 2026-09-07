@@ -17,6 +17,13 @@ const draft = {
   resourceBarPosition: "above",
   resources: { bars: [], bubbles: [] },
   visibleTo: { mode: "everyone", userIds: [] },
+  vision: {
+    enabled: true,
+    range: 800,
+    showShape: true,
+    shapeBorderColor: "#abcdef",
+    shapeFillOpacity: 0.2,
+  },
 };
 
 describe("tokenSettingsTransfer", () => {
@@ -27,6 +34,7 @@ describe("tokenSettingsTransfer", () => {
       imageUrl: "knight.webp",
       movementSpent: 2,
       widthCells: 1,
+      vision: {},
     };
     const imported = importTokenSettings(exportTokenSettings(draft), target);
 
@@ -37,6 +45,13 @@ describe("tokenSettingsTransfer", () => {
       widthCells: 2,
       movementRange: 8,
       movementResetMode: "round",
+      vision: {
+        enabled: true,
+        range: 800,
+        showShape: true,
+        shapeBorderColor: "#abcdef",
+        shapeFillOpacity: 0.2,
+      },
     });
   });
 

@@ -11,6 +11,12 @@ describe("token rotation handles", () => {
     expect(tokenPointerAngle({ x: 100, y: 100 }, pointer)).toBe(angle);
   });
 
+  it("snaps pointer rotation to whole degrees", () => {
+    expect(
+      tokenPointerAngle({ x: 0, y: 0 }, { clientX: 100, clientY: 1 }),
+    ).toBe(91);
+  });
+
   it("previews facing independently from artwork rotation", () => {
     expect(
       tokenAnglePreview({ rotation: 30, facing: 60 }, { facing: 95 }),

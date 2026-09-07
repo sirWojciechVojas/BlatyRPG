@@ -5,12 +5,16 @@ const apiWall = {
   id: 8,
   scene_id: 4,
   type: "door",
+  name: "North gate",
   x1: "100.000",
   y1: "50.000",
   x2: "200.000",
   y2: "50.000",
   blocks_movement: 1,
   door_state: "closed",
+  color: "#33AAFF",
+  enabled: 1,
+  hidden: 0,
   revision: 2,
   capabilities: { canManage: true },
 };
@@ -29,9 +33,13 @@ describe("wallApiClient", () => {
       id: 8,
       sceneId: 4,
       type: "door",
+      name: "North gate",
       x1: 100,
       blocksMovement: true,
       doorState: "closed",
+      color: "#33AAFF",
+      enabled: true,
+      hidden: false,
     });
   });
 
@@ -42,11 +50,12 @@ describe("wallApiClient", () => {
     await client.update(7, 4, 8, {
       id: 99,
       doorState: "open",
+      enabled: false,
       revision: 2,
     });
     expect(request).toHaveBeenCalledWith("/campaigns/7/scenes/4/walls/8", {
       method: "PATCH",
-      body: { doorState: "open", revision: 2 },
+      body: { doorState: "open", enabled: false, revision: 2 },
     });
   });
 });

@@ -51,6 +51,7 @@ final class RealtimeTicketSigner
             'capabilities' => [
                 'canManage' => !empty($context['capabilities']['canManage']),
                 'canViewHidden' => !empty($context['capabilities']['canViewHidden']),
+                'fogOfWar' => true,
             ],
         ];
         return [

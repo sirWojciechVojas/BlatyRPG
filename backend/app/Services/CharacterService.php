@@ -6,7 +6,7 @@ use App\Models\CharacterModel;
 use App\Models\GameDefinitionModel;
 use App\Models\RpgSystemModel;
 use App\Libraries\GameStrategies\GameStrategyFactory;
-use Exception;
+use App\Services\Character\CharacterException;
 
 class CharacterService
 {
@@ -30,69 +30,118 @@ class CharacterService
      */
     public function purchaseDefinition(int $charId, int $defId): array
     {
-        // 1. Pobierz dane
         $character = $this->charModel->find($charId);
         $definition = $this->defModel->find($defId);
 
-        if (!$character) throw new Exception("Postać o ID $charId nie istnieje.", 404);
-        if (!$definition) throw new Exception("Definicja o ID $defId nie istnieje.", 404);
-
-        if ($character['system_id'] != $definition['system_id']) {
-            throw new Exception("Niezgodność systemów gry. Nie możesz kupić elementu z innego systemu.", 409);
+        if (!$character) {
+            throw new CharacterException('character_not_found', 'Character was not found.', 404);
+        }
+        if (!$definition) {
+            throw new CharacterException('definition_not_found', 'Definition was not found.', 404);
         }
 
-        // 2. Pobierz kod systemu (np. 'wfrp2ed') z bazy
+        if ($character['system_id'] != $definition['system_id']) {
+            throw new CharacterException(
+                'definition_system_mismatch',
+                'Definition belongs to a different game system.',
+                409
+            );
+        }
+
         $system = $this->sysModel->find($character['system_id']);
         $sysCode = $system ? $system['code'] : 'unknown';
-
-        // 3. Sprawdź Koszt XP
-        // Metadata jest już tablicą dzięki Modelowi
         $meta = $definition['metadata'] ?? [];
-        $cost = isset($meta['koszt_xp']) ? (int)$meta['koszt_xp'] : 100; // Domyślny koszt
-        
-        // Pobieramy dane JSON (jako tablicę PHP)
-        $charData = $character['data']; 
-        
-        // Bezpieczne pobieranie obecnego XP
+        $cost = isset($meta['koszt_xp']) ? (int) $meta['koszt_xp'] : 100;
+        if ($cost < 0 || $cost > 1000000) {
+            throw new CharacterException(
+                'definition_cost_invalid',
+                'Definition has an invalid experience cost.',
+                409
+            );
+        }
+        $charData = is_array($character['data'] ?? null) ? $character['data'] : [];
         $currentExp = 0;
         if (isset($charData['experience']['current'])) {
-            $currentExp = (int)$charData['experience']['current'];
+            $currentExp = (int) $charData['experience']['current'];
         } elseif (isset($charData['attributes']['exp']['current'])) {
-            // Wsparcie dla starszej struktury z seedera (jeśli tam wpadło)
-            $currentExp = (int)$charData['attributes']['exp']['current'];
+            $currentExp = (int) $charData['attributes']['exp']['current'];
         }
 
         if ($currentExp < $cost) {
-            throw new Exception("Brak wystarczającej ilości PD. Wymagane: $cost, Posiadane: $currentExp", 402);
+            throw new CharacterException(
+                'insufficient_experience',
+                'Character does not have enough experience.',
+                402,
+                ['required' => $cost, 'available' => $currentExp]
+            );
         }
 
-        // 4. Pobierz odpowiednią Strategię i wykonaj logikę
-        $strategy = GameStrategyFactory::getStrategy($sysCode);
-        
-        // a) Walidacja (czy można kupić?)
-        $strategy->canPurchase($charData, $definition);
-        
-        // b) Aplikacja zmian (modyfikuje $charData przez referencję)
-        $updates = $strategy->applyPurchase($charData, $definition);
+        try {
+            $strategy = GameStrategyFactory::getStrategy($sysCode);
+            $strategy->canPurchase($charData, $definition);
+            $updates = $strategy->applyPurchase($charData, $definition);
+        } catch (CharacterException $exception) {
+            throw $exception;
+        } catch (\Throwable $exception) {
+            throw new CharacterException(
+                'purchase_not_allowed',
+                'This development purchase is not available.',
+                409
+            );
+        }
 
-        // 5. Odejmij XP i Zapisz
         if (isset($charData['experience']['current'])) {
             $charData['experience']['current'] = $currentExp - $cost;
         } elseif (isset($charData['attributes']['exp']['current'])) {
-             $charData['attributes']['exp']['current'] = $currentExp - $cost;
+            $charData['attributes']['exp']['current'] = $currentExp - $cost;
         } else {
-             // Jeśli struktura exp nie istnieje, tworzymy ją
-             $charData['experience'] = ['current' => 0 - $cost, 'total' => 0];
+            $charData['experience'] = ['current' => 0, 'total' => 0];
         }
-        
-        // Aktualizacja w bazie
-        $this->charModel->update($charId, ['data' => $charData]);
+
+        $revision = max(1, (int) ($character['revision'] ?? 1));
+        $encoded = json_encode(
+            $charData,
+            JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE
+        );
+        if ($encoded === false) {
+            throw new CharacterException(
+                'character_write_failed',
+                'Character development could not be saved.',
+                500
+            );
+        }
+        $written = $this->db->table('characters')
+            ->set('data', $encoded)
+            ->set('revision', 'revision + 1', false)
+            ->set('updated_at', date('Y-m-d H:i:s'))
+            ->where('id', $charId)
+            ->where('revision', $revision)
+            ->update();
+        if (!$written) {
+            throw new CharacterException(
+                'character_write_failed',
+                'Character development could not be saved.',
+                500
+            );
+        }
+        if ($this->db->affectedRows() !== 1) {
+            $latest = $this->db->table('characters')
+                ->select('revision')->where('id', $charId)->get()->getRowArray();
+            throw new CharacterException(
+                'character_conflict',
+                'Character was changed by another user. Reload it before saving.',
+                409,
+                ['currentRevision' => max(1, (int) ($latest['revision'] ?? $revision))]
+            );
+        }
 
         return [
-            'message' => "Zakupiono pomyślnie: {$definition['name']}",
-            'xp_cost' => $cost,
-            'remaining_xp' => $currentExp - $cost,
-            'updates' => $updates
+            'message' => 'Character development was purchased.',
+            'definition' => ['id' => $defId, 'name' => (string) $definition['name']],
+            'xpCost' => $cost,
+            'remainingXp' => $currentExp - $cost,
+            'updates' => $updates,
+            'revision' => $revision + 1,
         ];
     }
 }

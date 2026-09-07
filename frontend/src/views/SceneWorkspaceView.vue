@@ -78,19 +78,48 @@
             {{ $t("vtt.scene.actions.retry") }}
           </button>
         </div>
-        <SceneToolbar
-          :scene="selectedScene"
-          :is-active="selectedScene?.id === state.activeSceneId"
-          :can-manage="canManage"
-          :busy="busy"
-          :zoom-percent="zoomPercent"
-          @zoom-out="zoomOut"
-          @zoom-in="zoomIn"
-          @fit="fitCanvas"
-          @refresh="refresh"
-          @activate="activate"
-          @settings="openEdit"
-        />
+        <div
+          v-else-if="playerShopError"
+          class="scene-workspace__notice"
+          role="alert"
+        >
+          <span class="scene-workspace__notice-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" focusable="false">
+              <path d="M12 3 2.8 20h18.4L12 3Z" />
+              <path d="M12 9v5m0 3h.01" />
+            </svg>
+          </span>
+          <span class="scene-workspace__notice-copy">
+            <span>{{ playerShopError }}</span>
+          </span>
+          <button
+            type="button"
+            class="scene-button"
+            @click="playerShopError = ''"
+          >
+            {{ $t("vtt.scene.actions.acknowledge") }}
+          </button>
+        </div>
+        <div class="scene-workspace__top-tools">
+          <SceneToolbar
+            :scene="selectedScene"
+            :is-active="selectedScene?.id === state.activeSceneId"
+            :can-manage="canManage"
+            :busy="busy"
+            :zoom-percent="zoomPercent"
+            @zoom-out="zoomOut"
+            @zoom-in="zoomIn"
+            @fit="fitCanvas"
+            @refresh="refresh"
+            @activate="activate"
+            @settings="openEdit"
+          />
+          <div
+            v-if="activeSceneTool === 'walls' && canManageWalls"
+            id="scene-wall-toolbar-dock"
+            class="scene-wall-toolbar-dock"
+          />
+        </div>
         <SceneCanvas
           :key="
             selectedScene
@@ -114,6 +143,7 @@
           :selected-wall-id="state.selectedWallId"
           :can-manage-walls="canManageWalls"
           :wall-busy="wallBusy"
+          wall-toolbar-target="#scene-wall-toolbar-dock"
           :lights="selectedSceneLights"
           :selected-light-id="state.selectedLightId"
           :can-manage-lights="canManageLights"
@@ -122,7 +152,11 @@
           :selected-tile-id="state.selectedTileId"
           :can-manage-tiles="canManageTiles"
           :tile-busy="tileBusy"
-          @camera-change="zoomPercent = $event.zoomPercent"
+          :can-manage-scene="canManage"
+          :fog-state="selectedFogState"
+          :fog-preview="fogPreview"
+          :fog-busy="fogBusy"
+          @camera-change="handleCameraChange"
           @token-select="selectToken"
           @token-move="moveToken"
           @token-move-group="moveTokenGroup"
@@ -135,7 +169,10 @@
           @open-actor="openActor"
           @wall-select="selectWall"
           @wall-create="createWall"
+          @wall-create-many="createWalls"
+          @wall-insert-opening="insertWallOpening"
           @wall-update="updateWall"
+          @wall-update-many="updateWalls"
           @wall-delete="deleteWall"
           @light-select="selectLight"
           @light-create="createLight"
@@ -145,6 +182,8 @@
           @tile-create="createTile"
           @tile-update="updateTile"
           @tile-delete="deleteTile"
+          @fog-patch="patchFog"
+          @fog-preview-change="changeFogPreview"
         />
       </section>
 
@@ -175,26 +214,44 @@
           @delete-scene="requestDelete"
           @activate-scene="activate"
           @character-changed="refreshCampaignContext"
+          @select-character="selectHudCharacter"
           @open-window="openUtilityWindow"
           @resolve-movement-request="resolveTokenMovement"
           @combat-command="commandCombat"
+          @handout-unread-count="handoutUnreadCount = $event"
+          @open-handout="openHandoutWindow"
         />
       </TableUtilityDrawer>
 
-      <TableHotbar
-        :actions="hotbarActions"
-        :default-action-ids="defaultHotbarActions"
-        :storage-key="hotbarStorageKey"
-        @activate="runHotbarAction"
+      <PlayerCharacterHud
+        :campaign-id="currentCampaignId"
+        :characters="characters"
+        :focused-character-id="playerHudCharacterId"
+        :tokens="selectedSceneTokens"
+        :can-manage="playerHudCanManage"
+        :can-open-shop="canOpenShop"
+        :shop-busy="playerShopOpening"
+        :context-phase="campaignContext.phase || 'idle'"
+        :context-generation="campaignContext.generation || 0"
+        :context-unauthorized="campaignContext.unauthorized === true"
+        :context-error="campaignContext.error || null"
+        @open-character="openPlayerCharacter"
+        @fit-map="fitCanvas"
+        @open-shop="openPlayerShop"
+        @open-dice="openPlayerDice"
+        @open-settings="openPlayerSettings"
+        @open-window="openUtilityWindow"
       />
 
       <TableUtilityRail
         :active-id="activePanelId"
         :available-ids="availableUtilityIds"
         :badges="{
-          notifications: state.movementRequests.filter(
-            (request) => request.status === 'pending',
-          ).length,
+          notifications:
+            state.movementRequests.filter(
+              (request) => request.status === 'pending',
+            ).length + handoutUnreadCount,
+          handouts: handoutUnreadCount,
         }"
         @select="selectUtility"
         @open="openUtilityWindow"
@@ -204,7 +261,7 @@
         v-for="panelWindow in panelWindows"
         :key="panelWindow.id"
         :model="panelWindow"
-        :title="$t(panelWindow.labelKey)"
+        :title="panelWindow.title || $t(panelWindow.labelKey)"
         :icon="panelWindow.icon"
         @move="moveUtilityWindow"
         @focus="focusUtilityWindow"
@@ -214,6 +271,9 @@
         <TablePanelContent
           :panel-id="panelWindow.panelId"
           :instance-id="panelWindow.id"
+          :handout-scope="panelWindow.handoutScope || ''"
+          :handout-id="panelWindow.handoutId || null"
+          :handout-start-editing="panelWindow.startEditing === true"
           v-bind="tablePanelContext"
           @select-scene="selectScene"
           @create-scene="openCreate"
@@ -222,12 +282,29 @@
           @delete-scene="requestDelete"
           @activate-scene="activate"
           @character-changed="refreshCampaignContext"
+          @select-character="selectHudCharacter"
           @open-window="openUtilityWindow"
           @resolve-movement-request="resolveTokenMovement"
           @combat-command="commandCombat"
+          @handout-unread-count="handoutUnreadCount = $event"
+          @open-handout="openHandoutWindow"
+          @handout-window-update="updateHandoutWindow"
+          @close-window="closeUtilityWindow"
         />
       </TableFloatingWindow>
     </div>
+
+    <component
+      :is="playerShopComponent"
+      v-if="playerShopMounted"
+      ref="playerShopModal"
+    />
+
+    <PlayerCharacterStatsModal
+      ref="playerCharacterStatsModal"
+      :campaign-id="currentCampaignId"
+      :character-id="playerCharacterStatsId"
+    />
 
     <UiConfirmDialog
       v-model="confirmDeleteOpen"

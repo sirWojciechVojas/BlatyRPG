@@ -6,6 +6,8 @@ import {
   authMessage,
   leaveMessage,
   syncRequestMessage,
+  fogSyncMessage,
+  handoutNotifyMessage,
 } from "./realtimeProtocol";
 import { createRealtimeEventRouter } from "./realtimeEventRouter";
 import { sceneElementTransport } from "./realtimeSceneElementTransport";
@@ -37,6 +39,7 @@ export const createRealtimeSession = (options = {}) => {
     onSequenceGap: options.onSequenceGap || noop,
     onStatus: options.onStatus || noop,
   };
+  const syncContext = options.getSyncContext || (() => ({}));
   let campaignId = null;
   let generation = 0;
   let connectionSerial = 0;
@@ -80,7 +83,8 @@ export const createRealtimeSession = (options = {}) => {
     if (!authenticated || syncPending) return false;
     syncPending = true;
     setStatus("syncing");
-    return send(syncRequestMessage(sequence.get()));
+    const context = syncContext() || {};
+    return send(syncRequestMessage(sequence.get(), null, context.sceneId));
   };
   const eventRouter = createRealtimeEventRouter({
     sequence,
@@ -290,7 +294,10 @@ export const createRealtimeSession = (options = {}) => {
     ...createRealtimeTokenTransport(() => authenticated, send),
     ...createRealtimeCombatTransport(() => authenticated, send),
     ...sceneElementTransport(() => authenticated, send),
+    syncFog: (payload) => authenticated && send(fogSyncMessage(payload)),
     syncChat: chat.sync,
+    notifyHandout: (payload) =>
+      authenticated && send(handoutNotifyMessage(payload)),
     snapshot: () => ({
       campaignId,
       status,

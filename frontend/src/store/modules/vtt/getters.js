@@ -59,6 +59,19 @@ export const vttGetters = {
   canManageTiles: (state) =>
     state.tileCapabilitiesByScene[String(state.selectedSceneId)]?.canManage ===
     true,
+  selectedFogState: (state) => {
+    const prefix = `${state.selectedSceneId}:`;
+    if (state.selectedFogUserId) {
+      return (
+        state.fogBySceneUser[`${prefix}${state.selectedFogUserId}`] || null
+      );
+    }
+    return (
+      Object.entries(state.fogBySceneUser).find(([key]) =>
+        key.startsWith(prefix),
+      )?.[1] || null
+    );
+  },
   canManage: (state) => state.capabilities.canManage === true,
   isLoading: (state) => state.phase === "loading",
   isSaving: (state) => state.phase === "saving",

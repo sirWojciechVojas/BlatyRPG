@@ -1,0 +1,138 @@
+﻿.dice-roller-root {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+#desk {
+  margin-left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+#canvas {
+  width: 100%;
+  height: 100%;
+}
+
+#label,
+#label h2 {
+  color: #fff;
+}
+
+#info_div {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 0.5rem 1rem 2.5rem;
+  box-sizing: border-box;
+  z-index: 12;
+  pointer-events: none;
+}
+
+#info_div .center_field {
+  display: flex;
+  justify-content: center;
+}
+
+#label {
+  margin: 0;
+  line-height: 1.2;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+#label h2 {
+  margin: 0.2em 0 0;
+  line-height: 1.1;
+}
+
+.chat-disabled #selector_div {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 10;
+}
+
+.chat-disabled #log {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+}
+
+.chat-disabled #desk,
+.chat-disabled #canvas {
+  height: 100vh;
+}
+.dice-settings-icon {
+  width: 1em;
+  height: 1em;
+  fill: currentColor;
+  vertical-align: middle;
+}
+
+#selector_div .selector-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.4rem;
+}
+
+#selector_div .selector-actions {
+  margin-bottom: 0.35rem;
+}
+
+.selector-button {
+  min-height: 2.6em;
+  width: auto;
+  padding: 0 0.8em;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45em;
+}
+
+#selector_div #set {
+  height: 2.6em;
+  font-size: 1.1rem;
+  line-height: 1.1;
+  padding: 0 0.75rem;
+}
+
+.selector-button .selector-icon,
+.dice-toggle-button .dice-toggle-icon {
+  width: 1.4em;
+  height: 1.4em;
+  stroke: #ffffff;
+  stroke-width: 1.6;
+  fill: rgba(255, 255, 255, 0.08);
+}
+
+.dice-toggle-button.is-active .dice-toggle-icon {
+  fill: rgba(255, 255, 255, 0.35);
+  stroke: #ffd166;
+}
+
+.dice-toggle-button .toggle-label,
+.selector-button .button-label {
+  padding: 0;
+  margin: 0;
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip: auto;
+  white-space: nowrap;
+  border: 0;
+  font-size: 0.85rem;
+  letter-spacing: 0.04em;
+  color: #f6efe2;
+}
+

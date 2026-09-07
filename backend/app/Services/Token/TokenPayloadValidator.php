@@ -20,7 +20,7 @@ final class TokenPayloadValidator
         'showInfoUnselected', 'resourceBarPosition',
         'movementRange', 'movementSpent', 'movementResetMode',
         'visibleTo', 'controlledBy', 'editableBy', 'observerBy',
-        'statuses', 'resources',
+        'statuses', 'resources', 'vision',
     ];
     private const PERMISSIONS = [
         'visibleTo' => 'visible_to_json',
@@ -136,6 +136,11 @@ final class TokenPayloadValidator
             $resources = TokenResourceValidator::validate($payload['resources']);
             if (!$resources['valid']) $result['errors']['resources'] = $resources['error'];
             else $result['data']['bars_json'] = $resources['data'];
+        }
+        if (array_key_exists('vision', $payload)) {
+            $vision = TokenVisionValidator::validate($payload['vision']);
+            if (!$vision['valid']) $result['errors']['vision'] = $vision['error'];
+            else $result['data']['vision_json'] = $vision['data'];
         }
         if (!$partial) {
             $result['data'] += ['x' => 0, 'y' => 0];

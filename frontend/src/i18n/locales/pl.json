@@ -1554,6 +1554,7 @@
     "workspace": {
       "title": "Sklep — panel GM",
       "navigation": "Główna nawigacja sklepu",
+      "backToVtt": "Wróć do VTT",
       "shop": "Sklep",
       "createShop": {
         "action": "Dodaj sklep",
@@ -1746,7 +1747,8 @@
         "sources": {
           "CLASS": "Klasa",
           "GENRE": "Rodzaj",
-          "TEMPLATE": "Szablon"
+          "TEMPLATE": "Szablon",
+          "CONSUMPTION": "Katalog spożycia"
         }
       },
       "encumbrance": {

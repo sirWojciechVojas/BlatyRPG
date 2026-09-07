@@ -5,6 +5,7 @@ import { parseSceneElementMessage } from "./scene-element-protocol.js";
 import { parseTokenChangeMessage } from "./token-change-protocol.js";
 import { parseTokenMovementMessage } from "./token-movement-protocol.js";
 import { parseCombatCommandMessage } from "./combat-protocol.js";
+import { parseFogMessage } from "./fog-protocol.js";
 
 export { ProtocolError } from "./protocol-error.js";
 
@@ -43,7 +44,11 @@ const positiveRevision = (value, code) => {
 };
 
 const coordinate = (value, code) => {
-  if (typeof value !== "number" || !Number.isFinite(value) || Math.abs(value) > 1000000) {
+  if (
+    typeof value !== "number" ||
+    !Number.isFinite(value) ||
+    Math.abs(value) > 1000000
+  ) {
     throw new ProtocolError(code);
   }
   return value;
@@ -84,15 +89,32 @@ const chatBody = (value) => {
 
 const chatNonce = (value) => {
   const normalized = String(value || "").toLowerCase();
-  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(normalized)) {
+  if (
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(
+      normalized,
+    )
+  ) {
     throw new ProtocolError("chat_nonce_invalid");
+  }
+  return normalized;
+};
+
+const handoutBatchId = (value) => {
+  const normalized = String(value || "").toLowerCase();
+  if (
+    !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(
+      normalized,
+    )
+  ) {
+    throw new ProtocolError("handout_batch_invalid");
   }
   return normalized;
 };
 
 const exactKeys = (value, allowed) => {
   for (const key of Object.keys(value)) {
-    if (!allowed.includes(key)) throw new ProtocolError("unexpected_field", key);
+    if (!allowed.includes(key))
+      throw new ProtocolError("unexpected_field", key);
   }
 };
 
@@ -100,13 +122,17 @@ export const parseMessage = (data, isBinary = false) => {
   if (isBinary) throw new ProtocolError("binary_messages_forbidden");
   let parsed;
   try {
-    parsed = JSON.parse(Buffer.isBuffer(data) ? data.toString("utf8") : String(data));
+    parsed = JSON.parse(
+      Buffer.isBuffer(data) ? data.toString("utf8") : String(data),
+    );
   } catch {
     throw new ProtocolError("invalid_json");
   }
   if (!plainObject(parsed)) throw new ProtocolError("message_object_required");
-  if (parsed.v !== PROTOCOL_VERSION) throw new ProtocolError("protocol_version_unsupported");
-  if (typeof parsed.type !== "string") throw new ProtocolError("message_type_required");
+  if (parsed.v !== PROTOCOL_VERSION)
+    throw new ProtocolError("protocol_version_unsupported");
+  if (typeof parsed.type !== "string")
+    throw new ProtocolError("message_type_required");
   return parsed;
 };
 
@@ -119,7 +145,8 @@ export const parseAuthMessage = (message) => {
     "lastSequence",
     "requestId",
   ]);
-  if (message.type !== "auth") throw new ProtocolError("auth_first_message_required");
+  if (message.type !== "auth")
+    throw new ProtocolError("auth_first_message_required");
   if (typeof message.ticket !== "string" || !message.ticket) {
     throw new ProtocolError("ticket_required");
   }
@@ -135,6 +162,8 @@ export const parseAuthMessage = (message) => {
 };
 
 export const parseAuthenticatedMessage = (message) => {
+  const fog = parseFogMessage(message);
+  if (fog) return fog;
   const combatCommand = parseCombatCommandMessage(message);
   if (combatCommand) return combatCommand;
   const tokenChange = parseTokenChangeMessage(message);
@@ -145,12 +174,22 @@ export const parseAuthenticatedMessage = (message) => {
   if (sceneElement) return sceneElement;
   if (message.type === "token.move") {
     exactKeys(message, [
-      "v", "type", "requestId", "sceneId", "tokenId", "revision", "x", "y",
+      "v",
+      "type",
+      "requestId",
+      "sceneId",
+      "tokenId",
+      "revision",
+      "x",
+      "y",
       "waypoints",
     ]);
     const sceneId = positiveRevision(message.sceneId, "scene_id_invalid");
     const tokenId = positiveRevision(message.tokenId, "token_id_invalid");
-    const revision = positiveRevision(message.revision, "token_revision_invalid");
+    const revision = positiveRevision(
+      message.revision,
+      "token_revision_invalid",
+    );
     if (!sceneId || !tokenId || !revision) {
       throw new ProtocolError("token_move_invalid");
     }
@@ -183,13 +222,22 @@ export const parseAuthenticatedMessage = (message) => {
       "beforeRevision",
       "limit",
     ]);
-    const afterRevision = positiveRevision(message.afterRevision, "chat_revision_invalid");
-    const beforeRevision = positiveRevision(message.beforeRevision, "chat_revision_invalid");
+    const afterRevision = positiveRevision(
+      message.afterRevision,
+      "chat_revision_invalid",
+    );
+    const beforeRevision = positiveRevision(
+      message.beforeRevision,
+      "chat_revision_invalid",
+    );
     if (afterRevision !== null && beforeRevision !== null) {
       throw new ProtocolError("chat_cursor_ambiguous");
     }
     const limit = message.limit === undefined ? null : message.limit;
-    if (limit !== null && (!Number.isSafeInteger(limit) || limit < 1 || limit > 25)) {
+    if (
+      limit !== null &&
+      (!Number.isSafeInteger(limit) || limit < 1 || limit > 25)
+    ) {
       throw new ProtocolError("chat_limit_invalid");
     }
     return {
@@ -200,12 +248,21 @@ export const parseAuthenticatedMessage = (message) => {
       limit,
     };
   }
+  if (message.type === "handout.notify") {
+    exactKeys(message, ["v", "type", "requestId", "batchId"]);
+    return {
+      type: message.type,
+      requestId: requiredRequestId(message.requestId),
+      batchId: handoutBatchId(message.batchId),
+    };
+  }
   if (message.type === "sync.request") {
-    exactKeys(message, ["v", "type", "lastSequence", "requestId"]);
+    exactKeys(message, ["v", "type", "lastSequence", "requestId", "sceneId"]);
     return {
       type: message.type,
       lastSequence: sequence(message.lastSequence),
       requestId: requestId(message.requestId),
+      sceneId: positiveRevision(message.sceneId, "scene_id_invalid"),
     };
   }
   if (message.type === "campaign.leave") {

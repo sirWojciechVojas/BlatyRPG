@@ -30,6 +30,7 @@ const wall = (value) => {
     ...value,
     id,
     sceneId,
+    name: String(value.name || `Wall ${id}`),
     type: String(value.type || "wall"),
     x1: coordinates[0],
     y1: coordinates[1],
@@ -40,6 +41,9 @@ const wall = (value) => {
     blocksSight: value.blocksSight === true,
     blocksLight: value.blocksLight === true,
     doorState: value.doorState ?? null,
+    color: value.color || null,
+    enabled: value.enabled !== false,
+    hidden: value.hidden === true,
   };
 };
 

@@ -34,7 +34,7 @@ export const tokenUiFlags = (token = {}, context = {}) => {
     multiSelected: selected && selectedIds.size > 1,
     dragging: Number(context.draggingId) === tokenId,
     locked: token.locked === true,
-    disabled: context.disabled === true || token.disabled === true,
+    disabled: token.disabled === true,
     controlled,
     uncontrolled: !controlled,
     activeTurn,

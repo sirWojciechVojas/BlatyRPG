@@ -12,14 +12,18 @@ import {
 } from "@/store/modules/realtime/tokenActions";
 
 describe("realtime token synchronization", () => {
-  it("builds a scoped token angle change message", () => {
+  it("builds a scoped token change message", () => {
     expect(
       tokenChangeMessage({
         requestId: "change-1",
         sceneId: 4,
         tokenId: 9,
         revision: 3,
-        changes: { rotation: 72.5, facing: 185 },
+        changes: {
+          rotation: 72.5,
+          facing: 185,
+          resources: { bars: [], bubbles: [{ enabled: true, value: 7 }] },
+        },
       }),
     ).toEqual({
       v: 1,
@@ -28,7 +32,11 @@ describe("realtime token synchronization", () => {
       sceneId: 4,
       tokenId: 9,
       revision: 3,
-      changes: { rotation: 72.5, facing: 185 },
+      changes: {
+        rotation: 72.5,
+        facing: 185,
+        resources: { bars: [], bubbles: [{ enabled: true, value: 7 }] },
+      },
     });
   });
 
@@ -87,6 +95,7 @@ describe("realtime token synchronization", () => {
       type: "token.updated",
       payload: {
         token: { id: 9, sceneId: 4, name: "Guard", x: 30, y: 40, revision: 4 },
+        visibilityChanged: false,
       },
     });
     expect(context.commit).toHaveBeenCalledWith(

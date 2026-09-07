@@ -10,7 +10,7 @@ export const tokenPointerAngle = (center, pointer) => {
     finite(pointer?.clientY) - finite(center?.y),
     finite(pointer?.clientX) - finite(center?.x),
   );
-  return normalizeTokenAngle(Math.round((radians * 1800) / Math.PI) / 10 + 90);
+  return normalizeTokenAngle(Math.round((radians * 180) / Math.PI) + 90);
 };
 
 export const tokenAnglePreview = (token, preview = {}) => ({

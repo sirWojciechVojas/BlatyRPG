@@ -23,7 +23,8 @@ final class WallCollisionService
         array $end
     ): bool {
         $walls = $this->walls->where('campaign_id', $campaignId)
-            ->where('scene_id', $sceneId)->where('blocks_movement', 1)->findAll();
+            ->where('scene_id', $sceneId)->where('blocks_movement', 1)
+            ->where('enabled', 1)->findAll();
         return $this->blocksMovement($start, $end, $walls);
     }
 
@@ -31,6 +32,7 @@ final class WallCollisionService
     {
         if ($this->samePoint($start, $end)) return false;
         foreach ($walls as $wall) {
+            if (array_key_exists('enabled', $wall) && empty($wall['enabled'])) continue;
             if (empty($wall['blocks_movement'])) continue;
             if (($wall['type'] ?? 'wall') !== 'wall' && ($wall['door_state'] ?? null) === 'open') {
                 continue;

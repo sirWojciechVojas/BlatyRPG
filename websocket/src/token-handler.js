@@ -11,7 +11,11 @@ const eventFor = (session, type, payload, sequence = null) =>
     payload,
   });
 
-export const createTokenHandler = ({ backend, rooms, onAuthenticationFailure }) => {
+export const createTokenHandler = ({
+  backend,
+  rooms,
+  onAuthenticationFailure,
+}) => {
   const writes = new Map();
 
   const failure = (session, request, cause) => {
@@ -56,10 +60,21 @@ export const createTokenHandler = ({ backend, rooms, onAuthenticationFailure }) 
 
   const publish = (session, request, result) => {
     const sequence = rooms.nextSequence(session.campaignId);
+    const affectsVisibility =
+      request.type === "token.move" ||
+      [
+        "width",
+        "height",
+        "rotation",
+        "facing",
+        "hidden",
+        "visibleTo",
+        "vision",
+      ].some((field) => Object.hasOwn(request.changes || {}, field));
     const event = eventFor(
       session,
       "token.updated",
-      { token: result.token },
+      { token: result.token, visibilityChanged: affectsVisibility },
       sequence,
     );
     const marker = createServerEvent({
@@ -69,11 +84,24 @@ export const createTokenHandler = ({ backend, rooms, onAuthenticationFailure }) 
       actorUserId: null,
       payload: {},
     });
+    const visibilityChangedEvent = eventFor(
+      session,
+      "scene.visibility.changed",
+      { sceneId: result.token.sceneId },
+      sequence,
+    );
     for (const recipient of rooms.sessions(session.campaignId)) {
       if (
         recipient.id === session.id ||
-        canReceiveToken(recipient, result)
+        recipient.capabilities?.canManage === true
       ) {
+        sendEvent(recipient.ws, event);
+      } else if (
+        affectsVisibility &&
+        recipient.capabilities?.fogOfWar === true
+      ) {
+        sendEvent(recipient.ws, visibilityChangedEvent);
+      } else if (canReceiveToken(recipient, result)) {
         sendEvent(recipient.ws, event);
       } else {
         sendEvent(recipient.ws, marker);
@@ -99,9 +127,17 @@ export const createTokenHandler = ({ backend, rooms, onAuthenticationFailure }) 
       payload: {},
     });
     for (const recipient of rooms.sessions(session.campaignId)) {
-      const visible = result.items.filter(
-        (item) => recipient.id === session.id || canReceiveToken(recipient, item),
+      const privileged =
+        recipient.id === session.id ||
+        recipient.capabilities?.canManage === true;
+      const receivable = result.items.filter((item) =>
+        canReceiveToken(recipient, item),
       );
+      const visible = privileged
+        ? result.items
+        : recipient.capabilities?.fogOfWar === true
+          ? []
+          : receivable;
       sendEvent(
         recipient.ws,
         visible.length
@@ -111,7 +147,14 @@ export const createTokenHandler = ({ backend, rooms, onAuthenticationFailure }) 
               { tokens: visible.map(({ token }) => token) },
               sequence,
             )
-          : marker,
+          : !privileged && recipient.capabilities?.fogOfWar === true
+            ? eventFor(
+                session,
+                "scene.visibility.changed",
+                { sceneId: request.sceneId },
+                sequence,
+              )
+            : marker,
       );
     }
     sendEvent(
@@ -158,9 +201,21 @@ export const createTokenHandler = ({ backend, rooms, onAuthenticationFailure }) 
       .catch((cause) => failure(session, request, cause));
   };
 
-  const publishMovement = (session, type, payload, allowed) => {
+  const publishMovement = (
+    session,
+    type,
+    payload,
+    allowed,
+    fogSceneId = null,
+  ) => {
     const sequence = rooms.nextSequence(session.campaignId);
     const event = eventFor(session, type, payload, sequence);
+    const visibilityChanged = eventFor(
+      session,
+      "scene.visibility.changed",
+      { sceneId: fogSceneId },
+      sequence,
+    );
     const marker = createServerEvent({
       type: "sync.marker",
       campaignId: session.campaignId,
@@ -169,7 +224,10 @@ export const createTokenHandler = ({ backend, rooms, onAuthenticationFailure }) 
       payload: {},
     });
     for (const recipient of rooms.sessions(session.campaignId)) {
-      sendEvent(recipient.ws, allowed(recipient) ? event : marker);
+      if (allowed(recipient)) sendEvent(recipient.ws, event);
+      else if (fogSceneId && recipient.capabilities?.fogOfWar === true)
+        sendEvent(recipient.ws, visibilityChanged);
+      else sendEvent(recipient.ws, marker);
     }
   };
 
@@ -185,10 +243,13 @@ export const createTokenHandler = ({ backend, rooms, onAuthenticationFailure }) 
             recipient.userId === result.request.requestedByUserId ||
             recipient.campaignRole === "gm",
         );
-        sendEvent(session.ws, eventFor(session, "token.movement.ack", {
-          requestId: request.requestId,
-          movementRequestId: result.request.id,
-        }));
+        sendEvent(
+          session.ws,
+          eventFor(session, "token.movement.ack", {
+            requestId: request.requestId,
+            movementRequestId: result.request.id,
+          }),
+        );
       })
       .catch((cause) => movementFailure(session, request, cause));
   };
@@ -217,12 +278,18 @@ export const createTokenHandler = ({ backend, rooms, onAuthenticationFailure }) 
           (recipient) =>
             recipient.userId === result.request.requestedByUserId ||
             recipient.campaignRole === "gm" ||
-            (result.token && canReceiveToken(recipient, result)),
+            (recipient.capabilities?.fogOfWar !== true &&
+              result.token &&
+              canReceiveToken(recipient, result)),
+          result.token?.sceneId,
         );
-        sendEvent(session.ws, eventFor(session, "token.movement.ack", {
-          requestId: request.requestId,
-          movementRequestId: result.request.id,
-        }));
+        sendEvent(
+          session.ws,
+          eventFor(session, "token.movement.ack", {
+            requestId: request.requestId,
+            movementRequestId: result.request.id,
+          }),
+        );
       })
       .catch((cause) => movementFailure(session, request, cause));
   };

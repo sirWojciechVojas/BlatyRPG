@@ -51,7 +51,9 @@
         </select>
       </label>
       <label v-for="field in activeNumberFields" :key="field.key">
-        <span>{{ field.key === "clarity" ? field.label : $t(field.label) }}</span>
+        <span>{{
+          field.key === "clarity" ? field.label : $t(field.label)
+        }}</span>
         <input
           v-model.number="form[field.key]"
           type="number"

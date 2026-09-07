@@ -49,14 +49,14 @@
 
 .scene-token-name {
   position: absolute;
-  top: calc(100% + 7px);
+  top: calc(100% + 12px);
   left: 50%;
   display: block;
   max-width: 170px;
   padding: 2px 5px;
   overflow: hidden;
   color: #fff;
-  font-size: 11px;
+  font-size: 16px;
   line-height: 1.1;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -67,9 +67,9 @@
 }
 
 .scene-token-info-stack--bottom-overlap .scene-token-name {
-  top: calc(100% + var(--token-resource-stack-half-height) + 5px);
+  top: calc(100% + var(--token-resource-stack-half-height) + 10px);
 }
 
 .scene-token-info-stack--below .scene-token-name {
-  top: calc(100% + var(--token-resource-stack-height) + 10px);
+  top: calc(100% + var(--token-resource-stack-height) + 15px);
 }

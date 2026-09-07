@@ -6,6 +6,7 @@ use App\Services\Scene\SceneResourceAccessService;
 use App\Services\Scene\SceneException;
 use App\Services\Scene\SceneService;
 use App\Services\Wall\WallCollisionService;
+use App\Services\Fog\SceneVisibilityService;
 use CodeIgniter\Database\BaseConnection;
 
 final class SceneTokenService
@@ -18,7 +19,7 @@ final class SceneTokenService
         'visible_to_json', 'controlled_by_json',
         'editable_by_json', 'observer_by_json', 'rotation_handle_enabled', 'facing_handle_enabled',
         'movement_range', 'movement_spent', 'movement_reset_mode',
-        'show_info_unselected',
+        'show_info_unselected', 'vision_json',
     ];
     private $db;
     private $tokens;
@@ -28,6 +29,7 @@ final class SceneTokenService
     private $validator;
     private $collisions;
     private $grid;
+    private $visibility;
 
     public function __construct(
         ?BaseConnection $db = null,
@@ -37,7 +39,8 @@ final class SceneTokenService
         ?TokenAccessService $access = null,
         ?TokenPayloadValidator $validator = null,
         ?WallCollisionService $collisions = null,
-        ?TokenGridPositionService $grid = null
+        ?TokenGridPositionService $grid = null,
+        ?SceneVisibilityService $visibility = null
     ) {
         $this->db = $db ?: \Config\Database::connect();
         $this->tokens = $tokens ?: new SceneTokenModel($this->db);
@@ -47,6 +50,7 @@ final class SceneTokenService
         $this->validator = $validator ?: new TokenPayloadValidator();
         $this->collisions = $collisions ?: new WallCollisionService($this->db);
         $this->grid = $grid ?: new TokenGridPositionService();
+        $this->visibility = $visibility ?: new SceneVisibilityService($this->db);
     }
 
     public function list(int $campaignId, int $sceneId, array $auth): array
@@ -62,6 +66,9 @@ final class SceneTokenService
                 $auth, $campaignId, $row, $canManage
             )
         ));
+        if (!$canManage) {
+            $visible = $this->visibility->filter($auth, $campaignId, $scene, $visible);
+        }
         return [
             'items' => array_map(
                 fn (array $row): array => $this->presentRow(

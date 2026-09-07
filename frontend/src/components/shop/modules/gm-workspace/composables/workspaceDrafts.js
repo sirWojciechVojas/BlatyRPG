@@ -13,6 +13,7 @@ export const emptyTemplate = () => ({
   WEAPON: { TYPE: "", DAMAGE: "", RANGE: "" },
   MECHANICS: [],
   MECHANICS_MODE: "EXTEND",
+  CONSUMPTION_PROFILE_ID: null,
 });
 
 export const emptyInstance = () => ({
@@ -28,6 +29,10 @@ export const emptyInstance = () => ({
   currencyCode: "wfrp_empire",
   charge: 0,
   attributes: [],
+  consumptionMode: "inherit",
+  consumptionProfileId: null,
+  consumptionIdentification: "unknown",
+  consumptionPortions: 1,
 });
 
 export const emptyStackInstance = () => ({
@@ -46,4 +51,11 @@ export const emptyStackInstance = () => ({
   charge: 0,
   attributes: [],
   weapon: { TYPE: "", DAMAGE: "", RANGE: "" },
+  consumptionMode: "inherit",
+  consumptionProfileId: null,
+  consumptionIdentification: "unknown",
+  consumptionPortions: 1,
+  consumptionTemplateProfileId: null,
+  consumptionTemplateProfilePreview: null,
+  consumptionProfilePreview: null,
 });

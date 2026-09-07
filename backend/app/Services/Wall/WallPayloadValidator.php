@@ -4,11 +4,11 @@ namespace App\Services\Wall;
 
 final class WallPayloadValidator
 {
-    private const TYPES = ['wall', 'door', 'secret'];
+    private const TYPES = ['wall', 'door', 'window', 'secret'];
     private const STATES = ['closed', 'open', 'locked'];
     private const FIELDS = [
-        'type', 'x1', 'y1', 'x2', 'y2', 'blocksMovement', 'blocksSight',
-        'blocksLight', 'doorState',
+        'name', 'type', 'x1', 'y1', 'x2', 'y2', 'blocksMovement', 'blocksSight',
+        'blocksLight', 'doorState', 'color', 'enabled', 'hidden',
     ];
 
     public function create(array $payload): array
@@ -43,23 +43,41 @@ final class WallPayloadValidator
                 $errors[$field] = 'Coordinate is invalid.';
             } else $data[$field] = (float) $payload[$field];
         }
+        if (array_key_exists('name', $payload)) {
+            $name = trim((string) $payload['name']);
+            if ($name === '' || mb_strlen($name) > 150) $errors['name'] = 'Name is invalid.';
+            else $data['name'] = $name;
+        }
         $type = strtolower(trim((string) ($payload['type'] ?? 'wall')));
         if (array_key_exists('type', $payload) || !$partial) {
             if (!in_array($type, self::TYPES, true)) $errors['type'] = 'Wall type is invalid.';
             else $data['type'] = $type;
         }
-        foreach (['blocksMovement', 'blocksSight', 'blocksLight'] as $field) {
+        foreach (['blocksMovement', 'blocksSight', 'blocksLight', 'enabled', 'hidden'] as $field) {
             if (!array_key_exists($field, $payload)) continue;
             $value = filter_var($payload[$field], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
             if ($value === null) $errors[$field] = 'A boolean is required.';
             else $data[$this->snake($field)] = $value ? 1 : 0;
+        }
+        if (array_key_exists('color', $payload)) {
+            if ($payload['color'] === null || trim((string) $payload['color']) === '') {
+                $data['color'] = null;
+            } else {
+                $color = strtoupper(trim((string) $payload['color']));
+                if (!preg_match('/^#[0-9A-F]{6}([0-9A-F]{2})?$/', $color)) {
+                    $errors['color'] = 'Color must be a hexadecimal CSS color.';
+                } else $data['color'] = $color;
+            }
         }
         if (array_key_exists('doorState', $payload)) {
             $state = strtolower(trim((string) $payload['doorState']));
             if (!in_array($state, self::STATES, true)) $errors['doorState'] = 'Door state is invalid.';
             else $data['door_state'] = $state;
         } elseif (!$partial && in_array($type, ['door', 'secret'], true)) $data['door_state'] = 'closed';
-        if (!$partial) $data += ['blocks_movement' => 1, 'blocks_sight' => 1, 'blocks_light' => 1];
+        if (!$partial) $data += [
+            'blocks_movement' => 1, 'blocks_sight' => 1, 'blocks_light' => 1,
+            'enabled' => 1, 'hidden' => 0,
+        ];
         if ($this->zeroLength($data, $partial)) $errors['geometry'] = 'Wall must have a length.';
         return $partial ? $this->revision($payload, $data, $errors) : [
             'valid' => !$errors, 'data' => $data, 'errors' => $errors,

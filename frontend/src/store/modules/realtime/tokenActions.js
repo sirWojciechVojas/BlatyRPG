@@ -1,14 +1,35 @@
 import { normalizeToken } from "@/lib/vtt/tokenNormalizer";
 import { normalizeMovementRequest } from "@/lib/vtt/tokenMovementRequest";
+import { scheduleVisibilityRefresh } from "./visibilityRefresh";
 
 let requestSerial = 0;
+let visibilityReloadTimer = null;
 
 export const routeRealtimeTokenEvent = (context, event) => {
   if (!context.rootState.vtt) return;
+  if (event.type === "scene.visibility.changed") {
+    if (
+      Number(event.payload.sceneId) !==
+      Number(context.rootState.vtt.selectedSceneId)
+    )
+      return;
+    window.clearTimeout(visibilityReloadTimer);
+    visibilityReloadTimer = window.setTimeout(
+      () =>
+        context
+          .dispatch("vtt/loadTokens", { silent: true }, { root: true })
+          .catch(() => {}),
+      80,
+    );
+    return;
+  }
   if (event.type === "token.updated") {
     const token = normalizeToken(event.payload.token);
     if (token.id > 0 && token.sceneId > 0) {
       context.commit("vtt/UPSERT_TOKEN", token, { root: true });
+      if (event.payload.visibilityChanged !== false) {
+        scheduleVisibilityRefresh(context, token.sceneId);
+      }
     }
     return;
   }
@@ -19,10 +40,14 @@ export const routeRealtimeTokenEvent = (context, event) => {
         context.commit("vtt/UPSERT_TOKEN", token, { root: true });
       }
     });
+    const sceneId = Number(event.payload.tokens?.[0]?.sceneId);
+    if (sceneId) scheduleVisibilityRefresh(context, sceneId);
     return;
   }
   if (event.type === "token.error") {
-    context.dispatch("vtt/loadTokens", null, { root: true }).catch(() => {});
+    context
+      .dispatch("vtt/loadTokens", { silent: true }, { root: true })
+      .catch(() => {});
     return;
   }
   if (event.type === "token.movement.requested") {
@@ -44,6 +69,7 @@ export const routeRealtimeTokenEvent = (context, event) => {
       context.commit("vtt/PATCH_TOKEN", event.payload.tokenPatch, {
         root: true,
       });
+      scheduleVisibilityRefresh(context, event.payload.tokenPatch.sceneId);
     }
     context.commit("vtt/SET_MOVEMENT_REQUEST_PHASE", "ready", { root: true });
     return;

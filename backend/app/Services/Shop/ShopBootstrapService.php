@@ -248,6 +248,12 @@ class ShopBootstrapService
         $templateItems = array_map(function (array $template): array {
             return $this->mapper->templateToLegacy($template);
         }, $templatesRaw);
+        if (!$managementView) {
+            foreach ($templateItems as &$templateItem) {
+                unset($templateItem['CONSUMPTION_PROFILE_ID']);
+            }
+            unset($templateItem);
+        }
 
         $profilesMap = $this->profileService->getProfilesMap($campaignId);
         $pricingEngine = new ShopPricingService();
@@ -312,6 +318,16 @@ class ShopBootstrapService
                 return $entry;
             }, $inventoryItems);
         }
+        if ($this->ownerIsInActiveCombat($campaignId, $ownerCode)) {
+            foreach ($inventoryItems as &$inventoryItem) {
+                if (!empty($inventoryItem['CONSUMPTION'])
+                    && empty($inventoryItem['CONSUMPTION']['usableInCombat'])) {
+                    $inventoryItem['CONSUMPTION']['disabled'] = true;
+                    $inventoryItem['CONSUMPTION']['disabledReason'] = 'Nie można spożyć tego produktu podczas walki.';
+                }
+            }
+            unset($inventoryItem);
+        }
         $settlementCurrencyCode = strtolower((string) (
             $activeProfile['pricingConfig']['currencyPolicy']['settlementCurrencyCode']
                 ?? $currencyContext['defaultCurrencyCode']
@@ -326,7 +342,8 @@ class ShopBootstrapService
             $containerState['containers'],
             $actors,
             $shopsRaw,
-            $ownerCode
+            $ownerCode,
+            $managementView
         );
 
         return [
@@ -374,5 +391,20 @@ class ShopBootstrapService
             'permissions' => $access['permissions'],
             'allItemInstances' => $allItemInstances,
         ];
+    }
+
+    private function ownerIsInActiveCombat(int $campaignId, string $ownerCode): bool
+    {
+        $db = \Config\Database::connect();
+        if (!$db->tableExists('scene_combats') || !$db->tableExists('scene_tokens')) return false;
+        $claim = $db->table('shop_owner_claims')->where([
+            'campaign_id' => $campaignId, 'owner_code' => strtoupper($ownerCode),
+        ])->get()->getRowArray();
+        $characterId = (int) ($claim['character_id'] ?? 0);
+        if (!$characterId && preg_match('/^CHAR_(\d+)$/', strtoupper($ownerCode), $match)) $characterId = (int) $match[1];
+        return $characterId > 0 && $db->table('scene_combats combats')
+            ->join('scene_tokens tokens', 'tokens.scene_id = combats.scene_id')
+            ->where(['combats.campaign_id' => $campaignId, 'combats.active' => 1, 'tokens.character_id' => $characterId])
+            ->countAllResults() > 0;
     }
 }

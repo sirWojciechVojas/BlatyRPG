@@ -19,6 +19,7 @@ const requestId = (value) => {
 const wallChanges = (value, operation) => {
   if (!plainObject(value)) throw new ProtocolError("wall_changes_invalid");
   exactKeys(value, [
+    "name",
     "type",
     "x1",
     "y1",
@@ -28,20 +29,41 @@ const wallChanges = (value, operation) => {
     "blocksSight",
     "blocksLight",
     "doorState",
+    "color",
+    "enabled",
+    "hidden",
   ]);
   const changes = {};
   for (const field of ["x1", "y1", "x2", "y2"]) {
     if (value[field] !== undefined)
       changes[field] = number(value[field], `wall_${field}_invalid`);
   }
-  for (const field of ["blocksMovement", "blocksSight", "blocksLight"]) {
+  for (const field of [
+    "blocksMovement",
+    "blocksSight",
+    "blocksLight",
+    "enabled",
+    "hidden",
+  ]) {
     if (value[field] === undefined) continue;
     if (typeof value[field] !== "boolean")
       throw new ProtocolError(`wall_${field}_invalid`);
     changes[field] = value[field];
   }
+  if (value.name !== undefined) {
+    const name = String(value.name).trim();
+    if (!name || Array.from(name).length > 150)
+      throw new ProtocolError("wall_name_invalid");
+    changes.name = name;
+  }
+  if (value.color !== undefined) {
+    if (value.color === null || value.color === "") changes.color = null;
+    else if (!/^#[0-9a-f]{6}([0-9a-f]{2})?$/iu.test(value.color))
+      throw new ProtocolError("wall_color_invalid");
+    else changes.color = String(value.color).toUpperCase();
+  }
   if (value.type !== undefined) {
-    if (!["wall", "door", "secret"].includes(value.type))
+    if (!["wall", "door", "window", "secret"].includes(value.type))
       throw new ProtocolError("wall_type_invalid");
     changes.type = value.type;
   }

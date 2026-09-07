@@ -128,6 +128,27 @@
   animation: token-movement-range-in 180ms ease-out both;
 }
 
+.token-vision-overlay {
+  position: absolute;
+  z-index: 13;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.token-vision-overlay svg {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.token-vision-overlay__shape {
+  stroke-width: 2;
+  stroke-dasharray: 8 5;
+  vector-effect: non-scaling-stroke;
+  filter: drop-shadow(0 0 3px rgb(70 180 225 / 32%));
+}
+
 .token-movement-range svg {
   position: absolute;
   inset: 0;

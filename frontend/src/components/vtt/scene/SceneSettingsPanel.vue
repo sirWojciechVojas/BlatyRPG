@@ -89,6 +89,69 @@
       </label>
 
       <fieldset class="scene-settings__group">
+        <legend>{{ $t("vtt.fog.settings") }}</legend>
+        <label class="scene-field scene-field--checkbox">
+          <input v-model="form.fogEnabled" type="checkbox" />
+          <span>{{ $t("vtt.fog.enabled") }}</span>
+        </label>
+        <label class="scene-field scene-field--checkbox">
+          <input v-model="form.dynamicVision" type="checkbox" />
+          <span>{{ $t("vtt.fog.dynamicVision") }}</span>
+        </label>
+        <label class="scene-field scene-field--checkbox">
+          <input v-model="form.explorationMemory" type="checkbox" />
+          <span>{{ $t("vtt.fog.explorationMemory") }}</span>
+        </label>
+        <label class="scene-field scene-field--checkbox">
+          <input v-model="form.fogUpdateDuringDrag" type="checkbox" />
+          <span>{{ $t("vtt.fog.updateDuringDrag") }}</span>
+        </label>
+        <label class="scene-field">
+          <span>{{ $t("vtt.fog.unexploredColor") }}</span>
+          <input v-model="form.fogUnexploredColor" type="color" />
+        </label>
+        <label class="scene-field">
+          <span
+            >{{ $t("vtt.fog.unexploredOpacity") }}:
+            {{ form.fogUnexploredOpacity }}</span
+          >
+          <input
+            v-model.number="form.fogUnexploredOpacity"
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+          />
+        </label>
+        <label class="scene-field">
+          <span
+            >{{ $t("vtt.fog.exploredOpacity") }}:
+            {{ form.fogExploredOpacity }}</span
+          >
+          <input
+            v-model.number="form.fogExploredOpacity"
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+          />
+        </label>
+        <label class="scene-field">
+          <span
+            >{{ $t("vtt.fog.edgeSoftness") }}:
+            {{ form.fogEdgeSoftness }} px</span
+          >
+          <input
+            v-model.number="form.fogEdgeSoftness"
+            type="range"
+            min="0"
+            max="50"
+            step="1"
+          />
+        </label>
+      </fieldset>
+
+      <fieldset class="scene-settings__group">
         <legend>{{ $t("vtt.scene.settings.grid") }}</legend>
         <label class="scene-field scene-field--wide">
           <span>{{ $t("vtt.scene.fields.gridType") }}</span>
@@ -222,6 +285,14 @@ const emptyScene = () => ({
   backgroundColor: "#20242b",
   globalLightLevel: 0.8,
   fogExploration: true,
+  fogEnabled: false,
+  dynamicVision: true,
+  explorationMemory: true,
+  fogUnexploredColor: "#05070B",
+  fogUnexploredOpacity: 1,
+  fogExploredOpacity: 0.62,
+  fogEdgeSoftness: 32,
+  fogUpdateDuringDrag: true,
   gridType: GRID_TYPES.SQUARE,
   gridSize: 100,
   gridDistance: 5,

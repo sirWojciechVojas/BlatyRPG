@@ -44,23 +44,19 @@ export default {
   props: {
     scene: { type: Object, required: true },
     tokens: { type: Array, default: () => [] },
-    selectedId: { type: [Number, String], default: null },
-    selectedIds: { type: Array, default: () => [] },
-    enabled: { type: Boolean, default: true },
+    tokenId: { type: [Number, String], default: null },
+    enabled: { type: Boolean, default: false },
   },
   data() {
     return { maskId: `token-movement-mask-${getCurrentInstance().uid}` };
   },
   computed: {
     selectedToken() {
-      const ids = this.selectedIds.length
-        ? this.selectedIds
-        : this.selectedId === null
-          ? []
-          : [this.selectedId];
-      if (!this.enabled || ids.length !== 1) return null;
+      if (!this.enabled || this.tokenId === null) return null;
       return (
-        this.tokens.find((token) => String(token.id) === String(ids[0])) || null
+        this.tokens.find(
+          (token) => String(token.id) === String(this.tokenId),
+        ) || null
       );
     },
     geometry() {

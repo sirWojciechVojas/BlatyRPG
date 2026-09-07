@@ -23,7 +23,7 @@ export const createCoreRuntimePart1Segment1 = (runtime) => {
   Object.assign(runtime, {
     legacyIconColumns,
   });
-  const legacyIconSize = 42;
+  const legacyIconSize = 48;
   Object.assign(runtime, {
     legacyIconSize,
   });

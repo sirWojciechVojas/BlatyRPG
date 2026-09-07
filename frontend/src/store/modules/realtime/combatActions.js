@@ -6,7 +6,9 @@ export const routeRealtimeCombatEvent = (context, event) => {
     const sceneId = Number(event.payload.sceneId);
     context.dispatch("vtt/loadCombat", sceneId, { root: true }).catch(() => {});
     if (event.payload.movementChanged === true) {
-      context.dispatch("vtt/loadTokens", null, { root: true }).catch(() => {});
+      context
+        .dispatch("vtt/loadTokens", { silent: true }, { root: true })
+        .catch(() => {});
     }
     return;
   }

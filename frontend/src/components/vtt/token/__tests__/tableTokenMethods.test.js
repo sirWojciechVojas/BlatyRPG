@@ -37,28 +37,33 @@ describe("tableTokenMethods resources", () => {
     expect(openUtilityWindow).toHaveBeenCalledWith("characters");
   });
 
-  it("refreshes actor context after a token resource update", async () => {
-    const updated = { id: 7, revision: 3 };
-    const dispatch = vi.fn((action) =>
-      Promise.resolve(action === "vtt/updateToken" ? updated : null),
-    );
-    const vm = { $store: { dispatch } };
+  it("sends token resource updates through realtime without refreshing the scene", async () => {
+    const dispatch = vi.fn().mockResolvedValue(true);
+    const commit = vi.fn();
+    const vm = { $store: { dispatch, commit } };
     const payload = {
-      token: { id: 7, revision: 2 },
+      token: { id: 7, sceneId: 4, revision: 2 },
       changes: { resources: { bars: [], bubbles: [] } },
     };
 
     const result = await tableTokenMethods.updateToken.call(vm, payload);
 
-    expect(result).toBe(updated);
-    expect(dispatch).toHaveBeenCalledWith("vtt/updateToken", payload);
-    expect(dispatch).toHaveBeenCalledWith("campaignContext/refresh");
+    expect(result).toBe(payload.token);
+    expect(dispatch).toHaveBeenCalledWith("realtime/changeToken", payload);
+    expect(dispatch).not.toHaveBeenCalledWith("vtt/updateToken", payload);
+    expect(dispatch).not.toHaveBeenCalledWith("campaignContext/refresh");
+    expect(commit).toHaveBeenCalledWith("vtt/PATCH_TOKEN", {
+      id: 7,
+      sceneId: 4,
+      resources: payload.changes.resources,
+    });
   });
 
   it("reloads tokens after an optimistic revision conflict", async () => {
     const conflict = Object.assign(new Error("conflict"), { status: 409 });
     const dispatch = vi
       .fn()
+      .mockResolvedValueOnce(false)
       .mockRejectedValueOnce(conflict)
       .mockResolvedValueOnce(null);
     const vm = { $store: { dispatch } };
@@ -68,10 +73,12 @@ describe("tableTokenMethods resources", () => {
       changes: { resources: {} },
     });
 
-    expect(dispatch).toHaveBeenLastCalledWith("vtt/loadTokens");
+    expect(dispatch).toHaveBeenLastCalledWith("vtt/loadTokens", {
+      silent: true,
+    });
   });
 
-  it("sends facing changes through realtime instead of REST", async () => {
+  it("sends token changes through realtime instead of REST", async () => {
     const dispatch = vi.fn().mockResolvedValue(true);
     const vm = { $store: { dispatch } };
     const payload = {
@@ -83,6 +90,20 @@ describe("tableTokenMethods resources", () => {
 
     expect(dispatch).toHaveBeenCalledWith("realtime/changeToken", payload);
     expect(dispatch).not.toHaveBeenCalledWith("vtt/updateToken", payload);
+  });
+
+  it("keeps REST as the fallback for a movement update", async () => {
+    const updated = { id: 7, revision: 3, x: 120, y: 240 };
+    const dispatch = vi.fn().mockResolvedValue(updated);
+    const vm = { $store: { dispatch } };
+    const payload = {
+      token: { id: 7, sceneId: 4, revision: 2 },
+      changes: { x: 120, y: 240, waypoints: [] },
+    };
+
+    expect(await tableTokenMethods.updateToken.call(vm, payload)).toBe(updated);
+    expect(dispatch).toHaveBeenCalledWith("vtt/updateToken", payload);
+    expect(dispatch).not.toHaveBeenCalledWith("realtime/changeToken", payload);
   });
 
   it("falls back to REST when realtime angle delivery is unavailable", async () => {

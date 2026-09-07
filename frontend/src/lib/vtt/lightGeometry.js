@@ -18,7 +18,13 @@ const sceneEdges = (scene) => {
 };
 
 export const wallBlocksLight = (wall) =>
+  wall?.enabled !== false &&
   wall?.blocksLight === true &&
+  !(wall.type !== "wall" && wall.doorState === "open");
+
+export const wallBlocksSight = (wall) =>
+  wall?.enabled !== false &&
+  wall?.blocksSight === true &&
   !(wall.type !== "wall" && wall.doorState === "open");
 
 const wallAtElevation = (wall, elevation) => {
@@ -31,13 +37,15 @@ const wallAtElevation = (wall, elevation) => {
   );
 };
 
-const segmentsFor = (light, walls, scene) => [
+const segmentsFor = (light, walls, scene, restriction = "light") => [
   ...sceneEdges(scene),
   ...(light?.constrainedByWalls === false
     ? []
     : walls.filter(
         (wall) =>
-          wallBlocksLight(wall) &&
+          (restriction === "sight"
+            ? wallBlocksSight(wall)
+            : wallBlocksLight(wall)) &&
           wallAtElevation(wall, Number(light?.elevation) || 0),
       )),
 ];
@@ -122,10 +130,15 @@ const shapeDistance = (light, angle) => {
   );
 };
 
-export const lightPolygonPoints = (light, walls = [], scene = {}) => {
+export const lightPolygonPoints = (
+  light,
+  walls = [],
+  scene = {},
+  restriction = "light",
+) => {
   const geometry = effectiveLight(light);
   const origin = { x: Number(geometry.x) || 0, y: Number(geometry.y) || 0 };
-  const segments = segmentsFor(geometry, walls, scene);
+  const segments = segmentsFor(geometry, walls, scene, restriction);
   const angles = baseAngles(geometry);
   for (const segment of segments) {
     angles.push(
@@ -190,13 +203,23 @@ export const tokenVisionSource = (token, scene = {}) => {
     x: Number(token.x) + Number(token.width || scene.gridSize || 100) / 2,
     y: Number(token.y) + Number(token.height || scene.gridSize || 100) / 2,
     dimRadius: Math.max(0, radius),
+    sourceType: Number(vision.angle ?? 360) < 360 ? "cone" : "omni",
+    angle: Math.min(360, Math.max(1, Number(vision.angle) || 360)),
+    direction: Number.isFinite(Number(token.facing))
+      ? Number(token.facing)
+      : Number(vision.direction ?? token.rotation) || 0,
     constrainedByWalls: vision.constrainedByWalls !== false,
     elevation: Number(token.elevation) || 0,
   };
 };
 
-export const lightPolygonPath = (light, walls, scene) => {
-  const points = lightPolygonPoints(light, walls, scene);
+export const lightPolygonPath = (
+  light,
+  walls,
+  scene,
+  restriction = "light",
+) => {
+  const points = lightPolygonPoints(light, walls, scene, restriction);
   if (!points.length) return "";
   return `${points
     .map((point, index) => `${index ? "L" : "M"} ${point.x} ${point.y}`)

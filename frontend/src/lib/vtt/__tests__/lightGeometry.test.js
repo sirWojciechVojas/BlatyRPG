@@ -7,6 +7,7 @@ import {
   lightTechnicalPath,
   tokenVisionSource,
   wallBlocksLight,
+  wallBlocksSight,
 } from "../lightGeometry";
 
 const scene = { width: 1000, height: 1000 };
@@ -33,6 +34,26 @@ describe("light visibility polygon", () => {
     const east = points.find((point) => point.y === 100 && point.x >= 100);
     expect(wallBlocksLight(door)).toBe(false);
     expect(east.x).toBe(200);
+  });
+
+  it("uses independent light and vision restrictions and ignores disabled walls", () => {
+    const sightOnly = {
+      ...wall,
+      blocksLight: false,
+      blocksSight: true,
+      enabled: true,
+    };
+    const lightPoints = lightPolygonPoints(light, [sightOnly], scene, "light");
+    const visionPoints = lightPolygonPoints(light, [sightOnly], scene, "sight");
+    expect(wallBlocksLight(sightOnly)).toBe(false);
+    expect(wallBlocksSight(sightOnly)).toBe(true);
+    expect(
+      lightPoints.find((point) => point.y === 100 && point.x >= 100).x,
+    ).toBe(200);
+    expect(
+      visionPoints.find((point) => point.y === 100 && point.x >= 100).x,
+    ).toBe(150);
+    expect(wallBlocksSight({ ...sightOnly, enabled: false })).toBe(false);
   });
 
   it("builds a closed SVG path", () => {

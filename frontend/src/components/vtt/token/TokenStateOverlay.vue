@@ -11,12 +11,6 @@
       :class="{ 'token-state-overlay__defeated--dead': flags.dead }"
     />
     <span class="token-state-overlay__badges">
-      <i
-        class="token-state-overlay__control"
-        :class="{
-          'token-state-overlay__control--owned': flags.controlled,
-        }"
-      />
       <i v-if="flags.locked" class="token-state-overlay__badge">▣</i>
       <i v-if="flags.hidden" class="token-state-overlay__badge">◌</i>
       <i v-if="flags.GMOnly" class="token-state-overlay__badge">GM</i>

@@ -139,6 +139,28 @@ const routes = [
       ),
   },
   {
+    path: "/campaigns/:campaignId/compendium",
+    name: "campaign-compendium",
+    meta: { title: "Compendium", requiresAuth: true, uiLayout: "workspace" },
+    component: () =>
+      import(
+        /* webpackChunkName: "compendium" */ "../views/CompendiumView.vue"
+      ),
+  },
+  {
+    path: "/worlds/:universeId/compendium",
+    name: "world-compendium",
+    meta: {
+      title: "Compendium editor",
+      requiresAuth: true,
+      uiLayout: "workspace",
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "compendium" */ "../views/CompendiumView.vue"
+      ),
+  },
+  {
     path: "/403",
     name: "forbidden",
     meta: { title: "403" },

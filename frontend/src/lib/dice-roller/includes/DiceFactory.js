@@ -1346,12 +1346,7 @@ export class DiceFactory {
   create_d2_geometry(radius) {
     const height = 0.08 * radius;
     const bevelRadius = Math.min(height * 0.35, radius * 0.03);
-    var geom = new THREE.CylinderGeometry(
-      1 * radius,
-      1 * radius,
-      height,
-      32,
-    );
+    var geom = new THREE.CylinderGeometry(1 * radius, 1 * radius, height, 32);
     geom.rotateX(Math.PI / 2);
     const cannonShape = new CANNON.Cylinder(1 * radius, 1 * radius, height, 16);
     const cylinderQuat = new CANNON.Quaternion();

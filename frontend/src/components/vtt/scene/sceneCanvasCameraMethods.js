@@ -3,8 +3,11 @@ import { clamp } from "@/lib/vtt/grid";
 
 export const sceneCanvasCameraMethods = {
   emitCamera() {
+    const scale = Math.max(0.0001, Number(this.camera.scale) || 1);
     this.$emit("camera-change", {
-      zoomPercent: Math.round(this.camera.scale * 100),
+      zoomPercent: Math.round(scale * 100),
+      centerX: (Number(this.viewportSize.width) / 2 - this.camera.x) / scale,
+      centerY: (Number(this.viewportSize.height) / 2 - this.camera.y) / scale,
     });
   },
   resizeViewport(width, height) {

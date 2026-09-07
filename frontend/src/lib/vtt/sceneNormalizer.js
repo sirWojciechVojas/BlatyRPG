@@ -65,6 +65,40 @@ export const normalizeScene = (source) => {
       read(source, "fog_exploration", "fogExploration") !== false &&
       read(source, "fog_exploration", "fogExploration") !== 0 &&
       read(source, "fog_exploration", "fogExploration") !== "0",
+    fogEnabled:
+      read(source, "fog_enabled", "fogEnabled") === true ||
+      read(source, "fog_enabled", "fogEnabled") === 1 ||
+      read(source, "fog_enabled", "fogEnabled") === "1",
+    dynamicVision:
+      read(source, "dynamic_vision", "dynamicVision") !== false &&
+      read(source, "dynamic_vision", "dynamicVision") !== 0 &&
+      read(source, "dynamic_vision", "dynamicVision") !== "0",
+    explorationMemory:
+      read(source, "exploration_memory", "explorationMemory") !== false &&
+      read(source, "exploration_memory", "explorationMemory") !== 0 &&
+      read(source, "exploration_memory", "explorationMemory") !== "0",
+    fogUnexploredColor: String(
+      read(source, "fog_unexplored_color", "fogUnexploredColor") || "#05070B",
+    ),
+    fogUnexploredOpacity: numberOr(
+      read(source, "fog_unexplored_opacity", "fogUnexploredOpacity"),
+      1,
+    ),
+    fogExploredOpacity: numberOr(
+      read(source, "fog_explored_opacity", "fogExploredOpacity"),
+      0.62,
+    ),
+    fogEdgeSoftness: (() => {
+      const softness = numberOr(
+        read(source, "fog_edge_softness", "fogEdgeSoftness"),
+        32,
+      );
+      return softness <= 0 ? 0 : Math.min(50, Math.max(20, softness));
+    })(),
+    fogUpdateDuringDrag:
+      read(source, "fog_update_during_drag", "fogUpdateDuringDrag") !== false &&
+      read(source, "fog_update_during_drag", "fogUpdateDuringDrag") !== 0 &&
+      read(source, "fog_update_during_drag", "fogUpdateDuringDrag") !== "0",
     isVisible: read(source, "is_visible", "isVisible") !== false,
     sortOrder: numberOr(read(source, "sort_order", "sortOrder"), 0),
     revision: numberOr(source.revision, 0),
@@ -99,6 +133,14 @@ const WRITE_FIELDS = [
   ["backgroundColor", "background_color"],
   ["globalLightLevel", "global_light_level"],
   ["fogExploration", "fog_exploration"],
+  ["fogEnabled", "fog_enabled"],
+  ["dynamicVision", "dynamic_vision"],
+  ["explorationMemory", "exploration_memory"],
+  ["fogUnexploredColor", "fog_unexplored_color"],
+  ["fogUnexploredOpacity", "fog_unexplored_opacity"],
+  ["fogExploredOpacity", "fog_explored_opacity"],
+  ["fogEdgeSoftness", "fog_edge_softness"],
+  ["fogUpdateDuringDrag", "fog_update_during_drag"],
   ["isVisible", "is_visible"],
   ["sortOrder", "sort_order"],
 ];

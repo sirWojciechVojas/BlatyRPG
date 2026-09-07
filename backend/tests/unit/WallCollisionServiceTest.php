@@ -15,6 +15,7 @@ final class WallCollisionServiceTest extends CIUnitTestCase
             'x2' => 50,
             'y2' => 100,
             'blocks_movement' => 1,
+            'enabled' => 1,
             'door_state' => null,
         ];
     }
@@ -52,6 +53,15 @@ final class WallCollisionServiceTest extends CIUnitTestCase
             ['x' => 10, 'y' => 50],
             ['x' => 90, 'y' => 50],
             [$wall]
+        ));
+    }
+
+    public function testDisabledWallAllowsMovement(): void
+    {
+        $this->assertFalse((new WallCollisionService())->blocksMovement(
+            ['x' => 10, 'y' => 50],
+            ['x' => 90, 'y' => 50],
+            [$this->wall(['enabled' => 0])]
         ));
     }
 }

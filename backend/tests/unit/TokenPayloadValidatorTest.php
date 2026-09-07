@@ -147,4 +147,30 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
         $this->assertFalse($result['valid']);
         $this->assertArrayHasKey('resourceBarPosition', $result['errors']);
     }
+
+    public function testValidatesVisionOverlayAppearance(): void
+    {
+        $valid = (new TokenPayloadValidator())->update([
+            'revision' => 2,
+            'vision' => [
+                'enabled' => true,
+                'showShape' => true,
+                'shapeBorderColor' => '#AABBCC',
+                'shapeBorderOpacity' => 0.6,
+                'shapeFillColor' => '#123456',
+                'shapeFillOpacity' => 0.15,
+            ],
+        ]);
+        $invalid = (new TokenPayloadValidator())->update([
+            'revision' => 2,
+            'vision' => ['shapeFillColor' => 'blue'],
+        ]);
+
+        $this->assertTrue($valid['valid']);
+        $this->assertTrue($valid['data']['vision_json']['showShape']);
+        $this->assertSame('#aabbcc', $valid['data']['vision_json']['shapeBorderColor']);
+        $this->assertSame(0.15, $valid['data']['vision_json']['shapeFillOpacity']);
+        $this->assertFalse($invalid['valid']);
+        $this->assertArrayHasKey('vision', $invalid['errors']);
+    }
 }

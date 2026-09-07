@@ -38,6 +38,7 @@ export const createVttActions = (
   lightApi,
   tileApi,
   movementRequestApi,
+  fogApi,
 ) => ({
   ...createSceneElementActions(
     wallApi,
@@ -71,6 +72,7 @@ export const createVttActions = (
         dispatch("loadTiles"),
         dispatch("loadMovementRequests"),
         dispatch("loadCombat"),
+        dispatch("loadFog"),
       ]);
     } catch (error) {
       if (state.requestId === requestId) failRequest(commit, requestId, error);
@@ -103,6 +105,7 @@ export const createVttActions = (
         dispatch("loadLights"),
         dispatch("loadTiles"),
         dispatch("loadCombat"),
+        dispatch("loadFog"),
       ]);
     } catch (error) {
       if (state.requestId === requestId) failRequest(commit, requestId, error);
@@ -191,16 +194,46 @@ export const createVttActions = (
       return failRequest(commit, requestId, error);
     }
   },
-  async loadTokens({ state, commit }) {
+  async loadTokens({ state, commit }, options = {}) {
     const sceneId = state.selectedSceneId;
     if (sceneId === null || typeof tokenApi?.list !== "function") return;
-    commit("SET_TOKEN_PHASE", "loading");
+    const silent = options?.silent === true;
+    if (!silent) commit("SET_TOKEN_PHASE", "loading");
     try {
       const result = await tokenApi.list(state.campaignId, sceneId);
       if (state.selectedSceneId !== sceneId) return;
-      commit("RECEIVE_TOKENS", { sceneId, ...result });
+      commit("RECEIVE_TOKENS", { sceneId, ...result, silent });
     } catch (error) {
       commit("TOKEN_FAILED", normalizedError(error));
+      throw error;
+    }
+  },
+  async loadFog({ state, commit }, targetUserId = null) {
+    const sceneId = state.selectedSceneId;
+    if (sceneId === null || typeof fogApi?.get !== "function") return null;
+    commit("SET_FOG_PHASE", "loading");
+    try {
+      const fog = await fogApi.get(state.campaignId, sceneId, targetUserId);
+      if (state.selectedSceneId === sceneId) commit("RECEIVE_FOG_STATE", fog);
+      return fog;
+    } catch (error) {
+      commit("FOG_FAILED", normalizedError(error));
+      throw error;
+    }
+  },
+  async patchFog({ state, commit }, changes) {
+    const sceneId = Number(changes?.sceneId) || state.selectedSceneId;
+    if (sceneId === null || typeof fogApi?.patch !== "function") return null;
+    const patch = { ...changes };
+    delete patch.sceneId;
+    commit("SET_FOG_PHASE", "saving");
+    try {
+      const fog = await fogApi.patch(state.campaignId, sceneId, patch);
+      if (Number(state.selectedSceneId) === Number(sceneId))
+        commit("RECEIVE_FOG_STATE", fog);
+      return fog;
+    } catch (error) {
+      commit("FOG_FAILED", normalizedError(error));
       throw error;
     }
   },

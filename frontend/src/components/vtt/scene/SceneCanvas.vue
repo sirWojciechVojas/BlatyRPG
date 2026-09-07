@@ -111,21 +111,49 @@
           :selected-id="selectedWallId"
           :can-manage="canManageWalls"
           :busy="wallBusy"
+          :toolbar-target="wallToolbarTarget"
           @select="$emit('wall-select', $event)"
           @create="$emit('wall-create', $event)"
+          @create-many="$emit('wall-create-many', $event)"
+          @insert-opening="$emit('wall-insert-opening', $event)"
           @update="$emit('wall-update', $event)"
+          @update-many="$emit('wall-update-many', $event)"
           @delete="$emit('wall-delete', $event)"
+        />
+        <TokenVisionOverlay
+          :scene="scene"
+          :tokens="visionShapeTokens"
+          :walls="walls"
+          :can-manage="canManageScene"
         />
         <TokenMovementRange
           :scene="scene"
-          :tokens="tokens"
-          :selected-id="selectedTokenId"
-          :selected-ids="selectedTokenIds"
-          :enabled="['select', 'tokens'].includes(activeTool)"
+          :tokens="displayTokens"
+          :token-id="activeMovementTokenId"
+          :enabled="activeMovementTokenId !== null"
+        />
+        <SceneFogLayer
+          :scene="scene"
+          :tokens="fogTokens"
+          :walls="walls"
+          :lights="lights"
+          :members="members"
+          :characters="characters"
+          :fog-state="fogState"
+          :camera="camera"
+          :viewport-size="viewportSize"
+          :scene-padding="mapDimensions.padding"
+          :active-tool="activeTool"
+          :can-manage="canManageScene"
+          :preview="fogPreview"
+          :busy="fogBusy"
+          @patch="$emit('fog-patch', $event)"
+          @preview-change="$emit('fog-preview-change', $event)"
+          @visibility-change="fogVisibility = $event"
         />
         <SceneTokenLayer
           :scene="scene"
-          :tokens="tokens"
+          :tokens="displayTokens"
           :selected-id="selectedTokenId"
           :selected-ids="selectedTokenIds"
           :targeted-ids="targetedTokenIds"
@@ -135,6 +163,7 @@
           :characters="characters"
           :scale="camera.scale"
           :busy="tokenBusy"
+          :movement-mode-token-id="activeMovementTokenId"
           @select="$emit('token-select', $event)"
           @move="$emit('token-move', $event)"
           @move-group="$emit('token-move-group', $event)"
@@ -144,10 +173,13 @@
           @target="$emit('token-target', $event)"
           @delete="$emit('token-delete', $event)"
           @open-actor="$emit('open-actor', $event)"
+          @vision-preview="applyTokenVisionPreview"
+          @vision-angle-preview="applyTokenVisionAnglePreview"
+          @movement-mode="toggleMovementMode"
         />
         <TokenAreaSelectionOverlay
           :scene="scene"
-          :tokens="tokens"
+          :tokens="displayTokens"
           :selection="tokenSelection"
           :scale="camera.scale"
         />
@@ -169,9 +201,11 @@ import TokenAreaSelectionToolbar from "@/components/vtt/token/TokenAreaSelection
 import SceneWallLayer from "@/components/vtt/wall/SceneWallLayer.vue";
 import SceneLightLayer from "@/components/vtt/light/SceneLightLayer.vue";
 import SceneTileLayer from "@/components/vtt/tile/SceneTileLayer.vue";
+import SceneFogLayer from "@/components/vtt/fog/SceneFogLayer.vue";
 import SceneMeasurementOverlay from "./SceneMeasurementOverlay.vue";
 import TokenDropPreview from "@/components/vtt/token/TokenDropPreview.vue";
 import TokenMovementRange from "@/components/vtt/token/TokenMovementRange.vue";
+import TokenVisionOverlay from "@/components/vtt/token/TokenVisionOverlay.vue";
 import { sceneCanvasCameraMethods } from "./sceneCanvasCameraMethods";
 import { sceneCanvasComputed } from "./sceneCanvasComputed";
 import { sceneCanvasDropMethods } from "./sceneCanvasDropMethods";
@@ -181,12 +215,14 @@ export default {
   name: "SceneCanvas",
   components: {
     SceneLightLayer,
+    SceneFogLayer,
     SceneMeasurementOverlay,
     SceneTokenLayer,
     TokenAreaSelectionOverlay,
     TokenAreaSelectionToolbar,
     TokenDropPreview,
     TokenMovementRange,
+    TokenVisionOverlay,
     SceneTileLayer,
     SceneWallLayer,
   },
@@ -207,6 +243,7 @@ export default {
     selectedWallId: { type: [Number, String], default: null },
     canManageWalls: { type: Boolean, default: false },
     wallBusy: { type: Boolean, default: false },
+    wallToolbarTarget: { type: String, default: "" },
     lights: { type: Array, default: () => [] },
     selectedLightId: { type: [Number, String], default: null },
     canManageLights: { type: Boolean, default: false },
@@ -215,6 +252,13 @@ export default {
     selectedTileId: { type: [Number, String], default: null },
     canManageTiles: { type: Boolean, default: false },
     tileBusy: { type: Boolean, default: false },
+    canManageScene: { type: Boolean, default: false },
+    fogState: { type: Object, default: null },
+    fogPreview: {
+      type: Object,
+      default: () => ({ mode: "gm", id: null }),
+    },
+    fogBusy: { type: Boolean, default: false },
   },
   emits: [
     "camera-change",
@@ -230,7 +274,10 @@ export default {
     "open-actor",
     "wall-select",
     "wall-create",
+    "wall-create-many",
+    "wall-insert-opening",
     "wall-update",
+    "wall-update-many",
     "wall-delete",
     "light-select",
     "light-create",
@@ -240,6 +287,8 @@ export default {
     "tile-create",
     "tile-update",
     "tile-delete",
+    "fog-patch",
+    "fog-preview-change",
   ],
   data() {
     return {
@@ -254,12 +303,21 @@ export default {
       actorDropPreview: null,
       tokenSelectionMode: "point",
       tokenSelection: null,
+      fogVisibility: {
+        constrained: false,
+        visibleTokenIds: [],
+        visionTokenIds: [],
+      },
+      tokenVisionPreviews: {},
+      tokenVisionAnglePreviews: {},
+      movementModeTokenId: null,
     };
   },
   computed: sceneCanvasComputed,
   watch: {
     "scene.id"() {
       this.cancelTokenAreaSelection();
+      this.movementModeTokenId = null;
       this.backgroundFailed = false;
       this.hasFitted = false;
       nextTick(this.fit);
@@ -269,7 +327,11 @@ export default {
     },
     activeTool(value) {
       if (value !== "tokens") this.cancelTokenAreaSelection();
+      if (!["select", "tokens"].includes(value))
+        this.movementModeTokenId = null;
     },
+    selectedTokenId: "clearInvalidMovementMode",
+    selectedTokenIds: { deep: true, handler: "clearInvalidMovementMode" },
   },
   mounted() {
     window.addEventListener("dragend", this.clearDropPreview);
@@ -290,6 +352,23 @@ export default {
     ...sceneCanvasCameraMethods,
     ...sceneCanvasDropMethods,
     ...tokenAreaSelectionMethods,
+    applyTokenVisionPreview(preview) {
+      this.tokenVisionPreviews = preview?.positions || {};
+    },
+    applyTokenVisionAnglePreview(preview) {
+      if (!preview) return;
+      const next = { ...this.tokenVisionAnglePreviews };
+      if (preview.changes) next[preview.tokenId] = preview.changes;
+      else delete next[preview.tokenId];
+      this.tokenVisionAnglePreviews = next;
+    },
+    toggleMovementMode(tokenId) {
+      this.movementModeTokenId =
+        String(this.movementModeTokenId) === String(tokenId) ? null : tokenId;
+    },
+    clearInvalidMovementMode() {
+      if (this.activeMovementTokenId === null) this.movementModeTokenId = null;
+    },
   },
 };
 </script>

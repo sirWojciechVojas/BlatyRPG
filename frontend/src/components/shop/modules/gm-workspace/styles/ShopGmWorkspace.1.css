@@ -141,6 +141,27 @@ body:has(.shop-workspace),
     serif;
   letter-spacing: 0.04em;
 }
+.shop-workspace__return {
+  justify-self: end;
+  border: 1px solid rgba(218, 169, 88, 0.7);
+  border-radius: 0.3rem;
+  background: linear-gradient(180deg, #583719, #302010);
+  color: #ffe2a7;
+  padding: 0.4rem 0.65rem;
+  text-decoration: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.shop-workspace__return:hover {
+  border-color: #efc06f;
+  background: linear-gradient(180deg, #6b4520, #3d2814);
+  color: #fff0ce;
+}
+.shop-workspace__return:focus-visible {
+  outline: 2px solid var(--shop-focus);
+  outline-offset: 2px;
+}
 .shop-workspace__header nav {
   display: grid;
   min-width: 0;

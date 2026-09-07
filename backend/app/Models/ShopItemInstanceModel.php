@@ -12,6 +12,10 @@ class ShopItemInstanceModel extends BaseJsonModel
     protected $allowedFields = [
         'campaign_id',
         'template_id',
+        'consumption_mode',
+        'consumption_profile_id',
+        'consumption_identification',
+        'consumption_portions',
         'name_override',
         'data_override_json',
         'note',

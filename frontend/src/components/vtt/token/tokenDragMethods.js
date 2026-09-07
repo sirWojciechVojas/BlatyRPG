@@ -117,6 +117,9 @@ export const tokenDragMethods = {
     this.preview = Object.fromEntries(
       projections.map(({ token, position: target }) => [token.id, target]),
     );
+    if (this.scene.fogUpdateDuringDrag !== false) {
+      this.$emit("vision-preview", { positions: this.preview });
+    }
   },
   modifyDragRoute(event) {
     if (
@@ -207,6 +210,7 @@ export const tokenDragMethods = {
     releasePointer(drag);
     this.drag = null;
     this.preview = {};
+    this.$emit("vision-preview", null);
   },
   isDraggingToken(tokenId) {
     return (this.drag?.group || []).some((token) => token.id === tokenId);

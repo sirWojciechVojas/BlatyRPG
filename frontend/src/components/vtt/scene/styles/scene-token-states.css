@@ -64,8 +64,7 @@
   align-items: center;
 }
 
-.token-state-overlay__badge,
-.token-state-overlay__control {
+.token-state-overlay__badge {
   display: grid;
   box-sizing: border-box;
   min-width: 13px;
@@ -79,21 +78,6 @@
   background: rgb(24 17 12 / 94%);
   border: 1px solid #806446;
   border-radius: 3px;
-}
-
-.token-state-overlay__control {
-  min-width: 9px;
-  width: 9px;
-  height: 9px;
-  background: #7b766d;
-  border-color: #d1c6b4;
-  border-radius: 50%;
-}
-
-.token-state-overlay__control--owned {
-  background: #4dcc87;
-  border-color: #c8ffe1;
-  box-shadow: 0 0 4px rgb(77 204 135 / 65%);
 }
 
 .scene-token.token-state--hover { filter: brightness(1.12); }

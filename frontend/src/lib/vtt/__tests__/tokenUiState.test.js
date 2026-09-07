@@ -10,6 +10,7 @@ describe("tokenUiState", () => {
     const flags = tokenUiFlags(
       {
         id: 7,
+        disabled: true,
         locked: true,
         hidden: true,
         disposition: "secret",
@@ -54,5 +55,14 @@ describe("tokenUiState", () => {
         { waitingTurnIds: [4] },
       ),
     ).toMatchObject({ uncontrolled: true, waitingTurn: true });
+  });
+
+  it("does not present a network save as a disabled token", () => {
+    expect(
+      tokenUiFlags(
+        { id: 4, capabilities: { canControl: true } },
+        { disabled: true },
+      ).disabled,
+    ).toBe(false);
   });
 });

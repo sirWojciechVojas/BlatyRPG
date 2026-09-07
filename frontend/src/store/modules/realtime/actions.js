@@ -23,14 +23,13 @@ import {
   createRealtimeCombatActions,
   routeRealtimeCombatEvent,
 } from "./combatActions";
+import { createRealtimeFogActions, routeRealtimeFogEvent } from "./fogActions";
+import { routeRealtimeSceneSnapshot } from "./sceneSnapshot";
 
 const defaultRestore = async (context, details) => {
   if (!details.reconnected) return;
   if (context.rootState.campaignContext) {
-    await context.dispatch("campaignContext/refresh", null, { root: true });
-  }
-  if (context.rootState.vtt) {
-    await context.dispatch("vtt/initialize", null, { root: true });
+    await context.dispatch("campaignContext/reconcile", null, { root: true });
   }
 };
 
@@ -43,6 +42,9 @@ export const createRealtimeActions = (
   const ensureSession = (context) => {
     if (session) return session;
     session = sessionFactory({
+      getSyncContext: () => ({
+        sceneId: context.rootState.vtt?.selectedSceneId || null,
+      }),
       onStatus: (details) => context.commit("SET_STATUS", details),
       onPresenceSnapshot: (items) =>
         context.commit("SET_PRESENCE_SNAPSHOT", items),
@@ -51,12 +53,22 @@ export const createRealtimeActions = (
         if (event.sequence > 0) {
           context.commit("SET_LAST_SEQUENCE", event.sequence);
         }
+        routeRealtimeSceneSnapshot(context, event);
         routeRealtimeChatEvent(context, ensureSession(context), event);
         routeRealtimeTokenEvent(context, event);
         routeRealtimeCombatEvent(context, event);
         routeRealtimeWallEvent(context, event);
         routeRealtimeLightEvent(context, event);
         routeRealtimeTileEvent(context, event);
+        routeRealtimeFogEvent(context, event);
+        if (
+          event.type === "handout.available" &&
+          typeof window !== "undefined"
+        ) {
+          window.dispatchEvent(
+            new CustomEvent("blatyrpg:handout-available", { detail: event }),
+          );
+        }
       },
       onSequenceGap: ({ expected }) =>
         context.commit("SET_LAST_SEQUENCE", expected - 1),
@@ -64,6 +76,13 @@ export const createRealtimeActions = (
         context.commit("SET_LAST_SEQUENCE", details.lastSequence);
         await restore(context, details);
         restoreRealtimeChat(context, ensureSession(context));
+        if (typeof window !== "undefined") {
+          window.dispatchEvent(
+            new CustomEvent("blatyrpg:handout-refresh", {
+              detail: { campaignId: details.campaignId },
+            }),
+          );
+        }
       },
     });
     return session;
@@ -76,6 +95,7 @@ export const createRealtimeActions = (
     ...createRealtimeWallActions(ensureSession),
     ...createRealtimeLightActions(ensureSession),
     ...createRealtimeTileActions(ensureSession),
+    ...createRealtimeFogActions(ensureSession),
     connect(context, campaignId) {
       const id = Number(campaignId);
       if (context.state.campaignId !== id) {
@@ -95,6 +115,9 @@ export const createRealtimeActions = (
       const presence = ensureSession(context).requestSync();
       context.dispatch("syncChat");
       return presence;
+    },
+    sendHandoutAvailability(context, payload) {
+      return ensureSession(context).notifyHandout(payload);
     },
   };
 };

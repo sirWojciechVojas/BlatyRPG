@@ -1,6 +1,14 @@
 export const routeRealtimeFeature = (handlers, session, message) => {
+  if (message.type === "fog.sync") {
+    handlers.fog.handle(session, message);
+    return true;
+  }
   if (message.type === "chat.send" || message.type === "chat.sync") {
     handlers.chat.handle(session, message);
+    return true;
+  }
+  if (message.type === "handout.notify") {
+    handlers.handouts.handle(session, message);
     return true;
   }
   if (

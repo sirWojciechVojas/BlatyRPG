@@ -1,10 +1,38 @@
 import { snapTokenPosition } from "@/lib/vtt/grid";
 
-const isRealtimeAngleChange = (changes) => {
+const REALTIME_CHANGE_FIELDS = new Set([
+  "characterId",
+  "name",
+  "imageUrl",
+  "width",
+  "height",
+  "rotation",
+  "facing",
+  "rotationHandleEnabled",
+  "facingHandleEnabled",
+  "showInfoUnselected",
+  "resourceBarPosition",
+  "movementRange",
+  "movementSpent",
+  "movementResetMode",
+  "elevation",
+  "disposition",
+  "hidden",
+  "locked",
+  "visibleTo",
+  "controlledBy",
+  "editableBy",
+  "observerBy",
+  "statuses",
+  "resources",
+  "vision",
+]);
+
+const isRealtimeTokenChange = (changes) => {
   const fields = Object.keys(changes || {});
   return (
     fields.length > 0 &&
-    fields.every((field) => ["rotation", "facing"].includes(field))
+    fields.every((field) => REALTIME_CHANGE_FIELDS.has(field))
   );
 };
 
@@ -116,13 +144,20 @@ export const tableTokenMethods = {
     });
   },
   async updateToken({ token, changes }) {
-    if (isRealtimeAngleChange(changes)) {
+    if (isRealtimeTokenChange(changes)) {
       try {
         const sent = await this.$store.dispatch("realtime/changeToken", {
           token,
           changes,
         });
-        if (sent) return token;
+        if (sent) {
+          this.$store.commit?.("vtt/PATCH_TOKEN", {
+            id: token.id,
+            sceneId: token.sceneId,
+            ...changes,
+          });
+          return token;
+        }
       } catch (_error) {
         // Preserve the existing REST path when realtime is unavailable.
       }
@@ -132,13 +167,12 @@ export const tableTokenMethods = {
         token,
         changes,
       });
-      if (changes.resources) {
-        this.$store.dispatch("campaignContext/refresh").catch(() => {});
-      }
       return updated;
     } catch (error) {
       if (error?.status === 409) {
-        this.$store.dispatch("vtt/loadTokens").catch(() => {});
+        this.$store
+          .dispatch("vtt/loadTokens", { silent: true })
+          .catch(() => {});
       }
       return null;
     }

@@ -28,6 +28,9 @@ export const createVttState = () => ({
   tileCapabilitiesByScene: {},
   selectedTileId: null,
   tilePhase: "idle",
+  fogBySceneUser: {},
+  selectedFogUserId: null,
+  fogPhase: "idle",
   capabilities: {
     canManage: false,
     canViewHidden: false,

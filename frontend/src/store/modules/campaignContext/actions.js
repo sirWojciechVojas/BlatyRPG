@@ -82,6 +82,39 @@ export const createCampaignContextActions = (api) => ({
     return dispatch("selectCampaign", state.campaignId);
   },
 
+  async reconcile({ state, commit }) {
+    const campaignId = Number(state.campaignId);
+    const generation = state.generation;
+    if (!campaignId) return null;
+    try {
+      const campaign = await api.enter(campaignId);
+      if (!current(state, generation, campaignId)) return null;
+      const requests = [
+        api.listMembers(campaignId),
+        api.listCharacters(campaignId),
+      ];
+      if (campaign.capabilities?.canManage === true) {
+        requests.push(api.listInvitations(campaignId));
+      }
+      const [memberResult, characterResult, invitations = []] =
+        await Promise.all(requests);
+      if (!current(state, generation, campaignId)) return null;
+      commit("SET_CAMPAIGN", { generation, campaign });
+      commit("SET_MEMBERS", { generation, members: memberResult.members });
+      commit("SET_CHARACTERS", {
+        generation,
+        characters: characterResult.characters,
+      });
+      if (campaign.capabilities?.canManage === true) {
+        commit("SET_INVITATIONS", { generation, invitations });
+      }
+      return campaign;
+    } catch (_error) {
+      // A failed background reconcile must not hide an already valid workspace.
+      return null;
+    }
+  },
+
   async updateSettings({ state, commit }, draft) {
     assertManage(state);
     const generation = start(state, commit);

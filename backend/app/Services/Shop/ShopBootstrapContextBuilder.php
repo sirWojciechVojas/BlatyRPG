@@ -116,7 +116,8 @@ final class ShopBootstrapContextBuilder
         array $containers,
         array $actors,
         array $shops,
-        string $fallbackOwnerCode
+        string $fallbackOwnerCode,
+        bool $includeConsumptionConfiguration = false
     ): array {
         $containerById = $this->indexById($containers);
         $actorNameByOwnerCode = [];
@@ -144,7 +145,8 @@ final class ShopBootstrapContextBuilder
                 $container,
                 $actorNameByOwnerCode,
                 $shopNameById,
-                $fallbackOwnerCode
+                $fallbackOwnerCode,
+                $includeConsumptionConfiguration
             );
         }
         return $result;
@@ -160,7 +162,16 @@ final class ShopBootstrapContextBuilder
         return null;
     }
 
-    private function mapPlacement(array $placement, array $instance, array $template, array $container, array $actorNames, array $shopNames, string $fallbackOwnerCode): array
+    private function mapPlacement(
+        array $placement,
+        array $instance,
+        array $template,
+        array $container,
+        array $actorNames,
+        array $shopNames,
+        string $fallbackOwnerCode,
+        bool $includeConsumptionConfiguration
+    ): array
     {
         $containerType = strtoupper((string) ($container['container_type'] ?? 'SYSTEM'));
         $systemKey = strtoupper((string) ($container['system_key'] ?? ''));
@@ -176,7 +187,7 @@ final class ShopBootstrapContextBuilder
             $locationOwnerCode ?: $fallbackOwnerCode,
             $itemPlace
         );
-        return array_merge($mapped, [
+        $result = array_merge($mapped, [
             'PLACEMENT_ID' => (int) $placement['id'],
             'CONTAINER_ID' => (int) $container['id'],
             'CONTAINER_NAME' => (string) ($container['name'] ?? ''),
@@ -188,6 +199,10 @@ final class ShopBootstrapContextBuilder
             'LOCATION_SHOP_ID' => isset($container['shop_id']) ? (int) $container['shop_id'] : null,
             'LOCATION_SHOP_NAME' => !empty($container['shop_id']) ? ($shopNames[(int) $container['shop_id']] ?? null) : null,
         ]);
+        if ($includeConsumptionConfiguration) {
+            $result['CONSUMPTION_CONFIGURATION'] = $this->mapper->instanceConsumptionConfiguration($template, $instance);
+        }
+        return $result;
     }
 
     private function locationKind(string $type, string $systemKey): string

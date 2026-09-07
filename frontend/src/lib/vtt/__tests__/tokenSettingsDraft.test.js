@@ -100,6 +100,30 @@ describe("tokenSettingsDraft", () => {
     expect(payload.resources.bubbles[0].linkedBarIndex).toBe(1);
   });
 
+  it("normalizes and submits the token vision overlay appearance", () => {
+    const draft = createTokenSettingsDraft(
+      {
+        name: "Scout",
+        vision: {
+          enabled: true,
+          showShape: true,
+          shapeBorderColor: "#AABBCC",
+          shapeBorderOpacity: 0.6,
+          shapeFillColor: "invalid",
+          shapeFillOpacity: 0.2,
+        },
+      },
+      100,
+    );
+    expect(tokenSettingsPayload(draft, 100, true).vision).toMatchObject({
+      showShape: true,
+      shapeBorderColor: "#aabbcc",
+      shapeBorderOpacity: 0.6,
+      shapeFillColor: "#65d7ff",
+      shapeFillOpacity: 0.2,
+    });
+  });
+
   it("keeps the compact panel inside the viewport", () => {
     expect(
       tokenSettingsPosition(

@@ -10,12 +10,6 @@ export const TABLE_SCENE_TOOLS = Object.freeze([
     gmOnly: true,
   },
   {
-    id: "doors",
-    icon: "door",
-    labelKey: "vtt.table.tools.doors",
-    gmOnly: true,
-  },
-  {
     id: "lights",
     icon: "light",
     labelKey: "vtt.table.tools.lights",
@@ -52,9 +46,9 @@ export const implementedSceneTool = (id) =>
     "measure",
     "templates",
     "walls",
-    "doors",
     "lights",
     "tiles",
+    "fog",
     "grid",
   ].includes(id);
 

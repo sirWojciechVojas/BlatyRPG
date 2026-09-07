@@ -1,5 +1,33 @@
 export const REALTIME_VERSION = 1;
 
+const TOKEN_CHANGE_FIELDS = Object.freeze([
+  "characterId",
+  "name",
+  "imageUrl",
+  "width",
+  "height",
+  "rotation",
+  "facing",
+  "rotationHandleEnabled",
+  "facingHandleEnabled",
+  "showInfoUnselected",
+  "resourceBarPosition",
+  "movementRange",
+  "movementSpent",
+  "movementResetMode",
+  "elevation",
+  "disposition",
+  "hidden",
+  "locked",
+  "visibleTo",
+  "controlledBy",
+  "editableBy",
+  "observerBy",
+  "statuses",
+  "resources",
+  "vision",
+]);
+
 export const authMessage = ({
   ticket,
   clientInstanceId,
@@ -17,10 +45,13 @@ export const authMessage = ({
   return message;
 };
 
-export const syncRequestMessage = (lastSequence, requestId) => {
+export const syncRequestMessage = (lastSequence, requestId, sceneId = null) => {
   const message = { v: REALTIME_VERSION, type: "sync.request" };
   if (requestId) message.requestId = String(requestId);
   if (Number(lastSequence) > 0) message.lastSequence = Number(lastSequence);
+  if (Number.isSafeInteger(Number(sceneId)) && Number(sceneId) > 0) {
+    message.sceneId = Number(sceneId);
+  }
   return message;
 };
 
@@ -72,9 +103,9 @@ export const tokenChangeMessage = (payload) => ({
   tokenId: Number(payload.tokenId),
   revision: Number(payload.revision),
   changes: Object.fromEntries(
-    ["rotation", "facing"]
-      .filter((field) => Object.hasOwn(payload.changes || {}, field))
-      .map((field) => [field, Number(payload.changes[field])]),
+    TOKEN_CHANGE_FIELDS.filter((field) =>
+      Object.hasOwn(payload.changes || {}, field),
+    ).map((field) => [field, payload.changes[field]]),
   ),
 });
 
@@ -117,6 +148,15 @@ export const sceneElementChangeMessage = (resource, payload) => ({
 export const wallChangeMessage = (payload) =>
   sceneElementChangeMessage("wall", payload);
 
+export const fogSyncMessage = (payload) => ({
+  v: REALTIME_VERSION,
+  type: "fog.sync",
+  requestId: String(payload.requestId),
+  sceneId: Number(payload.sceneId),
+  userId: Number(payload.userId),
+  revision: Number(payload.revision),
+});
+
 export const chatSendMessage = ({ requestId, clientNonce, body }) => ({
   v: REALTIME_VERSION,
   type: "chat.send",
@@ -141,6 +181,13 @@ export const chatSyncMessage = ({
     ? { beforeRevision: Number(beforeRevision) }
     : {}),
   limit: Number(limit),
+});
+
+export const handoutNotifyMessage = ({ requestId, batchId }) => ({
+  v: REALTIME_VERSION,
+  type: "handout.notify",
+  requestId: String(requestId),
+  batchId: String(batchId),
 });
 
 export const parseServerEvent = (raw) => {

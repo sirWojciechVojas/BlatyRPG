@@ -1,0 +1,11 @@
+body {
+  cursor: url("../../assets/app-ui/img/inventory/CUR_default.png"), auto;
+}
+
+.clickDown {
+  cursor: url("../../assets/app-ui/img/inventory/CUR_clickDown.png"), auto;
+}
+
+.myPointer:hover {
+  cursor: url("../../assets/app-ui/img/inventory/CUR_pointer.png") 15 0, pointer !important;
+}

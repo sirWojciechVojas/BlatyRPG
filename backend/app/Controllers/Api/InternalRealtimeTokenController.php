@@ -16,6 +16,14 @@ class InternalRealtimeTokenController extends BaseController
 {
     use ResponseTrait;
 
+    private const CHANGE_FIELDS = [
+        'characterId', 'name', 'imageUrl', 'width', 'height', 'rotation', 'facing',
+        'rotationHandleEnabled', 'facingHandleEnabled', 'showInfoUnselected',
+        'resourceBarPosition', 'movementRange', 'movementSpent', 'movementResetMode',
+        'elevation', 'disposition', 'hidden', 'locked', 'visibleTo', 'controlledBy',
+        'editableBy', 'observerBy', 'statuses', 'resources', 'vision',
+    ];
+
     private $principals;
     private $tokens;
     private $tokenGroups;
@@ -124,7 +132,7 @@ class InternalRealtimeTokenController extends BaseController
             if (!is_array($changes) || !$changes) {
                 throw new CampaignException('validation_failed', 'Token changes are invalid.', 422);
             }
-            $this->exactKeys($changes, ['rotation', 'facing']);
+            $this->exactKeys($changes, self::CHANGE_FIELDS);
             return $this->respond($this->tokens->update(
                 $id,
                 $this->positiveId($payload['sceneId'] ?? null),

@@ -175,7 +175,11 @@ export default {
       ];
     },
     visionConstrained() {
-      return !this.canManage && this.tokenVisionSources.length > 0;
+      return (
+        this.scene.fogEnabled !== true &&
+        !this.canManage &&
+        this.tokenVisionSources.length > 0
+      );
     },
     paths() {
       return Object.fromEntries(
@@ -209,10 +213,7 @@ export default {
       return this.paths[light.id] || "";
     },
     visionPath(source) {
-      return (
-        this.paths[source.id] ||
-        lightPolygonPath(source, this.walls, this.scene)
-      );
+      return lightPolygonPath(source, this.walls, this.scene, "sight");
     },
     strength(light) {
       return lumenStrength(light) * light.opacity;

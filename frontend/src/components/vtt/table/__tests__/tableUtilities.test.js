@@ -36,6 +36,8 @@ describe("table utilities", () => {
       "combat",
       "graphics",
       "characters",
+      "handouts",
+      "compendium",
       "scenario",
       "scenes",
       "shop",
@@ -53,6 +55,21 @@ describe("table utilities", () => {
     expect(utilityById("characters")).toMatchObject({
       windowWidth: 1480,
       windowHeight: 900,
+    });
+  });
+
+  it("opens handouts in a large floating workspace", () => {
+    expect(utilityById("handouts")).toMatchObject({
+      windowWidth: 1120,
+      windowHeight: 780,
+    });
+  });
+
+  it("opens the full compendium as a viewport-filling workspace", () => {
+    expect(utilityById("compendium")).toMatchObject({
+      windowWidth: 1480,
+      windowHeight: 920,
+      fillViewport: true,
     });
   });
 });

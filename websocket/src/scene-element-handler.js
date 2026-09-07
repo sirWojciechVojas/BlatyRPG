@@ -16,6 +16,7 @@ export const createSceneElementHandler = ({
   resource,
   publicUpdates = false,
   hideHidden = false,
+  publicItem = null,
 }) => {
   const writes = new Map();
   const idKey = `${resource}Id`;
@@ -48,9 +49,14 @@ export const createSceneElementHandler = ({
     const payload = result.scene
       ? { scene: result.scene }
       : item
-      ? { [resource]: item }
-      : { sceneId: result.sceneId, [idKey]: result[idKey] };
+        ? { [resource]: item }
+        : { sceneId: result.sceneId, [idKey]: result[idKey] };
     const event = eventFor(session, type, payload, sequence);
+    const publicPayload =
+      item && typeof publicItem === "function"
+        ? { [resource]: publicItem(item) }
+        : payload;
+    const publicEvent = eventFor(session, type, publicPayload, sequence);
     const marker = createServerEvent({
       type: "sync.marker",
       campaignId: session.campaignId,
@@ -74,7 +80,7 @@ export const createSceneElementHandler = ({
         recipient.id === session.id ||
         recipient.capabilities?.canManage === true ||
         recipient.capabilities?.canViewHidden === true;
-      let recipientEvent = publicUpdates ? event : marker;
+      let recipientEvent = publicUpdates ? publicEvent : marker;
       if (hiddenScene && !canManage) recipientEvent = marker;
       if (hideHidden && result.operation === "delete" && result.hidden) {
         recipientEvent = marker;

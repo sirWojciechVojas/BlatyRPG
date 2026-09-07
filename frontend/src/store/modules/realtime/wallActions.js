@@ -1,4 +1,5 @@
 import { normalizeWall } from "@/lib/vtt/wallNormalizer";
+import { scheduleVisibilityRefresh } from "./visibilityRefresh";
 
 let requestSerial = 0;
 
@@ -8,6 +9,7 @@ export const routeRealtimeWallEvent = (context, event) => {
     const wall = normalizeWall(event.payload.wall);
     if (wall.id > 0 && wall.sceneId > 0) {
       context.commit("vtt/UPSERT_WALL", wall, { root: true });
+      scheduleVisibilityRefresh(context, wall.sceneId);
     }
     return;
   }
@@ -16,6 +18,7 @@ export const routeRealtimeWallEvent = (context, event) => {
     const wallId = Number(event.payload.wallId);
     if (sceneId > 0 && wallId > 0) {
       context.commit("vtt/REMOVE_WALL", { sceneId, wallId }, { root: true });
+      scheduleVisibilityRefresh(context, sceneId);
     }
     return;
   }

@@ -14,4 +14,6 @@ RUN apk add --no-cache \
 # Instalacja Composer (opcjonalnie, przyda się w kontenerze)
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+COPY handout-uploads.ini /usr/local/etc/php/conf.d/handout-uploads.ini
+
 WORKDIR /var/www/html

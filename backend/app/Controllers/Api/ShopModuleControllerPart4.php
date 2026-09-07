@@ -61,6 +61,28 @@ trait ShopModuleControllerPart4
         }
 
         $meta = (array) ($instance['data_override_json'] ?? []);
+        $consumptionFields = [];
+        if (array_key_exists('consumptionMode', $input) || array_key_exists('consumptionProfileId', $input)
+            || array_key_exists('consumptionIdentification', $input) || array_key_exists('consumptionPortions', $input)) {
+            if (!$this->authContextService->isGmOrAdmin($auth)) {
+                return $this->respondError(['code' => 'forbidden_consumption_configuration', 'status' => 403]);
+            }
+            $mode = strtolower(trim((string) ($input['consumptionMode'] ?? $instance['consumption_mode'] ?? 'inherit')));
+            $profileId = trim((string) ($input['consumptionProfileId'] ?? $instance['consumption_profile_id'] ?? ''));
+            if (!in_array($mode, ['inherit', 'disabled', 'override'], true)
+                || ($mode === 'override' && !$this->consumptionProfileExists($profileId))) {
+                return $this->fail(['code' => 'invalid_consumption_profile'], 422);
+            }
+            $consumptionFields = [
+                'consumption_mode' => $mode,
+                'consumption_profile_id' => $mode === 'override' ? $profileId : null,
+                'consumption_identification' => $this->consumptionIdentification(
+                    $input['consumptionIdentification'] ?? $instance['consumption_identification'] ?? 'unknown'
+                ),
+                'consumption_portions' => array_key_exists('consumptionPortions', $input)
+                    ? max(1, (int) $input['consumptionPortions']) : $instance['consumption_portions'],
+            ];
+        }
         $mapping = [
             'description' => 'DESCRIPTION',
             'details' => 'DETAILS',
@@ -73,6 +95,8 @@ trait ShopModuleControllerPart4
             'attributes' => 'ATTRIBUTES',
             'currencyCode' => 'CURRENCY',
             'weapon' => 'WEAPON',
+            'slot' => 'SLOT',
+            'itemPlace' => 'ITEM_PLACE',
         ];
         foreach ($mapping as $source => $target) {
             if (array_key_exists($source, $input)) {
@@ -85,17 +109,22 @@ trait ShopModuleControllerPart4
         $description = array_key_exists('description', $input)
             ? (string) $input['description']
             : (string) ($instance['note'] ?? '');
-        $meta['IMG_CLASS'] = $this->itemIconResolver->resolve([
-            'NAME' => $name,
-            'DESCRIPTION' => $description,
-            'ITEM_CLASS' => $meta['ITEM_CLASS'] ?? '',
-            'ITEM_GENRE' => $meta['ITEM_GENRE'] ?? '',
-        ], (string) ($meta['IMG_CLASS'] ?? 'v0001'), true);
+        $iconFields = ['icon', 'imgClass', 'itemClass', 'itemGenre'];
+        $shouldResolveIcon = array_intersect($iconFields, array_keys($input)) !== [];
+        if ($shouldResolveIcon) {
+            $meta['IMG_CLASS'] = $this->itemIconResolver->resolve([
+                'NAME' => $name,
+                'DESCRIPTION' => $description,
+                'ITEM_CLASS' => $meta['ITEM_CLASS'] ?? '',
+                'ITEM_GENRE' => $meta['ITEM_GENRE'] ?? '',
+            ], (string) ($meta['IMG_CLASS'] ?? 'v0001'), true);
+            $meta['ICON_OVERRIDDEN'] = true;
+        }
         $this->itemInstanceModel->update((int) $instanceId, [
             'name_override' => $name,
             'note' => $description,
             'data_override_json' => $meta,
-        ]);
+        ] + $consumptionFields);
         if (array_key_exists('price', $input)) {
             $this->containerInstanceItemModel->update((int) $placement['id'], [
                 'price_override' => max(0, (int) $input['price']),

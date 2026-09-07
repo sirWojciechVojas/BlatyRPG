@@ -2,6 +2,7 @@
 
 namespace App\Database\Seeds;
 
+use App\Services\Shop\LegacyCharacterInventoryImporter;
 use CodeIgniter\Database\Seeder;
 
 class A_MasterSeeder extends Seeder
@@ -17,5 +18,9 @@ class A_MasterSeeder extends Seeder
         $this->call('ProfessionsLegacySeeder');
         $this->call('CharacterLegacySeeder');
         $this->call('CharacterProfessionsLegacySeeder');
+        $this->call('ShopTypeSeeder');
+        $this->call('ShopModuleSeeder');
+        $this->call('CompendiumDemoSeeder');
+        (new LegacyCharacterInventoryImporter($this->db))->import();
     }
 }

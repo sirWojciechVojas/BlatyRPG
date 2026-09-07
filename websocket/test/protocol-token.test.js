@@ -68,7 +68,7 @@ test("validates one bounded group movement command", () => {
   );
 });
 
-test("accepts only realtime token angle changes", () => {
+test("accepts realtime token changes", () => {
   const change = {
     v: 1,
     type: "token.change",
@@ -76,7 +76,11 @@ test("accepts only realtime token angle changes", () => {
     sceneId: 4,
     tokenId: 9,
     revision: 3,
-    changes: { rotation: 72.5, facing: 185 },
+    changes: {
+      rotation: 72.5,
+      facing: 185,
+      resources: { bars: [], bubbles: [{ enabled: true, value: 7 }] },
+    },
   };
   assert.deepEqual(parseAuthenticatedMessage(change), {
     type: "token.change",
@@ -84,10 +88,14 @@ test("accepts only realtime token angle changes", () => {
     sceneId: 4,
     tokenId: 9,
     revision: 3,
-    changes: { rotation: 72.5, facing: 185 },
+    changes: {
+      rotation: 72.5,
+      facing: 185,
+      resources: { bars: [], bubbles: [{ enabled: true, value: 7 }] },
+    },
   });
   assert.throws(
-    () => parseAuthenticatedMessage({ ...change, changes: { locked: false } }),
+    () => parseAuthenticatedMessage({ ...change, changes: { x: 100 } }),
     (error) => error instanceof ProtocolError && error.code === "unexpected_field",
   );
   assert.throws(

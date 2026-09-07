@@ -42,13 +42,13 @@ export const vttMutations = {
     state.selectedLightId = null;
     state.selectedTileId = null;
   },
-  RECEIVE_TOKENS(state, { sceneId, items, capabilities }) {
+  RECEIVE_TOKENS(state, { sceneId, items, capabilities, silent = false }) {
     state.tokensByScene = { ...state.tokensByScene, [String(sceneId)]: items };
     state.tokenCapabilitiesByScene = {
       ...state.tokenCapabilitiesByScene,
       [String(sceneId)]: capabilities,
     };
-    state.tokenPhase = "ready";
+    if (!silent) state.tokenPhase = "ready";
     const availableIds = new Set(items.map((token) => token.id));
     state.selectedTokenIds = state.selectedTokenIds.filter((id) =>
       availableIds.has(id),
@@ -58,6 +58,95 @@ export const vttMutations = {
     );
     if (!availableIds.has(state.selectedTokenId)) {
       state.selectedTokenId = state.selectedTokenIds.at(-1) ?? null;
+    }
+  },
+  RECEIVE_REALTIME_SCENE_SNAPSHOT(state, snapshot) {
+    const sceneId = Number(snapshot?.scene?.id);
+    if (!sceneId || sceneId !== Number(state.selectedSceneId)) return;
+    const key = String(sceneId);
+    const scenes = [...state.scenes];
+    const sceneIndex = scenes.findIndex(
+      (scene) => Number(scene.id) === sceneId,
+    );
+    if (sceneIndex < 0) scenes.push(snapshot.scene);
+    else scenes.splice(sceneIndex, 1, snapshot.scene);
+    state.scenes = scenes;
+    state.activeSceneId = snapshot.scenes.activeSceneId;
+    state.capabilities = snapshot.scenes.capabilities;
+    state.tokensByScene = {
+      ...state.tokensByScene,
+      [key]: snapshot.tokens.items,
+    };
+    state.tokenCapabilitiesByScene = {
+      ...state.tokenCapabilitiesByScene,
+      [key]: snapshot.tokens.capabilities,
+    };
+    state.wallsByScene = { ...state.wallsByScene, [key]: snapshot.walls.items };
+    state.wallCapabilitiesByScene = {
+      ...state.wallCapabilitiesByScene,
+      [key]: snapshot.walls.capabilities,
+    };
+    state.lightsByScene = {
+      ...state.lightsByScene,
+      [key]: snapshot.lights.items,
+    };
+    state.lightCapabilitiesByScene = {
+      ...state.lightCapabilitiesByScene,
+      [key]: snapshot.lights.capabilities,
+    };
+    state.tilesByScene = { ...state.tilesByScene, [key]: snapshot.tiles.items };
+    state.tileCapabilitiesByScene = {
+      ...state.tileCapabilitiesByScene,
+      [key]: snapshot.tiles.capabilities,
+    };
+    state.combatByScene = {
+      ...state.combatByScene,
+      [key]: snapshot.combat.combat,
+    };
+    state.combatCapabilitiesByScene = {
+      ...state.combatCapabilitiesByScene,
+      [key]: snapshot.combat.capabilities,
+    };
+    state.fogBySceneUser = {
+      ...state.fogBySceneUser,
+      [`${sceneId}:${snapshot.fog.userId}`]: snapshot.fog,
+    };
+    state.selectedFogUserId = snapshot.fog.userId;
+    state.movementRequests = snapshot.movementRequests.items;
+    state.movementRequestCapabilities = snapshot.movementRequests.capabilities;
+    const tokenIds = new Set(snapshot.tokens.items.map((token) => token.id));
+    state.selectedTokenIds = state.selectedTokenIds.filter((id) =>
+      tokenIds.has(id),
+    );
+    state.targetedTokenIds = state.targetedTokenIds.filter((id) =>
+      tokenIds.has(id),
+    );
+    if (!tokenIds.has(state.selectedTokenId)) {
+      state.selectedTokenId = state.selectedTokenIds.at(-1) ?? null;
+    }
+    if (
+      !snapshot.walls.items.some((wall) => wall.id === state.selectedWallId)
+    ) {
+      state.selectedWallId = null;
+    }
+    if (
+      !snapshot.lights.items.some((light) => light.id === state.selectedLightId)
+    ) {
+      state.selectedLightId = null;
+    }
+    if (
+      !snapshot.tiles.items.some((tile) => tile.id === state.selectedTileId)
+    ) {
+      state.selectedTileId = null;
+    }
+    if (state.tokenPhase !== "saving") state.tokenPhase = "ready";
+    if (state.wallPhase !== "saving") state.wallPhase = "ready";
+    if (state.lightPhase !== "saving") state.lightPhase = "ready";
+    if (state.tilePhase !== "saving") state.tilePhase = "ready";
+    if (state.combatPhase !== "saving") state.combatPhase = "ready";
+    if (state.fogPhase !== "saving") state.fogPhase = "ready";
+    if (state.movementRequestPhase !== "saving") {
+      state.movementRequestPhase = "ready";
     }
   },
   UPSERT_TOKEN(state, token) {
@@ -192,6 +281,23 @@ export const vttMutations = {
     if (!items.some((tile) => tile.id === state.selectedTileId)) {
       state.selectedTileId = null;
     }
+  },
+  RECEIVE_FOG_STATE(state, fog) {
+    if (!fog?.sceneId || !fog?.userId) return;
+    const key = `${fog.sceneId}:${fog.userId}`;
+    state.fogBySceneUser = { ...state.fogBySceneUser, [key]: fog };
+    state.selectedFogUserId = fog.userId;
+    state.fogPhase = "ready";
+  },
+  SELECT_FOG_USER(state, userId) {
+    state.selectedFogUserId = Number(userId) || null;
+  },
+  SET_FOG_PHASE(state, phase) {
+    state.fogPhase = phase;
+  },
+  FOG_FAILED(state, error) {
+    state.fogPhase = "error";
+    state.error = error;
   },
   UPSERT_TILE(state, tile) {
     const key = String(tile.sceneId);

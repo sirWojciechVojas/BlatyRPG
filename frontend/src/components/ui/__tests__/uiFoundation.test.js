@@ -99,7 +99,11 @@ describe("route UI foundation", () => {
     );
 
     expect(index.trimEnd()).toMatch(/@import "\.\/scrollbar\.css";$/);
-    expect(source).toContain("scrollbar-gutter: stable !important");
+    expect(source).toMatch(/html\s*\{[^}]*scrollbar-gutter:\s*stable;/s);
+    expect(source).toMatch(
+      /html:has\(> body\.ui-shell--workspace\)\s*\{[^}]*scrollbar-gutter:\s*auto;/s,
+    );
+    expect(source).not.toMatch(/\*\s*\{[^}]*scrollbar-gutter:/s);
     expect(source).toContain("scrollbar-width: thin");
     expect(source).toContain("scrollbar-color:");
     expect(source).toContain("*::-webkit-scrollbar-thumb");

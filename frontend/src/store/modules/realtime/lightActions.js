@@ -1,6 +1,7 @@
 import { normalizeLight } from "@/lib/vtt/lightNormalizer";
 import { normalizeScene } from "@/lib/vtt/sceneNormalizer";
 import { lightRequestTracker } from "./lightRequestTracker";
+import { scheduleVisibilityRefresh } from "./visibilityRefresh";
 
 let requestSerial = 0;
 
@@ -12,12 +13,14 @@ export const routeRealtimeLightEvent = (context, event) => {
   if (event.type === "scene.updated") {
     const scene = normalizeScene(event.payload.scene);
     if (scene?.id) context.commit("vtt/UPSERT_SCENE", scene, { root: true });
+    if (scene?.id) scheduleVisibilityRefresh(context, scene.id);
     return;
   }
   if (event.type === "light.updated") {
     const light = normalizeLight(event.payload.light);
     if (light.id > 0 && light.sceneId > 0) {
       context.commit("vtt/UPSERT_LIGHT", light, { root: true });
+      scheduleVisibilityRefresh(context, light.sceneId);
     }
     return;
   }
@@ -26,6 +29,7 @@ export const routeRealtimeLightEvent = (context, event) => {
     const lightId = Number(event.payload.lightId);
     if (sceneId > 0 && lightId > 0) {
       context.commit("vtt/REMOVE_LIGHT", { sceneId, lightId }, { root: true });
+      scheduleVisibilityRefresh(context, sceneId);
     }
     return;
   }

@@ -92,6 +92,14 @@
           {{ domainLabel("attributes", code) }} <code>{{ code }}</code> ×
         </button>
       </div>
+      <div class="item-attribute-editor__consumption">
+        <span>Spożycie</span>
+        <ConsumptionProfilePicker
+          v-model="templateDraft.CONSUMPTION_PROFILE_ID"
+          @update:model-value="markTemplateDirty"
+          @selected="syncTemplateConsumptionMechanics"
+        />
+      </div>
     </div>
     <ItemMechanicsEditor
       v-model="templateDraft.MECHANICS"
@@ -182,6 +190,8 @@ import EncumbranceInput from "@/components/shop/common/EncumbranceInput.vue";
 import ItemIcon from "@/components/shop/common/ItemIcon.vue";
 import ItemMechanicsEditor from "@/components/shop/common/ItemMechanicsEditor.vue";
 import StatusChip from "@/components/shop/common/StatusChip.vue";
+import ConsumptionProfilePicker from "@/components/shop/common/ConsumptionProfilePicker.vue";
+import { syncConsumptionProfileMechanics } from "@/lib/trade/consumptionMechanics";
 import { useShopWorkspaceContext } from "../shopWorkspaceContext";
 export default {
   name: "ShopWorkspaceTemplateEditor",
@@ -193,9 +203,30 @@ export default {
     ItemIcon,
     ItemMechanicsEditor,
     StatusChip,
+    ConsumptionProfilePicker,
   },
   setup() {
     return useShopWorkspaceContext();
+  },
+  methods: {
+    syncTemplateConsumptionMechanics(profile) {
+      const mechanics = syncConsumptionProfileMechanics(
+        this.templateDraft.MECHANICS,
+        profile,
+      );
+      const nextMode =
+        profile && this.templateDraft.MECHANICS_MODE === "INHERIT"
+          ? "EXTEND"
+          : this.templateDraft.MECHANICS_MODE;
+      const unchanged =
+        JSON.stringify(mechanics) ===
+          JSON.stringify(this.templateDraft.MECHANICS) &&
+        nextMode === this.templateDraft.MECHANICS_MODE;
+      if (unchanged) return;
+      this.templateDraft.MECHANICS = mechanics;
+      this.templateDraft.MECHANICS_MODE = nextMode;
+      this.markTemplateDirty();
+    },
   },
 };
 </script>

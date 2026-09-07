@@ -18,13 +18,13 @@
 @import url("./styles/scene-token-drop.css");
 @import url("./styles/scene-walls.css");
 @import url("./styles/scene-lights.css");
+@import url("./styles/scene-fog.css");
 @import url("./styles/scene-tiles.css");
 @import url("./styles/scene-measurement.css");
 @import url("./styles/scene-settings.css");
 @import url("./styles/table-panels.css");
 @import url("./styles/table-header.css");
 @import url("./styles/table-tools.css");
-@import url("./styles/table-hotbar.css");
 @import url("./styles/table-windows.css");
 @import url("./styles/table-characters.css");
 @import url("./styles/table-character-sheet.css");

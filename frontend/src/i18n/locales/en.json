@@ -1554,6 +1554,7 @@
     "workspace": {
       "title": "Shop — GM workspace",
       "navigation": "Shop primary navigation",
+      "backToVtt": "Back to VTT",
       "shop": "Shop",
       "createShop": {
         "action": "Add shop",
@@ -1746,7 +1747,8 @@
         "sources": {
           "CLASS": "Class",
           "GENRE": "Type",
-          "TEMPLATE": "Template"
+          "TEMPLATE": "Template",
+          "CONSUMPTION": "Consumption catalogue"
         }
       },
       "encumbrance": {

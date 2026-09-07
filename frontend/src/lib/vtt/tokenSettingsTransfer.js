@@ -20,6 +20,34 @@ const movement = (value, fallback = 0) =>
 const permission = (value, fallback) =>
   normalizeTokenPermissionScope(value, fallback);
 
+const opacity = (value, fallback) =>
+  Math.min(1, Math.max(0, finite(value, fallback)));
+
+const color = (value, fallback) =>
+  /^#[0-9a-f]{6}$/iu.test(String(value || ""))
+    ? String(value).toLocaleLowerCase()
+    : fallback;
+
+const vision = (value = {}) => ({
+  enabled: value.enabled === true,
+  range: Math.min(100000, Math.max(0, finite(value.range, 600))),
+  angle: Math.min(360, Math.max(1, finite(value.angle, 360))),
+  direction: normalizeTokenAngle(value.direction),
+  minimumRadius: Math.min(100000, Math.max(0, finite(value.minimumRadius, 0))),
+  darkvision: value.darkvision === true,
+  darkvisionRange: Math.min(
+    100000,
+    Math.max(0, finite(value.darkvisionRange, 0)),
+  ),
+  limitByLight: value.limitByLight !== false,
+  constrainedByWalls: value.constrainedByWalls !== false,
+  showShape: value.showShape === true,
+  shapeBorderColor: color(value.shapeBorderColor, "#65d7ff"),
+  shapeBorderOpacity: opacity(value.shapeBorderOpacity, 0.8),
+  shapeFillColor: color(value.shapeFillColor, "#65d7ff"),
+  shapeFillOpacity: opacity(value.shapeFillOpacity, 0.12),
+});
+
 const transferableSettings = (draft) => ({
   widthCells: size(draft.widthCells),
   heightCells: size(draft.heightCells),
@@ -45,6 +73,7 @@ const transferableSettings = (draft) => ({
   controlledBy: permission(draft.controlledBy, "inherit"),
   editableBy: permission(draft.editableBy, "gm"),
   observerBy: permission(draft.observerBy, "inherit"),
+  vision: vision(draft.vision),
   resources: cloneTokenResources(draft.resources),
 });
 

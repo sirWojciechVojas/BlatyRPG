@@ -2,6 +2,22 @@ import { describe, expect, it, vi } from "vitest";
 import { sceneCanvasCameraMethods } from "../sceneCanvasCameraMethods";
 
 describe("scene canvas selection", () => {
+  it("reports the visible world center for actions opened from the table", () => {
+    const emit = vi.fn();
+
+    sceneCanvasCameraMethods.emitCamera.call({
+      camera: { x: -300, y: -100, scale: 2 },
+      viewportSize: { width: 1000, height: 600 },
+      $emit: emit,
+    });
+
+    expect(emit).toHaveBeenCalledWith("camera-change", {
+      zoomPercent: 200,
+      centerX: 400,
+      centerY: 200,
+    });
+  });
+
   it("clears the active token before panning an empty map area", () => {
     const emit = vi.fn();
     const capture = vi.fn();

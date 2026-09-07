@@ -5,6 +5,7 @@ import { lightApiClient } from "@/lib/vtt/lightApiClient";
 import { tileApiClient } from "@/lib/vtt/tileApiClient";
 import { tokenMovementRequestApiClient } from "@/lib/vtt/tokenMovementRequestApiClient";
 import { combatApiClient } from "@/lib/vtt/combatApiClient";
+import { fogApiClient } from "@/lib/vtt/fogApiClient";
 import { createCombatActions } from "./combatActions";
 import { createVttActions } from "./actions";
 import { vttGetters } from "./getters";
@@ -21,9 +22,18 @@ export const createVttModule = (
     ? tokenMovementRequestApiClient
     : null,
   combats = api === sceneApiClient ? combatApiClient : null,
+  fog = api === sceneApiClient ? fogApiClient : null,
 ) => {
   const actions = {
-    ...createVttActions(api, tokens, walls, lights, tiles, movementRequests),
+    ...createVttActions(
+      api,
+      tokens,
+      walls,
+      lights,
+      tiles,
+      movementRequests,
+      fog,
+    ),
     ...createCombatActions(combats),
   };
   const updateSelectedScene = actions.updateSelectedScene;
@@ -34,6 +44,14 @@ export const createVttModule = (
       "darknessLevel",
       "globalIllumination",
       "fogExploration",
+      "fogEnabled",
+      "dynamicVision",
+      "explorationMemory",
+      "fogUnexploredColor",
+      "fogUnexploredOpacity",
+      "fogExploredOpacity",
+      "fogEdgeSoftness",
+      "fogUpdateDuringDrag",
     ];
     if (scene && lightingFields.some((field) => field in changes)) {
       await context.dispatch("realtime/syncSceneLighting", scene, {

@@ -3,6 +3,15 @@
   <header class="shop-workspace__header">
     <router-link to="/" class="shop-workspace__brand">BR</router-link>
     <h1>{{ $t("shop.workspace.title") }}</h1>
+    <router-link
+      class="shop-workspace__return"
+      :to="{
+        name: 'scene-workspace',
+        params: { campaignId: $route.params.campaignId },
+      }"
+    >
+      {{ $t("shop.workspace.backToVtt") }}
+    </router-link>
     <nav :aria-label="$t('shop.workspace.navigation')">
       <button
         v-for="tab in tabs"

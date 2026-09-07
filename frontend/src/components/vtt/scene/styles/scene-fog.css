@@ -1,0 +1,191 @@
+.scene-fog-layer {
+  position: absolute;
+  z-index: 24;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scene-fog-layer__mask,
+.scene-fog-layer__editor {
+  position: absolute;
+}
+
+.scene-fog-layer--brush .scene-fog-layer__editor {
+  cursor: none;
+}
+
+.scene-fog-layer__mask {
+  pointer-events: none;
+  image-rendering: auto;
+}
+
+.scene-fog-layer__editor {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 2;
+  pointer-events: auto;
+  cursor: crosshair;
+  touch-action: none;
+}
+
+.fog-toolbar {
+  position: fixed;
+  z-index: 1350;
+  top: 62px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  max-width: calc(100vw - 96px);
+  min-height: 32px;
+  padding: 4px;
+  overflow-x: auto;
+  color: #e9dcc6;
+  background: rgb(20 15 12 / 96%);
+  border: 1px solid #684d33;
+  border-radius: 5px;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 55%);
+  transform: translateX(-50%);
+}
+
+.fog-toolbar button,
+.fog-toolbar select {
+  min-height: 24px;
+  padding: 3px 7px;
+  color: inherit;
+  background: #241a13;
+  border: 1px solid #59412c;
+  border-radius: 3px;
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.fog-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.fog-toolbar button:hover:not(:disabled) {
+  background: #382719;
+  border-color: #96704a;
+}
+.fog-toolbar button.active {
+  color: #fff0c9;
+  background: #5a3c20;
+  border-color: #d0a05c;
+}
+.fog-toolbar button.danger {
+  color: #ffc2bd;
+}
+.fog-toolbar button:disabled {
+  opacity: 0.42;
+  cursor: not-allowed;
+}
+.fog-toolbar__separator {
+  width: 1px;
+  height: 19px;
+  flex: 0 0 auto;
+  background: #493522;
+}
+
+.fog-toolbar__brush-settings {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 0 4px;
+}
+
+.fog-toolbar__brush-settings label {
+  display: grid;
+  grid-template-columns: auto 68px 32px;
+  align-items: center;
+  gap: 4px;
+  color: #bba486;
+  font-size: 8px;
+  white-space: nowrap;
+}
+
+.fog-toolbar__brush-settings input {
+  width: 68px;
+  accent-color: #c58b4e;
+}
+
+.fog-toolbar__brush-settings output {
+  color: #f0d9b5;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.token-vision-settings {
+  padding: 8px;
+}
+.token-vision-settings > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.token-vision-settings h3 {
+  margin: 1px 0 0;
+  color: #e2bd82;
+  font-size: 12px;
+}
+.token-vision-settings small {
+  color: #967652;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+.token-vision-settings__switch,
+.token-vision-settings__check {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.token-vision-settings__grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.token-vision-settings__grid.disabled {
+  opacity: 0.5;
+}
+.token-vision-settings__wide {
+  grid-column: 1 / -1;
+}
+.token-vision-settings__appearance {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+  padding: 8px;
+  background: rgb(8 13 16 / 52%);
+  border: 1px solid #314653;
+  border-radius: 4px;
+}
+.token-vision-settings__appearance.disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+.token-vision-settings__appearance label {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 4px 7px;
+}
+.token-vision-settings__appearance input[type="color"] {
+  width: 32px;
+  height: 24px;
+  padding: 2px;
+}
+.token-vision-settings__appearance input[type="range"] {
+  grid-column: 1 / -1;
+  width: 100%;
+  accent-color: #65b9d7;
+}
+.token-vision-settings__appearance output {
+  color: #c9deea;
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+}
