@@ -1,82 +1,104 @@
 ﻿<template>
-  <TradeModalShell
-    :style-vars="styleVars"
-    :is-g-m="isGM"
-    :is-view-settings-open="showViewSettingsDialog"
-    :api-status-label="apiStatusLabel"
-    :wallet-alert="walletAlert"
-    :wallet-alert-key="walletAlertKey"
-    @toggle-view-settings="toggleViewSettingsDialog"
-  >
-    <TradeModalContent
-      v-bind="tradeModalContentProps"
-      :show-view-settings-dialog="showViewSettingsDialog"
-      v-model:assortmentLeftContainerId="assortmentLeftContainerId"
-      v-model:assortmentSearch="assortmentSearch"
-      v-model:assortmentLeftTab="assortmentLeftTab"
-      v-model:gmMoveItemKey="gmMoveItemKey"
-      v-model:gmMoveTargetContainerId="gmMoveTargetContainerId"
-      v-model:gmMoveQuantity="gmMoveQuantity"
-      v-model:assortmentRightContainerId="assortmentRightContainerId"
-      v-model:assortmentRightTab="assortmentRightTab"
-      v-model:shopBuyContainerId="shopBuyContainerId"
-      v-model:shopBuyItemKey="shopBuyItemKey"
-      v-model:shopBuyTargetContainerId="shopBuyTargetContainerId"
-      v-model:shopBuyQuantity="shopBuyQuantity"
-      v-model:trashZoneOwnerCode="trashZoneOwnerCode"
-      v-model:inventoryOwnerCodeFilter="inventoryOwnerCodeFilter"
-      v-model:iconSize="iconSize"
-      v-model:itemDetailNickname="itemDetailNickname"
-      v-model:suggestionDetailVariantId="suggestionDetailVariantId"
-      v-model:inventoryForm="inventoryForm"
-      v-model:templateForm="templateForm"
-      v-model:newTemplateForm="newTemplateForm"
-      @left-flank-action="handleLeftFlankAction"
-      @right-flank-action="handleRightFlankAction"
-      @undo-container-action="undoContainerAction"
-      @toggle-container-selection="handleToggleContainerSelection"
-      @move-container-selection="moveContainerSelection"
-      @gm-move="handleGmMove"
-      @shop-buy="handleShopBuy"
-      @buy-item-click="handleBuyItemClick"
-      @buy-item-quantity-step="stepBuyItemSelectionQuantity"
-      @buy-item-quantity-set="updateBuyItemSelectionQuantity"
-      @sell-item-click="handleSellItemClick"
-      @sell-item-quantity-step="stepSellItemSelectionQuantity"
-      @sell-item-quantity-set="updateSellItemSelectionQuantity"
-      @buy-action="handleBuyAction"
-      @sell-action="handleSellAction"
-      @delete-template="handleDeleteTemplateToTrash"
-      @open-class-edit="handleOpenClassEdit"
-      @apply-class-edit="applyClassEdit"
-      @confirm-class-edit="confirmClassEdit"
-      @close-field-edit-dialog="closeFieldEditDialog"
-      @update-class-edit-draft-value="updateClassEditDraftValue"
-      @update-class-edit-search="setClassEditSearch"
-      @apply-class-edit-suggestion="applyClassEditSuggestion"
-      @start-template-create="startTemplateCreate"
-      @reset-new-template-form="resetNewTemplateForm"
-      @close-class-edit-dialog="closeClassEditDialog"
-      @close-weapon-stats-dialog="closeWeaponStatsDialog"
-      @create-weapon-stats="createWeaponStatsDraft"
-      @remove-weapon-stats="removeWeaponStats"
-      @select-weapon-stats-item="selectWeaponStatsItem"
-      @update-weapon-stats-draft="updateWeaponStatsDraft"
-      @confirm-weapon-stats="confirmWeaponStats"
-      @select-img-class="selectImgClass"
-      @confirm-img-class="confirmImgClass"
-      @close-owner-opt-dialog="closeOwnerOptDialog"
-      @select-owner-opt="selectOwnerOpt"
-      @confirm-owner-opt="confirmOwnerOpt"
-      @open-item-detail-dialog="handleOpenItemDetailDialog"
-      @close-item-detail-dialog="closeItemDetailDialog"
-      @apply-item-detail-nickname="applyItemDetailNickname"
-      @toggle-item-detail-nickname-mode="toggleItemDetailNicknameMode"
-      @open-suggestion-detail-dialog="openSuggestionDetailDialog"
-      @close-suggestion-detail-dialog="closeSuggestionDetailDialog"
-      @confirm-suggestion-detail-action="confirmSuggestionDetailAction"
-      @close-view-settings-dialog="closeViewSettingsDialog"
-    />
+  <section class="shop-trade-module" :style="styleVars">
+    <div id="tradingStats" class="player-hud-shop-content">
+      <div class="player-hud-shop-content__toolbar">
+        <button
+          type="button"
+          class="trade-view-settings-trigger"
+          :class="{ active: showViewSettingsDialog }"
+          :title="$t('shop.tradeModal.viewSettingsTitle')"
+          :aria-pressed="String(showViewSettingsDialog)"
+          @click="toggleViewSettingsDialog"
+        >
+          <span class="bi bi-gear-fill" aria-hidden="true"></span>
+          <span>{{ $t("shop.tradeModal.viewSettingsTitle") }}</span>
+        </button>
+        <span v-if="apiStatusLabel" class="player-hud-shop-content__status">
+          {{ $t("shop.tradeModal.apiPrefix") }}: {{ apiStatusLabel }}
+        </span>
+      </div>
+      <div class="trade-modal-signboard-bg" aria-hidden="true"></div>
+
+      <TradeModalContent
+        v-bind="tradeModalContentProps"
+        :show-view-settings-dialog="showViewSettingsDialog"
+        v-model:assortmentLeftContainerId="assortmentLeftContainerId"
+        v-model:assortmentSearch="assortmentSearch"
+        v-model:assortmentLeftTab="assortmentLeftTab"
+        v-model:gmMoveItemKey="gmMoveItemKey"
+        v-model:gmMoveTargetContainerId="gmMoveTargetContainerId"
+        v-model:gmMoveQuantity="gmMoveQuantity"
+        v-model:assortmentRightContainerId="assortmentRightContainerId"
+        v-model:assortmentRightTab="assortmentRightTab"
+        v-model:shopBuyContainerId="shopBuyContainerId"
+        v-model:shopBuyItemKey="shopBuyItemKey"
+        v-model:shopBuyTargetContainerId="shopBuyTargetContainerId"
+        v-model:shopBuyQuantity="shopBuyQuantity"
+        v-model:trashZoneOwnerCode="trashZoneOwnerCode"
+        v-model:inventoryOwnerCodeFilter="inventoryOwnerCodeFilter"
+        v-model:iconSize="iconSize"
+        v-model:itemDetailNickname="itemDetailNickname"
+        v-model:suggestionDetailVariantId="suggestionDetailVariantId"
+        v-model:inventoryForm="inventoryForm"
+        v-model:templateForm="templateForm"
+        v-model:newTemplateForm="newTemplateForm"
+        @left-flank-action="handleLeftFlankAction"
+        @right-flank-action="handleRightFlankAction"
+        @undo-container-action="undoContainerAction"
+        @toggle-container-selection="handleToggleContainerSelection"
+        @move-container-selection="moveContainerSelection"
+        @gm-move="handleGmMove"
+        @shop-buy="handleShopBuy"
+        @buy-item-click="handleBuyItemClick"
+        @buy-item-quantity-step="stepBuyItemSelectionQuantity"
+        @buy-item-quantity-set="updateBuyItemSelectionQuantity"
+        @sell-item-click="handleSellItemClick"
+        @sell-item-quantity-step="stepSellItemSelectionQuantity"
+        @sell-item-quantity-set="updateSellItemSelectionQuantity"
+        @buy-action="handleBuyAction"
+        @sell-action="handleSellAction"
+        @delete-template="handleDeleteTemplateToTrash"
+        @open-class-edit="handleOpenClassEdit"
+        @apply-class-edit="applyClassEdit"
+        @confirm-class-edit="confirmClassEdit"
+        @close-field-edit-dialog="closeFieldEditDialog"
+        @update-class-edit-draft-value="updateClassEditDraftValue"
+        @update-class-edit-search="setClassEditSearch"
+        @apply-class-edit-suggestion="applyClassEditSuggestion"
+        @start-template-create="startTemplateCreate"
+        @reset-new-template-form="resetNewTemplateForm"
+        @close-class-edit-dialog="closeClassEditDialog"
+        @close-weapon-stats-dialog="closeWeaponStatsDialog"
+        @create-weapon-stats="createWeaponStatsDraft"
+        @remove-weapon-stats="removeWeaponStats"
+        @select-weapon-stats-item="selectWeaponStatsItem"
+        @update-weapon-stats-draft="updateWeaponStatsDraft"
+        @confirm-weapon-stats="confirmWeaponStats"
+        @select-img-class="selectImgClass"
+        @confirm-img-class="confirmImgClass"
+        @close-owner-opt-dialog="closeOwnerOptDialog"
+        @select-owner-opt="selectOwnerOpt"
+        @confirm-owner-opt="confirmOwnerOpt"
+        @open-item-detail-dialog="handleOpenItemDetailDialog"
+        @close-item-detail-dialog="closeItemDetailDialog"
+        @apply-item-detail-nickname="applyItemDetailNickname"
+        @toggle-item-detail-nickname-mode="toggleItemDetailNicknameMode"
+        @open-suggestion-detail-dialog="openSuggestionDetailDialog"
+        @close-suggestion-detail-dialog="closeSuggestionDetailDialog"
+        @confirm-suggestion-detail-action="confirmSuggestionDetailAction"
+        @close-view-settings-dialog="closeViewSettingsDialog"
+      />
+      <div
+        v-if="apiStatusLabel"
+        class="trade-footer justify-content-center player-hud-shop-content__footer"
+      >
+        <div class="row d-flex w-100 p-0 m-0 trade-footer-row">
+          <div class="api-note">
+            {{ $t("shop.tradeModal.apiPrefix") }}: {{ apiStatusLabel }}
+          </div>
+        </div>
+      </div>
+    </div>
     <PaymentConversionDialog
       :open="showPaymentConversionDialog"
       :quote="paymentQuote"
@@ -86,12 +108,11 @@
       @toggle-currency="togglePaymentCurrency"
       @confirm="confirmPaymentConversion"
     />
-  </TradeModalShell>
+  </section>
 </template>
 <script>
 import { reactive, toRefs, watch } from "vue";
 import { useStore } from "vuex";
-import TradeModalShell from "@/components/trade/TradeModalShell.vue";
 import TradeModalContent from "@/components/trade/TradeModalContent.vue";
 import PaymentConversionDialog from "@/components/trade/PaymentConversionDialog.vue";
 import { createContainerState } from "@/lib/containerModel";
@@ -104,7 +125,6 @@ import { useShopTradeModalDetails } from "@/composables/trade/useShopTradeModalD
 export default {
   name: "ShopTradeModal",
   components: {
-    TradeModalShell,
     TradeModalContent,
     PaymentConversionDialog,
   },
@@ -240,3 +260,6 @@ export default {
   },
 };
 </script>
+
+<style src="@/styles/trade/index.css"></style>
+<style src="./trade/player-hud-shop-content.css"></style>
