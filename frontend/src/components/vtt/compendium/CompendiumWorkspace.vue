@@ -33,11 +33,28 @@
           {{ $t("vtt.table.compendium.timeline") }}
         </button>
         <button
+          v-if="navigationCanSeeGm"
           type="button"
           :class="{ active: mode === 'bestiary' }"
+          :disabled="!overview.capabilities"
           @click="setMode('bestiary')"
         >
           {{ $t("vtt.table.compendium.bestiary") }}
+          <small class="compendium-workspace__view-count">{{
+            departmentCount("bestiary")
+          }}</small>
+        </button>
+        <button
+          v-if="navigationCanSeeGm"
+          type="button"
+          :class="{ active: mode === 'npcs' }"
+          :disabled="!overview.capabilities"
+          @click="setMode('npcs')"
+        >
+          {{ $t("vtt.table.compendium.npcs") }}
+          <small class="compendium-workspace__view-count">{{
+            departmentCount("characters")
+          }}</small>
         </button>
         <button
           v-if="canManageSchema"
@@ -58,33 +75,38 @@
       </nav>
       <div class="compendium-workspace__summary">
         <span
-          >{{ entries.length }} {{ $t("vtt.table.compendium.entries") }}</span
+          >{{ overview.corpus?.count ?? entries.length }}
+          {{ $t("vtt.table.compendium.entries") }}</span
         >
         <button
           type="button"
           :title="$t('vtt.table.compendium.refresh')"
           :aria-label="$t('vtt.table.compendium.refresh')"
-          @click="initialize"
+          @click="refresh"
         >
           ↻
         </button>
       </div>
     </header>
 
+    <div
+      class="compendium-workspace__loadbar"
+      :class="{ 'compendium-workspace__loadbar--active': isLoading }"
+      role="progressbar"
+      :aria-label="$t('vtt.table.compendium.loading')"
+      :aria-hidden="isLoading ? undefined : 'true'"
+    >
+      <span />
+    </div>
+
     <div v-if="errorMessage" class="compendium-workspace__error" role="alert">
       <span>{{ errorMessage }}</span>
-      <button type="button" @click="initialize">
+      <button type="button" @click="refresh">
         {{ $t("vtt.table.compendium.retry") }}
       </button>
     </div>
-    <div
-      v-if="loading && !overview.world"
-      class="compendium-workspace__loading"
-    >
-      {{ $t("vtt.table.compendium.loading") }}
-    </div>
 
-    <template v-else-if="mode === 'types'">
+    <template v-if="mode === 'types'">
       <section class="compendium-schema">
         <header>
           <h2>{{ $t("vtt.table.compendium.types") }}</h2>
@@ -208,68 +230,223 @@
 
     <div v-else class="compendium-workspace__body">
       <aside class="compendium-workspace__navigation">
-        <div class="compendium-workspace__filters">
+        <nav
+          v-if="!compact && overview.departments?.length"
+          class="compendium-workspace__departments"
+          :aria-label="$t('vtt.table.compendium.departments')"
+        >
+          <button
+            type="button"
+            :class="{ active: !filters.department }"
+            @click="filterByDepartment('')"
+          >
+            {{ $t("vtt.table.compendium.allDepartments") }}
+          </button>
+          <button
+            v-for="department in visibleDepartments"
+            :key="department.key"
+            type="button"
+            :class="{ active: filters.department === department.key }"
+            :disabled="department.count === 0"
+            @click="filterByDepartment(department.key)"
+          >
+            <span>{{ departmentLabel(department.key) }}</span
+            ><small>{{ department.count }}</small>
+          </button>
+        </nav>
+        <div
+          v-if="mode === 'npcs'"
+          class="compendium-workspace__npc-filters"
+          :aria-label="$t('vtt.table.compendium.npcKinds')"
+        >
+          <button
+            type="button"
+            :class="{ active: !filters.npcKind }"
+            @click="setNpcKind('')"
+          >
+            <span>{{ $t("vtt.table.compendium.allNpcs") }}</span
+            ><small>{{ npcCount("all") }}</small>
+          </button>
+          <button
+            type="button"
+            :class="{ active: filters.npcKind === 'named' }"
+            @click="setNpcKind('named')"
+          >
+            <span>{{ $t("vtt.table.compendium.namedNpcs") }}</span
+            ><small>{{ npcCount("named") }}</small>
+          </button>
+          <button
+            type="button"
+            :class="{ active: filters.npcKind === 'generic' }"
+            @click="setNpcKind('generic')"
+          >
+            <span>{{ $t("vtt.table.compendium.genericNpcs") }}</span
+            ><small>{{ npcCount("generic") }}</small>
+          </button>
+        </div>
+        <div
+          class="compendium-workspace__filters"
+          :class="{ 'compendium-workspace__filters--searching': filters.q }"
+        >
           <div class="compendium-workspace__search">
-            <span aria-hidden="true">⌕</span>
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="6.5" />
+              <path d="m16 16 4 4" />
+            </svg>
             <input
               v-model="filters.q"
               type="search"
+              autocomplete="off"
+              spellcheck="false"
+              :aria-label="$t('vtt.table.compendium.search')"
               :placeholder="$t('vtt.table.compendium.search')"
               @input="queueLoad"
+              @keydown.esc="clearSearch"
             />
-          </div>
-          <select
-            v-model="filters.type"
-            :aria-label="$t('vtt.table.compendium.allTypes')"
-            @change="loadEntries"
-          >
-            <option value="">{{ $t("vtt.table.compendium.allTypes") }}</option>
-            <option
-              v-for="type in visibleTypes"
-              :key="type.id"
-              :value="type.id"
+            <button
+              v-if="filters.q"
+              type="button"
+              class="compendium-workspace__search-clear"
+              :aria-label="$t('vtt.table.compendium.clearSearch')"
+              @click="clearSearch"
             >
-              {{ type.name }}
-            </option>
-          </select>
-          <select
-            v-model="filters.tag"
-            :aria-label="$t('vtt.table.compendium.allTags')"
-            @change="loadEntries"
-          >
-            <option value="">{{ $t("vtt.table.compendium.allTags") }}</option>
-            <option v-for="tag in overview.tags" :key="tag.id" :value="tag.id">
-              {{ tag.name }}
-            </option>
-          </select>
-          <select
-            v-if="editorial"
-            v-model="filters.status"
-            :aria-label="$t('vtt.table.compendium.allStatuses')"
-            @change="loadEntries"
-          >
-            <option value="active">
-              {{ $t("vtt.table.compendium.active") }}
-            </option>
-            <option value="archived">
-              {{ $t("vtt.table.compendium.archived") }}
-            </option>
-            <option value="all">
-              {{ $t("vtt.table.compendium.allStatuses") }}
-            </option>
-          </select>
+              ×
+            </button>
+          </div>
+          <div class="compendium-workspace__filter-actions">
+            <button
+              type="button"
+              class="compendium-workspace__filter-toggle"
+              :class="{ active: filtersOpen || activeFilterCount }"
+              :aria-expanded="filtersOpen"
+              @click="filtersOpen = !filtersOpen"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M4 7h10M18 7h2M4 17h2M10 17h10M14 4v6M6 14v6" />
+              </svg>
+              <span>{{ $t("vtt.table.compendium.filters") }}</span>
+              <small v-if="activeFilterCount">{{ activeFilterCount }}</small>
+              <span
+                class="compendium-workspace__filter-chevron"
+                aria-hidden="true"
+                >⌄</span
+              >
+            </button>
+            <button
+              v-if="activeFilterCount"
+              type="button"
+              class="compendium-workspace__filter-reset"
+              @click="clearAdvancedFilters"
+            >
+              {{ $t("vtt.table.compendium.clear") }}
+            </button>
+          </div>
+          <div v-if="filtersOpen" class="compendium-workspace__filter-panel">
+            <div
+              v-if="!editorial && overview.activity"
+              class="compendium-workspace__activity-filters"
+            >
+              <button
+                type="button"
+                :class="{ active: filters.favorites }"
+                @click="toggleActivityFilter('favorites')"
+              >
+                ☆ {{ $t("vtt.table.compendium.favorites") }} ·
+                {{ overview.activity.favorites || 0 }}
+              </button>
+              <button
+                type="button"
+                :class="{ active: filters.recent }"
+                @click="toggleActivityFilter('recent')"
+              >
+                ↶ {{ $t("vtt.table.compendium.recent") }} ·
+                {{ overview.activity.recent || 0 }}
+              </button>
+            </div>
+            <select
+              v-model="filters.type"
+              :aria-label="$t('vtt.table.compendium.allTypes')"
+              @change="loadEntries"
+            >
+              <option value="">
+                {{ $t("vtt.table.compendium.allTypes") }}
+              </option>
+              <option
+                v-for="type in visibleTypes"
+                :key="type.id"
+                :value="type.id"
+              >
+                {{ type.name }}
+              </option>
+            </select>
+            <select
+              v-if="overview.categories?.length"
+              v-model="filters.category"
+              :aria-label="$t('vtt.table.compendium.allCategories')"
+              @change="loadEntries"
+            >
+              <option value="">
+                {{ $t("vtt.table.compendium.allCategories") }}
+              </option>
+              <option
+                v-for="category in overview.categories"
+                :key="category.id"
+                :value="category.id"
+              >
+                {{ category.name }} ({{ category.count }})
+              </option>
+            </select>
+            <select
+              v-if="overview.sources?.length"
+              v-model="filters.source"
+              :aria-label="$t('vtt.table.compendium.allSources')"
+              @change="loadEntries"
+            >
+              <option value="">
+                {{ $t("vtt.table.compendium.allSources") }}
+              </option>
+              <option
+                v-for="source in overview.sources"
+                :key="source.id"
+                :value="source.id"
+              >
+                {{ source.name }} ({{ source.count }})
+              </option>
+            </select>
+            <select
+              v-model="filters.tag"
+              :aria-label="$t('vtt.table.compendium.allTags')"
+              @change="loadEntries"
+            >
+              <option value="">{{ $t("vtt.table.compendium.allTags") }}</option>
+              <option
+                v-for="tag in overview.tags"
+                :key="tag.id"
+                :value="tag.id"
+              >
+                {{ tag.name }}
+              </option>
+            </select>
+            <select
+              v-if="editorial"
+              v-model="filters.status"
+              :aria-label="$t('vtt.table.compendium.allStatuses')"
+              @change="loadEntries"
+            >
+              <option value="active">
+                {{ $t("vtt.table.compendium.active") }}
+              </option>
+              <option value="archived">
+                {{ $t("vtt.table.compendium.archived") }}
+              </option>
+              <option value="all">
+                {{ $t("vtt.table.compendium.allStatuses") }}
+              </option>
+            </select>
+          </div>
         </div>
         <div class="compendium-workspace__list-header">
           <strong>{{ $t("vtt.table.compendium.results") }}</strong>
-          <button
-            v-if="
-              filters.q || filters.tag || (filters.type && mode !== 'bestiary')
-            "
-            type="button"
-            @click="clearFilters"
-          >
-            {{ $t("vtt.table.compendium.clear") }}
-          </button>
         </div>
         <button
           v-if="editorial"
@@ -280,9 +457,16 @@
           + {{ $t("vtt.table.compendium.newEntry") }}
         </button>
         <ol
+          ref="entryList"
           class="compendium-workspace__list"
+          :class="{
+            'compendium-workspace__list--timeline': mode === 'timeline',
+          }"
+          :aria-busy="loadingMore"
           @keydown.up.prevent="selectRelative(-1)"
           @keydown.down.prevent="selectRelative(1)"
+          @scroll.passive="handleListScroll"
+          @wheel.passive="handleListScrollIntent"
         >
           <li
             v-for="item in entries"
@@ -301,12 +485,32 @@
                 item.title
               }}</span>
               <span class="compendium-workspace__item-meta">
-                {{ typeLabel(item.typeId) }}
-                <template v-if="item.startOrdinal !== null">
-                  · {{ item.startOrdinal }}</template
+                {{
+                  item.sourceType
+                    ? sourceTypeLabel(item.sourceType)
+                    : typeLabel(item.typeId)
+                }}
+                <span
+                  v-if="item.startOrdinal !== null"
+                  class="compendium-workspace__timeline-date"
                 >
-                <template v-else-if="item.versionNumber">
-                  · v{{ item.versionNumber }}</template
+                  · {{ chronologyLabel(item) }}</span
+                >
+                <span
+                  v-if="mode === 'npcs' && item.npcKind"
+                  class="compendium-workspace__npc-kind"
+                  :class="`compendium-workspace__npc-kind--${item.npcKind}`"
+                  >{{ npcKindLabel(item.npcKind) }}</span
+                >
+                <span
+                  v-if="item.versionNumber || item.sourceName"
+                  class="compendium-workspace__source-badge"
+                  :title="item.sourceName"
+                  ><template v-if="item.versionNumber"
+                    >v{{ item.versionNumber }}</template
+                  ><template v-if="item.versionNumber && item.sourceName">
+                    · </template
+                  >{{ item.sourceName }}</span
                 >
               </span>
             </button>
@@ -318,17 +522,29 @@
         >
           {{ $t("vtt.table.compendium.noResults") }}
         </p>
-        <button
-          v-if="hasMore"
-          type="button"
-          class="compendium-workspace__more"
-          @click="loadMore"
-        >
-          {{ $t("vtt.table.compendium.more") }}
-        </button>
       </aside>
 
-      <main class="compendium-workspace__content">
+      <main class="compendium-workspace__content" :aria-busy="entryLoading">
+        <nav
+          v-if="!compact && navigationStack.length"
+          class="compendium-workspace__history-nav"
+        >
+          <button
+            type="button"
+            :disabled="navigationIndex < 1"
+            @click="navigateHistory(-1)"
+          >
+            ←
+          </button>
+          <button
+            type="button"
+            :disabled="navigationIndex >= navigationStack.length - 1"
+            @click="navigateHistory(1)"
+          >
+            →
+          </button>
+          <span>{{ selectedEntry?.title || "" }}</span>
+        </nav>
         <button
           v-if="compact && compactReading"
           type="button"
@@ -356,14 +572,23 @@
           :entry="selectedEntry"
           :types="overview.types || []"
           :campaign-id="campaignId"
+          :universe-id="universeId"
           :scene-id="sceneId"
           :token-x="tokenX"
           :token-y="tokenY"
           :editorial="editorial"
           :show-context-links="compact"
+          :allow-campaign-reveal="!managesCharacterBestiary"
+          :manage-character-knowledge="managesCharacterBestiary"
           @navigate="openById"
           @edit="editing = true"
           @materialized="$emit('materialized', $event)"
+          @changed="reloadChanged"
+        />
+        <div
+          v-else-if="entryLoading"
+          class="compendium-workspace__entry-loading"
+          aria-hidden="true"
         />
         <div v-else class="compendium-workspace__empty">
           {{ $t("vtt.table.compendium.chooseEntry") }}
@@ -389,13 +614,11 @@
               selectedEntry.versionNumber || $t("vtt.table.compendium.draft")
             }}
           </dd>
-          <dt v-if="selectedEntry.startOrdinal !== null">ordinalDay</dt>
+          <dt v-if="selectedEntry.startOrdinal !== null">
+            {{ $t("vtt.table.compendium.date") }}
+          </dt>
           <dd v-if="selectedEntry.startOrdinal !== null">
-            {{ selectedEntry.startOrdinal
-            }}<template
-              v-if="selectedEntry.endOrdinal !== selectedEntry.startOrdinal"
-              >–{{ selectedEntry.endOrdinal }}</template
-            >
+            {{ chronologyLabel(selectedEntry) }}
           </dd>
           <dt v-if="selectedEntry.parentEntryId">
             {{ $t("vtt.table.compendium.parent") }}
@@ -408,7 +631,42 @@
               {{ entryTitle(selectedEntry.parentEntryId) }}
             </button>
           </dd>
+          <template v-if="selectedEntry.sourceBacked">
+            <dt>{{ $t("vtt.table.compendium.source") }}</dt>
+            <dd>{{ selectedEntry.source?.name }}</dd>
+            <dt>{{ $t("vtt.table.compendium.sourceRevision") }}</dt>
+            <dd>{{ selectedEntry.source?.revisionId }}</dd>
+            <dt>{{ $t("vtt.table.compendium.verification") }}</dt>
+            <dd>{{ selectedEntry.verificationStatus }}</dd>
+            <dt>{{ $t("vtt.table.compendium.spoilers") }}</dt>
+            <dd>{{ selectedEntry.spoilerLevel }}</dd>
+          </template>
         </dl>
+        <section v-if="selectedEntry.sections?.length">
+          <h3>{{ $t("vtt.table.compendium.contents") }}</h3>
+          <button
+            v-for="section in selectedEntry.sections"
+            :key="section.id"
+            type="button"
+            class="compendium-workspace__property-link"
+            @click="scrollToSection(section.id)"
+          >
+            {{ section.title }}
+          </button>
+        </section>
+        <section v-if="selectedEntry.categories?.length">
+          <h3>{{ $t("vtt.table.compendium.categories") }}</h3>
+          <div class="compendium-workspace__property-tags">
+            <button
+              v-for="category in selectedEntry.categories"
+              :key="category.id"
+              type="button"
+              @click="filterByCategory(category.id)"
+            >
+              {{ category.name }}
+            </button>
+          </div>
+        </section>
         <section v-if="selectedEntry.tags?.length">
           <h3>{{ $t("vtt.table.compendium.tags") }}</h3>
           <div class="compendium-workspace__property-tags">
@@ -449,6 +707,68 @@
             {{ link.title }}
           </button>
         </section>
+        <section v-if="selectedEntry.wikiLinks?.length">
+          <h3>{{ $t("vtt.table.compendium.documentLinks") }}</h3>
+          <button
+            v-for="link in selectedEntry.wikiLinks.slice(0, 30)"
+            :key="`${link.sourceId}:${link.targetEntryId}`"
+            type="button"
+            class="compendium-workspace__property-link"
+            @click="openById(link.targetEntryId)"
+          >
+            {{ link.title }}
+          </button>
+        </section>
+        <section v-if="selectedEntry.wikiBacklinks?.length">
+          <h3>{{ $t("vtt.table.compendium.documentBacklinks") }}</h3>
+          <button
+            v-for="link in selectedEntry.wikiBacklinks.slice(0, 30)"
+            :key="link.sourceEntryId"
+            type="button"
+            class="compendium-workspace__property-link"
+            @click="openById(link.sourceEntryId)"
+          >
+            {{ link.title }}
+          </button>
+        </section>
+        <section v-if="selectedEntry.corpusAssets?.length">
+          <h3>{{ $t("vtt.table.compendium.illustrations") }}</h3>
+          <p v-for="asset in selectedEntry.corpusAssets" :key="asset.id">
+            {{ asset.filename }} ·
+            {{
+              asset.available
+                ? $t("vtt.table.compendium.available")
+                : $t("vtt.table.compendium.notDownloaded")
+            }}
+            <label v-if="editorial" class="compendium-workspace__asset-upload">
+              {{
+                asset.available
+                  ? $t("vtt.table.compendium.replaceIllustration")
+                  : $t("vtt.table.compendium.addIllustration")
+              }}
+              <input
+                type="file"
+                accept="image/png,image/jpeg,image/webp,image/gif,application/pdf"
+                :disabled="assetBusy === asset.id"
+                @change="uploadCorpusAsset(asset, $event)"
+              />
+            </label>
+          </p>
+        </section>
+        <section v-if="selectedEntry.mechanicalProfiles?.length">
+          <h3>{{ $t("vtt.table.compendium.mechanics") }}</h3>
+          <p
+            v-for="profile in selectedEntry.mechanicalProfiles"
+            :key="profile.id"
+          >
+            {{ profile.kind }} · {{ profile.status }} ·
+            {{
+              profile.usable
+                ? $t("vtt.table.compendium.usable")
+                : $t("vtt.table.compendium.notUsable")
+            }}
+          </p>
+        </section>
         <button
           v-if="editorial && selectedEntry.status === 'active'"
           type="button"
@@ -471,7 +791,14 @@
 <script>
 import { defineAsyncComponent } from "vue";
 import CompendiumEntryView from "./CompendiumEntryView.vue";
-import { compendiumApiClient } from "@/lib/compendium/compendiumApiClient";
+import {
+  nextCompendiumPage,
+  shouldLoadNextCompendiumPage,
+} from "./compendiumPagination";
+import {
+  COMPENDIUM_PAGE_SIZE,
+  compendiumApiClient,
+} from "@/lib/compendium/compendiumApiClient";
 
 const CompendiumEntryEditor = defineAsyncComponent(
   () =>
@@ -486,10 +813,25 @@ export default {
   props: {
     campaignId: { type: [Number, String], default: null },
     universeId: { type: [Number, String], default: null },
+    initialEntryId: { type: [Number, String], default: null },
     compact: { type: Boolean, default: false },
+    initialMode: {
+      type: String,
+      default: "articles",
+      validator: (value) =>
+        [
+          "articles",
+          "timeline",
+          "bestiary",
+          "npcs",
+          "types",
+          "settings",
+        ].includes(value),
+    },
     sceneId: { type: [Number, String], default: null },
     tokenX: { type: Number, default: 0 },
     tokenY: { type: Number, default: 0 },
+    canSeeGmHint: { type: Boolean, default: null },
   },
   emits: ["materialized"],
   data: () => ({
@@ -500,9 +842,24 @@ export default {
     compactReading: false,
     history: [],
     loading: false,
+    loadingMore: false,
+    listScrollActivated: false,
+    filtersOpen: false,
+    entryLoading: false,
     editing: false,
     mode: "articles",
-    filters: { q: "", type: "", tag: "", status: "active" },
+    filters: {
+      q: "",
+      type: "",
+      tag: "",
+      category: "",
+      source: "",
+      department: "",
+      npcKind: "",
+      favorites: false,
+      recent: false,
+      status: "active",
+    },
     page: 1,
     hasMore: false,
     errorMessage: "",
@@ -513,13 +870,33 @@ export default {
     newTagColor: "#8b5cf6",
     editorIdentity: "",
     ownerUserId: "",
+    navigationStack: [],
+    navigationIndex: -1,
+    assetBusy: null,
+    initializeRequestSequence: 0,
+    entriesRequestSequence: 0,
+    entryRequestSequence: 0,
   }),
   computed: {
+    isLoading() {
+      return this.loading || this.loadingMore || this.entryLoading;
+    },
     editorial() {
       return Boolean(this.universeId);
     },
     canManageSchema() {
       return this.editorial && this.overview.capabilities?.canManageSchema;
+    },
+    canSeeGm() {
+      return this.overview.capabilities?.canSeeGm === true;
+    },
+    navigationCanSeeGm() {
+      return this.canSeeGm || this.editorial || this.canSeeGmHint === true;
+    },
+    managesCharacterBestiary() {
+      return (
+        this.mode === "bestiary" && this.canSeeGm && Number(this.campaignId) > 0
+      );
     },
     creatureType() {
       return (this.overview.types || []).find(
@@ -527,109 +904,293 @@ export default {
       );
     },
     visibleTypes() {
-      return this.mode === "bestiary" && this.creatureType
-        ? [this.creatureType]
-        : this.overview.types || [];
+      if (this.mode === "bestiary" && this.creatureType) {
+        return [this.creatureType];
+      }
+      return (this.overview.types || []).filter(
+        (type) => this.canSeeGm || type.code !== "creature",
+      );
     },
+    visibleDepartments() {
+      return (this.overview.departments || []).filter(
+        (department) => this.canSeeGm || department.key !== "bestiary",
+      );
+    },
+    activeFilterCount() {
+      let count = 0;
+      if (
+        this.filters.type &&
+        !(
+          this.mode === "bestiary" &&
+          Number(this.filters.type) === Number(this.creatureType?.id)
+        )
+      ) {
+        count += 1;
+      }
+      if (this.filters.category) count += 1;
+      if (this.filters.source) count += 1;
+      if (this.filters.tag) count += 1;
+      if (this.filters.favorites) count += 1;
+      if (this.filters.recent) count += 1;
+      if (this.editorial && this.filters.status !== "active") count += 1;
+      return count;
+    },
+  },
+  created() {
+    this.mode = this.initialMode;
+    if (this.mode === "bestiary") this.filters.department = "bestiary";
+    if (this.mode === "npcs") this.filters.department = "characters";
   },
   async mounted() {
     await this.initialize();
   },
   beforeUnmount() {
     clearTimeout(this.searchTimer);
+    this.initializeRequestSequence += 1;
+    this.entriesRequestSequence += 1;
+    this.entryRequestSequence += 1;
   },
   methods: {
     async initialize() {
+      const sequence = ++this.initializeRequestSequence;
+      const entriesSequence = ++this.entriesRequestSequence;
       this.loading = true;
       this.errorMessage = "";
       try {
-        this.overview = this.editorial
-          ? await compendiumApiClient.worldOverview(this.universeId)
-          : await compendiumApiClient.campaignOverview(this.campaignId);
-        this.overview.types = (this.overview.types || []).map((type) => ({
-          ...type,
-          name: type.builtin
-            ? this.$t(`vtt.table.compendium.builtinTypes.${type.code}`)
-            : type.name,
-        }));
+        const directEntry = Number(this.initialEntryId || 0);
+        const listMode = ["articles", "timeline", "bestiary", "npcs"].includes(
+          this.mode,
+        );
+        const earlyEntries =
+          listMode && this.mode !== "bestiary" ? this.requestEntries(1) : null;
+        const applyInitialEntries = (response) => {
+          if (
+            sequence !== this.initializeRequestSequence ||
+            entriesSequence !== this.entriesRequestSequence
+          ) {
+            return null;
+          }
+          this.page = 1;
+          this.applyEntriesResponse(response, false);
+          if (directEntry > 0) void this.openById(directEntry);
+          return response;
+        };
+        const earlyEntriesTask = earlyEntries
+          ? earlyEntries.then(applyInitialEntries)
+          : Promise.resolve(null);
+        const overviewRequest = this.editorial
+          ? compendiumApiClient.worldOverview(this.universeId)
+          : compendiumApiClient.campaignOverview(this.campaignId);
+        const [overview, earlyResponse] = await Promise.all([
+          Promise.resolve(overviewRequest),
+          earlyEntriesTask,
+        ]);
+        if (sequence !== this.initializeRequestSequence) return;
+        this.overview = {
+          ...overview,
+          types: (overview.types || []).map((type) => ({
+            ...type,
+            name: type.builtin
+              ? this.$t(`vtt.table.compendium.builtinTypes.${type.code}`)
+              : type.name,
+          })),
+        };
+        if (this.mode === "bestiary") {
+          this.filters.type = this.creatureType?.id || "";
+          this.filters.department = "bestiary";
+        } else if (this.mode === "npcs") {
+          this.filters.type = "";
+          this.filters.department = "characters";
+        }
         this.ownerUserId = this.overview.world?.ownerUserId || "";
         this.resetCalendar();
-        await this.loadEntries();
+        if (
+          listMode &&
+          !earlyResponse &&
+          entriesSequence === this.entriesRequestSequence
+        ) {
+          applyInitialEntries(await this.requestEntries(1));
+        }
       } catch (error) {
+        if (sequence !== this.initializeRequestSequence) return;
         this.errorMessage =
           error?.payload?.message || error?.message || "Error";
       } finally {
-        this.loading = false;
+        if (sequence === this.initializeRequestSequence) {
+          this.loading = false;
+        }
       }
     },
+    refresh() {
+      compendiumApiClient.clearCache();
+      return this.initialize();
+    },
     setMode(mode) {
+      this.entryRequestSequence += 1;
+      this.entryLoading = false;
       this.mode = mode;
+      this.filtersOpen = false;
       this.selectedEntry = null;
       this.selectedId = null;
       this.editing = false;
       this.compactReading = false;
       this.filters.type =
         mode === "bestiary" ? this.creatureType?.id || "" : "";
-      if (["articles", "timeline", "bestiary"].includes(mode))
+      if (mode === "bestiary") this.filters.department = "bestiary";
+      else if (mode === "npcs") this.filters.department = "characters";
+      else if (["bestiary", "characters"].includes(this.filters.department))
+        this.filters.department = "";
+      if (mode !== "npcs") this.filters.npcKind = "";
+      if (["articles", "timeline", "bestiary", "npcs"].includes(mode))
         this.loadEntries();
     },
     queueLoad() {
       clearTimeout(this.searchTimer);
-      this.searchTimer = setTimeout(() => this.loadEntries(), 300);
+      this.searchTimer = setTimeout(() => this.loadEntries(), 120);
     },
     async loadEntries(append = false) {
-      if (!append) this.page = 1;
+      const sequence = ++this.entriesRequestSequence;
+      const requestedPage = nextCompendiumPage(this.page, append);
+      let loaded = false;
+      if (!append) this.listScrollActivated = false;
       this.loading = true;
       try {
-        const query = {
-          ...this.filters,
-          page: this.page,
-          limit: 50,
-          ...(this.mode === "timeline" ? { dated: 1, sort: "timeline" } : {}),
-        };
-        const response = this.editorial
-          ? await compendiumApiClient.worldEntries(this.universeId, query)
-          : this.mode === "timeline"
-            ? await compendiumApiClient.campaignTimeline(this.campaignId, query)
-            : await compendiumApiClient.campaignEntries(this.campaignId, query);
-        const nextEntries = append
-          ? [...this.entries, ...response.items]
-          : response.items;
-        this.entries = nextEntries;
-        this.hasMore = response.hasMore;
-        if (!append && !this.compact && !this.editing && nextEntries.length) {
-          const selectionExists = nextEntries.some(
+        const response = await this.requestEntries(requestedPage);
+        if (sequence !== this.entriesRequestSequence) return false;
+        this.page = requestedPage;
+        this.applyEntriesResponse(response, append);
+        loaded = true;
+        if (!append && this.selectedId) {
+          const selectionExists = this.entries.some(
             (item) => Number(item.id) === Number(this.selectedId),
           );
-          if (!selectionExists) await this.openById(nextEntries[0].id);
+          if (!selectionExists) {
+            this.entryRequestSequence += 1;
+            this.entryLoading = false;
+            this.selectedId = null;
+            this.selectedEntry = null;
+            this.history = [];
+          }
         }
       } catch (error) {
+        if (sequence !== this.entriesRequestSequence) return false;
         this.errorMessage =
           error?.payload?.message || error?.message || "Error";
       } finally {
-        this.loading = false;
+        if (sequence === this.entriesRequestSequence) {
+          this.loading = false;
+          if (loaded && !append) {
+            this.$nextTick(() => {
+              if (this.$refs.entryList) this.$refs.entryList.scrollTop = 0;
+            });
+          }
+        }
       }
+      return loaded;
+    },
+    requestEntries(page) {
+      const query = {
+        ...this.filters,
+        page,
+        limit: COMPENDIUM_PAGE_SIZE,
+        ...(this.mode === "timeline" ? { dated: 1, sort: "timeline" } : {}),
+      };
+      if (this.editorial) {
+        return compendiumApiClient.worldEntries(this.universeId, query);
+      }
+      return this.mode === "timeline"
+        ? compendiumApiClient.campaignTimeline(this.campaignId, query)
+        : compendiumApiClient.campaignEntries(this.campaignId, query);
+    },
+    applyEntriesResponse(response, append) {
+      this.entries = append
+        ? [...this.entries, ...(response.items || [])]
+        : response.items || [];
+      this.hasMore = response.hasMore === true;
     },
     async loadMore() {
-      this.page += 1;
-      await this.loadEntries(true);
+      if (!this.hasMore || this.loading || this.loadingMore) return;
+      this.loadingMore = true;
+      let loaded = false;
+      try {
+        loaded = await this.loadEntries(true);
+      } finally {
+        this.loadingMore = false;
+        if (loaded && this.listScrollActivated) {
+          this.$nextTick(() => this.loadMoreIfNeeded());
+        }
+      }
+    },
+    handleListScroll(event) {
+      this.listScrollActivated = true;
+      this.loadMoreIfNeeded(event);
+    },
+    handleListScrollIntent(event) {
+      if (Number(event?.deltaY || 0) <= 0) return;
+      this.listScrollActivated = true;
+      this.loadMoreIfNeeded(event);
+    },
+    loadMoreIfNeeded(event = null) {
+      const list = event?.currentTarget || this.$refs.entryList;
+      if (!list || !this.hasMore || this.loading || this.loadingMore) {
+        return;
+      }
+      if (shouldLoadNextCompendiumPage(list)) void this.loadMore();
     },
     select(item) {
       this.openById(item.id);
     },
-    async openById(entryId) {
-      this.selectedId = Number(entryId);
+    async openById(target, options = {}) {
+      const entryId = Number(
+        target && typeof target === "object" ? target.entryId : target,
+      );
+      if (!entryId) return;
+      const sequence = ++this.entryRequestSequence;
+      if (Number(this.selectedEntry?.id || 0) !== entryId) {
+        this.selectedEntry = null;
+        this.history = [];
+      }
+      this.selectedId = entryId;
       this.editing = false;
+      this.entryLoading = true;
+      this.errorMessage = "";
       if (this.compact) this.compactReading = true;
       try {
         const response = this.editorial
           ? await compendiumApiClient.worldEntry(this.universeId, entryId)
           : await compendiumApiClient.campaignEntry(this.campaignId, entryId);
+        if (sequence !== this.entryRequestSequence) return;
         this.selectedEntry = response.entry;
         this.history = response.history || [];
+        if (!this.editorial) {
+          void compendiumApiClient
+            .recordRead(this.campaignId, entryId)
+            .catch(() => undefined);
+        }
+        if (!options.fromHistory) {
+          this.navigationStack = this.navigationStack.slice(
+            0,
+            this.navigationIndex + 1,
+          );
+          if (
+            Number(this.navigationStack[this.navigationStack.length - 1]) !==
+            entryId
+          ) {
+            this.navigationStack.push(entryId);
+          }
+          this.navigationIndex = this.navigationStack.length - 1;
+        }
+        const anchor =
+          target && typeof target === "object" ? target.anchor : null;
+        if (anchor) this.$nextTick(() => this.scrollToSection(anchor));
       } catch (error) {
+        if (sequence !== this.entryRequestSequence) return;
         this.errorMessage =
           error?.payload?.message || error?.message || "Error";
+      } finally {
+        if (sequence === this.entryRequestSequence) {
+          this.entryLoading = false;
+        }
       }
     },
     async reloadSelected() {
@@ -637,6 +1198,8 @@ export default {
       this.editing = true;
     },
     createNew() {
+      this.entryRequestSequence += 1;
+      this.entryLoading = false;
       this.selectedId = null;
       this.selectedEntry = null;
       this.history = [];
@@ -684,15 +1247,50 @@ export default {
         ? this.$t("vtt.table.compendium.gmOnly")
         : this.$t("vtt.table.compendium.players");
     },
+    chronologyLabel(entry) {
+      const chronology = entry?.chronology;
+      if (!chronology?.start) return String(entry?.startOrdinal ?? "");
+      const start = this.chronologyDateLabel(
+        chronology.start,
+        chronology.precision,
+      );
+      if (chronology.precision !== "range" || !chronology.end) return start;
+      return `${start}–${this.chronologyDateLabel(chronology.end, "year")}`;
+    },
+    chronologyDateLabel(date, precision) {
+      const calendar = this.overview.calendar || {};
+      const era = (calendar.eras || []).find(
+        (candidate) => Number(candidate.id) === Number(date.eraId),
+      );
+      const suffix = era?.abbreviation ? ` ${era.abbreviation}` : "";
+      const year = `${date.year}${suffix}`;
+      if (precision === "year" || precision === "range") return year;
+      const month = (calendar.months || []).find(
+        (candidate) => Number(candidate.id) === Number(date.monthId),
+      );
+      if (precision === "month")
+        return `${month?.name || date.monthId} ${year}`;
+      return `${date.day} ${month?.name || date.monthId}, ${year}`;
+    },
     entryTitle(id) {
       return (
         this.entries.find((entry) => Number(entry.id) === Number(id))?.title ||
         `#${id}`
       );
     },
-    clearFilters() {
+    clearSearch() {
+      clearTimeout(this.searchTimer);
+      if (!this.filters.q) return;
       this.filters.q = "";
+      this.loadEntries();
+    },
+    clearAdvancedFilters() {
       this.filters.tag = "";
+      this.filters.category = "";
+      this.filters.source = "";
+      this.filters.favorites = false;
+      this.filters.recent = false;
+      this.filters.status = "active";
       this.filters.type =
         this.mode === "bestiary" ? this.creatureType?.id || "" : "";
       this.loadEntries();
@@ -700,6 +1298,93 @@ export default {
     filterByTag(tagId) {
       this.filters.tag = tagId;
       this.loadEntries();
+    },
+    filterByCategory(categoryId) {
+      this.filters.category = categoryId;
+      this.loadEntries();
+    },
+    filterByDepartment(department) {
+      this.filters.department = department;
+      this.filters.type = "";
+      this.filters.npcKind = "";
+      this.mode =
+        department === "bestiary"
+          ? "bestiary"
+          : department === "characters"
+            ? "npcs"
+            : "articles";
+      this.loadEntries();
+    },
+    setNpcKind(kind) {
+      this.filters.npcKind = kind;
+      this.loadEntries();
+    },
+    toggleActivityFilter(kind) {
+      this.filters[kind] = !this.filters[kind];
+      if (kind === "favorites") this.filters.recent = false;
+      if (kind === "recent") this.filters.favorites = false;
+      this.loadEntries();
+    },
+    departmentLabel(key) {
+      return this.$t(`vtt.table.compendium.department.${key}`);
+    },
+    departmentCount(key) {
+      return Number(
+        (this.overview.departments || []).find(
+          (department) => department.key === key,
+        )?.count || 0,
+      );
+    },
+    npcCount(kind) {
+      return Number(this.overview.npcs?.[kind] || 0);
+    },
+    npcKindLabel(kind) {
+      return this.$t(`vtt.table.compendium.npcKind.${kind}`);
+    },
+    sourceTypeLabel(type) {
+      const path = `vtt.table.compendium.sourceTypes.${type}`;
+      const translated = this.$t(path);
+      return translated === path ? type : translated;
+    },
+    async reloadChanged(entryId) {
+      await this.openById(entryId, { fromHistory: true });
+      await this.initialize();
+    },
+    async uploadCorpusAsset(asset, event) {
+      const file = event.target.files?.[0];
+      event.target.value = "";
+      if (!file || !this.universeId) return;
+      this.assetBusy = asset.id;
+      this.errorMessage = "";
+      try {
+        await compendiumApiClient.uploadCorpusAsset(
+          this.universeId,
+          asset.id,
+          file,
+        );
+        await this.openById(this.selectedId, { fromHistory: true });
+      } catch (error) {
+        this.errorMessage =
+          error?.payload?.message || error?.message || "Error";
+      } finally {
+        this.assetBusy = null;
+      }
+    },
+    navigateHistory(offset) {
+      const next = this.navigationIndex + offset;
+      if (next < 0 || next >= this.navigationStack.length) return;
+      this.navigationIndex = next;
+      this.openById(this.navigationStack[next], { fromHistory: true });
+    },
+    scrollToSection(sectionId) {
+      const escaped =
+        typeof CSS !== "undefined" && CSS.escape
+          ? CSS.escape(String(sectionId))
+          : String(sectionId).replace(/[^a-zA-Z0-9_-]/gu, "");
+      const element = this.$el.querySelector(
+        `.compendium-source-document__content #${escaped}`,
+      );
+      element?.scrollIntoView({ behavior: "smooth", block: "start" });
     },
     selectRelative(offset) {
       if (!this.entries.length) return;

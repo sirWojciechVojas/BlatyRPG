@@ -151,7 +151,7 @@
         :class="{ active: contentTab === 'public' }"
         @click="contentTab = 'public'"
       >
-        {{ $t("vtt.table.compendium.playerKnowledge") }}
+        {{ $t("vtt.table.compendium.content") }}
       </button>
       <button
         type="button"
@@ -270,7 +270,7 @@ import { compendiumApiClient } from "@/lib/compendium/compendiumApiClient";
 
 const EMPTY = { type: "doc", content: [{ type: "paragraph", content: [] }] };
 const clone = (value) => JSON.parse(JSON.stringify(value ?? null));
-const mapDocument = (node, direction, labels = {}) => {
+const mapDocument = (node, direction, labels = {}, assetUrls = {}) => {
   if (!node || typeof node !== "object") return node;
   const result = { ...node, attrs: node.attrs ? { ...node.attrs } : undefined };
   if (direction === "editor" && result.type === "compendiumMention") {
@@ -284,10 +284,15 @@ const mapDocument = (node, direction, labels = {}) => {
     result.type = "compendiumMention";
     result.attrs = { entryId: Number(result.attrs.targetId) };
   }
-  if (result.type === "image" && result.attrs) delete result.attrs.src;
+  if (result.type === "image" && result.attrs) {
+    if (direction === "api") delete result.attrs.src;
+    else
+      result.attrs.src =
+        assetUrls[Number(result.attrs.assetId)] || result.attrs.src || "";
+  }
   if (Array.isArray(result.content))
     result.content = result.content.map((child) =>
-      mapDocument(child, direction, labels),
+      mapDocument(child, direction, labels, assetUrls),
     );
   return result;
 };
@@ -320,6 +325,8 @@ export default {
       conflict: false,
       errorMessage: "",
       autosaveTimer: null,
+      editorAssetUrls: {},
+      assetPreviewGeneration: 0,
       localRevision: this.entry?.revision || 1,
     };
   },
@@ -362,6 +369,8 @@ export default {
   },
   beforeUnmount() {
     clearTimeout(this.autosaveTimer);
+    this.assetPreviewGeneration += 1;
+    this.releaseAssetPreviews();
   },
   methods: {
     reset() {
@@ -413,6 +422,7 @@ export default {
       this.saved = false;
       this.conflict = false;
       this.errorMessage = "";
+      this.$nextTick(() => this.loadAssetPreviews(entry));
     },
     changed() {
       this.dirty = true;
@@ -566,10 +576,66 @@ export default {
         );
         const asset = response.asset || response;
         asset.audience = audience;
+        if (String(asset.mimeType || "").startsWith("image/")) {
+          this.assetPreviewGeneration += 1;
+          const previewUrl = URL.createObjectURL(event.file);
+          this.editorAssetUrls = {
+            ...this.editorAssetUrls,
+            [Number(asset.id)]: previewUrl,
+          };
+          asset.previewUrl = previewUrl;
+        }
         event.resolve(asset);
       } catch (error) {
         event.reject(error);
       }
+    },
+    releaseAssetPreviews() {
+      Object.values(this.editorAssetUrls).forEach((url) =>
+        URL.revokeObjectURL(url),
+      );
+      this.editorAssetUrls = {};
+    },
+    async loadAssetPreviews(entry) {
+      const generation = this.assetPreviewGeneration + 1;
+      this.assetPreviewGeneration = generation;
+      this.releaseAssetPreviews();
+      const entryId = Number(entry?.id || 0);
+      const revision = Number(entry?.revision || 0);
+      const imageAssets = (entry?.assets || []).filter((asset) =>
+        String(asset.mimeType || "").startsWith("image/"),
+      );
+      if (!imageAssets.length) return;
+      const urls = {};
+      await Promise.all(
+        imageAssets.map(async (asset) => {
+          try {
+            const blob = await compendiumApiClient.fetchAssetBlob(asset.id);
+            urls[Number(asset.id)] = URL.createObjectURL(blob);
+          } catch (_error) {
+            // A missing preview does not block editing or autosave.
+          }
+        }),
+      );
+      if (
+        generation !== this.assetPreviewGeneration ||
+        entryId !== Number(this.entry?.id || 0) ||
+        revision !== Number(this.entry?.revision || 0) ||
+        this.dirty
+      ) {
+        Object.values(urls).forEach((url) => URL.revokeObjectURL(url));
+        return;
+      }
+      this.editorAssetUrls = urls;
+      this.editorDocuments = {
+        public: mapDocument(
+          clone(this.editorDocuments.public),
+          "editor",
+          {},
+          urls,
+        ),
+        gm: mapDocument(clone(this.editorDocuments.gm), "editor", {}, urls),
+      };
     },
     async copyLocal() {
       try {

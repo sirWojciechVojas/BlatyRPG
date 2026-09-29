@@ -19,15 +19,19 @@ final class CompendiumService
     private $db;
     private $access;
     private $documents;
+    private $corpus;
+    private $bootstrappedWorlds = [];
 
     public function __construct(
         ?BaseConnection $db = null,
         ?CompendiumAccessService $access = null,
-        ?CompendiumDocumentValidator $documents = null
+        ?CompendiumDocumentValidator $documents = null,
+        ?CompendiumCorpusService $corpus = null
     ) {
         $this->db = $db ?: \Config\Database::connect();
         $this->access = $access ?: new CompendiumAccessService($this->db);
         $this->documents = $documents ?: new CompendiumDocumentValidator();
+        $this->corpus = $corpus ?: new CompendiumCorpusService($this->db);
     }
 
     public function campaignIndex(int $campaignId, array $auth, array $query = []): array
@@ -37,7 +41,62 @@ final class CompendiumService
 
     public function campaignShow(int $campaignId, int $entryId, array $auth): array
     {
-        return ['entry' => $this->presentEntry($this->access->campaign($auth, $campaignId), $entryId, false)];
+        return ['entry' => $this->presentEntry(
+            $this->access->campaign($auth, $campaignId),
+            $entryId,
+            false
+        )];
+    }
+
+    /** Read a creature through the character-scoped bestiary ACL. */
+    public function campaignBestiaryShow(
+        int $campaignId,
+        int $characterId,
+        int $entryId,
+        array $auth
+    ): array
+    {
+        $context = $this->access->campaign($auth, $campaignId);
+        $context['characterBestiaryCharacterId'] = $characterId;
+        return ['entry' => $this->presentEntry(
+            $context,
+            $entryId,
+            false,
+            true
+        )];
+    }
+
+    public function campaignFavorite(int $campaignId, int $entryId, array $auth, array $payload): array
+    {
+        return $this->corpus->favorite($this->access->campaign($auth, $campaignId), $entryId, !empty($payload['favorite']));
+    }
+
+    public function campaignRecordRead(int $campaignId, int $entryId, array $auth): array
+    {
+        return $this->corpus->recordRead(
+            $this->access->campaign($auth, $campaignId),
+            $entryId
+        );
+    }
+
+    public function campaignReveal(int $campaignId, int $entryId, array $auth, array $payload): array
+    {
+        return $this->corpus->reveal($this->access->campaign($auth, $campaignId), $entryId, $payload);
+    }
+
+    public function campaignRevokeReveal(int $campaignId, int $entryId, array $auth): array
+    {
+        return $this->corpus->revokeReveal($this->access->campaign($auth, $campaignId), $entryId);
+    }
+
+    public function campaignPin(int $campaignId, int $entryId, array $auth): array
+    {
+        return $this->corpus->pin($this->access->campaign($auth, $campaignId), $entryId);
+    }
+
+    public function campaignNote(int $campaignId, int $entryId, array $auth, array $payload): array
+    {
+        return $this->corpus->saveNote($this->access->campaign($auth, $campaignId), $entryId, $payload);
     }
 
     public function campaignTimeline(int $campaignId, array $auth, array $query = []): array
@@ -79,7 +138,7 @@ final class CompendiumService
             'calendar' => $this->calendar((int) $world['id']),
             'editors' => $context['canManageEditors'] ? $this->editors((int) $world['id']) : [],
             'capabilities' => $this->capabilities($context),
-        ];
+        ] + $this->corpus->overview($context);
     }
 
     public function campaignOverview(int $campaignId, array $auth): array
@@ -96,7 +155,7 @@ final class CompendiumService
             'tags' => $this->tags((int) $context['world']['id']),
             'calendar' => $this->calendar((int) $context['world']['id']),
             'capabilities' => $this->capabilities($context),
-        ];
+        ] + $this->corpus->overview($context);
     }
 
     public function mine(array $auth): array
@@ -393,12 +452,29 @@ final class CompendiumService
         $limit = max(1, min(100, (int) ($query['limit'] ?? 50)));
         $versionColumn = $draft ? 'draft_version_id' : 'published_version_id';
         $builder = $this->db->table('compendium_entries e')
-            ->select('e.*, v.*, e.id AS entry_identity_id, e.revision AS entry_revision, e.status AS entry_status, e.slug AS entry_slug')
+            ->select('e.id AS entry_identity_id, e.revision AS entry_revision, e.status AS entry_status, e.slug AS entry_slug, '
+                . 'v.id, v.version_number, v.type_id, v.parent_entry_id, v.title, v.aliases_json, v.excerpt, '
+                . 'v.visibility, v.chronology_json, v.start_ordinal, v.end_ordinal, v.state, '
+                . 'ce.id AS corpus_entity_id, ce.canonical_id AS corpus_canonical_id, ce.type_code AS corpus_type_code, ce.visibility AS corpus_visibility, '
+                . 'ce.normalized_name AS corpus_normalized_name, ce.aliases_normalized AS corpus_aliases_normalized, '
+                . 'ce.verification_status AS corpus_verification_status, '
+                . 'ce.editorial_status AS corpus_editorial_status, ce.spoiler_level AS corpus_spoiler_level, '
+                . 'ce.canon_status AS corpus_canon_status, ce.edition AS corpus_edition, '
+                . 'sd.external_id AS corpus_source_id, cs.id AS corpus_source_catalog_id, '
+                . 'cs.source_key AS corpus_source_key, cs.name AS corpus_source_name')
             ->join('compendium_entry_versions v', "v.id = e.{$versionColumn}", 'inner')
+            ->join('compendium_entry_types access_type', 'access_type.id=v.type_id', 'inner')
+            ->join('compendium_entities ce', 'ce.entry_id=e.id AND ce.deleted_at IS NULL', 'left')
+            ->join('compendium_source_documents sd', 'sd.id=ce.source_document_id', 'left')
+            ->join('compendium_sources cs', 'cs.id=sd.source_id', 'left')
             ->where('e.world_id', (int) $context['world']['id']);
         if (!$draft) $builder->where('e.status', 'active')->where('e.deleted_at', null);
         elseif (($query['status'] ?? '') !== 'all') $builder->where('e.status', $query['status'] ?? 'active');
-        if (!$context['canSeeGm']) $builder->where('v.visibility', 'players');
+        if (!$context['canSeeGm']) {
+            $builder->where('access_type.code !=', 'creature');
+            $access = $this->inlineAccess($this->corpus->accessSql($context, 'ce'));
+            $builder->where("((ce.id IS NULL AND v.visibility='players') OR (ce.id IS NOT NULL AND {$access}))", null, false);
+        }
         if (!empty($query['type'])) $builder->where('v.type_id', (int) $query['type']);
         if (!empty($query['parent'])) $builder->where('v.parent_entry_id', (int) $query['parent']);
         if (!empty($query['visibility']) && $context['canSeeGm'] && in_array($query['visibility'], ['players', 'gm_only'], true)) {
@@ -410,23 +486,147 @@ final class CompendiumService
         if (!empty($query['tag'])) {
             $builder->join('compendium_version_tags vt', 'vt.version_id = v.id', 'inner')->where('vt.tag_id', (int) $query['tag']);
         }
+        if (!empty($query['category'])) {
+            $categoryId = (int) $query['category'];
+            $builder->where("EXISTS (SELECT 1 FROM compendium_entity_categories cec WHERE cec.entity_id=ce.id AND cec.category_id={$categoryId})", null, false);
+        }
+        if (!empty($query['source'])) $builder->where('cs.id', (int) $query['source']);
+        if (!empty($query['edition'])) $builder->where('ce.edition', (string) $query['edition']);
+        if ($draft && !empty($query['sourceBacked'])) $builder->where('ce.id IS NOT NULL', null, false);
+        if ($draft && in_array(($query['verification'] ?? ''), ['unverified', 'verified', 'rejected'], true)) {
+            $builder->where('ce.verification_status', (string) $query['verification']);
+        }
+        if ($draft && in_array(($query['editorial'] ?? ''), [
+            'source_preserved_not_proofread', 'draft', 'needs_review', 'reviewed', 'approved', 'rejected',
+        ], true)) {
+            $builder->where('ce.editorial_status', (string) $query['editorial']);
+        }
+        if ($draft && in_array(($query['spoiler'] ?? ''), ['unreviewed', 'none', 'minor', 'major', 'secret'], true)) {
+            $builder->where('ce.spoiler_level', (string) $query['spoiler']);
+        }
+        if (!empty($query['department'])) $this->departmentFilter($builder, (string) $query['department']);
+        if (in_array(($query['npcKind'] ?? ''), ['named', 'generic'], true)) {
+            $genericNpc = 'EXISTS (SELECT 1 FROM compendium_entity_categories npc_category '
+                . 'JOIN compendium_source_categories npc_category_name ON npc_category_name.id=npc_category.category_id '
+                . "WHERE npc_category.entity_id=ce.id AND npc_category_name.normalized_name LIKE '%generyczni%')";
+            $builder->where(
+                ($query['npcKind'] === 'generic' ? '' : 'NOT ') . $genericNpc,
+                null,
+                false
+            );
+        }
+        $favorites = $this->queryFlag($query, 'favorites');
+        $recent = $this->queryFlag($query, 'recent');
+        if ($favorites || $recent) {
+            $campaignId = (int) ($context['campaign']['id'] ?? 0);
+            $userId = (int) ($context['auth']['user_id'] ?? 0);
+            if (!$campaignId || !$userId) {
+                $builder->where('1=0', null, false);
+            } else {
+                $builder->join('compendium_user_activity cua', 'cua.entity_id=ce.id AND cua.campaign_id=' . $campaignId . ' AND cua.user_id=' . $userId, 'inner');
+                if ($favorites) $builder->where('cua.is_favorite', 1);
+                if ($recent) $builder->where('cua.last_read_at IS NOT NULL', null, false);
+            }
+        }
         $q = trim((string) ($query['q'] ?? ''));
+        $rankedSearchIds = null;
         if ($q !== '') {
-            $builder->groupStart()->like('v.public_search_text', $q);
-            if ($context['canSeeGm']) $builder->orLike('v.gm_search_text', $q);
-            $builder->groupEnd();
+            $normalized = CompendiumSearchNormalizer::normalize($q);
+            $escaped = $this->db->escapeLikeString($normalized);
+            $usesFullTextCandidates = strtolower((string) $this->db->DBDriver) === 'mysqli';
+            if ($usesFullTextCandidates) {
+                $rankedSearchIds = $this->rankedSearchEntryIds(
+                    $context,
+                    $q,
+                    $normalized,
+                    $versionColumn
+                );
+                if ($rankedSearchIds) {
+                    $builder->whereIn('e.id', $rankedSearchIds);
+                } else {
+                    $builder->where('1=0', null, false);
+                }
+            } else {
+                $builder->groupStart()->like('v.public_search_text', $q);
+            }
+            if (!$usesFullTextCandidates && $context['canSeeGm']) {
+                $terms = array_values(array_filter(explode(' ', $normalized), static fn (string $term): bool => mb_strlen($term) >= 2));
+                $booleanSearch = $terms ? '+' . implode('* +', $terms) . '*' : $normalized;
+                $fullText = $this->db->escape($booleanSearch);
+                $builder->orLike('v.gm_search_text', $q)
+                    ->orWhere("ce.normalized_name LIKE '%{$escaped}%' ESCAPE '!'", null, false)
+                    ->orWhere("ce.aliases_normalized LIKE '%{$escaped}%' ESCAPE '!'", null, false);
+                if (strtolower((string) $this->db->DBDriver) === 'mysqli') {
+                    $builder->orWhere("MATCH(ce.normalized_name,ce.aliases_normalized,ce.search_text_normalized) AGAINST ({$fullText} IN BOOLEAN MODE)", null, false);
+                } else {
+                    $builder->orWhere("ce.search_text_normalized LIKE '%{$escaped}%' ESCAPE '!'", null, false);
+                }
+            } elseif (!$usesFullTextCandidates) {
+                $campaignId = (int) ($context['campaign']['id'] ?? 0);
+                $userId = (int) ($context['auth']['user_id'] ?? 0);
+                $builder->orWhere("(ce.visibility IN ('public','player') AND ce.verification_status='verified' AND (ce.normalized_name LIKE '%{$escaped}%' ESCAPE '!' OR ce.aliases_normalized LIKE '%{$escaped}%' ESCAPE '!' OR ce.player_search_normalized LIKE '%{$escaped}%' ESCAPE '!'))", null, false)
+                    ->orWhere("EXISTS (SELECT 1 FROM compendium_campaign_reveals search_reveal WHERE search_reveal.entity_id=ce.id AND search_reveal.campaign_id={$campaignId} AND search_reveal.character_id IS NULL AND search_reveal.revoked_at IS NULL AND (search_reveal.user_id IS NULL OR search_reveal.user_id={$userId}) AND search_reveal.snapshot_search_text LIKE '%{$escaped}%' ESCAPE '!')", null, false);
+            }
+            if (!$usesFullTextCandidates) {
+                $builder->orWhere("ce.type_code LIKE '%{$escaped}%' ESCAPE '!'", null, false)
+                    ->orLike('cs.source_key', $q)->orLike('cs.name', $q)->orLike('ce.edition', $q);
+                $builder->groupEnd();
+            }
         }
         if (($query['sort'] ?? '') === 'timeline') $builder->orderBy('v.start_ordinal', 'ASC')->orderBy('v.title', 'ASC');
-        else $builder->orderBy('v.title', 'ASC');
+        elseif ($recent) $builder->orderBy('cua.last_read_at', 'DESC');
+        else {
+            if ($rankedSearchIds) {
+                $builder->orderBy(
+                    'FIELD(e.id,' . implode(',', array_map('intval', $rankedSearchIds)) . ')',
+                    '',
+                    false
+                );
+            } elseif ($q !== '') {
+                $normal = $this->db->escape(CompendiumSearchNormalizer::normalize($q));
+                $prefix = $this->db->escapeLikeString(CompendiumSearchNormalizer::normalize($q));
+                $title = $this->db->escape(mb_strtolower($q));
+                $builder->orderBy("CASE WHEN ce.normalized_name={$normal} THEN 0 WHEN LOWER(v.title)={$title} THEN 0 "
+                    . "WHEN ce.normalized_name LIKE '{$prefix}%' ESCAPE '!' THEN 1 "
+                    . "WHEN ce.aliases_normalized LIKE '%{$prefix}%' ESCAPE '!' THEN 2 "
+                    . "WHEN EXISTS (SELECT 1 FROM compendium_entity_names rank_name WHERE rank_name.entity_id=ce.id AND rank_name.normalized_name={$normal}) THEN 1 ELSE 3 END", '', false);
+            }
+            $builder->orderBy('v.title', 'ASC');
+        }
         $rows = $builder->limit($limit, ($page - 1) * $limit)->get()->getResultArray();
+        $tagsByVersion = $this->versionTagsMap(array_map(
+            'intval',
+            array_column($rows, 'id')
+        ));
+        $categoriesByEntity = $this->entityCategoryNamesMap(array_map(
+            'intval',
+            array_column($rows, 'corpus_entity_id')
+        ));
         return [
-            'items' => array_map(fn (array $row): array => $this->presentRow($context, $row, $draft, false), $rows),
+            'items' => array_map(
+                function (array $row) use ($context, $draft, $tagsByVersion, $categoriesByEntity): array {
+                    $row['corpus_category_names'] = $categoriesByEntity[(int) ($row['corpus_entity_id'] ?? 0)] ?? '';
+                    return $this->presentRow(
+                        $context,
+                        $row,
+                        $draft,
+                        false,
+                        $tagsByVersion[(int) $row['id']] ?? []
+                    );
+                },
+                $rows
+            ),
             'page' => $page, 'limit' => $limit, 'hasMore' => count($rows) === $limit,
             'capabilities' => $this->capabilities($context),
         ];
     }
 
-    private function presentEntry(array $context, int $entryId, bool $draft): array
+    private function presentEntry(
+        array $context,
+        int $entryId,
+        bool $draft,
+        bool $allowCharacterBestiary = false
+    ): array
     {
         $entry = $this->entry($context, $entryId);
         if (!$draft && ($entry['status'] !== 'active' || empty($entry['published_version_id']))) {
@@ -438,11 +638,34 @@ final class CompendiumService
             'entry_identity_id' => (int) $entry['id'], 'entry_revision' => (int) $entry['revision'],
             'entry_status' => $entry['status'], 'entry_slug' => $entry['slug'],
         ];
-        if (!$context['canSeeGm'] && $row['visibility'] !== 'players') throw new CampaignException('compendium_entry_not_found', 'Entry was not found.', 404);
-        return $this->presentRow($context, $row, $draft, true);
+        if (
+            !$draft
+            && !$allowCharacterBestiary
+            && !$context['canSeeGm']
+            && $this->entryTypeCode((int) $row['type_id']) === 'creature'
+        ) {
+            throw new CampaignException(
+                'compendium_entry_not_found',
+                'Compendium entry was not found.',
+                404
+            );
+        }
+        $entity = $this->corpus->entityForEntry($context, $entryId);
+        if (!$context['canSeeGm'] && $entity && !$this->corpus->canRead($context, $entity)) {
+            throw new CampaignException('compendium_entry_not_found', 'Entry was not found.', 404);
+        }
+        if (!$context['canSeeGm'] && !$entity && $row['visibility'] !== 'players') throw new CampaignException('compendium_entry_not_found', 'Entry was not found.', 404);
+        return $this->presentRow($context, $row, $draft, true, null, $entity);
     }
 
-    private function presentRow(array $context, array $row, bool $draft, bool $detail): array
+    private function presentRow(
+        array $context,
+        array $row,
+        bool $draft,
+        bool $detail,
+        ?array $knownTags = null,
+        ?array $knownEntity = null
+    ): array
     {
         $versionId = (int) $row['id'];
         $result = [
@@ -455,7 +678,8 @@ final class CompendiumService
             'chronology' => $this->jsonOrNull($row['chronology_json']),
             'startOrdinal' => $row['start_ordinal'] === null ? null : (int) $row['start_ordinal'],
             'endOrdinal' => $row['end_ordinal'] === null ? null : (int) $row['end_ordinal'],
-            'tags' => $this->versionTags($versionId), 'status' => (string) $row['entry_status'],
+            'tags' => $knownTags ?? $this->versionTags($versionId),
+            'status' => (string) $row['entry_status'],
             'revision' => (int) $row['entry_revision'], 'state' => (string) $row['state'],
             'capabilities' => $this->capabilities($context),
         ];
@@ -472,7 +696,12 @@ final class CompendiumService
                 $result['statBlocks'] = array_values($this->json($row['stat_blocks_json']));
             }
         }
-        return $result;
+        if (!$detail && !empty($row['corpus_entity_id'])) return $this->corpus->decorateListRow($result, $row);
+        $entity = $knownEntity ?: $this->corpus->entityForEntry($context, (int) $result['id']);
+        if (!$entity) return $result + ['sourceBacked' => false];
+        return $detail
+            ? $this->corpus->decorateDetail($context, $result, $entity)
+            : $this->corpus->decorateList($context, $result, $entity);
     }
 
     private function entryPayload(array $context, array $payload, ?array $existing): array
@@ -655,6 +884,9 @@ final class CompendiumService
 
     private function bootstrap(int $worldId): void
     {
+        if (isset($this->bootstrappedWorlds[$worldId])) {
+            return;
+        }
         $now = $this->now();
         if (!$this->db->table('compendium_calendars')->where('world_id', $worldId)->countAllResults()) {
             $this->db->table('compendium_calendars')->ignore(true)->insert([
@@ -662,13 +894,31 @@ final class CompendiumService
                 'revision' => 1, 'created_at' => $now, 'updated_at' => $now,
             ]);
         }
+        $existingTypes = array_fill_keys(array_column(
+            $this->db->table('compendium_entry_types')
+                ->select('code')
+                ->where('world_id', $worldId)
+                ->get()
+                ->getResultArray(),
+            'code'
+        ), true);
+        $missingTypes = [];
         foreach (self::BUILTIN_TYPES as $order => [$code, $name, $icon]) {
-            $this->db->table('compendium_entry_types')->ignore(true)->insert([
+            if (isset($existingTypes[$code])) {
+                continue;
+            }
+            $missingTypes[] = [
                 'world_id' => $worldId, 'code' => $code, 'name' => $name, 'icon' => $icon,
                 'is_builtin' => 1, 'field_schema_json' => '[]', 'sort_order' => $order,
                 'created_at' => $now, 'updated_at' => $now,
-            ]);
+            ];
         }
+        if ($missingTypes) {
+            $this->db->table('compendium_entry_types')
+                ->ignore(true)
+                ->insertBatch($missingTypes);
+        }
+        $this->bootstrappedWorlds[$worldId] = true;
     }
 
     private function calendar(int $worldId): array
@@ -724,6 +974,16 @@ final class CompendiumService
             'icon' => $row['icon'], 'builtin' => !empty($row['is_builtin']), 'fields' => array_values($this->json($row['field_schema_json']))];
     }
 
+    private function entryTypeCode(int $typeId): string
+    {
+        $row = $this->db->table('compendium_entry_types')
+            ->select('code')
+            ->where('id', $typeId)
+            ->get()
+            ->getRowArray();
+        return (string) ($row['code'] ?? '');
+    }
+
     private function tags(int $worldId): array
     {
         return array_map(static fn ($row) => ['id' => (int) $row['id'], 'name' => $row['name'], 'color' => $row['color']],
@@ -750,7 +1010,220 @@ final class CompendiumService
     {
         return ['canSeeGm' => (bool) $context['canSeeGm'], 'canEdit' => (bool) $context['canEdit'],
             'canManageSchema' => (bool) $context['canManageSchema'], 'canManageEditors' => (bool) $context['canManageEditors'],
-            'canAssignOwner' => (bool) $context['canAssignOwner'], 'canMaterialize' => (bool) $context['canMaterialize']];
+            'canAssignOwner' => (bool) $context['canAssignOwner'], 'canMaterialize' => (bool) $context['canMaterialize'],
+            'canReveal' => !empty($context['campaign']) && (bool) $context['canSeeGm'],
+            'canPin' => !empty($context['campaign']) && (bool) $context['canSeeGm'],
+            'canFavorite' => !empty($context['campaign'])];
+    }
+
+    private function inlineAccess(array $access): string
+    {
+        $sql = (string) $access['sql'];
+        foreach ((array) ($access['bindings'] ?? []) as $binding) {
+            $sql = preg_replace('/\?/', (string) (int) $binding, $sql, 1) ?: $sql;
+        }
+        return $sql;
+    }
+
+    private function departmentFilter($builder, string $department): void
+    {
+        $types = [
+            'world_atlas' => ['polity', 'location', 'lore', 'language', 'law', 'economy'],
+            'history' => ['event', 'calendar'], 'characters' => ['character', 'person'],
+            'bestiary' => ['creature', 'species'], 'factions' => ['faction'],
+            'religion' => ['deity'], 'magic' => ['spell', 'magic_tradition'],
+            'mechanics' => ['career', 'skill', 'talent'], 'equipment' => ['item', 'weapon'],
+            'gm_tools' => ['rolltable'],
+        ];
+        $keywords = [
+            'history' => ['historia', 'wielkie bitwy', 'czasy konca', 'kampanie wojenne'],
+            'characters' => ['bohaterowie', 'postacie'],
+            'bestiary' => ['bestie', 'zwierzeta', 'stworzenia', 'potwory', 'demony', 'smoki'],
+            'factions' => ['frakcje', 'organizacje', 'zakony', 'jednostki'],
+            'religion' => ['bogowie', 'religie', 'wierzenia', 'kult ', 'kosciol'],
+            'chaos' => ['chaos', 'tzeentch', 'slaanesh', 'khorne', 'nurgle', 'demony'],
+            'magic' => ['magia', 'wiatry magii', 'kolegia magii', 'czarodzieje', 'zaklecia'],
+            'mechanics' => ['profesje', 'umiejetnosci', 'zdolnosci', 'mechanika'],
+            'equipment' => ['zbrojownia', 'zbrojownie', 'ekwipunek', 'bronie', 'pancerze', 'amulety'],
+            'gm_tools' => ['narzedzia mg', 'tabele losowe'], 'maps' => ['mapy', 'mapa'],
+        ];
+        if ($department === 'sources') {
+            $builder->where('ce.id IS NOT NULL', null, false);
+            return;
+        }
+        $conditions = [];
+        if (isset($types[$department])) {
+            $conditions[] = 'ce.type_code IN (' . implode(',', array_map([$this->db, 'escape'], $types[$department])) . ')';
+        }
+        foreach ($keywords[$department] ?? [] as $keyword) {
+            $escaped = $this->db->escapeLikeString($keyword);
+            $conditions[] = "ce.normalized_name LIKE '%{$escaped}%' ESCAPE '!'";
+            $conditions[] = "ce.aliases_normalized LIKE '%{$escaped}%' ESCAPE '!'";
+            $conditions[] = 'EXISTS (SELECT 1 FROM compendium_entity_categories department_category '
+                . 'JOIN compendium_source_categories department_category_name ON department_category_name.id=department_category.category_id '
+                . "WHERE department_category.entity_id=ce.id AND department_category_name.normalized_name LIKE '%{$escaped}%' ESCAPE '!')";
+        }
+        if ($conditions) $builder->where('(' . implode(' OR ', $conditions) . ')', null, false);
+    }
+
+    /**
+     * Uses the FULLTEXT index as the driving search step, then lets the regular
+     * list query apply ACL and UI filters to the small, relevance-ordered set.
+     */
+    private function rankedSearchEntryIds(
+        array $context,
+        string $query,
+        string $normalized,
+        string $versionColumn
+    ): array {
+        if ($normalized === '') return [];
+
+        $worldId = (int) $context['world']['id'];
+        $canSeeGm = !empty($context['canSeeGm']);
+        $ranks = [];
+        $prefixBuilder = $this->db->table('compendium_entities ce')
+            ->select('entry_id,normalized_name')
+            ->where('ce.world_id', $worldId)
+            ->where('ce.deleted_at', null)
+            ->where('ce.entry_id IS NOT NULL', null, false)
+            ->like('ce.normalized_name', $normalized, 'after');
+        if (!$canSeeGm) {
+            $prefixBuilder->where(
+                '(' . $this->inlineAccess($this->corpus->accessSql($context, 'ce')) . ')',
+                null,
+                false
+            );
+        }
+        $rows = $prefixBuilder
+            ->orderBy('ce.normalized_name')
+            ->limit(500)
+            ->get()
+            ->getResultArray();
+        $usedNamePrefix = (bool) $rows;
+        $terms = array_values(array_filter(
+            explode(' ', $normalized),
+            static fn (string $term): bool => mb_strlen($term) >= 3
+        ));
+        if (!$rows && $terms) {
+            $booleanSearch = '+' . implode('* +', $terms) . '*';
+            $sourceAccess = $canSeeGm
+                ? '1=1'
+                : "ce.visibility IN ('public','player') AND ce.verification_status='verified'";
+            $rows = $this->db->query(
+                'SELECT ce.entry_id,('
+                . 'CASE WHEN ce.normalized_name=? THEN 10000 '
+                . 'WHEN ce.normalized_name LIKE ? THEN 8000 '
+                . 'WHEN ce.aliases_normalized LIKE ? THEN 7000 ELSE 0 END+'
+                . 'MATCH(ce.normalized_name,ce.aliases_normalized,ce.search_text_normalized) '
+                . 'AGAINST (? IN BOOLEAN MODE)) AS relevance '
+                . 'FROM compendium_entities ce '
+                . 'WHERE ce.world_id=? AND ce.deleted_at IS NULL AND ce.entry_id IS NOT NULL '
+                . "AND ({$sourceAccess}) "
+                . 'AND MATCH(ce.normalized_name,ce.aliases_normalized,ce.search_text_normalized) '
+                . 'AGAINST (? IN BOOLEAN MODE) '
+                . 'ORDER BY relevance DESC,ce.normalized_name ASC LIMIT 5000',
+                [
+                    $normalized,
+                    $normalized . '%',
+                    '%' . $normalized . '%',
+                    $booleanSearch,
+                    $worldId,
+                    $booleanSearch,
+                ]
+            )->getResultArray();
+        } elseif (!$rows) {
+            $rows = $this->db->table('compendium_entities')
+                ->select('entry_id,normalized_name,aliases_normalized')
+                ->where('world_id', $worldId)
+                ->where('deleted_at', null)
+                ->where('entry_id IS NOT NULL', null, false)
+                ->groupStart()
+                ->like('normalized_name', $normalized, 'after')
+                ->orLike('aliases_normalized', $normalized)
+                ->groupEnd()
+                ->orderBy('normalized_name')
+                ->limit(5000)
+                ->get()
+                ->getResultArray();
+        }
+        foreach ($rows as $row) {
+            $entryId = (int) $row['entry_id'];
+            if (!$entryId) continue;
+            if (isset($row['relevance'])) {
+                $ranks[$entryId] = (float) $row['relevance'];
+                continue;
+            }
+            $name = (string) ($row['normalized_name'] ?? '');
+            $aliases = (string) ($row['aliases_normalized'] ?? '');
+            $ranks[$entryId] = $name === $normalized ? 10000
+                : (strpos($name, $normalized) === 0 ? 8000
+                    : (strpos($aliases, $normalized) !== false ? 7000 : 1));
+        }
+
+        if (!$canSeeGm && !$usedNamePrefix) {
+            $campaignId = (int) ($context['campaign']['id'] ?? 0);
+            $userId = (int) ($context['auth']['user_id'] ?? 0);
+            if ($campaignId && $userId) {
+                $revealedRows = $this->db->table('compendium_campaign_reveals cr')
+                    ->select('ce.entry_id')
+                    ->join('compendium_entities ce', 'ce.id=cr.entity_id', 'inner')
+                    ->where('ce.world_id', $worldId)
+                    ->where('ce.deleted_at', null)
+                    ->where('cr.campaign_id', $campaignId)
+                    ->where('cr.character_id', null)
+                    ->where('cr.revoked_at', null)
+                    ->groupStart()
+                    ->where('cr.user_id', null)
+                    ->orWhere('cr.user_id', $userId)
+                    ->groupEnd()
+                    ->like('cr.snapshot_search_text', $normalized)
+                    ->groupBy('ce.entry_id')
+                    ->limit(5000)
+                    ->get()
+                    ->getResultArray();
+                foreach ($revealedRows as $row) {
+                    $ranks[(int) $row['entry_id']] = max(
+                        (float) ($ranks[(int) $row['entry_id']] ?? 0),
+                        5
+                    );
+                }
+            }
+        }
+
+        // A few hand-authored entries are intentionally not corpus-backed.
+        // Search them separately so their TEXT columns never force a scan of
+        // every imported source article.
+        $nativeRows = $this->db->table('compendium_entries e')
+            ->select('e.id,v.title')
+            ->join('compendium_entry_versions v', "v.id=e.{$versionColumn}", 'inner')
+            ->join('compendium_entities ce', 'ce.entry_id=e.id AND ce.deleted_at IS NULL', 'left')
+            ->where('e.world_id', $worldId)
+            ->where('ce.id IS NULL', null, false);
+        if (!$canSeeGm) $nativeRows->where('v.visibility', 'players');
+        $nativeRows->groupStart()
+            ->like('v.title', $query)
+            ->orLike('v.public_search_text', $query);
+        if ($canSeeGm) $nativeRows->orLike('v.gm_search_text', $query);
+        $nativeRows = $nativeRows->groupEnd()
+            ->limit(5000)
+            ->get()
+            ->getResultArray();
+        foreach ($nativeRows as $row) {
+            $entryId = (int) $row['id'];
+            $title = CompendiumSearchNormalizer::normalize($row['title'] ?? '');
+            $rank = $title === $normalized ? 10000
+                : (strpos($title, $normalized) === 0 ? 8000 : 10);
+            $ranks[$entryId] = max((float) ($ranks[$entryId] ?? 0), $rank);
+        }
+
+        arsort($ranks, SORT_NUMERIC);
+        return array_map('intval', array_keys($ranks));
+    }
+
+    private function queryFlag(array $query, string $key): bool
+    {
+        if (!array_key_exists($key, $query)) return false;
+        return filter_var($query[$key], FILTER_VALIDATE_BOOLEAN);
     }
 
     private function entry(array $context, int $entryId): array
@@ -780,6 +1253,54 @@ final class CompendiumService
         return array_map(static fn ($row) => ['id' => (int) $row['id'], 'name' => $row['name'], 'color' => $row['color']],
             $this->db->table('compendium_tags t')->select('t.id,t.name,t.color')->join('compendium_version_tags vt', 'vt.tag_id=t.id', 'inner')
                 ->where('vt.version_id', $versionId)->orderBy('t.name')->get()->getResultArray());
+    }
+
+    private function versionTagsMap(array $versionIds): array
+    {
+        $versionIds = array_values(array_unique(array_filter(
+            array_map('intval', $versionIds)
+        )));
+        if (!$versionIds) {
+            return [];
+        }
+        $result = [];
+        $rows = $this->db->table('compendium_version_tags vt')
+            ->select('vt.version_id, t.id, t.name, t.color')
+            ->join('compendium_tags t', 't.id=vt.tag_id', 'inner')
+            ->whereIn('vt.version_id', $versionIds)
+            ->orderBy('t.name')
+            ->get()
+            ->getResultArray();
+        foreach ($rows as $row) {
+            $result[(int) $row['version_id']][] = [
+                'id' => (int) $row['id'],
+                'name' => $row['name'],
+                'color' => $row['color'],
+            ];
+        }
+        return $result;
+    }
+
+    /** Loads category names once for the whole page instead of per list row. */
+    private function entityCategoryNamesMap(array $entityIds): array
+    {
+        $entityIds = array_values(array_unique(array_filter(
+            array_map('intval', $entityIds)
+        )));
+        if (!$entityIds) return [];
+
+        $result = [];
+        $rows = $this->db->table('compendium_entity_categories ec')
+            ->select('ec.entity_id, c.normalized_name')
+            ->join('compendium_source_categories c', 'c.id=ec.category_id', 'inner')
+            ->whereIn('ec.entity_id', $entityIds)
+            ->orderBy('c.normalized_name')
+            ->get()
+            ->getResultArray();
+        foreach ($rows as $row) {
+            $result[(int) $row['entity_id']][] = (string) $row['normalized_name'];
+        }
+        return array_map(static fn (array $names): string => implode('|', $names), $result);
     }
 
     private function rawRelations(int $versionId): array
