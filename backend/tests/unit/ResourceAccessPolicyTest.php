@@ -38,6 +38,7 @@ final class ResourceAccessPolicyTest extends CIUnitTestCase
         $this->assertTrue($policy->canManage($context, ResourceType::CHARACTER));
         $this->assertTrue($policy->canManage($context, ResourceType::SCENE));
         $this->assertTrue($policy->canManage($context, ResourceType::ITEM));
+        $this->assertTrue($policy->canManage($context, ResourceType::COMPENDIUM_INSTANCE));
     }
 
     public function testPrimaryCharacterOwnerCannotBeDowngradedByExplicitNone(): void

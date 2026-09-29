@@ -1,0 +1,506 @@
+.admin-compendium {
+  display: grid;
+  height: 100%;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr);
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: rgba(15, 11, 9, 0.94);
+}
+
+.admin-compendium__toolbar {
+  display: grid;
+  grid-template-columns: minmax(12rem, 1fr) minmax(12rem, 0.45fr) auto auto auto;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.8rem;
+  padding: 0.28rem 0.42rem;
+  border-bottom: var(--ui-border);
+}
+.admin-compendium__toolbar h2,
+.admin-compendium__toolbar p,
+.admin-compendium__operations h3,
+.admin-compendium__operations p {
+  margin: 0;
+}
+.admin-compendium__toolbar h2 {
+  font-size: var(--ui-font-size-lg);
+}
+.admin-compendium__toolbar p,
+.admin-compendium__operations p {
+  color: var(--ui-color-text-faint);
+  font-size: 0.64rem;
+}
+.admin-compendium__toolbar label {
+  display: grid;
+  grid-template-columns: auto minmax(8rem, 1fr);
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-xs);
+}
+.admin-compendium__toolbar nav {
+  display: flex;
+  gap: 0.18rem;
+}
+.admin-compendium button,
+.admin-compendium input,
+.admin-compendium select,
+.admin-compendium textarea {
+  min-height: 1.72rem;
+  border: 1px solid rgba(111, 90, 59, 0.72);
+  border-radius: var(--ui-radius-sm);
+  background: rgba(255, 255, 255, 0.035);
+  color: var(--ui-color-text);
+  font: inherit;
+}
+.admin-compendium button {
+  padding: 0.2rem 0.4rem;
+  cursor: pointer;
+}
+.admin-compendium button:hover,
+.admin-compendium button.active {
+  border-color: var(--ui-color-accent-strong);
+  background: var(--ui-color-accent-soft);
+  color: var(--ui-color-accent);
+}
+.admin-compendium :is(input, select, textarea) {
+  width: 100%;
+  padding: 0.2rem 0.34rem;
+}
+.admin-compendium select {
+  color-scheme: dark;
+  background-color: #1b1511;
+}
+.admin-compendium select :is(option, optgroup) {
+  background: #1b1511;
+  color: #f3e8d6;
+}
+.admin-compendium select option:disabled {
+  color: #9b8c78;
+}
+.admin-compendium input[type="checkbox"] {
+  width: auto;
+  min-height: auto;
+  accent-color: var(--ui-color-accent-strong);
+}
+.admin-compendium textarea {
+  resize: vertical;
+}
+
+.admin-compendium__overview {
+  display: grid;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+.admin-compendium__overview.has-create {
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+}
+.admin-compendium__kpis {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 0.26rem;
+  align-self: start;
+  padding: 0.36rem 0.42rem;
+}
+.admin-compendium__kpis article {
+  min-width: 0;
+  padding: 0.3rem 0.42rem;
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: rgba(255, 255, 255, 0.025);
+}
+.admin-compendium__kpis span {
+  display: block;
+  overflow: hidden;
+  color: var(--ui-color-text-faint);
+  font-size: 0.61rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-compendium__kpis strong {
+  color: var(--ui-color-accent);
+  font-family: Georgia, serif;
+  font-size: 1.08rem;
+}
+.admin-compendium__create-world {
+  display: grid;
+  grid-template-columns: minmax(11rem, 0.9fr) minmax(9rem, 0.65fr) minmax(14rem, 1.2fr) minmax(12rem, 1fr) auto auto;
+  align-items: end;
+  gap: 0.35rem;
+  margin: 0 0.42rem 0.36rem;
+  padding: 0.38rem 0.46rem;
+  border: 1px solid rgba(180, 132, 69, 0.58);
+  border-radius: var(--ui-radius-sm);
+  background: rgba(183, 128, 53, 0.055);
+}
+.admin-compendium__create-world > header,
+.admin-compendium__create-world > label:not(.admin-compendium__create-world-active) {
+  display: grid;
+  gap: 0.14rem;
+}
+.admin-compendium__create-world > header {
+  grid-column: 1 / -1;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 0.55rem;
+}
+.admin-compendium__create-world header small,
+.admin-compendium__create-world label > span {
+  color: var(--ui-color-text-faint);
+  font-size: 0.61rem;
+}
+.admin-compendium__create-world-active,
+.admin-compendium__create-world-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.32rem;
+  min-height: 1.72rem;
+  white-space: nowrap;
+}
+.admin-compendium__create-world-actions {
+  justify-content: flex-end;
+}
+.admin-compendium__worlds {
+  display: grid;
+  align-content: start;
+  gap: 0.22rem;
+  min-height: 0;
+  margin: 0 0.42rem;
+  overflow: auto;
+}
+.admin-compendium__worlds-head,
+.admin-compendium__worlds > button {
+  display: grid;
+  grid-template-columns: minmax(13rem, 1.4fr) minmax(11rem, 0.9fr) minmax(10rem, 1fr) repeat(3, 0.65fr) minmax(12rem, 1fr);
+  align-items: center;
+  gap: 0.5rem;
+}
+.admin-compendium__worlds-head {
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  padding: 0.12rem 0.55rem;
+  color: var(--ui-color-text-faint);
+  background: var(--ui-color-bg, #120e0b);
+  font-size: 0.58rem;
+  letter-spacing: 0.035em;
+  text-transform: uppercase;
+}
+.admin-compendium__worlds > button {
+  min-height: 2.25rem;
+  text-align: left;
+}
+.admin-compendium__worlds span,
+.admin-compendium__worlds i {
+  overflow: hidden;
+  font-size: 0.68rem;
+  font-style: normal;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-compendium__world-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+}
+.admin-compendium__world-title strong {
+  font-size: var(--ui-font-size-sm);
+}
+.admin-compendium__world-title code,
+.admin-compendium__system code,
+.admin-compendium td small {
+  display: block;
+  color: var(--ui-color-text-faint);
+  font-size: 0.61rem;
+}
+.admin-compendium__system strong {
+  display: block;
+  overflow: hidden;
+  font-size: 0.68rem;
+  text-overflow: ellipsis;
+}
+.admin-compendium__worlds i.warning {
+  color: var(--ui-color-warning, #e2a65a);
+}
+.admin-compendium__world-detail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0.32rem 0.42rem 0.42rem;
+  padding: 0.3rem 0.42rem;
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+}
+.admin-compendium__world-detail dl {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem 1.2rem;
+  margin: 0;
+}
+.admin-compendium__world-detail dt {
+  color: var(--ui-color-text-faint);
+  font-size: 0.58rem;
+  text-transform: uppercase;
+}
+.admin-compendium__world-detail dd {
+  margin: 0.05rem 0 0;
+  font-size: 0.7rem;
+}
+.admin-compendium__world-detail > div {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.admin-compendium__workspace {
+  min-height: 0;
+  border: 0;
+  border-radius: 0;
+}
+.admin-compendium__review {
+  display: grid;
+  min-height: 0;
+  grid-template-columns: minmax(16rem, 23%) minmax(0, 1fr);
+}
+.admin-compendium__review > aside {
+  display: grid;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  padding: 0.4rem;
+  border-right: var(--ui-border);
+}
+.admin-compendium__review-filters {
+  display: grid;
+  gap: 0.25rem;
+  margin-bottom: 0.35rem;
+}
+.admin-compendium__review ol {
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+.admin-compendium__review li button {
+  display: block;
+  width: 100%;
+  min-height: 2.35rem;
+  margin-bottom: 0.18rem;
+  text-align: left;
+}
+.admin-compendium__review li strong,
+.admin-compendium__review li span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.admin-compendium__review li strong {
+  font-size: 0.72rem;
+}
+.admin-compendium__review li span {
+  color: var(--ui-color-text-faint);
+  font-size: 0.6rem;
+}
+.admin-compendium__review > main {
+  min-width: 0;
+  min-height: 0;
+  padding: 0.42rem;
+  overflow: auto;
+}
+.admin-compendium__review > main > header,
+.admin-compendium__operations section > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.admin-compendium__review h3,
+.admin-compendium__review h4 {
+  margin: 0.08rem 0 0.45rem;
+  font-size: var(--ui-font-size-md);
+}
+.admin-compendium__review header small {
+  color: var(--ui-color-text-faint);
+  font-family: var(--ui-font-mono);
+}
+.admin-compendium__policy-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(8rem, 1fr));
+  gap: 0.24rem;
+}
+.admin-compendium__policy-grid label,
+.admin-compendium__long-field {
+  display: grid;
+  gap: 0.15rem;
+  color: var(--ui-color-text-muted);
+  font-size: 0.62rem;
+}
+.admin-compendium__long-field {
+  margin-top: 0.28rem;
+}
+.admin-compendium__hint {
+  margin: 0.35rem 0;
+  color: var(--ui-color-text-faint);
+  font-size: 0.62rem;
+}
+.admin-compendium__profile {
+  display: grid;
+  grid-template-columns: minmax(10rem, 1fr) minmax(10rem, 0.55fr) auto auto;
+  align-items: center;
+  gap: 0.4rem;
+  margin-bottom: 0.22rem;
+  padding: 0.35rem;
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  font-size: 0.68rem;
+}
+.admin-compendium__profile label {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+}
+.admin-compendium__profile input {
+  width: auto;
+}
+
+.admin-compendium__operations {
+  min-height: 0;
+  padding: 0.55rem;
+  overflow: auto;
+}
+.admin-compendium__operations section {
+  margin-bottom: 0.42rem;
+  padding: 0.4rem;
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+}
+.admin-compendium__table-wrap {
+  overflow: auto;
+}
+.admin-compendium table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.68rem;
+}
+.admin-compendium th,
+.admin-compendium td {
+  padding: 0.23rem 0.32rem;
+  border-bottom: 1px solid rgba(75, 58, 41, 0.5);
+  text-align: left;
+  white-space: nowrap;
+}
+.admin-compendium th {
+  color: var(--ui-color-text-faint);
+  font-size: 0.59rem;
+  text-transform: uppercase;
+}
+
+@media (max-width: 1100px) {
+  .admin-compendium__toolbar {
+    grid-template-columns: 1fr minmax(11rem, 0.5fr) auto auto;
+  }
+  .admin-compendium__toolbar nav {
+    grid-column: 1 / -1;
+    order: 3;
+  }
+  .admin-compendium__kpis {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .admin-compendium__create-world {
+    grid-template-columns: repeat(2, minmax(9rem, 1fr)) minmax(13rem, 1.25fr) auto;
+  }
+  .admin-compendium__create-world-active {
+    grid-column: 1 / 3;
+  }
+  .admin-compendium__worlds > button {
+    grid-template-columns: minmax(11rem, 1fr) minmax(9rem, 0.8fr) repeat(2, 0.55fr);
+  }
+  .admin-compendium__worlds-head {
+    grid-template-columns: minmax(11rem, 1fr) minmax(9rem, 0.8fr) repeat(2, 0.55fr);
+  }
+  .admin-compendium__worlds-head span:nth-child(3),
+  .admin-compendium__worlds-head span:nth-child(5),
+  .admin-compendium__worlds-head span:nth-child(7),
+  .admin-compendium__worlds > button span:nth-of-type(3),
+  .admin-compendium__worlds > button span:nth-of-type(5),
+  .admin-compendium__worlds > button i {
+    display: none;
+  }
+  .admin-compendium__policy-grid {
+    grid-template-columns: repeat(2, minmax(8rem, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .admin-compendium {
+    height: auto;
+    min-height: 70dvh;
+    overflow: visible;
+  }
+  .admin-compendium__toolbar {
+    position: sticky;
+    z-index: 4;
+    top: 0;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    background: #120e0b;
+  }
+  .admin-compendium__toolbar > div:first-child {
+    display: none;
+  }
+  .admin-compendium__toolbar label {
+    grid-template-columns: 1fr;
+  }
+  .admin-compendium__toolbar label span {
+    display: none;
+  }
+  .admin-compendium__toolbar nav {
+    grid-column: 1 / -1;
+    overflow-x: auto;
+  }
+  .admin-compendium__kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .admin-compendium__create-world {
+    grid-template-columns: 1fr;
+  }
+  .admin-compendium__create-world > header,
+  .admin-compendium__create-world-active {
+    grid-column: auto;
+  }
+  .admin-compendium__create-world > header {
+    grid-template-columns: 1fr;
+    gap: 0.08rem;
+  }
+  .admin-compendium__worlds > button {
+    grid-template-columns: 1fr auto;
+  }
+  .admin-compendium__worlds-head {
+    grid-template-columns: 1fr auto;
+  }
+  .admin-compendium__worlds-head span:nth-child(n + 3),
+  .admin-compendium__worlds > button > span:nth-of-type(n + 3),
+  .admin-compendium__worlds > button > i {
+    display: none;
+  }
+  .admin-compendium__world-detail {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .admin-compendium__review {
+    grid-template-columns: 1fr;
+  }
+  .admin-compendium__review > aside {
+    max-height: 45dvh;
+    border-right: 0;
+    border-bottom: var(--ui-border);
+  }
+  .admin-compendium__policy-grid,
+  .admin-compendium__profile {
+    grid-template-columns: 1fr;
+  }
+}

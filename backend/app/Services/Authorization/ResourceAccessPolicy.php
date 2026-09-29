@@ -48,6 +48,7 @@ class ResourceAccessPolicy
             ResourceType::SCENE => 'canManageScenes',
             ResourceType::JOURNAL => 'canManage',
             ResourceType::ITEM => 'canManage',
+            ResourceType::COMPENDIUM_INSTANCE => 'canManage',
             ResourceType::SHARED => 'canManage',
         ];
         return $map[$resourceType] ?? null;

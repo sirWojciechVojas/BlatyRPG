@@ -188,9 +188,34 @@ class RpgInitializationSeeder extends Seeder
             $sysMap[$s['code']] = $this->db->insertID();
         }
 
+        $defaultGames = [
+            'old_world' => 'wfrp2ed', 'wh40k_galaxy' => 'wh40k_d100',
+            'lovecraft_1920' => 'coc7e', 'lovecraft_now' => 'delta_green',
+            'pulp_cthulhu' => 'coc7e', 'kult_metropolis' => 'kult_dl',
+            'forgotten_realms' => 'dnd5e', 'golarion' => 'pf2e',
+            'middle_earth' => 'one_ring_2e', 'wiedxmin_world' => 'wiedzon',
+            'rokugan' => 'l5r5e', 'symbaroum_world' => 'symbaroum_sys',
+            'earthdawn_world' => 'earthdawn', 'theah' => '7th_sea',
+            'conan_world' => 'conan_2d20', 'dragon_age_world' => 'dragon_age',
+            'westeros' => 'game_of_thrones', 'post_apoc_usa' => 'neuroshima_sys',
+            'commonwealth' => 'dzikie_pola', 'dominium' => 'monastyr_sys',
+            'wolsung_world' => 'wolsung_sys', 'orchia' => 'krysztyly_czasu',
+            'night_city' => 'cyberpunk_red', 'sixth_world' => 'shadowrun5',
+            'alien_uni' => 'yze_alien', 'star_wars_gal' => 'star_wars_ffg',
+            'expanse_sys' => 'expanse', 'coriolis_3h' => 'yze_coriolis',
+            'numenera_world' => 'numenera', 'tales_loop_80s' => 'yze_tales',
+            'twilight_world' => 'yze_twilight', 'dune_universe' => 'dune_2d20',
+            'federation' => 'startrek_2d20', 'traveller_uni' => 'traveller',
+            'paranoia_complex' => 'paranoia', 'wod_modern' => 'v5',
+            'wod_medieval' => 'v_dark_ages', 'weird_west' => 'deadlands_classic',
+            'mythic_europe' => 'ars_magica', 'doskvol' => 'blades_dark',
+            'apocalypse_world' => 'pbta_generic', 'dungeon_world' => 'dungeon_world',
+            'four_nations' => 'avatar_legends', 'glorantha' => 'runequest',
+        ];
         $uniMap = [];
         foreach ($universes as $u) {
             $this->db->table('rpg_universes')->insert([
+                'default_system_id' => $sysMap[$defaultGames[$u['code']]] ?? null,
                 'code' => $u['code'],
                 'name' => $u['name'],
                 'description' => $u['desc'],
@@ -208,6 +233,7 @@ class RpgInitializationSeeder extends Seeder
             ['wfrp2ed', 'old_world', true], // WFRP 2ed
             ['wfrp4e',  'old_world', true], // WFRP 4ed
             ['coc7e',   'lovecraft_1920', true], // Zew Cthulhu 7ed
+            ['coc7e',   'pulp_cthulhu', false],
 
             // --- POLSKIE KLASYKI ---
             ['neuroshima_sys', 'post_apoc_usa', false],
@@ -256,7 +282,7 @@ class RpgInitializationSeeder extends Seeder
             // --- INNE HITY ---
             ['l5r5e',         'rokugan', false],
             ['one_ring_2e',   'middle_earth', false],
-            ['savage_worlds', 'weird_west', false], 
+            ['swade', 'weird_west', false],
             ['deadlands_classic', 'weird_west', false],
             ['earthdawn',     'earthdawn_world', false],
             ['7th_sea',       'theah', false],
@@ -282,6 +308,9 @@ class RpgInitializationSeeder extends Seeder
             ['mouse_guard',   'middle_earth', false], 
             ['burning_wheel', 'middle_earth', false], 
             ['avatar_legends', 'four_nations', false],
+            ['dragon_age', 'dragon_age_world', false],
+            ['game_of_thrones', 'westeros', false],
+            ['pbta_generic', 'apocalypse_world', false],
         ];
 
         // Wstawianie do Pivot
