@@ -55,7 +55,7 @@ describe("route UI foundation", () => {
     expect(
       routeUiRootClasses(
         resolveRouteUi({
-          name: "campaign-lobby",
+          name: "scene-workspace",
           meta: { layout: "workspace" },
         }),
       ),
