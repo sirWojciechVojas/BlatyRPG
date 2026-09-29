@@ -31,6 +31,12 @@ final class HandoutAssetStorage
             throw new CampaignException('invalid_handout_file', 'Choose a valid file.', 422);
         }
         $mime = strtolower((string) $file->getMimeType());
+        // Some libmagic/browser combinations still report the historical
+        // x-webp alias. Persist the canonical media type so WebP behaves like
+        // every other image throughout the handout API and frontend.
+        if ($mime === 'image/x-webp') {
+            $mime = 'image/webp';
+        }
         $allowed = [
             'image/png' => ['png', self::IMAGE_LIMIT],
             'image/jpeg' => ['jpg', self::IMAGE_LIMIT],

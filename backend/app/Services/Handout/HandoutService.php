@@ -10,6 +10,8 @@ use App\Models\JournalModel;
 use App\Services\Authorization\AccessLevel;
 use App\Services\Authorization\ResourcePermissionService;
 use App\Services\Campaign\CampaignException;
+use App\Services\Media\MediaException;
+use App\Services\Media\MediaService;
 use CodeIgniter\Database\BaseConnection;
 use CodeIgniter\HTTP\Files\UploadedFile;
 
@@ -26,13 +28,15 @@ final class HandoutService
     private $assets;
     private $journals;
     private $permissions;
+    private $media;
 
     public function __construct(
         ?BaseConnection $db = null,
         ?HandoutAccessService $access = null,
         ?HandoutContentValidator $content = null,
         ?HandoutAssetStorage $storage = null,
-        ?ResourcePermissionService $permissions = null
+        ?ResourcePermissionService $permissions = null,
+        ?MediaService $media = null
     ) {
         $this->db = $db ?: \Config\Database::connect();
         $this->access = $access ?: new HandoutAccessService($this->db);
@@ -44,6 +48,7 @@ final class HandoutService
         $this->assets = new HandoutAssetModel($this->db);
         $this->journals = new JournalModel($this->db);
         $this->permissions = $permissions ?: new ResourcePermissionService($this->db);
+        $this->media = $media ?: new MediaService($this->db);
     }
 
     public function listLibrary(array $auth, array $query): array
@@ -257,16 +262,36 @@ final class HandoutService
             throw new CampaignException('handout_quota_exceeded', 'Your handout library storage limit has been reached.', 422);
         }
         $stored = $this->storage->store($ownerId, $file);
+        $central = null;
         try {
+            if ($this->db->tableExists('media_assets')
+                && $this->db->fieldExists('media_asset_id', 'handout_assets')) {
+                $central = $this->media->uploadFile($auth, $stored['path'], [
+                    'filename' => $stored['originalName'],
+                    'mimeType' => $stored['mimeType'],
+                    'category' => strpos($stored['mimeType'], 'image/') === 0 ? 'other' : 'documents',
+                    'visibility' => 'private',
+                    'ownerUserId' => $ownerId,
+                ]);
+            }
             $now = $this->now();
-            $id = $this->assets->insert([
+            $asset = [
                 'owner_user_id' => $ownerId, 'storage_key' => $stored['storageKey'],
                 'original_name' => $stored['originalName'], 'mime_type' => $stored['mimeType'],
                 'byte_size' => (int) $stored['byteSize'], 'sha256' => $stored['sha256'],
                 'created_at' => $now, 'updated_at' => $now,
-            ], true);
+            ];
+            if ($central) {
+                $asset['storage_key'] = null;
+                $asset['media_asset_id'] = (int) $central['id'];
+            }
+            $id = $this->assets->insert($asset, true);
             if (!$id) throw new CampaignException('handout_storage_failed', 'Asset metadata could not be saved.', 500);
+            if ($central) $this->storage->remove($stored['storageKey']);
             return ['asset' => $this->presentAsset($this->assets->find((int) $id))];
+        } catch (MediaException $exception) {
+            $this->storage->remove($stored['storageKey']);
+            throw new CampaignException($exception->errorCode(), $exception->getMessage(), $exception->status(), $exception->errors());
         } catch (\Throwable $exception) {
             $this->storage->remove($stored['storageKey']);
             throw $exception;
@@ -280,6 +305,14 @@ final class HandoutService
         $ownerId = $this->access->libraryOwner($auth);
         if ((int) $asset['owner_user_id'] !== $ownerId && !$this->canViewReferencedAsset($auth, $assetId)) {
             throw new CampaignException('handout_asset_not_found', 'Handout asset was not found.', 404);
+        }
+        if (!empty($asset['media_asset_id'])) {
+            try {
+                $media = $this->media->getTrusted((int) $asset['media_asset_id']);
+            } catch (MediaException $exception) {
+                throw new CampaignException($exception->errorCode(), $exception->getMessage(), $exception->status(), $exception->errors());
+            }
+            return ['asset' => $asset, 'url' => $media['url']];
         }
         $path = $this->storage->path((string) $asset['storage_key']);
         if (!is_file($path)) throw new CampaignException('handout_asset_not_found', 'Handout asset was not found.', 404);

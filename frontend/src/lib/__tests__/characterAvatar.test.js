@@ -14,15 +14,13 @@ describe("character avatar resolver", () => {
     ).toBe("https://example.test/igor.png");
   });
 
-  it("builds the legacy Cloudinary image URL from the avatar field", () => {
+  it("does not expose provider-specific legacy IDs", () => {
     const avatar = resolveCharacterAvatar(
       "Igor_z_Emmanuelplatz_oghss4",
       "Igor z Emmanuelplatz",
     );
 
-    expect(avatar).toBe(
-      "https://res.cloudinary.com/dajzxmjyc/image/upload/f_auto,q_auto,c_fill,g_auto,w_128,h_128/Igor_z_Emmanuelplatz_oghss4",
-    );
+    expect(avatar).toBe(createCharacterInitialsAvatar("Igor z Emmanuelplatz"));
   });
 
   it("prefers the avatar returned in an asset set", () => {
@@ -40,26 +38,22 @@ describe("character avatar resolver", () => {
   it("uses the portrait asset in the shop profile", () => {
     expect(
       resolveCharacterPortrait(
-        { publicId: "character-assets/000037/portrait" },
-        { publicId: "character-assets/000037/avatar" },
+        { mediaAssetId: 37, url: "https://cdn.example.test/portrait" },
+        { mediaAssetId: 38, url: "https://cdn.example.test/avatar" },
         "Igor",
       ),
-    ).toBe(
-      "https://res.cloudinary.com/dajzxmjyc/image/upload/f_auto,q_auto,c_fill,g_auto,w_512,h_768/character-assets/000037/portrait",
-    );
+    ).toBe("https://cdn.example.test/portrait");
   });
 
   it("resolves the token asset when explicitly requested", () => {
     expect(
       resolveCharacterToken(
-        { publicId: "character-assets/000001/token" },
-        { publicId: "character-assets/000001/portrait" },
-        { publicId: "character-assets/000001/avatar" },
+        { mediaAssetId: 1, url: "https://cdn.example.test/token" },
+        { mediaAssetId: 2, url: "https://cdn.example.test/portrait" },
+        { mediaAssetId: 3, url: "https://cdn.example.test/avatar" },
         "Tel Aes In",
       ),
-    ).toBe(
-      "https://res.cloudinary.com/dajzxmjyc/image/upload/f_auto,q_auto,c_fill,g_auto,w_256,h_256/character-assets/000001/token",
-    );
+    ).toBe("https://cdn.example.test/token");
   });
 
   it("falls back to avatar when the portrait is unavailable", () => {

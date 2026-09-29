@@ -4,6 +4,8 @@ namespace App\Services\Compendium;
 
 use App\Services\Campaign\CampaignException;
 use App\Services\Handout\HandoutAssetStorage;
+use App\Services\Media\MediaException;
+use App\Services\Media\MediaService;
 use CodeIgniter\Database\BaseConnection;
 use CodeIgniter\HTTP\Files\UploadedFile;
 
@@ -12,12 +14,14 @@ final class CompendiumAssetService
     private $db;
     private $access;
     private $storage;
+    private $media;
 
-    public function __construct(?BaseConnection $db = null, ?CompendiumAccessService $access = null, ?HandoutAssetStorage $storage = null)
+    public function __construct(?BaseConnection $db = null, ?CompendiumAccessService $access = null, ?HandoutAssetStorage $storage = null, ?MediaService $media = null)
     {
         $this->db = $db ?: \Config\Database::connect();
         $this->access = $access ?: new CompendiumAccessService($this->db);
         $this->storage = $storage ?: new HandoutAssetStorage(WRITEPATH . 'uploads/compendium');
+        $this->media = $media ?: new MediaService($this->db);
     }
 
     public function upload(int $universeId, array $auth, ?UploadedFile $file): array
@@ -31,14 +35,38 @@ final class CompendiumAssetService
             throw new CampaignException('compendium_quota_exceeded', 'The world asset limit has been reached.', 422);
         }
         $stored = $this->storage->store((int) $world['id'], $file);
-        $now = date('Y-m-d H:i:s');
-        $this->db->table('compendium_assets')->insert([
-            'world_id' => (int) $world['id'], 'uploaded_by_user_id' => (int) $context['auth']['user_id'],
-            'storage_key' => $stored['storageKey'], 'original_name' => $stored['originalName'],
-            'mime_type' => $stored['mimeType'], 'byte_size' => $stored['byteSize'],
-            'sha256' => $stored['sha256'], 'created_at' => $now, 'updated_at' => $now, 'deleted_at' => null,
-        ]);
-        return ['asset' => $this->present((int) $this->db->insertID(), $stored)];
+        $central = null;
+        try {
+            if ($this->db->tableExists('media_assets')
+                && $this->db->fieldExists('media_asset_id', 'compendium_assets')) {
+                $central = $this->media->uploadFile($auth, $stored['path'], [
+                    'filename' => $stored['originalName'], 'mimeType' => $stored['mimeType'],
+                    'category' => strpos($stored['mimeType'], 'image/') === 0 ? 'other' : 'documents',
+                    'visibility' => 'private', 'ownerUserId' => (int) $context['auth']['user_id'],
+                ]);
+            }
+            $now = date('Y-m-d H:i:s');
+            $asset = [
+                'world_id' => (int) $world['id'], 'uploaded_by_user_id' => (int) $context['auth']['user_id'],
+                'storage_key' => $stored['storageKey'],
+                'original_name' => $stored['originalName'], 'mime_type' => $stored['mimeType'],
+                'byte_size' => $stored['byteSize'], 'sha256' => $stored['sha256'],
+                'created_at' => $now, 'updated_at' => $now, 'deleted_at' => null,
+            ];
+            if ($central) {
+                $asset['storage_key'] = null;
+                $asset['media_asset_id'] = (int) $central['id'];
+            }
+            $this->db->table('compendium_assets')->insert($asset);
+            if ($central) $this->storage->remove($stored['storageKey']);
+            return ['asset' => $this->present((int) $this->db->insertID(), $stored)];
+        } catch (MediaException $exception) {
+            $this->storage->remove($stored['storageKey']);
+            throw new CampaignException($exception->errorCode(), $exception->getMessage(), $exception->status(), $exception->errors());
+        } catch (\Throwable $exception) {
+            $this->storage->remove($stored['storageKey']);
+            throw $exception;
+        }
     }
 
     public function index(int $universeId, array $auth): array
@@ -69,7 +97,7 @@ final class CompendiumAssetService
         }
         $now = date('Y-m-d H:i:s');
         $this->db->table('compendium_assets')->where('id', $assetId)->update(['deleted_at' => $now, 'updated_at' => $now]);
-        $this->storage->remove((string) $asset['storage_key']);
+        if (!empty($asset['storage_key'])) $this->storage->remove((string) $asset['storage_key']);
         return ['deleted' => true, 'id' => $assetId];
     }
 
@@ -100,6 +128,14 @@ final class CompendiumAssetService
             }
         }
         if (!$allowed) throw new CampaignException('compendium_asset_not_found', 'Asset was not found.', 404);
+        if (!empty($asset['media_asset_id'])) {
+            try {
+                $media = $this->media->getTrusted((int) $asset['media_asset_id']);
+            } catch (MediaException $exception) {
+                throw new CampaignException($exception->errorCode(), $exception->getMessage(), $exception->status(), $exception->errors());
+            }
+            return ['asset' => $asset, 'url' => $media['url'], 'canSeeGm' => $canSeeGm];
+        }
         $path = $this->storage->path((string) $asset['storage_key']);
         if (!is_file($path)) throw new CampaignException('compendium_asset_not_found', 'Asset was not found.', 404);
         return ['asset' => $asset, 'path' => $path, 'canSeeGm' => $canSeeGm];
