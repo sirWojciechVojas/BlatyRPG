@@ -5,6 +5,12 @@ import { describe, expect, it, vi } from "vitest";
 vi.mock("@/components/admin/AdminActivityTab.vue", () => ({ default: {} }));
 vi.mock("@/components/admin/AdminCampaignsTab.vue", () => ({ default: {} }));
 vi.mock("@/components/admin/AdminCharactersTab.vue", () => ({ default: {} }));
+vi.mock("@/components/admin/AdminCompendiumTab.vue", () => ({ default: {} }));
+vi.mock("@/components/admin/AdminProfessionsTab.vue", () => ({ default: {} }));
+vi.mock("@/components/admin/AdminAudioTab.vue", () => ({ default: {} }));
+vi.mock("@/components/admin/AdminTokenTemplatesTab.vue", () => ({
+  default: {},
+}));
 vi.mock("@/components/admin/AdminOverviewTab.vue", () => ({ default: {} }));
 vi.mock("@/components/admin/AdminSystemTab.vue", () => ({ default: {} }));
 vi.mock("@/components/admin/AdminUsersTab.vue", () => ({ default: {} }));
@@ -18,13 +24,21 @@ describe("AdminView dashboard", () => {
       metrics: { users: 12, campaigns: 4 },
       characters: [{}, {}, {}],
       activity: [{}, {}],
+      compendiumCount: 2294,
+      audioCount: 18,
+      assetCount: 22,
       $t: (key) => key,
     });
 
     expect(tabs.map((tab) => tab.id)).toEqual([
       "overview",
+      "assets",
       "users",
       "campaigns",
+      "compendium",
+      "professions",
+      "audio",
+      "tokenTemplates",
       "characters",
       "activity",
       "system",
@@ -33,12 +47,18 @@ describe("AdminView dashboard", () => {
     expect(tabs.find((tab) => tab.id === "activity").count).toBe(2);
     expect(tabs.map((tab) => tab.icon)).toEqual([
       "overview",
+      "assets",
       "users",
       "campaigns",
+      "compendium",
+      "professions",
+      "audio",
+      "tokenTemplates",
       "characters",
       "activity",
       "system",
     ]);
+    expect(tabs.find((tab) => tab.id === "assets").count).toBe(22);
   });
 
   it("uses the same background asset as the landing page", () => {
@@ -55,16 +75,19 @@ describe("AdminView dashboard", () => {
       resolve(process.cwd(), "src/views/styles/AdminView.css"),
       "utf8",
     );
-    const compatibilityCss = readFileSync(
-      resolve(process.cwd(), "src/styles/ui/compat-campaign-admin.css"),
-      "utf8",
-    );
-
     expect(viewCss).toContain(
       "height: calc(100dvh - var(--ui-navigation-height))",
     );
     expect(viewCss).toContain("grid-template-columns: 13rem minmax(0, 1fr)");
-    expect(compatibilityCss).not.toContain("width: min(88rem");
+  });
+
+  it("keeps the administration navigation reachable when the viewport is short", () => {
+    const css = readFileSync(
+      resolve(process.cwd(), "src/views/styles/AdminView.css"),
+      "utf8",
+    );
+
+    expect(css).toMatch(/\.admin-tabs\s*\{[^}]*overflow-y:\s*auto;/s);
   });
 
   it("gives the user list a fluid Bootstrap layout", () => {
@@ -80,9 +103,9 @@ describe("AdminView dashboard", () => {
     expect(usersTab).toContain("container-fluid h-100 p-0");
     expect(usersTab).toContain("col-12 col-xl-9 col-xxl-10");
     expect(usersTab).toContain("col-12 col-xl-3 col-xxl-2");
-    expect(adminView).toContain(
-      "activeTab === 'users' || activeTab === 'characters'",
-    );
+    expect(adminView).toContain("activeTab === 'users'");
+    expect(adminView).toContain("activeTab === 'characters'");
+    expect(adminView).toContain("activeTab === 'compendium'");
   });
 
   it("keeps every administrator navigation label fully visible", () => {

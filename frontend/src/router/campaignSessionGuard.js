@@ -22,6 +22,8 @@ export const leaveCampaignSession = async (store) => {
   if (hasModule(store, "campaignContext")) {
     tasks.push(store.dispatch("campaignContext/leaveCampaign"));
   }
+  if (hasModule(store, "voice")) tasks.push(store.dispatch("voice/leave"));
+  if (hasModule(store, "jukebox")) tasks.push(store.dispatch("jukebox/leave"));
   await Promise.allSettled(tasks);
 };
 

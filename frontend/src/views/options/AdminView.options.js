@@ -1,6 +1,11 @@
+import { defineAsyncComponent } from "vue";
 import AdminActivityTab from "@/components/admin/AdminActivityTab.vue";
 import AdminCampaignsTab from "@/components/admin/AdminCampaignsTab.vue";
 import AdminCharactersTab from "@/components/admin/AdminCharactersTab.vue";
+import AdminCompendiumTab from "@/components/admin/AdminCompendiumTab.vue";
+import AdminProfessionsTab from "@/components/admin/AdminProfessionsTab.vue";
+import AdminAudioTab from "@/components/admin/AdminAudioTab.vue";
+import AdminTokenTemplatesTab from "@/components/admin/AdminTokenTemplatesTab.vue";
 import AdminOverviewTab from "@/components/admin/AdminOverviewTab.vue";
 import AdminSystemTab from "@/components/admin/AdminSystemTab.vue";
 import AdminUsersTab from "@/components/admin/AdminUsersTab.vue";
@@ -17,12 +22,21 @@ const emptyAnalytics = () => ({
   growth: [],
 });
 
+const AdminAssetsTab = defineAsyncComponent(
+  () => import("@/components/admin/AdminAssetsTab.vue"),
+);
+
 export default {
   name: "AdminView",
   components: {
     AdminActivityTab,
     AdminCampaignsTab,
     AdminCharactersTab,
+    AdminCompendiumTab,
+    AdminProfessionsTab,
+    AdminAudioTab,
+    AdminTokenTemplatesTab,
+    AdminAssetsTab,
     AdminOverviewTab,
     AdminSystemTab,
     AdminUsersTab,
@@ -57,13 +71,35 @@ export default {
     createFieldErrors: {},
     roleError: "",
     characterError: "",
+    compendiumCount: null,
+    professionCount: null,
+    audioCount: null,
+    tokenTemplateCount: null,
+    assetCount: null,
   }),
   computed: {
     tabs() {
       return [
         { id: "overview", icon: "overview", count: null },
+        { id: "assets", icon: "assets", count: this.assetCount },
         { id: "users", icon: "users", count: this.metrics.users },
         { id: "campaigns", icon: "campaigns", count: this.metrics.campaigns },
+        {
+          id: "compendium",
+          icon: "compendium",
+          count: this.compendiumCount,
+        },
+        {
+          id: "professions",
+          icon: "professions",
+          count: this.professionCount,
+        },
+        { id: "audio", icon: "audio", count: this.audioCount },
+        {
+          id: "tokenTemplates",
+          icon: "tokenTemplates",
+          count: this.tokenTemplateCount,
+        },
         { id: "characters", icon: "characters", count: this.characters.length },
         { id: "activity", icon: "activity", count: this.activity.length },
         { id: "system", icon: "system", count: null },

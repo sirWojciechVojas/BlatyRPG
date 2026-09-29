@@ -7,6 +7,7 @@
       'app-navigation--overlay': usesOverlayNav,
       'app-navigation--workspace': isCampaignWorkspace,
       'app-navigation--public': routeUi.isPublic,
+      'app-navigation--campaigns': $route.name === 'tables',
     }"
     aria-label="Blaty RPG"
   >
@@ -56,7 +57,7 @@
         </select>
       </label>
       <UserAccountMenu
-        v-if="session?.user"
+        v-if="session?.user && !$route.meta.redirectAuthenticated"
         :session="session"
         :is-admin="isAdmin"
         :logging-out="loggingOut"
@@ -102,6 +103,9 @@ export default {
   created() {
     this.unsubscribeAuth = authSession.subscribe((session) => {
       this.session = session;
+      if (!session && this.$store.hasModule("professions")) {
+        this.$store.commit("professions/SET_CONTEXT", null);
+      }
     });
   },
   beforeUnmount() {
