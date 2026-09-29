@@ -11,6 +11,8 @@ final class AuthRateLimiter
         'register' => [5, 3600],
         'reset_request' => [5, 900],
         'reset_confirm' => [10, 900],
+        'oauth_start' => [20, 60],
+        'oauth_exchange' => [15, 60],
     ];
 
     private $checker;

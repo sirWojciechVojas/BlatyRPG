@@ -91,6 +91,44 @@ describe("authApiClient", () => {
     });
   });
 
+  it("starts and exchanges an OAuth authorization without exposing provider tokens", async () => {
+    const request = vi
+      .fn()
+      .mockResolvedValueOnce({
+        providers: [{ provider: "Google", label: "Google", enabled: true }],
+      })
+      .mockResolvedValueOnce({
+        authorizationUrl: "https://accounts.example/auth",
+      })
+      .mockResolvedValueOnce({
+        access_token: "app-jwt",
+        expires_in: 3600,
+        user: { id: 9, username: "social-user", role: "user" },
+      });
+    const client = createAuthApiClient({ request });
+
+    await expect(client.oauthProviders()).resolves.toEqual([
+      { provider: "google", label: "Google", enabled: true },
+    ]);
+    await expect(client.startOAuth("google")).resolves.toBe(
+      "https://accounts.example/auth",
+    );
+    await expect(
+      client.exchangeOAuthCode("one-time-code"),
+    ).resolves.toMatchObject({
+      token: "app-jwt",
+      user: { id: 9 },
+    });
+
+    expect(request.mock.calls.slice(1)).toEqual([
+      ["/auth/oauth/google/start", { method: "POST" }],
+      [
+        "/auth/oauth/exchange",
+        { method: "POST", body: { code: "one-time-code" } },
+      ],
+    ]);
+  });
+
   it("lists and revokes only explicitly selected account sessions", async () => {
     const request = vi
       .fn()

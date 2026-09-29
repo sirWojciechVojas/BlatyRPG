@@ -191,11 +191,30 @@ body.ui-system-active .auth-entry-page .dashboard-alert {
 body.ui-system-active .auth-entry-page .login-submit {
   display: inline-flex;
   width: 100%;
-  min-height: 3rem;
+  min-height: 3.35rem;
+  align-items: center;
+  justify-content: center;
   gap: 0.65rem;
-  border-radius: 0.625rem;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding: 0.65rem 2rem;
+  border: 0;
+  border-radius: 0.35rem;
+  background: transparent
+    url("../../assets/app-ui/img/auth/login-button-normal.png") center / 100% 245%
+    no-repeat;
+  color: #fff3d7;
   font-family: var(--ui-font-sans);
-  font-size: 0.95rem;
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.025em;
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.82);
+  cursor: pointer;
+  box-shadow:
+    0 0.55rem 1.4rem rgba(0, 0, 0, 0.25),
+    inset 0 1px rgba(255, 239, 203, 0.16);
   transition:
     transform 0.16s ease,
     filter 0.16s ease,
@@ -204,21 +223,127 @@ body.ui-system-active .auth-entry-page .login-submit {
 
 body.ui-system-active .auth-entry-page .login-submit:hover:not(:disabled) {
   transform: translateY(-1px);
-  filter: brightness(1.08);
-  box-shadow: 0 0.75rem 1.75rem rgba(101, 51, 27, 0.28);
+  background-image: url("../../assets/app-ui/img/auth/login-button-hover.png");
+  background-position: center calc(50% + 4px);
+  background-size: 100% 200%;
+  filter: brightness(1.08) saturate(1.06);
+  box-shadow:
+    0 0.75rem 1.75rem rgba(101, 51, 27, 0.38),
+    0 0 0 1px rgba(241, 213, 156, 0.22);
+}
+
+body.ui-system-active .auth-entry-page .login-submit:focus-visible:not(:disabled) {
+  background-image: url("../../assets/app-ui/img/auth/login-button-hover.png");
+  background-position: center calc(50% + 4px);
+  background-size: 100% 200%;
+  outline: 2px solid var(--login-gold-bright);
+  outline-offset: 3px;
 }
 
 body.ui-system-active .auth-entry-page .login-submit:active:not(:disabled) {
-  transform: translateY(0);
+  transform: translateY(1px);
+  background-image: url("../../assets/app-ui/img/auth/login-button-pressed.png");
+  background-size: 100% 215%;
+}
+
+body.ui-system-active .auth-entry-page .login-submit:disabled {
+  background-image: url("../../assets/app-ui/img/auth/login-button-pressed.png");
+  background-size: 100% 215%;
+  color: #c8bca8;
+  cursor: wait;
+  filter: grayscale(0.3) brightness(0.78);
 }
 
 .auth-entry-page .login-submit__spinner {
   width: 1rem;
   height: 1rem;
-  border: 2px solid rgba(27, 16, 8, 0.28);
-  border-top-color: #1b1008;
+  border: 2px solid rgba(255, 243, 215, 0.3);
+  border-top-color: #fff3d7;
   border-radius: 50%;
   animation: login-spinner 0.7s linear infinite;
+}
+
+.auth-entry-page .login-oauth {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1.25rem;
+}
+
+.auth-entry-page .login-oauth__divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--login-muted);
+  font-family: var(--ui-font-sans);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.auth-entry-page .login-oauth__divider::before,
+.auth-entry-page .login-oauth__divider::after {
+  height: 1px;
+  flex: 1;
+  background: rgba(216, 183, 120, 0.2);
+  content: "";
+}
+
+.oauth-provider-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.oauth-provider-button {
+  display: flex;
+  min-width: 0;
+  min-height: 2.55rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.48rem;
+  padding: 0.45rem 0.65rem;
+  border: 1px solid rgba(216, 183, 120, 0.3);
+  border-radius: 0.25rem;
+  background: linear-gradient(180deg, rgba(30, 20, 15, 0.82), rgba(8, 5, 4, 0.9));
+  color: #f3e7d2;
+  font-family: var(--ui-font-sans);
+  font-size: 0.7rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: border-color 0.15s ease, background-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+
+.oauth-provider-button:hover:not(:disabled),
+.oauth-provider-button:focus-visible:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: var(--login-gold-bright, #f1d59c);
+  background: linear-gradient(180deg, rgba(78, 42, 27, 0.82), rgba(24, 12, 8, 0.92));
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.28);
+}
+
+.oauth-provider-button:disabled { opacity: 0.48; cursor: not-allowed; }
+.oauth-provider-button small { display: none; }
+.oauth-provider-label { white-space: nowrap; }
+.oauth-provider-mark {
+  width: 1.05rem;
+  height: 1.05rem;
+  flex: 0 0 1.05rem;
+  background: currentColor;
+  mask: var(--oauth-provider-icon) center / contain no-repeat;
+  -webkit-mask: var(--oauth-provider-icon) center / contain no-repeat;
+}
+.oauth-provider-button--google { color: #f1e6d4; }
+.oauth-provider-button--google .oauth-provider-mark {
+  --oauth-provider-icon: url("../../assets/app-ui/icons/social/google.svg");
+  background-color: #4285f4;
+}
+.oauth-provider-button--facebook .oauth-provider-mark {
+  --oauth-provider-icon: url("../../assets/app-ui/icons/social/facebook.svg");
+  background-color: #0866ff;
+}
+.oauth-provider-button--discord .oauth-provider-mark {
+  --oauth-provider-icon: url("../../assets/app-ui/icons/social/discord.svg");
+  background-color: #5865f2;
 }
 
 body.ui-system-active .auth-entry-page .login-links {
@@ -274,6 +399,9 @@ body.ui-system-active .auth-entry-page .login-links a:hover {
     align-items: flex-start;
     flex-direction: column;
   }
+
+  .oauth-provider-list { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .oauth-provider-button { min-height: 2.45rem; padding-inline: 0.4rem; }
 }
 
 @media (prefers-reduced-motion: reduce) {

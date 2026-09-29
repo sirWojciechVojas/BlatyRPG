@@ -98,18 +98,36 @@
         </div>
         <p v-if="!sessions.length">{{ $t("auth.sessions.empty") }}</p>
       </article>
+      <article class="user-panel-card user-panel-connections">
+        <header>
+          <h3>{{ $t("auth.oauth.connectionsTitle") }}</h3>
+          <small>{{ $t("auth.oauth.connectionsHint") }}</small>
+        </header>
+        <OAuthProviderButtons
+          :providers="connectionProviders"
+          :disabled="busy.startsWith('oauth-')"
+          mode="link"
+          label-key="auth.oauth.connectionsTitle"
+          @select="$emit('link-oauth', $event)"
+        />
+      </article>
     </div>
   </section>
 </template>
 
 <script>
+import OAuthProviderButtons from "@/components/account/OAuthProviderButtons.vue";
+
 export default {
   name: "UserSecurityPanel",
+  components: { OAuthProviderButtons },
   props: {
     sessions: { type: Array, default: () => [] },
     busy: { type: String, default: "" },
+    oauthProviders: { type: Array, default: () => [] },
+    oauthIdentities: { type: Array, default: () => [] },
   },
-  emits: ["change-password", "revoke-session", "revoke-others"],
+  emits: ["change-password", "revoke-session", "revoke-others", "link-oauth"],
   data: () => ({
     password: { currentPassword: "", newPassword: "", confirmPassword: "" },
     mismatch: false,
@@ -117,6 +135,21 @@ export default {
   computed: {
     otherSessions() {
       return this.sessions.filter((item) => !item.isCurrent);
+    },
+    connectionProviders() {
+      const linked = new Map(
+        this.oauthIdentities.map((identity) => [identity.provider, identity]),
+      );
+      return this.oauthProviders.map((provider) => {
+        const identity = linked.get(provider.provider);
+        return {
+          ...provider,
+          baseLabel: provider.label,
+          email: identity?.email || "",
+          linked: Boolean(identity),
+          enabled: provider.enabled && !identity,
+        };
+      });
     },
   },
   methods: {

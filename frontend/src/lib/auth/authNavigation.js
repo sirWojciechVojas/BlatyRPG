@@ -11,7 +11,8 @@ export const safeRedirectTarget = (router, value) => {
   try {
     const resolved = router.resolve(value);
     if (!resolved.matched.length || resolved.name === "not-found") return null;
-    if (["landing", "home", "login"].includes(resolved.name)) return null;
+    if (["landing", "home", "login", "oauth-callback"].includes(resolved.name))
+      return null;
     return resolved.fullPath;
   } catch (_error) {
     return null;

@@ -39,6 +39,20 @@ const normalizeSession = (session = {}) => ({
   expiresAt: session.expiresAt ?? session.expires_at ?? null,
 });
 
+const normalizeProvider = (provider = {}) => ({
+  provider: trim(provider.provider).toLowerCase(),
+  label: trim(provider.label),
+  enabled: provider.enabled === true,
+});
+
+const authorizationUrl = (payload) => {
+  const url = trim(payload?.authorizationUrl || payload?.authorization_url);
+  if (!/^https:\/\//u.test(url) && !/^http:\/\/localhost(?::|\/)/u.test(url)) {
+    throw new TypeError("invalid_oauth_authorization_url");
+  }
+  return url;
+};
+
 export const createAuthApiClient = (client = jsonApiClient) => ({
   async login({ login, password }) {
     const payload = await client.request("/auth/login", {
@@ -46,6 +60,51 @@ export const createAuthApiClient = (client = jsonApiClient) => ({
       body: { login: trim(login), password: String(password || "") },
     });
     return sessionResult(payload);
+  },
+
+  async oauthProviders() {
+    const payload = await client.request("/auth/oauth/providers");
+    const providers = payload?.providers ?? payload?.data?.providers ?? [];
+    return Array.isArray(providers)
+      ? providers.map(normalizeProvider).filter((item) => item.provider)
+      : [];
+  },
+
+  async startOAuth(provider) {
+    const payload = await client.request(
+      `/auth/oauth/${trim(provider)}/start`,
+      {
+        method: "POST",
+      },
+    );
+    return authorizationUrl(payload);
+  },
+
+  async exchangeOAuthCode(code) {
+    const payload = await client.request("/auth/oauth/exchange", {
+      method: "POST",
+      body: { code: trim(code) },
+    });
+    return sessionResult(payload);
+  },
+
+  async oauthIdentities() {
+    const payload = await client.request("/auth/oauth/identities");
+    const identities = payload?.identities ?? payload?.data?.identities ?? [];
+    return Array.isArray(identities)
+      ? identities.map((identity) => ({
+          provider: trim(identity.provider).toLowerCase(),
+          email: trim(identity.email) || null,
+          linkedAt: identity.linkedAt ?? identity.linked_at ?? null,
+        }))
+      : [];
+  },
+
+  async linkOAuth(provider) {
+    const payload = await client.request(`/auth/oauth/${trim(provider)}/link`, {
+      method: "POST",
+    });
+    return authorizationUrl(payload);
   },
 
   async register({ username, email, password, confirmPassword }) {

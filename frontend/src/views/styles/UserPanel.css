@@ -91,6 +91,24 @@
 .user-panel-primary { justify-self: start; min-height: 2.1rem; padding: .35rem .75rem; border: 1px solid #d4a052; border-radius: 5px; background: linear-gradient(#d7aa64, #ae6b35); color: #1b0f08; font-size: .7rem; font-weight: 800; cursor: pointer; }
 .user-panel-primary:disabled { opacity: .55; cursor: wait; }
 .user-panel-security-grid { grid-template-columns: minmax(16rem, .7fr) minmax(0, 1.3fr); }
+.user-panel-connections { grid-column: 1 / -1; }
+.user-panel-connections .oauth-provider-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .45rem; margin-top: .55rem; }
+.user-panel-connections .oauth-provider-button {
+  display: flex; min-height: 2.35rem; align-items: center; justify-content: center; gap: .45rem;
+  padding: .35rem .55rem; border: 1px solid rgba(194, 145, 75, .35); border-radius: 4px;
+  background: linear-gradient(180deg, rgba(30, 20, 15, .78), rgba(7, 4, 3, .72)); color: #eadbc3; font-size: .68rem; font-weight: 750; cursor: pointer;
+}
+.user-panel-connections .oauth-provider-button:hover:not(:disabled) { border-color: #d4a052; background: rgba(194, 145, 75, .1); }
+.user-panel-connections .oauth-provider-button:disabled { opacity: .58; cursor: default; }
+.user-panel-connections .oauth-provider-mark {
+  width: 1rem; height: 1rem; flex: 0 0 1rem; background: currentColor;
+  mask: var(--oauth-provider-icon) center / contain no-repeat;
+  -webkit-mask: var(--oauth-provider-icon) center / contain no-repeat;
+}
+.user-panel-connections .oauth-provider-button--google .oauth-provider-mark { --oauth-provider-icon: url("../../assets/app-ui/icons/social/google.svg"); background-color: #4285f4; }
+.user-panel-connections .oauth-provider-button--facebook .oauth-provider-mark { --oauth-provider-icon: url("../../assets/app-ui/icons/social/facebook.svg"); background-color: #0866ff; }
+.user-panel-connections .oauth-provider-button--discord .oauth-provider-mark { --oauth-provider-icon: url("../../assets/app-ui/icons/social/discord.svg"); background-color: #5865f2; }
+.user-panel-connections .oauth-provider-button small { display: none; }
 .user-panel-inline-error { margin: 0; color: #ffbdb1; font-size: .65rem; }
 .user-panel-sessions header { display: flex; align-items: start; justify-content: space-between; gap: .5rem; }
 .user-panel-sessions header > span { display: grid; }
@@ -116,6 +134,7 @@
   .user-panel-content { padding: .7rem; }
   .user-panel-metrics { grid-template-columns: repeat(2, 1fr); }
   .user-panel-overview-grid, .user-panel-security-grid { grid-template-columns: 1fr; }
+  .user-panel-connections .oauth-provider-list { grid-template-columns: 1fr; }
 }
 @media (max-width: 480px) {
   .user-panel-form-grid { grid-template-columns: 1fr; }
