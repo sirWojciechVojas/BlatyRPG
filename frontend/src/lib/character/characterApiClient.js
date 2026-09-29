@@ -123,6 +123,29 @@ export const createCharacterApiClient = (client = jsonApiClient) => ({
       "/characters/" + Number(characterId) + "?" + campaignQuery(campaignId);
     return client.request(path, { method: "DELETE" });
   },
+
+  async wallets(campaignId, characterId, options = {}) {
+    return client.request(
+      `/campaigns/${Number(campaignId)}/characters/${Number(characterId)}/wallets`,
+      options,
+    );
+  },
+
+  async updateWallets(campaignId, characterId, wallets, primaryCurrencyCode) {
+    return client.request(
+      `/campaigns/${Number(campaignId)}/characters/${Number(characterId)}/wallets`,
+      {
+        method: "PUT",
+        body: {
+          primaryCurrencyCode: String(primaryCurrencyCode || ""),
+          wallets: (Array.isArray(wallets) ? wallets : []).map((wallet) => ({
+            currencyCode: String(wallet.currencyCode || ""),
+            balance: Math.max(0, Math.floor(Number(wallet.balance) || 0)),
+          })),
+        },
+      },
+    );
+  },
 });
 
 export const characterApiClient = createCharacterApiClient();

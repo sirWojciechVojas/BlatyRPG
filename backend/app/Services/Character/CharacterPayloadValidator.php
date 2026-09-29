@@ -236,7 +236,7 @@ final class CharacterPayloadValidator
         if ($value === '') {
             return true;
         }
-        if (strlen($value) > 255 || preg_match('/[\x00-\x1F]/', $value)
+        if (strlen($value) > 2048 || preg_match('/[\x00-\x1F]/', $value)
             || strpos($value, '\\') !== false) {
             return false;
         }

@@ -90,4 +90,37 @@ describe("characterApiClient", () => {
     ).rejects.toThrow("campaignId");
     expect(request).not.toHaveBeenCalled();
   });
+
+  it("loads and saves separate currency wallets", async () => {
+    const request = vi.fn().mockResolvedValue({ wallets: [] });
+    const api = createCharacterApiClient({ request });
+
+    await api.wallets(4, 9);
+    await api.updateWallets(
+      4,
+      9,
+      [
+        { currencyCode: "wfrp_empire", balance: 252.8 },
+        { currencyCode: "wfrp_bretonnia", balance: -2 },
+      ],
+      "wfrp_empire",
+    );
+
+    expect(request.mock.calls).toEqual([
+      ["/campaigns/4/characters/9/wallets", {}],
+      [
+        "/campaigns/4/characters/9/wallets",
+        {
+          method: "PUT",
+          body: {
+            primaryCurrencyCode: "wfrp_empire",
+            wallets: [
+              { currencyCode: "wfrp_empire", balance: 252 },
+              { currencyCode: "wfrp_bretonnia", balance: 0 },
+            ],
+          },
+        },
+      ],
+    ]);
+  });
 });
