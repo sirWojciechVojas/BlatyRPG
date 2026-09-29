@@ -7,7 +7,6 @@ use App\Services\Auth\AuthContextService;
 use App\Services\Character\CharacterDirectoryService;
 use App\Services\Character\CharacterException;
 use App\Services\Character\CharacterLegacyListService;
-use App\Services\Character\CharacterWalletService;
 use App\Services\CharacterAssetService;
 use App\Services\CharacterService;
 use CodeIgniter\API\ResponseTrait;
@@ -21,7 +20,6 @@ class CharacterController extends BaseController
     private $legacyCharacters;
     private $development;
     private $assets;
-    private $wallets;
 
     public function __construct()
     {
@@ -30,7 +28,6 @@ class CharacterController extends BaseController
         $this->legacyCharacters = new CharacterLegacyListService($this->characters);
         $this->development = new CharacterService();
         $this->assets = new CharacterAssetService();
-        $this->wallets = new CharacterWalletService();
     }
 
     /** GET /api/characters?campaignId=1 */
@@ -84,31 +81,6 @@ class CharacterController extends BaseController
             $characterId = $this->positiveId($id);
             $this->characters->delete($this->auth(), $characterId, $this->campaignId());
             return ['id' => $characterId, 'message' => 'Character was deleted.'];
-        });
-    }
-
-    /** GET /api/campaigns/{campaignId}/characters/{id}/wallets */
-    public function wallets($campaignId = null, $id = null)
-    {
-        return $this->execute(function () use ($campaignId, $id): array {
-            return $this->wallets->get(
-                $this->auth(),
-                $this->positiveId($campaignId),
-                $this->positiveId($id)
-            );
-        });
-    }
-
-    /** PUT /api/campaigns/{campaignId}/characters/{id}/wallets */
-    public function updateWallets($campaignId = null, $id = null)
-    {
-        return $this->execute(function () use ($campaignId, $id): array {
-            return $this->wallets->update(
-                $this->auth(),
-                $this->positiveId($campaignId),
-                $this->positiveId($id),
-                $this->jsonPayload()
-            );
         });
     }
 
