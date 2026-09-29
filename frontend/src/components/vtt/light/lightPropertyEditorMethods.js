@@ -1,9 +1,13 @@
+import { focusTableWindow } from "@/components/vtt/table/tableWindowLayers";
+
 export const lightPropertyEditorMethods = {
   openProperties() {
     this.propertiesPreview = null;
     this.propertySaveStatus = "idle";
     this.propertySaveError = "";
+    this.propertiesWindow.minimized = false;
     this.propertiesOpen = true;
+    this.$nextTick(() => focusTableWindow(this.propertiesWindow.id));
   },
   closeProperties() {
     this.propertiesOpen = false;
@@ -11,6 +15,7 @@ export const lightPropertyEditorMethods = {
     this.propertySaveStatus = "idle";
   },
   saveProperties(changes) {
+    this.creationTemplate = { ...this.creationTemplate, ...changes };
     this.propertySaveStatus = "saving";
     this.propertySaveError = "";
     this.$emit("update", {

@@ -21,6 +21,7 @@ export const createRealtimeFogActions = (ensureSession) => ({
       sceneId: fog.sceneId,
       userId: fog.userId,
       revision: fog.revision,
+      shared: fog.shared === true || fog.resetAll === true,
     });
   },
 });

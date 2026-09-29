@@ -26,8 +26,16 @@ describe("scene lighting management UI", () => {
 
   it("exposes global illumination in the light toolbar", () => {
     const template = component("LightToolToolbar").template.content;
-    expect(template).toContain("globalLightLevel * 100");
+    expect(template).toContain("nearestGlobalLevel");
+    expect(template).toContain("globalLevelOptions");
     expect(template).toContain("'global-update'");
+  });
+
+  it("keeps the scene toolbox icon-only and delegates text to rich tooltips", () => {
+    const template = component("LightToolToolbar").template.content;
+    expect(template).toContain("SceneToolIconButton");
+    expect(template).toContain("SceneToolIconField");
+    expect(template).not.toMatch(/<button[^>]*>\s*[^<\s]/);
   });
 
   it("shows one grouped settings section at a time", () => {

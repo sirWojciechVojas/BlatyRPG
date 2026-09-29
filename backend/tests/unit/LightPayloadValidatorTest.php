@@ -36,6 +36,12 @@ final class LightPayloadValidatorTest extends CIUnitTestCase
             'animation' => 'flicker',
             'animationSpeed' => 2,
             'animationIntensity' => 0.6,
+            'animationReverse' => true,
+            'brightness' => 1.2,
+            'saturation' => 0.8,
+            'contrast' => 1.1,
+            'edgeSoftness' => 0.4,
+            'transitionRatio' => 0.65,
             'elevation' => 3,
         ]);
 
@@ -45,6 +51,26 @@ final class LightPayloadValidatorTest extends CIUnitTestCase
         $this->assertSame(1, $result['data']['provides_vision']);
         $this->assertSame(0, $result['data']['constrained_by_walls']);
         $this->assertSame(0.65, $result['data']['clarity']);
+        $this->assertSame(1, $result['data']['animation_reverse']);
+        $this->assertSame(0.65, $result['data']['transition_ratio']);
+    }
+
+    /** @dataProvider animationProvider */
+    public function testAcceptsEverySceneAnimation(string $animation): void
+    {
+        $result = (new LightPayloadValidator())->update([
+            'revision' => 1,
+            'animation' => $animation,
+        ]);
+
+        $this->assertTrue($result['valid']);
+    }
+
+    public static function animationProvider(): array
+    {
+        return array_map(static fn (string $animation): array => [$animation], [
+            'none', 'torch', 'flicker', 'pulse', 'wave', 'vortex', 'fog', 'magical',
+        ]);
     }
 
     public function testValidatesPhotometryAndDirectionalGeometry(): void

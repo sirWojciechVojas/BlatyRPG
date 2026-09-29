@@ -4,82 +4,92 @@
     :aria-label="$t('vtt.light.toolbar')"
     @pointerdown.stop
   >
-    <select
-      :value="sourceType"
-      :title="$t('vtt.light.sourceType')"
+    <SceneToolIconField
+      :icon="sourceIcon"
+      :label="$t('vtt.light.sourceType')"
+      :description="$t('vtt.light.tooltips.sourceType')"
+      :model-value="sourceType"
+      :options="sourceOptions"
       :disabled="busy"
-      @change="$emit('source-type', $event.target.value)"
-    >
-      <option v-for="type in types" :key="type" :value="type">
-        {{ $t(`vtt.light.types.${type}`) }}
-      </option>
-    </select>
-    <button type="button" :disabled="busy" @click="$emit('add')">
-      ＋ {{ $t("vtt.light.add") }}
-    </button>
-    <label
-      class="light-tool-toolbar__global"
-      :title="$t('vtt.scene.fields.globalLightLevel')"
-    >
-      ☀
-      <input
-        type="number"
-        min="0"
-        max="100"
-        step="5"
-        :value="Math.round(globalLightLevel * 100)"
-        :disabled="busy"
-        @change="$emit('global-update', Number($event.target.value) / 100)"
-      />%
-    </label>
-    <button type="button" :disabled="busy || !light" @click="$emit('copy')">
-      ⧉ {{ $t("vtt.light.copyShort") }}
-    </button>
-    <label class="light-tool-toolbar__lumens" :title="$t('vtt.light.lumens')">
-      <input
-        type="number"
-        min="0"
-        max="1000000"
-        step="50"
-        :value="light?.lumens ?? 800"
-        :disabled="busy || !light"
-        @change="$emit('update', { lumens: Number($event.target.value) })"
-      />
-      lm
-    </label>
-    <input
-      type="color"
-      :value="light?.color?.slice(0, 7) || '#FFD27A'"
-      :title="$t('vtt.light.color')"
-      :disabled="busy || !light"
-      @change="$emit('update', { color: $event.target.value })"
+      @change="$emit('source-type', $event)"
     />
-    <button type="button" :disabled="busy || !light" @click="$emit('edit')">
-      ⚙ {{ $t("vtt.light.editShort") }}
-    </button>
-    <button
-      type="button"
-      :class="{ active: listOpen }"
-      @click="$emit('toggle-list')"
-    >
-      ☷ {{ $t("vtt.light.list") }} ({{ count }})
-    </button>
-    <button
-      type="button"
-      class="light-tool-toolbar__danger"
+    <SceneToolIconButton
+      icon="plus"
+      :label="$t('vtt.light.add')"
+      :description="$t('vtt.light.tooltips.add')"
+      :disabled="busy"
+      @click="$emit('add')"
+    />
+    <SceneToolIconField
+      icon="sun"
+      :label="$t('vtt.scene.fields.globalLightLevel')"
+      :description="$t('vtt.light.tooltips.global')"
+      :model-value="nearestGlobalLevel"
+      :options="globalLevelOptions"
+      :disabled="busy"
+      @change="$emit('global-update', Number($event))"
+    />
+    <SceneToolIconButton
+      icon="copy"
+      :label="$t('vtt.light.copyShort')"
+      :description="$t('vtt.light.tooltips.copy')"
+      shortcut="Ctrl/Cmd+C · Ctrl/Cmd+V"
       :disabled="busy || !light"
+      @click="$emit('copy')"
+    />
+    <SceneToolIconField
+      icon="palette"
+      kind="color"
+      :label="$t('vtt.light.color')"
+      :description="$t('vtt.light.tooltips.color')"
+      :model-value="light?.color?.slice(0, 7) || '#FFD27A'"
+      :disabled="busy || !light"
+      @change="$emit('update', { color: $event })"
+    />
+    <SceneToolIconButton
+      icon="settings"
+      :label="$t('vtt.light.editShort')"
+      :description="$t('vtt.light.tooltips.edit')"
+      :disabled="busy || !light"
+      @click="$emit('edit')"
+    />
+    <SceneToolIconButton
+      icon="list"
+      :label="$t('vtt.light.list')"
+      :description="$t('vtt.light.tooltips.manager')"
+      :badge="count"
+      :active="listOpen"
+      toggle
+      @click="$emit('toggle-list')"
+    />
+    <SceneToolIconButton
+      icon="trash"
+      :label="$t('vtt.light.deleteShort')"
+      :description="$t('vtt.light.tooltips.delete')"
+      shortcut="Delete"
+      :disabled="busy || !light"
+      danger
       @click="$emit('delete')"
-    >
-      × {{ $t("vtt.light.deleteShort") }}
-    </button>
+    />
+    <SceneToolIconButton
+      icon="trashAll"
+      :label="$t('vtt.light.deleteAll')"
+      :description="$t('vtt.light.tooltips.deleteAll')"
+      :disabled="busy || count === 0"
+      danger
+      @click="$emit('delete-all')"
+    />
   </nav>
 </template>
 
 <script>
 import { LIGHT_TYPES } from "@/lib/vtt/lightOptions";
+import SceneToolIconButton from "@/components/vtt/table/SceneToolIconButton.vue";
+import SceneToolIconField from "@/components/vtt/table/SceneToolIconField.vue";
 
 export default {
   name: "LightToolToolbar",
+  components: { SceneToolIconButton, SceneToolIconField },
   props: {
     light: { type: Object, default: null },
     sourceType: { type: String, default: "omni" },
@@ -97,7 +107,31 @@ export default {
     "edit",
     "toggle-list",
     "delete",
+    "delete-all",
   ],
   data: () => ({ types: LIGHT_TYPES }),
+  computed: {
+    sourceOptions() {
+      return this.types.map((value) => ({
+        value,
+        label: this.$t(`vtt.light.types.${value}`),
+      }));
+    },
+    sourceIcon() {
+      if (this.sourceType === "darkness") return "darkness";
+      if (["cone", "directional"].includes(this.sourceType)) return "cone";
+      if (this.sourceType === "area") return "area";
+      return "light";
+    },
+    globalLevelOptions() {
+      return [0, 0.25, 0.5, 0.75, 1].map((value) => ({
+        value,
+        label: `${Math.round(value * 100)}%`,
+      }));
+    },
+    nearestGlobalLevel() {
+      return Math.round(Number(this.globalLightLevel || 0) * 4) / 4;
+    },
+  },
 };
 </script>

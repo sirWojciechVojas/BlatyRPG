@@ -18,4 +18,13 @@ describe("Fog of War rendering pipeline", () => {
     expect(styles).not.toContain("image-rendering: pixelated");
     expect(styles).not.toMatch(/\.scene-fog-layer__mask[^}]*filter:\s*blur/su);
   });
+
+  it("keeps the canvas fully covered until all masks are initialized", () => {
+    const component = readFileSync(
+      resolve(process.cwd(), "src/components/vtt/fog/SceneFogLayer.vue"),
+      "utf8",
+    );
+    expect(component).toContain("normalizeFogMask(mask, this.grid.length)");
+    expect(component).toContain("if (!masksReady)");
+  });
 });

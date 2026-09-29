@@ -89,6 +89,14 @@
       :fill-opacity="ambientOpacity"
       :mask="`url(#${darknessMaskId})`"
     />
+    <polygon
+      v-for="entry in regionOverlays"
+      :key="entry.key"
+      :points="entry.points"
+      fill="#020307"
+      :fill-opacity="entry.opacity"
+      pointer-events="none"
+    />
     <path
       v-for="light in lightSources"
       :key="`glow-${light.id}`"
@@ -106,6 +114,12 @@
       :d="path(light)"
       :fill="areaFill(light, `url(#${darkId(light)})`, '#01020a')"
       :fill-opacity="areaOpacity(light, 0.85)"
+    />
+    <path
+      v-for="effect in visionEffects"
+      :key="`vision-effect-${effect.id}`"
+      :class="`scene-vision-effect scene-vision-effect--${effect.mode}`"
+      :d="visionPath(effect)"
     />
     <rect
       v-if="visionConstrained"
@@ -128,6 +142,11 @@ import {
 } from "@/lib/vtt/lightGeometry";
 import { effectiveLight, lumenStrength } from "@/lib/vtt/lightPhotometry";
 import { lightTintWeight } from "@/lib/vtt/lightAppearance";
+import {
+  effectiveDarknessAt,
+  globalIlluminationAt,
+  transitionedDarkness,
+} from "@/lib/vtt/scenePerception";
 
 export default {
   name: "SceneLightingVisual",
@@ -136,19 +155,31 @@ export default {
     scene: { type: Object, required: true },
     lights: { type: Array, default: () => [] },
     walls: { type: Array, default: () => [] },
+    regions: { type: Array, default: () => [] },
     canManage: { type: Boolean, default: false },
   },
+  data: () => ({ clock: Date.now(), frame: 0 }),
   computed: {
     darkness() {
-      const global = Number(this.scene.globalLightLevel);
-      if (Number.isFinite(global)) return 1 - Math.min(1, Math.max(0, global));
-      return Math.min(1, Math.max(0, Number(this.scene.darknessLevel) || 0));
+      return transitionedDarkness(this.scene, this.clock);
     },
     ambientOpacity() {
-      return this.darkness;
+      return globalIlluminationAt(this.scene, this.regions, null, this.clock)
+        ? 0
+        : this.darkness;
     },
     activeLights() {
-      return this.lights.filter((light) => lightIsActive(light, this.darkness));
+      return this.lights.filter((light) =>
+        lightIsActive(
+          light,
+          effectiveDarknessAt(
+            this.scene,
+            this.regions,
+            { x: light.x, y: light.y },
+            this.clock,
+          ),
+        ),
+      );
     },
     lightSources() {
       return this.activeLights.filter(
@@ -174,6 +205,16 @@ export default {
         ...this.activeLights.filter((light) => light.providesVision),
       ];
     },
+    visionEffects() {
+      return this.tokenVisionSources.filter((source) => {
+        const token = this.tokens.find(
+          (candidate) => `token-${candidate.id}` === source.id,
+        );
+        const mode = String(token?.vision?.mode || "basic");
+        source.mode = mode;
+        return mode !== "basic";
+      });
+    },
     visionConstrained() {
       return (
         this.scene.fogEnabled !== true &&
@@ -192,6 +233,37 @@ export default {
     viewBox() {
       return `0 0 ${this.scene.width} ${this.scene.height}`;
     },
+    regionOverlays() {
+      return this.regions.flatMap((region) =>
+        (region.polygons || []).map((polygon, index) => {
+          const center = polygon.reduce(
+            (sum, point) => ({
+              x: sum.x + Number(point.x) / polygon.length,
+              y: sum.y + Number(point.y) / polygon.length,
+            }),
+            { x: 0, y: 0 },
+          );
+          const globallyLit = globalIlluminationAt(
+            this.scene,
+            this.regions,
+            center,
+            this.clock,
+          );
+          return {
+            key: `${region.id}-${index}`,
+            points: polygon.map((point) => `${point.x},${point.y}`).join(" "),
+            opacity: globallyLit
+              ? 0
+              : effectiveDarknessAt(
+                  this.scene,
+                  this.regions,
+                  center,
+                  this.clock,
+                ),
+          };
+        }),
+      );
+    },
     darknessMaskId() {
       return `scene-darkness-${this.uid}`;
     },
@@ -199,7 +271,30 @@ export default {
       return `scene-vision-${this.uid}`;
     },
   },
+  mounted() {
+    this.tick();
+  },
+  watch: {
+    "scene.darknessTransition.startedAt"() {
+      cancelAnimationFrame(this.frame);
+      this.tick();
+    },
+  },
+  beforeUnmount() {
+    cancelAnimationFrame(this.frame);
+  },
   methods: {
+    tick() {
+      this.clock = Date.now();
+      const transition = this.scene.darknessTransition;
+      const transitionActive =
+        transition?.startedAt &&
+        this.clock <
+          Date.parse(transition.startedAt) + Number(transition.duration || 0);
+      if (transitionActive) {
+        this.frame = requestAnimationFrame(this.tick);
+      }
+    },
     maskId(light) {
       return `light-mask-${this.uid}-${light.id}`;
     },
@@ -249,6 +344,12 @@ export default {
         "--light-animation-duration": `${3 / Math.max(0.1, light.animationSpeed)}s`,
         "--light-animation-opacity": 1 - light.animationIntensity * 0.45,
         "--light-animation-scale": 1 - light.animationIntensity * 0.05,
+        "--light-animation-direction": light.animationReverse
+          ? "reverse"
+          : "normal",
+        filter: `brightness(${Number(light.brightness ?? 1)}) saturate(${Number(
+          light.saturation ?? 1,
+        )}) contrast(${Number(light.contrast ?? 1)})`,
         transformOrigin: `${light.x}px ${light.y}px`,
       };
     },

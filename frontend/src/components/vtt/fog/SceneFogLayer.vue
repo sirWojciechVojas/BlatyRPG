@@ -64,6 +64,7 @@ import {
   fogBackingMetrics,
   fogViewportRect,
   normalizeFogFeather,
+  normalizeFogMask,
 } from "@/lib/vtt/fogRenderMetrics";
 
 const scopeAllows = (scope, userId) => {
@@ -104,6 +105,7 @@ export default {
     tokens: { type: Array, default: () => [] },
     walls: { type: Array, default: () => [] },
     lights: { type: Array, default: () => [] },
+    regions: { type: Array, default: () => [] },
     members: { type: Array, default: () => [] },
     characters: { type: Array, default: () => [] },
     fogState: { type: Object, default: null },
@@ -140,6 +142,8 @@ export default {
     renderBuffers: null,
     hasExploredCells: false,
     hasHiddenCells: false,
+    fogImage: null,
+    fogImageUrl: "",
   }),
   computed: {
     grid() {
@@ -247,9 +251,11 @@ export default {
   },
   watch: {
     scene: { deep: true, handler: "schedule" },
+    "scene.fogExplorationImage": "loadFogImage",
     tokens: { deep: true, handler: "schedule" },
     walls: { deep: true, handler: "schedule" },
     lights: { deep: true, handler: "schedule" },
+    regions: { deep: true, handler: "schedule" },
     fogState: { deep: true, handler: "schedule" },
     preview: { deep: true, handler: "resetEditor" },
     activeTool: "resetEditor",
@@ -260,6 +266,7 @@ export default {
   mounted() {
     this.renderBuffers = {};
     window.addEventListener("resize", this.scheduleRender);
+    this.loadFogImage();
     this.schedule();
   },
   beforeUnmount() {
@@ -269,6 +276,26 @@ export default {
     window.removeEventListener("resize", this.scheduleRender);
   },
   methods: {
+    loadFogImage() {
+      const url = String(this.scene.fogExplorationImage || "").trim();
+      this.fogImageUrl = url;
+      this.fogImage = null;
+      if (!url) {
+        this.scheduleRender();
+        return;
+      }
+      const image = new Image();
+      image.decoding = "async";
+      image.onload = () => {
+        if (this.fogImageUrl !== url) return;
+        this.fogImage = image;
+        this.scheduleRender();
+      };
+      image.onerror = () => {
+        if (this.fogImageUrl === url) this.fogImage = null;
+      };
+      image.src = url;
+    },
     schedule() {
       cancelAnimationFrame(this.frame);
       this.frame = requestAnimationFrame(() => this.recompute());
@@ -299,10 +326,11 @@ export default {
           tokens: this.visionTokens,
           walls: this.walls,
           lights: this.lights,
+          regions: this.regions,
           grid,
         });
         this.visibleMask = visibility.visible;
-        this.visibilityGeometry = visibility;
+        this.visibilityGeometry = visibility.rasterized ? null : visibility;
       }
       for (let index = 0; index < grid.length; index += 1)
         if (this.hiddenMask[index]) this.visibleMask[index] = 0;
@@ -314,6 +342,7 @@ export default {
       if (
         !this.applies ||
         this.scene.explorationMemory === false ||
+        this.scene.fogExplorationMode === "none" ||
         !this.visionTokens.length ||
         (this.canManage && this.preview?.mode !== "user")
       )
@@ -386,11 +415,12 @@ export default {
     },
     logicalMask(name, mask) {
       const canvas = this.buffer(name, this.grid.columns, this.grid.rows);
-      if (canvas.fogSourceMask === mask) return canvas;
+      const sourceMask = normalizeFogMask(mask, this.grid.length);
+      if (canvas.fogSourceMask === sourceMask) return canvas;
       const context = this.clearBuffer(canvas);
       const image = context.createImageData(canvas.width, canvas.height);
-      for (let index = 0; index < mask.length; index += 1) {
-        if (!mask[index]) continue;
+      for (let index = 0; index < (sourceMask?.length || 0); index += 1) {
+        if (!sourceMask[index]) continue;
         const offset = index * 4;
         image.data[offset] = 255;
         image.data[offset + 1] = 255;
@@ -398,7 +428,7 @@ export default {
         image.data[offset + 3] = 255;
       }
       context.putImageData(image, 0, 0);
-      canvas.fogSourceMask = mask;
+      canvas.fogSourceMask = sourceMask;
       return canvas;
     },
     drawLogicalMask(context, source, metrics, rect, operation = "source-over") {
@@ -504,15 +534,32 @@ export default {
       softContext.drawImage(blurred, 0, 0);
       return soft;
     },
-    replaceFogRegion(context, mask, colorValue, opacity, layer) {
+    replaceFogRegion(context, mask, colorValue, opacity, layer, image = null) {
       context.save();
       context.globalCompositeOperation = "destination-out";
       context.drawImage(mask, 0, 0);
       context.restore();
       const layerContext = this.clearBuffer(layer);
       layerContext.globalAlpha = opacity;
-      layerContext.fillStyle = colorValue;
-      layerContext.fillRect(0, 0, layer.width, layer.height);
+      if (image?.naturalWidth && image?.naturalHeight) {
+        const rect = this.fogViewport;
+        const sceneWidth = Math.max(1, Number(this.scene.width));
+        const sceneHeight = Math.max(1, Number(this.scene.height));
+        layerContext.drawImage(
+          image,
+          (rect.x / sceneWidth) * image.naturalWidth,
+          (rect.y / sceneHeight) * image.naturalHeight,
+          (rect.width / sceneWidth) * image.naturalWidth,
+          (rect.height / sceneHeight) * image.naturalHeight,
+          0,
+          0,
+          layer.width,
+          layer.height,
+        );
+      } else {
+        layerContext.fillStyle = colorValue;
+        layerContext.fillRect(0, 0, layer.width, layer.height);
+      }
       layerContext.globalAlpha = 1;
       layerContext.globalCompositeOperation = "destination-in";
       layerContext.drawImage(mask, 0, 0);
@@ -545,6 +592,16 @@ export default {
       context.fillRect(0, 0, canvas.width, canvas.height);
       context.globalAlpha = 1;
 
+      const masksReady = [
+        this.visibleMask,
+        this.exploredMask,
+        this.hiddenMask,
+      ].every((mask) => Number(mask?.length) === Number(this.grid.length));
+      if (!masksReady) {
+        this.schedule();
+        return;
+      }
+
       const featherPixels =
         (this.feather / Math.max(0.01, Number(this.camera.scale) || 1)) *
         metrics.scale;
@@ -565,9 +622,10 @@ export default {
         this.replaceFogRegion(
           context,
           exploredMask,
-          "#070A0F",
+          this.scene.fogExploredColor || "#202733",
           exploredOpacity,
           this.buffer("fog-layer", canvas.width, canvas.height),
+          this.fogImage,
         );
       }
 

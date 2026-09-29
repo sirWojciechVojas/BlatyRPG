@@ -1,6 +1,11 @@
 <template>
-  <form class="light-properties" @pointerdown.stop @submit.prevent="save">
-    <header>
+  <form
+    class="light-properties"
+    :class="{ 'light-properties--embedded': floating }"
+    @pointerdown.stop
+    @submit.prevent="save"
+  >
+    <header v-if="!floating">
       <strong>{{ $t("vtt.light.properties") }}</strong>
       <button
         type="button"
@@ -49,6 +54,15 @@
             {{ $t(`vtt.light.animations.${animation}`) }}
           </option>
         </select>
+      </label>
+      <label v-if="activeGroup === 'advanced'" class="light-properties__wide">
+        <span>{{ $t("vtt.light.assetUrl") }}</span>
+        <input
+          v-model.trim="form.assetUrl"
+          type="url"
+          maxlength="2048"
+          :placeholder="$t('vtt.light.assetUrlPlaceholder')"
+        />
       </label>
       <label v-for="field in activeNumberFields" :key="field.key">
         <span>{{
@@ -133,6 +147,11 @@ const numberFields = [
     "animated",
   ],
   ["advanced", "opacity", "vtt.light.opacity", 0, 1, 0.05],
+  ["advanced", "brightness", "vtt.light.brightness", 0, 2, 0.05],
+  ["advanced", "saturation", "vtt.light.saturation", 0, 2, 0.05],
+  ["advanced", "contrast", "vtt.light.contrast", 0, 2, 0.05],
+  ["advanced", "edgeSoftness", "vtt.light.edgeSoftness", 0, 1, 0.05],
+  ["advanced", "transitionRatio", "vtt.light.transitionRatio", 0, 1, 0.05],
   ["advanced", "darknessMin", "vtt.light.darknessMin", 0, 1, 0.05],
   ["advanced", "darknessMax", "vtt.light.darknessMax", 0, 1, 0.05],
   ["advanced", "elevation", "vtt.light.elevation", -1000000, 1000000, 1],
@@ -151,6 +170,7 @@ const booleanFields = [
   ["light", "gradualIllumination", "vtt.light.gradual"],
   ["vision", "providesVision", "vtt.light.providesVision"],
   ["vision", "constrainedByWalls", "vtt.light.constrained"],
+  ["animation", "animationReverse", "vtt.light.animationReverse"],
   ["advanced", "hidden", "vtt.light.hidden"],
 ].map(([group, key, label]) => ({ group, key, label }));
 
@@ -161,6 +181,7 @@ export default {
     busy: { type: Boolean, default: false },
     status: { type: String, default: "idle" },
     error: { type: String, default: "" },
+    floating: { type: Boolean, default: false },
   },
   emits: ["close", "save", "preview", "unchanged"],
   data: () => ({

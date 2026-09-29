@@ -37,6 +37,15 @@ class SceneFogController extends BaseController
         ));
     }
 
+    public function reset($campaignId = null, $sceneId = null)
+    {
+        return $this->execute(fn (): array => $this->fog->resetAll(
+            (int) $campaignId,
+            (int) $sceneId,
+            $this->authContext->resolveFromRequest($this->request)
+        ));
+    }
+
     private function payload(): array
     {
         try { $payload = $this->request->getJSON(true); }

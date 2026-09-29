@@ -15,6 +15,26 @@
       class="token-vision-settings__grid"
     >
       <label>
+        <span>{{ $t("vtt.token.vision.mode") }}</span>
+        <select v-model="draft.mode">
+          <option value="basic">
+            {{ $t("vtt.token.vision.modes.basic") }}
+          </option>
+          <option value="darkvision">
+            {{ $t("vtt.token.vision.modes.darkvision") }}
+          </option>
+          <option value="light_amplification">
+            {{ $t("vtt.token.vision.modes.lightAmplification") }}
+          </option>
+          <option value="monochromatic">
+            {{ $t("vtt.token.vision.modes.monochromatic") }}
+          </option>
+          <option value="tremorsense">
+            {{ $t("vtt.token.vision.modes.tremorsense") }}
+          </option>
+        </select>
+      </label>
+      <label>
         <span>{{ $t("vtt.token.vision.range") }}</span>
         <input
           v-model.number="draft.range"
@@ -35,16 +55,6 @@
         </select>
       </label>
       <label>
-        <span>{{ $t("vtt.token.vision.direction") }}</span>
-        <input
-          v-model.number="draft.direction"
-          type="number"
-          min="0"
-          max="359.999"
-          step="1"
-        />
-      </label>
-      <label>
         <span>{{ $t("vtt.token.vision.minimumRadius") }}</span>
         <input
           v-model.number="draft.minimumRadius"
@@ -54,11 +64,14 @@
           step="1"
         />
       </label>
-      <label class="token-vision-settings__check">
+      <label
+        v-if="draft.mode === 'darkvision'"
+        class="token-vision-settings__check"
+      >
         <input v-model="draft.darkvision" type="checkbox" />
         <span>{{ $t("vtt.token.vision.darkvision") }}</span>
       </label>
-      <label>
+      <label v-if="draft.mode === 'darkvision'">
         <span>{{ $t("vtt.token.vision.darkvisionRange") }}</span>
         <input
           v-model.number="draft.darkvisionRange"

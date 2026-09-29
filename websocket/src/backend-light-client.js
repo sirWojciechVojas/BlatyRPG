@@ -53,6 +53,19 @@ const light = (value) => {
     0,
     1,
   );
+  const brightness = finiteNumber(value?.brightness ?? 1, 0, 2);
+  const saturation = finiteNumber(value?.saturation ?? 1, 0, 2);
+  const contrast = finiteNumber(value?.contrast ?? 1, 0, 2);
+  const edgeSoftness = finiteNumber(
+    value?.edgeSoftness ?? value?.edge_softness ?? 0.5,
+    0,
+    1,
+  );
+  const transitionRatio = finiteNumber(
+    value?.transitionRatio ?? value?.transition_ratio ?? 0.5,
+    0,
+    1,
+  );
   const elevation = finiteNumber(value?.elevation ?? 0);
   const color = String(value?.color || "").toUpperCase();
   const legacyType = String(value?.sourceType ?? value?.source_type ?? "omni");
@@ -82,10 +95,24 @@ const light = (value) => {
     darknessMin > darknessMax ||
     animationSpeed === null ||
     animationIntensity === null ||
+    brightness === null ||
+    saturation === null ||
+    contrast === null ||
+    edgeSoftness === null ||
+    transitionRatio === null ||
     elevation === null ||
     brightRadius > dimRadius ||
     !["omni", "directional", "cone", "area", "darkness"].includes(sourceType) ||
-    !["none", "flicker", "pulse", "vortex"].includes(animation) ||
+    ![
+      "none",
+      "torch",
+      "flicker",
+      "pulse",
+      "wave",
+      "vortex",
+      "fog",
+      "magical",
+    ].includes(animation) ||
     !/^#[0-9A-F]{6}(?:[0-9A-F]{2})?$/.test(color)
   ) {
     throw new BackendLightError("backend_response_invalid", 502);
@@ -118,6 +145,13 @@ const light = (value) => {
     animation,
     animationSpeed,
     animationIntensity,
+    animationReverse: value.animationReverse === true,
+    brightness,
+    saturation,
+    contrast,
+    edgeSoftness,
+    transitionRatio,
+    assetUrl: String(value.assetUrl ?? value.asset_url ?? ""),
     elevation,
     enabled: value.enabled === true,
     hidden: value.hidden === true,
