@@ -1,0 +1,4569 @@
+{
+  "schemaVersion": "1.0.0",
+  "source": {
+    "key": "wfrp2-corebook-pl-reconstruction-269",
+    "name": "Warhammer Fantasy Roleplay 2 ed. — wybrane hasła z Podręcznika Głównego",
+    "language": "pl",
+    "edition": "WFRP2",
+    "pdfFilename": "Warhammer_FRP2_Rekonstrukcja_AI_269_stron.pdf",
+    "pdfSha256": "91887854de32a78c272834a7469678b88653ce6f3b343a83ff60c6c65eada59f",
+    "pageCount": 269,
+    "licenseStatus": "copyrighted_user_supplied",
+    "attributionStatus": "credits_preserved_in_front_matter"
+  },
+  "records": [
+    {
+      "id": "corebook:rules:tests",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "rules",
+      "kind": "topic",
+      "title": "Testy cech i umiejętności",
+      "aliases": [],
+      "summary": "Podstawowa procedura rozstrzygania niepewnych działań w WFRP2.",
+      "category": "Zasady: Testy",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Test wykonuje się rzutem 1k100. Wynik równy lub niższy od używanej cechy albo umiejętności oznacza powodzenie.\n\nMistrz Gry wybiera właściwą cechę lub umiejętność, ustala modyfikator i interpretuje poziom powodzenia albo porażki.\n\nTesty przeciwstawne porównują wyniki dwóch stron; przewagę uzyskuje strona, która skuteczniej zdała swój test."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          12,
+          13
+        ],
+        "printedPages": [
+          11,
+          12
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "4abea324a7e670a258a301b18221cd2719f8a29eff1339b51900a71b47feba7c"
+    },
+    {
+      "id": "corebook:rules:difficulty",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "rules",
+      "kind": "topic",
+      "title": "Stopnie trudności",
+      "aliases": [],
+      "summary": "Modyfikatory opisujące, jak łatwe albo trudne jest działanie.",
+      "category": "Zasady: Testy",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Stopień trudności zmienia wartość cechy używanej w teście. Dodatnie modyfikatory ułatwiają działanie, a ujemne je utrudniają.\n\nOkoliczności, narzędzia, presja czasu, pomoc innych osób i przewaga pozycyjna mogą zmienić stopień trudności."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          91,
+          130
+        ],
+        "printedPages": [
+          90,
+          129
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "9b4e5649c2854f9d3048996ccf76362a81916e663fe9f35f0fc71bfad7016493"
+    },
+    {
+      "id": "corebook:rules:fate-fortune",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "rules",
+      "kind": "topic",
+      "title": "Punkty Przeznaczenia i Szczęścia",
+      "aliases": [],
+      "summary": "Dwie powiązane pule reprezentujące wyjątkowy los Bohatera Gracza.",
+      "category": "Zasady: Bohater",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Punkty Szczęścia pozwalają między innymi powtórzyć nieudany test lub uzyskać dodatkową korzyść i odnawiają się zgodnie z zasadami gry.\n\nPunkt Przeznaczenia można trwale poświęcić, aby ocalić Bohatera przed śmiercią lub nieodwracalnym losem."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          145,
+          222
+        ],
+        "printedPages": [
+          144,
+          221
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "8fd9ca3b53232664d38fdd283e7a7a34f212480cd8035997ee5de7f54f8c3ef9"
+    },
+    {
+      "id": "corebook:rules:character-creation",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "rules",
+      "kind": "topic",
+      "title": "Tworzenie Bohatera Gracza",
+      "aliases": [],
+      "summary": "Kolejność tworzenia nowego Bohatera Gracza w WFRP2.",
+      "category": "Zasady: Tworzenie bohatera",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Tworzenie obejmuje wybór lub losowanie rasy, ustalenie cech, profesji początkowej, umiejętności, zdolności i szczegółów pochodzenia.\n\nKońcowym etapem jest zapisanie wyposażenia, historii, wyglądu oraz osobistych motywacji postaci."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          16,
+          28
+        ],
+        "printedPages": [
+          15,
+          27
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "f59b7d683460ecccaaee36548d3bda6e9c3af2fac7d06c52fbbeb3cf741c0e22"
+    },
+    {
+      "id": "corebook:rules:playable-races",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "rules",
+      "kind": "topic",
+      "title": "Grywalne rasy",
+      "aliases": [],
+      "summary": "Cztery podstawowe rasy dostępne dla Bohaterów Graczy.",
+      "category": "Zasady: Tworzenie bohatera",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Podręcznik przedstawia ludzi, krasnoludy, elfy i niziołki. Każda rasa ma własne wartości początkowe cech, zdolności oraz perspektywę kulturową.\n\nWybór rasy wpływa również na dostępne profesje początkowe, losowanie pochodzenia i Punktów Przeznaczenia."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          16,
+          23
+        ],
+        "printedPages": [
+          15,
+          22
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "d38a6c83e8542a8d5e3416eafb695b3273843cc66ebc8f7ca702e0a7aafb325d"
+    },
+    {
+      "id": "corebook:rules:careers",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "rules",
+      "kind": "topic",
+      "title": "Profesje i Schemat Rozwoju",
+      "aliases": [],
+      "summary": "Profesja określa rolę postaci oraz kierunek jej mechanicznego rozwoju.",
+      "category": "Zasady: Profesje",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Schemat Rozwoju wskazuje, które cechy można zwiększać oraz jakich umiejętności i zdolności można nauczyć się w danej profesji.\n\nProfesje dzielą się na podstawowe i zaawansowane. Zmiana profesji wymaga spełnienia warunków oraz wydania Punktów Doświadczenia."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          29,
+          89
+        ],
+        "printedPages": [
+          28,
+          88
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "5996cf6a05322329601064add18f30390538c3a18c3dd48b7394d5749f69a641"
+    },
+    {
+      "id": "corebook:rules:skills-talents",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "rules",
+      "kind": "topic",
+      "title": "Umiejętności i zdolności",
+      "aliases": [],
+      "summary": "Dwa podstawowe rodzaje możliwości wykraczających poza surowe wartości cech.",
+      "category": "Zasady: Umiejętności i zdolności",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Umiejętności są testowane i mogą występować jako podstawowe lub zaawansowane. Ponowne nabycie umiejętności zapewnia specjalizację +10 albo +20.\n\nZdolności zapewniają szczególne reguły, premie lub nowe możliwości i zazwyczaj nie wymagają osobnego testu."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          90,
+          105
+        ],
+        "printedPages": [
+          89,
+          104
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "761f50427ca9c55cee3673bbb0881e9669cecc3e3191a3ab20c1476eea4bf6a7"
+    },
+    {
+      "id": "corebook:rules:combat",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "rules",
+      "kind": "topic",
+      "title": "Rundy, inicjatywa i akcje w walce",
+      "aliases": [],
+      "summary": "Struktura starcia oraz kolejność działań uczestników.",
+      "category": "Zasady: Walka",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Walka przebiega w rundach. Kolejność działania wyznacza inicjatywa, a zaskoczenie może ograniczyć działania na początku starcia.\n\nW swojej turze postać wykorzystuje akcje na ruch, atak, obronę, przeładowanie, rzucanie czarów i inne czynności opisane w zasadach."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          129,
+          136
+        ],
+        "printedPages": [
+          128,
+          135
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "16db98ca98e936360787c4feb7bf23c79ca77c03188628bdc1cb8f8183c36ba9"
+    },
+    {
+      "id": "corebook:rules:damage-healing",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "rules",
+      "kind": "topic",
+      "title": "Obrażenia, trafienia krytyczne i leczenie",
+      "aliases": [],
+      "summary": "Zasady utraty Żywotności, ochrony pancerza i konsekwencji ciężkich ran.",
+      "category": "Zasady: Walka",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Obrażenia pomniejsza Wytrzymałość oraz Punkty Zbroi chroniące trafioną lokację. Pozostała wartość zmniejsza Żywotność.\n\nPo utracie Żywotności kolejne rany mogą powodować trafienia krytyczne. Leczenie zależy od rodzaju obrażeń, odpoczynku i pomocy medycznej."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          137,
+          144
+        ],
+        "printedPages": [
+          136,
+          143
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "41bf71595493dfa129a05c7fe3c71f3f25777ef92cb8195db262fdcc84bcd3b2"
+    },
+    {
+      "id": "corebook:rules:magic",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "rules",
+      "kind": "topic",
+      "title": "Magia i Wiatry Magii",
+      "aliases": [],
+      "summary": "Podstawowe założenia rzucania czarów i korzystania z energii magicznej.",
+      "category": "Zasady: Magia",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Magia pochodzi z ośmiu Wiatrów Magii. Kolegialni czarodzieje uczą się kontrolować jeden z nich w ramach wybranej Tradycji.\n\nRzucający wykonuje rzut kośćmi zależny od cechy Magia i musi osiągnąć wymagany poziom mocy zaklęcia. Splatanie magii i składniki mogą pomóc w rzuceniu czaru.\n\nNieostrożne lub pechowe użycie mocy grozi Klątwą Tzeentcha i niebezpiecznymi efektami ubocznymi."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          147,
+          178
+        ],
+        "printedPages": [
+          146,
+          177
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "80bc3fac44fb1f2018a1197283551994f82c6e453fde310110da5d0e6f71fa3f"
+    },
+    {
+      "id": "corebook:rules:insanity",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "rules",
+      "kind": "topic",
+      "title": "Punkty Obłędu",
+      "aliases": [],
+      "summary": "Miara psychicznych urazów wynikających z grozy Starego Świata.",
+      "category": "Zasady: Zdrowie psychiczne",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Punkty Obłędu można otrzymać wskutek przerażających przeżyć, ciężkich obrażeń i zetknięcia z nadnaturalnym złem.\n\nNagromadzenie Punktów Obłędu może prowadzić do trwałych zaburzeń psychicznych, które wpływają na zachowanie postaci."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          216,
+          220
+        ],
+        "printedPages": [
+          215,
+          219
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "5b77294356b331db10e84bb51a99026e71e7f857dedb2a07c23cae4f102ad48a"
+    },
+    {
+      "id": "corebook:rules:experience",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "rules",
+      "kind": "topic",
+      "title": "Punkty Doświadczenia",
+      "aliases": [],
+      "summary": "Nagroda służąca do rozwijania cech i możliwości postaci.",
+      "category": "Zasady: Rozwój bohatera",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Punkty Doświadczenia przyznaje Mistrz Gry za ukończone przygody, realizację celów oraz dobre odgrywanie postaci.\n\nWydaje się je zgodnie ze Schematem Rozwoju profesji, na zakup umiejętności i zdolności oraz na zmianę profesji."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          29,
+          224
+        ],
+        "printedPages": [
+          28,
+          223
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "fda1b65c92023e94a542a93a10ede0e516c5450ea9c1da8d4dc8be0472cd58c5"
+    },
+    {
+      "id": "corebook:world:old-world",
+      "type": "place",
+      "entryType": "place",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Stary Świat",
+      "aliases": [],
+      "summary": "Region cywilizowanych krain ludzi, krasnoludów, elfów i niziołków, otoczony licznymi zagrożeniami.",
+      "category": "Świat: Stary Świat",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Do najważniejszych państw należą Imperium, Bretonia i Kislev. Między nimi rozciągają się puszcze, góry, rzeki oraz ziemie, nad którymi władza cywilizacji jest słaba.\n\nChaos, zielonoskórzy, nieumarli i skaveny stanowią stałe zagrożenie, często ukryte przed zwykłymi mieszkańcami."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          233,
+          238
+        ],
+        "printedPages": [
+          232,
+          237
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "7b86947de25a8e1ca6ec8a9aff75e850acfaff6518c608e336dcafe12c2a96ad"
+    },
+    {
+      "id": "corebook:world:empire",
+      "type": "place",
+      "entryType": "place",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Imperium",
+      "aliases": [
+        "Cesarstwo"
+      ],
+      "summary": "Największe państwo Starego Świata i główny bastion ludzkości przeciw Chaosowi.",
+      "category": "Świat: Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Imperium jest związkiem prowincji rządzonych przez Książąt-Elektorów. W roku 2522 KI włada nim Imperator Karl Franz.\n\nWiększość kraju pokrywają pradawne lasy, a miasta i wsie są wyspami cywilizacji pośród niebezpiecznych pustkowi."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          225,
+          226
+        ],
+        "printedPages": [
+          224,
+          225
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "16dfef1eeed8f80a7e80bb8d04d3fc000d8f0c6fcdbf2a33bb5874e8c5ee4ad1"
+    },
+    {
+      "id": "corebook:world:imperial-provinces",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Prowincje Imperium",
+      "aliases": [],
+      "summary": "Dziesięć krain elektorskich tworzących współczesne Imperium.",
+      "category": "Świat: Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Prowincje to Averland, Hochland, Middenland, Nordland, Ostland, Ostermark, Reikland, Stirland, Talabekland i Wissenland.\n\nDawny Solland włączono do Wissenlandu, a ziemie prowincji Drakwald podzielono między Nordland i Middenland."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          226
+        ],
+        "printedPages": [
+          225
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "dc9ff5072b35fafe6fdce5641d4450953ebd94b2e700926fb6e930c80d65e010"
+    },
+    {
+      "id": "corebook:world:imperial-election",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Elekcja Imperialna",
+      "aliases": [],
+      "summary": "System wyboru Imperatora przez elektorów prowincji i najważniejszych dostojników religijnych.",
+      "category": "Świat: Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Tron nie jest formalnie dziedziczny. Elektorzy wybierają spośród Książąt-Elektorów następcę uznawanego za namiestnika Sigmara.\n\nGłosy posiadają również najwyżsi dostojnicy kultów Sigmara i Ulryka oraz Starszy Krainy Zgromadzenia."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          228,
+          229
+        ],
+        "printedPages": [
+          227,
+          228
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "8d9af1719465ba9f966c17084eaa0597bb80dbcfc3613954e84f561652b15380"
+    },
+    {
+      "id": "corebook:world:altdorf",
+      "type": "place",
+      "entryType": "place",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Altdorf",
+      "aliases": [],
+      "summary": "Stolica Imperium i Reiklandu oraz siedziba Karla Franza.",
+      "category": "Świat: Miasta Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Altdorf leży u zbiegu Reiku i Talabeku. Mieszczą się tam Kolegia Magii, Akademia Inżynierów i główna Świątynia Sigmara.\n\nPort Reiklandzki czyni miasto jednym z najważniejszych centrów handlowych Imperium."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          227
+        ],
+        "printedPages": [
+          226
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "4b19d615c434a8e27dfcda9b22030ac89287cc5c591a6fde3e75403013cc3a29"
+    },
+    {
+      "id": "corebook:world:nuln",
+      "type": "place",
+      "entryType": "place",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Nuln",
+      "aliases": [],
+      "summary": "Ważny ośrodek handlu, nauki, artylerii i imperialnej inżynierii.",
+      "category": "Świat: Miasta Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Miasto kontroluje ruch towarów z południowych prowincji. Słynie z uniwersytetów, Akademii Artylerii, ludwisarni i wielkich dział.\n\nCharakterystycznym elementem Nuln jest zwodzony most nad Reikiem."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          227
+        ],
+        "printedPages": [
+          226
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "f258ad144716bf8edf082e72c1b9005a65b915e19d02c46c7fe691c59935f0bd"
+    },
+    {
+      "id": "corebook:world:talabheim",
+      "type": "place",
+      "entryType": "place",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Talabheim",
+      "aliases": [],
+      "summary": "Potężnie ufortyfikowane miasto położone w wielkim, żyznym zagłębieniu.",
+      "category": "Świat: Miasta Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Skalista krawędź krateru i rozbudowany system umocnień uczyniły Talabheim twierdzą, której nie zdobyła dotąd wroga armia.\n\nMiasto czerpie znaczenie z rolnictwa oraz handlu prowadzonego Talabekiem i Starą Drogą Leśną."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          227
+        ],
+        "printedPages": [
+          226
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "908697d68d2500f4cb1bcac65c26932e0702b7230c9393645578d8bcdbbd3baf"
+    },
+    {
+      "id": "corebook:world:middenheim",
+      "type": "place",
+      "entryType": "place",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Middenheim",
+      "aliases": [
+        "Miasto Białego Wilka"
+      ],
+      "summary": "Miasto Białego Wilka wzniesione na Górze Ulryka, stolica Middenlandu i centrum kultu Ulryka.",
+      "category": "Świat: Miasta Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Do miasta prowadzą cztery wielkie wiadukty. Pod skałą rozciągają się naturalne i krasnoludzkie podziemia przecinane tunelami goblinów i skavenów.\n\nBurza Chaosu poważnie zniszczyła miasto, którego mieszkańcy nadal odpierają kultystów i potwory."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          227,
+          228
+        ],
+        "printedPages": [
+          226,
+          227
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "692b76764cd2b7a246d706e9d4a14fce92707f7596a42e290db46ace4f1b23d8"
+    },
+    {
+      "id": "corebook:world:moot",
+      "type": "place",
+      "entryType": "place",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Kraina Zgromadzenia",
+      "aliases": [],
+      "summary": "Ojczyzna niziołków i formalna część Imperium.",
+      "category": "Świat: Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Kraina słynie z żyznych wzgórz, silnych więzi rodzinnych i rozbudowanych domostw niziołków.\n\nWybrany Starszy ma głos w Elekcji Imperialnej, choć mieszkańcy zwykle stronią od wielkiej polityki."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          228
+        ],
+        "printedPages": [
+          227
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "7386198d8bc6315e8359530a479a76ffd03c6cfc4ac4c05fa1efc1add167b6ec"
+    },
+    {
+      "id": "corebook:world:imperial-calendar",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Kalendarz Imperium",
+      "aliases": [
+        "KI"
+      ],
+      "summary": "Najpowszechniejszy ludzki system datowania w Imperium.",
+      "category": "Świat: Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Rok pierwszy upamiętnia zwycięstwo Sigmara i Kurgana Żelaznobrodego nad zielonoskórymi na Przełęczy Czarnego Ognia.\n\nDomyślny czas gry w podręczniku to rok 2522 Kalendarza Imperium, zapisywany jako 2522 KI."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          228
+        ],
+        "printedPages": [
+          227
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "48d5af82d8cee14f4af13566ec1c75ac50b2f8744c5780d2906bd2f356bcb635"
+    },
+    {
+      "id": "corebook:world:karl-franz",
+      "type": "person",
+      "entryType": "person",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Karl Franz",
+      "aliases": [],
+      "summary": "Imperator, Książę-Elektor Reiklandu i książę Altdorfu w roku 2522 KI.",
+      "category": "Świat: Postacie",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Karl Franz jest uznawany za przywódcę zdolnego jednoczyć skłócone rody elektorskie wobec wspólnego zagrożenia.\n\nJego władza pozostaje zależna od poparcia elektorów, kultu Sigmara i wpływowych stronnictw Imperium."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          225,
+          226
+        ],
+        "printedPages": [
+          224,
+          225
+        ]
+      },
+      "identity": {
+        "givenName": "Karl",
+        "familyName": "Franz",
+        "displayName": "Karl Franz"
+      },
+      "profile": null,
+      "bestiary": false,
+      "checksum": "05a6b6d8b0525911f531188129b85951df1dd9c61210098403fe3a5e520a70eb"
+    },
+    {
+      "id": "corebook:world:borys-todbringer",
+      "type": "person",
+      "entryType": "person",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Borys Todbringer",
+      "aliases": [
+        "Boris Todbringer"
+      ],
+      "summary": "Książę-Elektor Middenlandu i graf Middenheim.",
+      "category": "Świat: Postacie",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Borys Todbringer jest wpływowym rywalem politycznym Reiklandu i obrońcą ziem szczególnie dotkniętych przez Burzę Chaosu.\n\nJego osobistym wrogiem jest Khazrak Jednooki, wódz zwierzoludzi z Drakwaldu."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          226,
+          252
+        ],
+        "printedPages": [
+          225,
+          251
+        ]
+      },
+      "identity": {
+        "givenName": "Borys",
+        "familyName": "Todbringer",
+        "displayName": "Borys Todbringer"
+      },
+      "profile": null,
+      "bestiary": false,
+      "checksum": "6840bcf057466a87dcec750b661a1197d3e8292eefbf6ebaabb6f23f53afd8a3"
+    },
+    {
+      "id": "corebook:world:sigmar-unification",
+      "type": "event",
+      "entryType": "history",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Zjednoczenie plemion przez Sigmara",
+      "aliases": [],
+      "summary": "Początek Imperium i wspólnej państwowości ludzkich plemion.",
+      "category": "Świat: Historia Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "W roku 1 KI Sigmar i jego wodzowie, wspierani przez krasnoludy króla Kurgana Żelaznobrodego, rozgromili wielką hordę zielonoskórych na Przełęczy Czarnego Ognia.\n\nPo zwycięstwie wodzowie plemion zawarli trwały sojusz, a Sigmar przyjął tytuł pierwszego Imperatora. Po jego odejściu ustanowili urząd elekcyjnego Imperatora.\n\nZ czasem Sigmar został uznany za boga opiekuńczego, a jego kult stał się główną religią Imperium."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          225,
+          226,
+          228
+        ],
+        "printedPages": [
+          224,
+          225,
+          227
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "chronology": {
+        "precision": "year",
+        "start": {
+          "year": 1
+        }
+      },
+      "checksum": "7df73aa382542c622ed2b833078545db0f1b4c37b110683c23c24ad33353aa9b"
+    },
+    {
+      "id": "corebook:world:mandred-election",
+      "type": "event",
+      "entryType": "history",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Wybór Mandreda na Imperatora",
+      "aliases": [],
+      "summary": "Zakończenie dziewięcioletniego kryzysu elektorskiego po śmierci Borysa Złotobiernego.",
+      "category": "Świat: Historia Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Po śmierci Borysa Złotobiernego w roku 1115 elektorzy przez dziewięć lat nie potrafili uzgodnić następcy.\n\nW roku 1124 na Imperatora wybrano księcia Mandreda z Middenheim, przywódcę oporu przeciw skavenom."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          228,
+          232
+        ],
+        "printedPages": [
+          227,
+          231
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "chronology": {
+        "precision": "year",
+        "start": {
+          "year": 1124
+        }
+      },
+      "checksum": "7519f369f8af7c9d868c254cab5ef4a44aa5a3c482bd86fcff19f1de38240093"
+    },
+    {
+      "id": "corebook:world:mandred-assassination",
+      "type": "event",
+      "entryType": "history",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Zabójstwo Imperatora Mandreda",
+      "aliases": [],
+      "summary": "Śmierć Mandreda zapoczątkowała długotrwały rozłam Imperium.",
+      "category": "Świat: Historia Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "W roku 1152 Imperator Mandred został zamordowany, a elektorzy nie zdołali porozumieć się w sprawie następcy.\n\nWojna między Stirlandem i Talabeklandem rozpoczęła epokę rywalizujących stronnictw imperialnych i osłabiła państwo na wiele stuleci."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          228
+        ],
+        "printedPages": [
+          227
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "chronology": {
+        "precision": "year",
+        "start": {
+          "year": 1152
+        }
+      },
+      "checksum": "31ef49d3f6bba29a7f38cbf178bb44f9875ff4fe91401736fa4f691462ac487e"
+    },
+    {
+      "id": "corebook:world:age-of-three-emperors",
+      "type": "event",
+      "entryType": "history",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Wiek Trzech Imperatorów",
+      "aliases": [],
+      "summary": "Wielowiekowy okres rozbicia i rywalizacji o tron Imperium.",
+      "category": "Świat: Historia Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Kryzys elektorski rozpoczął się po zabójstwie Mandreda. W roku 1547 elektor Middenheim ogłosił się kolejnym Imperatorem, powołując się na pochodzenie od Mandreda.\n\nImperium miało odtąd trzech rywalizujących władców, a prowincje prowadziły wojny o władzę i wpływy.\n\nOkres zakończyło dopiero ponowne zjednoczenie Imperium w obliczu wielkiego najazdu Chaosu."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          228,
+          229
+        ],
+        "printedPages": [
+          227,
+          228
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "chronology": {
+        "precision": "year",
+        "start": {
+          "year": 1547
+        }
+      },
+      "checksum": "6b9648cd2c689d78b04eb299718337daaae9e902a1b3786b3227f1f639d3bfca"
+    },
+    {
+      "id": "corebook:world:vampire-wars",
+      "type": "event",
+      "entryType": "history",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Wojny z Wampirami",
+      "aliases": [],
+      "summary": "Seria wojen przeciw wampirzym władcom Sylvanii z rodu von Carsteinów.",
+      "category": "Świat: Historia Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "W noc Geheimnisnacht roku 2010 Vlad von Carstein wezwał umarłych Sylvanii i rzucił wyzwanie rywalizującym Imperatorom.\n\nWładcy Sylvanii wykorzystywali armie nieumarłych do kolejnych ataków na osłabione Imperium.\n\nPo klęsce Manfreda von Carsteina Sylvanię włączono do Stirlandu, lecz zagrożenie nieumarłych nie zniknęło."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          230,
+          231,
+          232
+        ],
+        "printedPages": [
+          229,
+          230,
+          231
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "chronology": {
+        "precision": "range",
+        "start": {
+          "year": 2010
+        },
+        "end": {
+          "year": 2132
+        }
+      },
+      "checksum": "51d99ced291affdda2fd5c79a3510a01ec4981a7b2e3ed6bb0bcc8c6bbbaa7cc"
+    },
+    {
+      "id": "corebook:world:siege-of-altdorf",
+      "type": "event",
+      "entryType": "history",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Oblężenie Altdorfu przez Vlada von Carsteina",
+      "aliases": [],
+      "summary": "Kulminacyjne starcie pierwszej fazy Wojen z Wampirami.",
+      "category": "Świat: Historia Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Zimą roku 2051 armia von Carsteinów obległa Altdorf, a Vlad zażądał od mieszkańców służby za życia albo po śmierci.\n\nZłodziej Felix Mann wykradł pierścień zapewniający Vladowi powrót do życia. Wielki Teogonista Wilhelm III poświęcił się, strącając wampira z murów na pale w fosie."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          231
+        ],
+        "printedPages": [
+          230
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "chronology": {
+        "precision": "year",
+        "start": {
+          "year": 2051
+        }
+      },
+      "checksum": "c75431f0005ba49d418dec6671a3ea7a6026d0bb829f2df181e30eb6474a732b"
+    },
+    {
+      "id": "corebook:world:manfred-attack",
+      "type": "event",
+      "entryType": "history",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Najazd Manfreda von Carsteina",
+      "aliases": [],
+      "summary": "Ostatnia wielka ofensywa von Carsteinów opisana w historii Imperium.",
+      "category": "Świat: Historia Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "W roku 2132 Manfred rozbił pospiesznie zebrane armie imperialne i zaatakował Altdorf na czele hordy nieumarłych.\n\nWielki Teogonista Kurt III pozbawił go armii Wielkim Zaklęciem Uwolnienia. Zjednoczeni książęta wyparli Manfreda do Sylvanii i pokonali go na Bagnie Fenn."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          232
+        ],
+        "printedPages": [
+          231
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "chronology": {
+        "precision": "year",
+        "start": {
+          "year": 2132
+        }
+      },
+      "checksum": "0a9930903f0bbf5d1c0b310a9dc756a572cd8d7ced492469e482773f460ffda9"
+    },
+    {
+      "id": "corebook:world:black-plague",
+      "type": "event",
+      "entryType": "history",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Czarna Zaraza i wojna ze skavenami",
+      "aliases": [],
+      "summary": "Katastrofalna epidemia rozpoczęta przez skavenów w roku 1111 KI.",
+      "category": "Świat: Historia Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "W roku 1111 skaveny zatruły źródła wody spaczeniem, wywołując epidemię, która zabiła niemal trzy czwarte ludności Imperium.\n\nPo śmierci Borysa Złotobiernego w roku 1115 książę Mandred z Middenheim zorganizował opór. Po trzech latach walk jego armia rozbiła lub wyparła niemal wszystkie oddziały szczuroludzi."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          232,
+          235
+        ],
+        "printedPages": [
+          231,
+          234
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "chronology": {
+        "precision": "range",
+        "start": {
+          "year": 1111
+        },
+        "end": {
+          "year": 1118
+        }
+      },
+      "checksum": "b447a6c862b63f1c71b5c9f633134877b4bcf6fe6dd7ce30b0933a8eb48ff7f7"
+    },
+    {
+      "id": "corebook:world:skaven-marienburg",
+      "type": "event",
+      "entryType": "history",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Skaveński atak na port w Marienburgu",
+      "aliases": [],
+      "summary": "Sabotaż portu przeprowadzony przez skaveńskich agentów i ich wspólników.",
+      "category": "Świat: Historia Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "W roku 2320 skaveńscy szpiedzy, wspierani przez oszukanych żeglarzy i przekupionych dokerów, uderzyli na port w Marienburgu.\n\nZa pomocą dzbanów z palną substancją zatopili wiele statków, pokazując, że po dawnej wojnie skaveny nadal potrafią atakować Imperium z ukrycia."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          235
+        ],
+        "printedPages": [
+          234
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "chronology": {
+        "precision": "year",
+        "start": {
+          "year": 2320
+        }
+      },
+      "checksum": "406d9c7a4c21008e2211eebe23ef63f2e15eec7672daf8e07c00ebbf611bf6d0"
+    },
+    {
+      "id": "corebook:world:skaven-waldenhof",
+      "type": "event",
+      "entryType": "history",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Ataki skavenów w Sylvanii",
+      "aliases": [],
+      "summary": "Skaveńskie napaści na zamek Siegfried i Waldenhof.",
+      "category": "Świat: Historia Imperium",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "W roku 2387 skaveny podkopały mury zamku Siegfried w Sylvanii i zaatakowały zaskoczony garnizon od środka.\n\nGdy książę Karsten z Waldenhofu odmówił zapłaty swoim dawnym sprzymierzeńcom, szczuroludzie napadli na miasto i porwali wszystkie dzieci."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          235
+        ],
+        "printedPages": [
+          234
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "chronology": {
+        "precision": "year",
+        "start": {
+          "year": 2387
+        }
+      },
+      "checksum": "3cb42466b9cdba3ea9dcd40f62ca97cb71f615368b45fc308d0e760cec725531"
+    },
+    {
+      "id": "corebook:world:storm-of-chaos",
+      "type": "event",
+      "entryType": "history",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Burza Chaosu",
+      "aliases": [
+        "Najazd Archaona"
+      ],
+      "summary": "Wielka inwazja Archaona na północne prowincje Imperium.",
+      "category": "Świat: Historia współczesna",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Armie Chaosu spustoszyły północ, dotarły pod Middenheim i pozostawiły po sobie zrujnowane miasta, uchodźców oraz rozproszone bandy potworów.\n\nArchaon został odparty, ale wojna nie zakończyła lokalnych walk ani odbudowy zniszczonych ziem."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          228,
+          249,
+          259
+        ],
+        "printedPages": [
+          227,
+          248,
+          258
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "chronology": {
+        "precision": "year",
+        "start": {
+          "year": 2522
+        }
+      },
+      "checksum": "dcc2b1be72f1568a4387680a432e26cdf0497b789769307c4ca128f8a66e6abd"
+    },
+    {
+      "id": "corebook:world:imperial-gods",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Bogowie Imperium",
+      "aliases": [],
+      "summary": "Najważniejsze oficjalne i ludowe kulty ludzi Imperium.",
+      "category": "Świat: Religia",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Do najważniejszych bóstw należą Sigmar, Ulryk, Taal i Rhya, Morr, Shallya, Verena, Manann oraz Ranald.\n\nKulty posiadają własne świątynie, kapłanów, święta, doktryny i obszary wpływów, a wiara przenika codzienne życie mieszkańców."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          179,
+          198
+        ],
+        "printedPages": [
+          178,
+          197
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "404e465d6d118980472e74db87b0e439b8e9fe8b3d20691d0c4ccfa79d34f18a"
+    },
+    {
+      "id": "corebook:world:colleges-of-magic",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Kolegia Magii",
+      "aliases": [],
+      "summary": "Imperialne instytucje uczące bezpiecznego korzystania z ośmiu Wiatrów Magii.",
+      "category": "Świat: Magia",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Każde Kolegium skupia się na jednym Wietrze i odpowiadającej mu Tradycji. Czarodzieje podlegają prawu i kontroli swoich zakonów.\n\nSiedziby Kolegiów znajdują się w Altdorfie, a nauka stanowi legalną alternatywę dla niekontrolowanego czarnoksięstwa."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          147,
+          154,
+          227
+        ],
+        "printedPages": [
+          146,
+          153,
+          226
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "aaa789050db04ddbfaa4d40beefc7cabe60e7e48ce54ca142d7ecbde634b349d"
+    },
+    {
+      "id": "corebook:world:bretonnia",
+      "type": "place",
+      "entryType": "place",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Bretonia",
+      "aliases": [],
+      "summary": "Feudalne królestwo rycerzy położone na zachód od Imperium.",
+      "category": "Świat: Kraje Starego Świata",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Bretonię zjednoczył Gilles le Breton po zwycięstwach nad orkami i objawieniu Pani Jeziora.\n\nSpołeczeństwo dzieli się na rycerską arystokrację oraz chłopstwo, a kult Pani Jeziora wyznacza ideały szlachty."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          235,
+          236
+        ],
+        "printedPages": [
+          234,
+          235
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "5ffa00313aa7622395f2ee614e3bd21bd3f553d3aaeec871e136fade2206c38b"
+    },
+    {
+      "id": "corebook:world:kislev",
+      "type": "place",
+      "entryType": "place",
+      "scope": "world",
+      "kind": "topic",
+      "title": "Kislev",
+      "aliases": [],
+      "summary": "Północne królestwo i najważniejszy sojusznik Imperium w walce z Chaosem.",
+      "category": "Świat: Kraje Starego Świata",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Kislev rozciąga się między Imperium, Morzem Szponów i Górami Krańca Świata. Północ kraju przechodzi w niebezpieczne ziemie Kraju Trolli.\n\nSurowy klimat, koczownicze tradycje północy i ciągłe najazdy ukształtowały wojowniczą kulturę mieszkańców."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          236,
+          238
+        ],
+        "printedPages": [
+          235,
+          237
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "403878772031d17ae6fd5c34a2d3c76613a65c6c3ba853e5f7b78cb2d17da759"
+    },
+    {
+      "id": "corebook:scenario:through-the-drakwald",
+      "type": "concept",
+      "entryType": "general",
+      "scope": "scenario",
+      "kind": "scenario",
+      "title": "Przez ostępy Drakwaldu",
+      "aliases": [],
+      "summary": "Krótki scenariusz dla początkujących Bohaterów Graczy, rozgrywany po Burzy Chaosu.",
+      "category": "Scenariusz: Przez ostępy Drakwaldu",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Przygoda zaczyna się w Untergardzie. Po ataku mutantów i wieściach o nadciągającej hordzie mieszkańcy ruszają do Middenheim.\n\nWędrówka łączy obronę uchodźców, śledztwo, spotkania w Drakwaldzie i finał związany z tajemnicą Babuni Moescher."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          249,
+          259
+        ],
+        "printedPages": [
+          248,
+          258
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "36c643fe16af0e7fba594999a15076615cd6779912449f6b40c913c7c78c9dc2"
+    },
+    {
+      "id": "corebook:scenario:untergard",
+      "type": "place",
+      "entryType": "place",
+      "scope": "scenario",
+      "kind": "scenario_place",
+      "title": "Untergard",
+      "aliases": [],
+      "summary": "Miasteczko nad rzeką i ważny punkt przeprawy przez Drakwald.",
+      "category": "Scenariusz: Miejsca",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Untergard założyli uciekinierzy z okolic Grimminhagen. Kamienny most uczynił osadę ośrodkiem handlowym i strategicznym punktem wojskowym.\n\nPo dziewięciodniowej bitwie ze zwierzoludźmi, zarazie i zniszczeniu wschodniej dzielnicy pozostało około 75 mieszkańców."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          249,
+          250
+        ],
+        "printedPages": [
+          248,
+          249
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "f0e8ab1e33b2d44cf59428442ee2d25b0002125037978eb66e4a5dcbb02ddafa"
+    },
+    {
+      "id": "corebook:scenario:grimminhagen",
+      "type": "place",
+      "entryType": "place",
+      "scope": "scenario",
+      "kind": "scenario_place",
+      "title": "Grimminhagen",
+      "aliases": [],
+      "summary": "Zrujnowane miasto leżące na trasie uchodźców z Untergardu.",
+      "category": "Scenariusz: Miejsca",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Oddziały Archaona złupiły Grimminhagen. Nieliczni ocalali próbują przetrwać w ruinach, a ślady zniszczeń przypominają o niedawnej wojnie."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          254,
+          255
+        ],
+        "printedPages": [
+          253,
+          254
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "94646eba116b31c589cd01b11b5d698a1f8addec7379fb23bff66b2d0b1c07a7"
+    },
+    {
+      "id": "corebook:scenario:immelscheld",
+      "type": "place",
+      "entryType": "place",
+      "scope": "scenario",
+      "kind": "scenario_place",
+      "title": "Immelscheld",
+      "aliases": [],
+      "summary": "Splądrowane podczas Burzy Chaosu miasteczko, przy którym zatrzymuje się kolumna uchodźców.",
+      "category": "Scenariusz: Miejsca",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Immelscheld znajduje się w stanie podobnym do Grimminhagen: większość zabudowy jest zrujnowana, a ocalali gnieżdżą się pośród ruin.\n\nPostój staje się początkiem finałowego śledztwa dotyczącego zniknięcia Babuni Moescher."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          257
+        ],
+        "printedPages": [
+          256
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "6794a812dc23cf0aa1552e23666aa48969902380e5197bb72ed8217e1b6bdd4e"
+    },
+    {
+      "id": "corebook:scenario:fahndorf",
+      "type": "place",
+      "entryType": "place",
+      "scope": "scenario",
+      "kind": "scenario_place",
+      "title": "Fahndorf",
+      "aliases": [],
+      "summary": "Rodzinna wieś Babuni Moescher i miejsce śmierci jej ojca.",
+      "category": "Scenariusz: Miejsca",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Wieś została zniszczona przez ludzi grafa Sternhauera. Jej ruiny leżą niedaleko rozstajów na trasie do Middenheim.\n\nBabunia wybiera Fahndorf jako miejsce odprawienia rytuału zemsty."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          256,
+          258
+        ],
+        "printedPages": [
+          255,
+          257
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "cb9a7dbb713f2fd629a77e4727806d33b56b894733d0b6bc32b98153fe3270fb"
+    },
+    {
+      "id": "corebook:scenario:battle-of-untergard",
+      "type": "event",
+      "entryType": "event",
+      "scope": "scenario",
+      "kind": "scenario_event",
+      "title": "Dziewięciodniowa bitwa o Untergard",
+      "aliases": [],
+      "summary": "Obrona mostu i miasta przed zwierzoludźmi Khazraka Jednookiego.",
+      "category": "Scenariusz: Wydarzenia",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Zwierzoludzie zdobyli wschodnią część miasta, lecz obrońcy utrzymali most przez dziewięć dni dzięki wsparciu imperialnych żołnierzy i krasnoludów.\n\nKhazrak wycofał się na północ, pozostawiając zniszczone miasto i setki poległych."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          249,
+          250
+        ],
+        "printedPages": [
+          248,
+          249
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "e3bda237c5207e3f8fa85906dbe0aad78dfb76f380e93e6bd8c368fb12067e80"
+    },
+    {
+      "id": "corebook:scenario:mutant-attack",
+      "type": "event",
+      "entryType": "event",
+      "scope": "scenario",
+      "kind": "scenario_event",
+      "title": "Atak mutantów na Ackerplatz",
+      "aliases": [],
+      "summary": "Pierwsze bezpośrednie starcie scenariusza w Untergardzie.",
+      "category": "Scenariusz: Wydarzenia",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Podczas przemowy kapitana Schillera grupa mutantów atakuje przez most, a ukryty strzelec otwiera ogień ze zrujnowanego zajazdu.\n\nZdarzenie poprzedza wieść o większym zagrożeniu i decyzję o opuszczeniu miasta."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          252,
+          253
+        ],
+        "printedPages": [
+          251,
+          252
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "12b1f94e5ac630842db9a72c53c85f1bde84c11e84f93f822cfa7ffaf60f201f"
+    },
+    {
+      "id": "corebook:scenario:untergard-evacuation",
+      "type": "event",
+      "entryType": "event",
+      "scope": "scenario",
+      "kind": "scenario_event",
+      "title": "Ewakuacja Untergardu",
+      "aliases": [],
+      "summary": "Wymarsz mieszkańców zagrożonych przez nadciągającą hordę zwierzoludzi.",
+      "category": "Scenariusz: Wydarzenia",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Kapitan Schiller organizuje kolumnę uchodźców i prowadzi ją przez Drakwald w kierunku Middenheim.\n\nBohaterowie Graczy mogą pełnić role obrońców, zwiadowców i śledczych odpowiedzialnych za bezpieczeństwo grupy."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          253,
+          254
+        ],
+        "printedPages": [
+          252,
+          253
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "d9370248e7d5680f0db5750a4951d061232c4d15bcdd9182db2b5893109ac9f4"
+    },
+    {
+      "id": "corebook:scenario:crossroads-ambush",
+      "type": "event",
+      "entryType": "event",
+      "scope": "scenario",
+      "kind": "scenario_event",
+      "title": "Zasadzka na rozstajach",
+      "aliases": [],
+      "summary": "Ślady ataku na podróżnych odnalezione na drodze uchodźców.",
+      "category": "Scenariusz: Wydarzenia",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Ciała i rozbite wozy blokują drogę, a ukryte pułapki nadal stanowią zagrożenie. Ojciec Dietrich zostaje śmiertelnie ranny.\n\nKapłan powierza bohaterom relikwię Sigmara i prosi o dostarczenie jej do świątyni w Middenheim."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          256
+        ],
+        "printedPages": [
+          255
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "20f67f606eb9801976ecf0a4229aa0c83d012e2e5884518994db76707fcec5cd"
+    },
+    {
+      "id": "corebook:scenario:moescher-ritual",
+      "type": "event",
+      "entryType": "event",
+      "scope": "scenario",
+      "kind": "scenario_secret",
+      "title": "Rytuał zemsty Babuni Moescher",
+      "aliases": [],
+      "summary": "Finałowe wydarzenie scenariusza i główny sekret Babuni Moescher.",
+      "category": "Scenariusz: Tajemnice",
+      "content": [
+        {
+          "title": "Najważniejsze informacje",
+          "text": "Babunia udaje się do ruin Fahndorfu, aby przywołać istotę mającą wymordować rodzinę Sternhauerów w odwecie za śmierć jej ojca.\n\nRytuał w rzeczywistości otwiera przejście do Domeny Chaosu i przywołuje demona. Bohaterowie mają niewiele czasu, by przerwać obrzęd."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          257,
+          258
+        ],
+        "printedPages": [
+          256,
+          257
+        ]
+      },
+      "identity": null,
+      "profile": null,
+      "bestiary": false,
+      "checksum": "1429f62d49472ee16e407b4ce6ef54003411c00239865ac2c34bc1df2eebbae9"
+    },
+    {
+      "id": "corebook:bestiary:goblin",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Goblin",
+      "aliases": [],
+      "summary": "Niewielki, zielonoskóry i kłótliwy goblinoid, groźny przede wszystkim liczebnością i podstępem.",
+      "category": "Bestiariusz: Stwory Ciemności",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Niewielki, zielonoskóry i kłótliwy goblinoid, groźny przede wszystkim liczebnością i podstępem."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          240
+        ],
+        "printedPages": [
+          239
+        ]
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 25,
+          "us": 30,
+          "k": 30,
+          "odp": 30,
+          "zr": 25,
+          "int": 25,
+          "sw": 30,
+          "ogd": 20,
+          "a": 1,
+          "zyw": 8,
+          "s": 3,
+          "wt": 3,
+          "sz": 4,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "jeździectwo albo pływanie",
+          "skradanie się",
+          "spostrzegawczość",
+          "sztuka przetrwania",
+          "ukrywanie się",
+          "wspinaczka",
+          "znajomość języka (gobliński)"
+        ],
+        "talents": [
+          "widzenie w ciemności"
+        ],
+        "specialRules": [
+          "Elfiaki som straszni"
+        ],
+        "armour": "lekki pancerz (skórzany kaftan)",
+        "armourPoints": "głowa 0, ręce 0, korpus 1, nogi 0",
+        "weapons": [
+          "broń jednoręczna",
+          "krótki łuk albo włócznia"
+        ],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "hostile",
+          "hidden": false
+        }
+      },
+      "checksum": "fa1d6c8284c1c3766ff719a40f18fd1889ff7d74d60446dc1aa8752022c8cf08"
+    },
+    {
+      "id": "corebook:bestiary:mutant",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Mutant",
+      "aliases": [],
+      "summary": "Człowiek trwale wypaczony przez Chaos, zwykle odrzucony przez społeczeństwo i przygarnięty przez inne sługi Chaosu.",
+      "category": "Bestiariusz: Stwory Ciemności",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Człowiek trwale wypaczony przez Chaos, zwykle odrzucony przez społeczeństwo i przygarnięty przez inne sługi Chaosu."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          241
+        ],
+        "printedPages": [
+          240
+        ]
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 31,
+          "us": 31,
+          "k": 31,
+          "odp": 31,
+          "zr": 31,
+          "int": 31,
+          "sw": 31,
+          "ogd": 31,
+          "a": 1,
+          "zyw": 11,
+          "s": 3,
+          "wt": 3,
+          "sz": 4,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "opieka nad zwierzętami",
+          "skradanie się",
+          "spostrzegawczość",
+          "sztuka przetrwania",
+          "ukrywanie się",
+          "znajomość języka (mroczna mowa albo staroświatowy)"
+        ],
+        "talents": [
+          "chodu!"
+        ],
+        "specialRules": [
+          "Mutacje Chaosu: 1k10 określa liczbę mutacji"
+        ],
+        "armour": "brak",
+        "armourPoints": "głowa 0, ręce 0, korpus 0, nogi 0",
+        "weapons": [
+          "broń jednoręczna (pałka)"
+        ],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "hostile",
+          "hidden": false
+        }
+      },
+      "checksum": "930ded0992449acbcc551c6126c8287cd209dc2e81110abe265166df436416ac"
+    },
+    {
+      "id": "corebook:bestiary:ork",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Ork",
+      "aliases": [],
+      "summary": "Silny, agresywny zielonoskóry wojownik, który rozstrzyga spory przemocą i nienawidzi krasnoludów.",
+      "category": "Bestiariusz: Stwory Ciemności",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Silny, agresywny zielonoskóry wojownik, który rozstrzyga spory przemocą i nienawidzi krasnoludów."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          241
+        ],
+        "printedPages": [
+          240
+        ]
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 35,
+          "us": 35,
+          "k": 35,
+          "odp": 45,
+          "zr": 25,
+          "int": 25,
+          "sw": 30,
+          "ogd": 20,
+          "a": 1,
+          "zyw": 12,
+          "s": 3,
+          "wt": 4,
+          "sz": 4,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "jeździectwo albo pływanie",
+          "spostrzegawczość",
+          "sztuka przetrwania",
+          "torturowanie",
+          "wspinaczka",
+          "zastraszanie",
+          "znajomość języka (gobliński)"
+        ],
+        "talents": [
+          "bijatyka",
+          "groźny",
+          "silny cios",
+          "widzenie w ciemności"
+        ],
+        "specialRules": [
+          "Nienawiść",
+          "Siekacz: +1 do obrażeń w pierwszej rundzie"
+        ],
+        "armour": "średni pancerz (koszulka kolcza, skórzana kurta i skórzany czepiec)",
+        "armourPoints": "głowa 1, ręce 1, korpus 3, nogi 0",
+        "weapons": [
+          "siekacz",
+          "sztylet albo łuk"
+        ],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "hostile",
+          "hidden": false
+        }
+      },
+      "checksum": "ae2d05377ec8e57c1766b3858a816714d595a58cf179731f6d69069148576aee"
+    },
+    {
+      "id": "corebook:bestiary:skaven",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Skaven",
+      "aliases": [],
+      "summary": "Człekokształtny szczurolud z podziemnego imperium, posługujący się podstępem, zarazą i skrytobójstwem.",
+      "category": "Bestiariusz: Stwory Ciemności",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Człekokształtny szczurolud z podziemnego imperium, posługujący się podstępem, zarazą i skrytobójstwem."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          242
+        ],
+        "printedPages": [
+          241
+        ]
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 30,
+          "us": 25,
+          "k": 30,
+          "odp": 30,
+          "zr": 40,
+          "int": 25,
+          "sw": 25,
+          "ogd": 15,
+          "a": 1,
+          "zyw": 9,
+          "s": 3,
+          "wt": 3,
+          "sz": 5,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "broń specjalna (proce)",
+          "pływanie",
+          "skradanie się",
+          "spostrzegawczość",
+          "sztuka przetrwania",
+          "ukrywanie się",
+          "wspinaczka",
+          "znajomość języka (queekish)"
+        ],
+        "talents": [
+          "grotołaz",
+          "widzenie w ciemności"
+        ],
+        "specialRules": [
+          "brak"
+        ],
+        "armour": "lekki pancerz (skórzana kurta i skórzany czepiec)",
+        "armourPoints": "głowa 1, ręce 1, korpus 1, nogi 0",
+        "weapons": [
+          "broń jednoręczna (miecz)",
+          "sztylet albo proca"
+        ],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "hostile",
+          "hidden": false
+        }
+      },
+      "checksum": "417e42a21a22277a0967035cf50f7dc222fb186fca51b6ee9cc58a17e8c9f086"
+    },
+    {
+      "id": "corebook:bestiary:zwierzoczlek",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Zwierzoczłek",
+      "aliases": [],
+      "summary": "Naznaczona Chaosem hybryda człowieka i zwierzęcia, polująca w leśnych zbrojnych stadach.",
+      "category": "Bestiariusz: Stwory Ciemności",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Naznaczona Chaosem hybryda człowieka i zwierzęcia, polująca w leśnych zbrojnych stadach."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          242
+        ],
+        "printedPages": [
+          241
+        ]
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 40,
+          "us": 25,
+          "k": 35,
+          "odp": 45,
+          "zr": 35,
+          "int": 25,
+          "sw": 25,
+          "ogd": 25,
+          "a": 1,
+          "zyw": 12,
+          "s": 3,
+          "wt": 4,
+          "sz": 5,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "skradanie się",
+          "spostrzegawczość",
+          "sztuka przetrwania",
+          "śledzenie",
+          "tropienie",
+          "ukrywanie się",
+          "zastraszanie",
+          "znajomość języka (mroczna mowa)"
+        ],
+        "talents": [
+          "groźny",
+          "wędrowiec",
+          "wyostrzone zmysły"
+        ],
+        "specialRules": [
+          "Mutacje Chaosu: zwierzęce odnóża i rogi, 25% szans na dodatkową mutację",
+          "Mieszkaniec lasów"
+        ],
+        "armour": "lekki pancerz (skórzana kurta)",
+        "armourPoints": "głowa 0, ręce 1, korpus 1, nogi 0",
+        "weapons": [
+          "broń jednoręczna albo włócznia",
+          "rogi (obrażenia S-1)",
+          "tarcza"
+        ],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "hostile",
+          "hidden": false
+        }
+      },
+      "checksum": "51bcb7b82d1e0a66d7f46b428dab7cbe3a80ad4845d7cef679cf5c24fd7c87e4"
+    },
+    {
+      "id": "corebook:bestiary:demoniczny-chochlik",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Demoniczny chochlik",
+      "aliases": [],
+      "summary": "Mały skrzydlaty demon, często pełniący rolę posłańca potężniejszych istot z Domeny Chaosu.",
+      "category": "Bestiariusz: Stwory Ciemności",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Mały skrzydlaty demon, często pełniący rolę posłańca potężniejszych istot z Domeny Chaosu."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          242
+        ],
+        "printedPages": [
+          241
+        ]
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 33,
+          "us": 0,
+          "k": 40,
+          "odp": 33,
+          "zr": 40,
+          "int": 30,
+          "sw": 33,
+          "ogd": 15,
+          "a": 1,
+          "zyw": 12,
+          "s": 4,
+          "wt": 3,
+          "sz": "3(6)",
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "język tajemny (demoniczny)",
+          "spostrzegawczość",
+          "unik",
+          "zastraszanie",
+          "znajomość języka (mroczna mowa)"
+        ],
+        "talents": [
+          "broń naturalna",
+          "lewitacja",
+          "nieustraszony",
+          "oburęczność",
+          "straszny",
+          "widzenie w ciemności"
+        ],
+        "specialRules": [
+          "Mutacje Chaosu: 1k10 określa 1-3 mutacje"
+        ],
+        "armour": "brak",
+        "armourPoints": "głowa 0, ręce 0, korpus 0, nogi 0",
+        "weapons": [
+          "pazury"
+        ],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 70,
+          "height": 70,
+          "disposition": "hostile",
+          "hidden": false
+        }
+      },
+      "checksum": "cd971f5a7ec7f300692046c8aba03a61af0cbf5eb2fa30ca683ab0ca7e87d745"
+    },
+    {
+      "id": "corebook:bestiary:pomniejszy-demon",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Pomniejszy demon",
+      "aliases": [],
+      "summary": "Wysłannik Mrocznych Bogów przywoływany do Starego Świata w celu wykonania konkretnego zadania.",
+      "category": "Bestiariusz: Stwory Ciemności",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Wysłannik Mrocznych Bogów przywoływany do Starego Świata w celu wykonania konkretnego zadania."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          243
+        ],
+        "printedPages": [
+          242
+        ]
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 50,
+          "us": 40,
+          "k": 45,
+          "odp": 45,
+          "zr": 50,
+          "int": 35,
+          "sw": 50,
+          "ogd": 15,
+          "a": 2,
+          "zyw": 15,
+          "s": 4,
+          "wt": 4,
+          "sz": "4(6)",
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "język tajemny (demoniczny)",
+          "spostrzegawczość",
+          "unik",
+          "zastraszanie",
+          "znajomość języka (mroczna mowa)"
+        ],
+        "talents": [
+          "broń naturalna",
+          "latanie",
+          "nieustraszony",
+          "oburęczność",
+          "silny cios",
+          "straszny",
+          "widzenie w ciemności"
+        ],
+        "specialRules": [
+          "Mutacje Chaosu: 1k10 określa 1-4 mutacje"
+        ],
+        "armour": "brak",
+        "armourPoints": "głowa 0, ręce 0, korpus 0, nogi 0",
+        "weapons": [
+          "pazury"
+        ],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "hostile",
+          "hidden": false
+        }
+      },
+      "checksum": "3fc0349413e914b149696b63a156fa2a48a47f1cbb100ad782d70e4bb41fee63"
+    },
+    {
+      "id": "corebook:bestiary:szkielet",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Szkielet",
+      "aliases": [],
+      "summary": "Ożywione przez nekromantę kości zmarłego; bezrozumne, nieustraszone i powolne.",
+      "category": "Bestiariusz: Stwory Ciemności",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Ożywione przez nekromantę kości zmarłego; bezrozumne, nieustraszone i powolne."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          243
+        ],
+        "printedPages": [
+          242
+        ]
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 25,
+          "us": 20,
+          "k": 30,
+          "odp": 30,
+          "zr": 25,
+          "int": null,
+          "sw": null,
+          "ogd": null,
+          "a": 1,
+          "zyw": 10,
+          "s": 3,
+          "wt": 3,
+          "sz": 4,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [],
+        "talents": [
+          "ożywieniec",
+          "straszny"
+        ],
+        "specialRules": [
+          "Bezrozumne",
+          "Powolne: nie może wykonywać akcji bieg"
+        ],
+        "armour": "lekki pancerz (skórzany kaftan i skórzany czepiec)",
+        "armourPoints": "głowa 1, ręce 0, korpus 1, nogi 0",
+        "weapons": [
+          "broń jednoręczna",
+          "sztylet albo łuk"
+        ],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "hostile",
+          "hidden": false
+        }
+      },
+      "checksum": "b3d3deebc5708677e578dec72df87adeed8f2fa73e719bcce07aeeeed6ae3fca"
+    },
+    {
+      "id": "corebook:bestiary:upior",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Upiór",
+      "aliases": [],
+      "summary": "Ożywiony pradawny wojownik z kurhanu, inteligentniejszy i znacznie groźniejszy od szkieletu.",
+      "category": "Bestiariusz: Stwory Ciemności",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Ożywiony pradawny wojownik z kurhanu, inteligentniejszy i znacznie groźniejszy od szkieletu."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          244
+        ],
+        "printedPages": [
+          243
+        ]
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 40,
+          "us": 35,
+          "k": 45,
+          "odp": 45,
+          "zr": 30,
+          "int": 25,
+          "sw": 35,
+          "ogd": 20,
+          "a": 1,
+          "zyw": 15,
+          "s": 4,
+          "wt": 4,
+          "sz": 4,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "spostrzegawczość",
+          "znajomość języka (klasyczny)"
+        ],
+        "talents": [
+          "ożywieniec",
+          "straszny"
+        ],
+        "specialRules": [
+          "Upiorna broń: magiczna, +2 do obrażeń i dwa rzuty trafienia krytycznego"
+        ],
+        "armour": "średni pancerz (zbroja kolcza)",
+        "armourPoints": "głowa 3, ręce 3, korpus 3, nogi 3",
+        "weapons": [
+          "upiorna broń",
+          "tarcza"
+        ],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "hostile",
+          "hidden": false
+        }
+      },
+      "checksum": "81fe3981512a5c4cda23dff3682247f1cab34acc0819ec4bf0c48591121c48d4"
+    },
+    {
+      "id": "corebook:bestiary:zombi",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Zombi",
+      "aliases": [],
+      "summary": "Ożywione, gnijące zwłoki używane przez nekromantów i wampiry jako bezrozumni żołnierze.",
+      "category": "Bestiariusz: Stwory Ciemności",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Ożywione, gnijące zwłoki używane przez nekromantów i wampiry jako bezrozumni żołnierze."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          244
+        ],
+        "printedPages": [
+          243
+        ]
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 25,
+          "us": 0,
+          "k": 35,
+          "odp": 35,
+          "zr": 10,
+          "int": null,
+          "sw": null,
+          "ogd": null,
+          "a": 1,
+          "zyw": 12,
+          "s": 3,
+          "wt": 3,
+          "sz": 4,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [],
+        "talents": [
+          "ożywieniec",
+          "straszny"
+        ],
+        "specialRules": [
+          "Bezrozumne",
+          "Powolne: nie może wykonywać akcji bieg"
+        ],
+        "armour": "lekki pancerz (skórzana kurta)",
+        "armourPoints": "głowa 0, ręce 1, korpus 1, nogi 0",
+        "weapons": [
+          "broń jednoręczna"
+        ],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "hostile",
+          "hidden": false
+        }
+      },
+      "checksum": "a431a1a2c6835f240d55791c61d5f71222fb782bd7f918f412fb18e093d4449c"
+    },
+    {
+      "id": "corebook:bestiary:kuc",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Kuc",
+      "aliases": [],
+      "summary": "Zwierzę juczne i wierzchowiec odpowiedni dla krasnoludów oraz niziołków.",
+      "category": "Bestiariusz: Zwierzęta",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Zwierzę juczne i wierzchowiec odpowiedni dla krasnoludów oraz niziołków."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          244
+        ],
+        "printedPages": [
+          243
+        ]
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 25,
+          "us": 0,
+          "k": 35,
+          "odp": 35,
+          "zr": 35,
+          "int": 10,
+          "sw": 10,
+          "ogd": 0,
+          "a": 0,
+          "zyw": 12,
+          "s": 3,
+          "wt": 3,
+          "sz": 6,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "pływanie",
+          "spostrzegawczość"
+        ],
+        "talents": [
+          "czuły słuch",
+          "wyostrzone zmysły"
+        ],
+        "specialRules": [],
+        "armour": null,
+        "armourPoints": null,
+        "weapons": [],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "checksum": "7ed988936a528a34bba6c5b324417031b149d4495810fde07c5d9c723aa35b81"
+    },
+    {
+      "id": "corebook:bestiary:kon-wierzchowy",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Koń wierzchowy",
+      "aliases": [],
+      "summary": "Popularny podjezdek używany przez rycerzy i szlachtę Imperium.",
+      "category": "Bestiariusz: Zwierzęta",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Popularny podjezdek używany przez rycerzy i szlachtę Imperium."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          244,
+          269
+        ],
+        "printedPages": [
+          243
+        ],
+        "errataApplied": "Zastosowano erratę ze strony PDF 269: profil konia wierzchowego zamieniono z profilem rumaka."
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 25,
+          "us": 0,
+          "k": 38,
+          "odp": 38,
+          "zr": 30,
+          "int": 10,
+          "sw": 10,
+          "ogd": 0,
+          "a": 0,
+          "zyw": 12,
+          "s": 3,
+          "wt": 3,
+          "sz": 8,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "pływanie",
+          "spostrzegawczość +10"
+        ],
+        "talents": [
+          "czuły słuch",
+          "wyostrzone zmysły"
+        ],
+        "specialRules": [],
+        "armour": null,
+        "armourPoints": null,
+        "weapons": [],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 150,
+          "height": 150,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "checksum": "fdd61fbc3bd4239903c076a3395e81aa81fa2b07e5e5d66d25223ab7bf49114f"
+    },
+    {
+      "id": "corebook:bestiary:lekki-kon-bojowy",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Lekki koń bojowy",
+      "aliases": [],
+      "summary": "Koń kawaleryjski przyuczony do walki, gryzienia i kopania, niepłoszący się na widok krwi.",
+      "category": "Bestiariusz: Zwierzęta",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Koń kawaleryjski przyuczony do walki, gryzienia i kopania, niepłoszący się na widok krwi."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          244
+        ],
+        "printedPages": [
+          243
+        ]
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 30,
+          "us": 0,
+          "k": 40,
+          "odp": 40,
+          "zr": 30,
+          "int": 10,
+          "sw": 10,
+          "ogd": 0,
+          "a": 1,
+          "zyw": 14,
+          "s": 4,
+          "wt": 4,
+          "sz": 8,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "pływanie",
+          "spostrzegawczość +10"
+        ],
+        "talents": [
+          "broń naturalna",
+          "czuły słuch",
+          "silny cios",
+          "wyostrzone zmysły"
+        ],
+        "specialRules": [],
+        "armour": null,
+        "armourPoints": null,
+        "weapons": [],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 150,
+          "height": 150,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "checksum": "21b362ddabdd080a172e6708302d204cd4e3abac09db5eaf4527429716ad1190"
+    },
+    {
+      "id": "corebook:bestiary:rumak",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Rumak",
+      "aliases": [],
+      "summary": "Ciężki koń bojowy rycerstwa zakonnego i pancernej konnicy, tresowany do noszenia ciężkiego oporządzenia.",
+      "category": "Bestiariusz: Zwierzęta",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Ciężki koń bojowy rycerstwa zakonnego i pancernej konnicy, tresowany do noszenia ciężkiego oporządzenia."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          245,
+          269
+        ],
+        "printedPages": [
+          244
+        ],
+        "errataApplied": "Zastosowano erratę ze strony PDF 269: profil rumaka zamieniono z profilem konia wierzchowego."
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 30,
+          "us": 0,
+          "k": 45,
+          "odp": 45,
+          "zr": 30,
+          "int": 10,
+          "sw": 10,
+          "ogd": 0,
+          "a": 1,
+          "zyw": 18,
+          "s": 4,
+          "wt": 4,
+          "sz": 8,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "pływanie",
+          "spostrzegawczość +10"
+        ],
+        "talents": [
+          "broń naturalna",
+          "czuły słuch",
+          "silny cios",
+          "wyostrzone zmysły"
+        ],
+        "specialRules": [],
+        "armour": null,
+        "armourPoints": null,
+        "weapons": [],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 150,
+          "height": 150,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "checksum": "82a154191691b6ef10ecae4ccc678bafb5599bbd66b3e7b5fc76f25180e2afc3"
+    },
+    {
+      "id": "corebook:bestiary:pies-bojowy",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Pies bojowy",
+      "aliases": [],
+      "summary": "Duży i agresywny pies szkolony do walki, polowania albo ochrony.",
+      "category": "Bestiariusz: Zwierzęta",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Duży i agresywny pies szkolony do walki, polowania albo ochrony."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          245
+        ],
+        "printedPages": [
+          244
+        ]
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 41,
+          "us": 0,
+          "k": 32,
+          "odp": 38,
+          "zr": 30,
+          "int": 15,
+          "sw": 43,
+          "ogd": 0,
+          "a": 1,
+          "zyw": 10,
+          "s": 3,
+          "wt": 3,
+          "sz": 6,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "pływanie",
+          "spostrzegawczość +20",
+          "tropienie"
+        ],
+        "talents": [
+          "broń naturalna",
+          "silny cios",
+          "wyostrzone zmysły"
+        ],
+        "specialRules": [],
+        "armour": null,
+        "armourPoints": null,
+        "weapons": [],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "checksum": "ee7996a42f31251ebd8f62697d9eb12b171eb445d0d9c84922f0f1cc4d15e756"
+    },
+    {
+      "id": "corebook:bestiary:kruk",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Kruk",
+      "aliases": [],
+      "summary": "Padlinożerny ptak zwabiany przez pola bitew i błyszczące przedmioty.",
+      "category": "Bestiariusz: Zwierzęta",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Padlinożerny ptak zwabiany przez pola bitew i błyszczące przedmioty."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          245
+        ],
+        "printedPages": [
+          244
+        ]
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 38,
+          "us": 0,
+          "k": 10,
+          "odp": 10,
+          "zr": 38,
+          "int": 12,
+          "sw": 24,
+          "ogd": 0,
+          "a": 2,
+          "zyw": 6,
+          "s": 1,
+          "wt": 1,
+          "sz": "2(8)",
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "spostrzegawczość +20"
+        ],
+        "talents": [
+          "bystry wzrok",
+          "latanie",
+          "wyostrzone zmysły"
+        ],
+        "specialRules": [],
+        "armour": null,
+        "armourPoints": null,
+        "weapons": [],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 50,
+          "height": 50,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "checksum": "a05c7fe1e7dcee49d0f823baf14d6681edbfce84d450bf32273e033797baa157"
+    },
+    {
+      "id": "corebook:bestiary:niedzwiedz",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Niedźwiedź",
+      "aliases": [],
+      "summary": "Górski niedźwiedź, najczęściej spotykany w Starym Świecie gatunek tego drapieżnika.",
+      "category": "Bestiariusz: Zwierzęta",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Górski niedźwiedź, najczęściej spotykany w Starym Świecie gatunek tego drapieżnika."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          245
+        ],
+        "printedPages": [
+          244
+        ]
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 33,
+          "us": 0,
+          "k": 52,
+          "odp": 47,
+          "zr": 25,
+          "int": 10,
+          "sw": 25,
+          "ogd": 0,
+          "a": 2,
+          "zyw": 20,
+          "s": 5,
+          "wt": 4,
+          "sz": 4,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "pływanie",
+          "spostrzegawczość"
+        ],
+        "talents": [
+          "broń naturalna",
+          "morderczy atak",
+          "niepokojący",
+          "silny cios",
+          "wyostrzone zmysły"
+        ],
+        "specialRules": [],
+        "armour": null,
+        "armourPoints": null,
+        "weapons": [],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 150,
+          "height": 150,
+          "disposition": "hostile",
+          "hidden": false
+        }
+      },
+      "checksum": "df695c68444b3538d56a079f576a5a923725f8b5a75aa4b2d872ce246f4bc08a"
+    },
+    {
+      "id": "corebook:bestiary:pies-domowy",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Pies domowy",
+      "aliases": [],
+      "summary": "Pospolity pies gospodarski; zdziczałe sfory mogą być groźne dla podróżnych.",
+      "category": "Bestiariusz: Zwierzęta",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Pospolity pies gospodarski; zdziczałe sfory mogą być groźne dla podróżnych."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          245
+        ],
+        "printedPages": [
+          244
+        ]
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 25,
+          "us": 0,
+          "k": 21,
+          "odp": 21,
+          "zr": 30,
+          "int": 15,
+          "sw": 30,
+          "ogd": 0,
+          "a": 1,
+          "zyw": 6,
+          "s": 2,
+          "wt": 2,
+          "sz": 6,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "pływanie",
+          "spostrzegawczość +20",
+          "tropienie"
+        ],
+        "talents": [
+          "broń naturalna",
+          "chodu!",
+          "wyostrzone zmysły"
+        ],
+        "specialRules": [],
+        "armour": null,
+        "armourPoints": null,
+        "weapons": [],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "checksum": "8913e85000e40d075719ae333b453e967cc9db0be4166b65ae040f82793906c7"
+    },
+    {
+      "id": "corebook:bestiary:wilk",
+      "type": "creature",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "creature",
+      "title": "Wilk",
+      "aliases": [],
+      "summary": "Drapieżnik północnych prowincji Imperium, uznawany za święte zwierzę przez kapłanów Ulryka.",
+      "category": "Bestiariusz: Zwierzęta",
+      "content": [
+        {
+          "title": "Opis",
+          "text": "Drapieżnik północnych prowincji Imperium, uznawany za święte zwierzę przez kapłanów Ulryka."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          245
+        ],
+        "printedPages": [
+          244
+        ]
+      },
+      "identity": null,
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 30,
+          "us": 0,
+          "k": 30,
+          "odp": 30,
+          "zr": 40,
+          "int": 14,
+          "sw": 25,
+          "ogd": 0,
+          "a": 1,
+          "zyw": 10,
+          "s": 3,
+          "wt": 3,
+          "sz": 6,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "pływanie",
+          "spostrzegawczość +10",
+          "tropienie"
+        ],
+        "talents": [
+          "broń naturalna",
+          "wyostrzone zmysły"
+        ],
+        "specialRules": [],
+        "armour": null,
+        "armourPoints": null,
+        "weapons": [],
+        "equipment": [],
+        "career": null,
+        "race": null,
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "hostile",
+          "hidden": false
+        }
+      },
+      "checksum": "cc513fd3e73d0fc3988872a2472082b5c909c4a9da218eb1e251ce82b1367858"
+    },
+    {
+      "id": "corebook:npc:generic:kieszonkowiec",
+      "type": "person",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "generic_npc",
+      "title": "Kieszonkowiec",
+      "aliases": [],
+      "summary": "Drobny złodziej działający na gwarnych ulicach i targach; kradnie mieszki, sakiewki oraz niewielką biżuterię, po czym znika w tłumie.",
+      "category": "Bohaterowie niezależni: Generyczni",
+      "content": [
+        {
+          "title": "Archetyp",
+          "text": "Generyczny Bohater Niezależny przeznaczony do szybkiego wykorzystania przez Mistrza Gry."
+        },
+        {
+          "title": "Opis",
+          "text": "Drobny złodziej działający na gwarnych ulicach i targach; kradnie mieszki, sakiewki oraz niewielką biżuterię, po czym znika w tłumie."
+        },
+        {
+          "title": "Profesja",
+          "text": "Profesja wzorcowa: złodziej. Nazwa wpisu określa rolę, a nie imię postaci."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          246
+        ],
+        "printedPages": [
+          245
+        ]
+      },
+      "identity": {
+        "givenName": null,
+        "familyName": null,
+        "honorific": null,
+        "displayName": "Kieszonkowiec",
+        "sourceSuppliedName": false,
+        "archetype": true
+      },
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 26,
+          "us": 32,
+          "k": 28,
+          "odp": 31,
+          "zr": 43,
+          "int": 31,
+          "sw": 29,
+          "ogd": 40,
+          "a": 1,
+          "zyw": 11,
+          "s": 2,
+          "wt": 3,
+          "sz": 4,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "hazard",
+          "plotkowanie",
+          "przekonywanie",
+          "przeszukiwanie",
+          "sekretne znaki (złodziei)",
+          "skradanie się",
+          "spostrzegawczość",
+          "ukrywanie się",
+          "wiedza (Imperium)",
+          "wycena",
+          "znajomość języka (staroświatowy)",
+          "zwinne palce"
+        ],
+        "talents": [
+          "bystry wzrok",
+          "charyzmatyczny",
+          "łotrzyk",
+          "szybki refleks"
+        ],
+        "specialRules": [],
+        "armour": "lekki pancerz (skórzany kaftan)",
+        "armourPoints": "głowa 0, ręce 0, korpus 1, nogi 0",
+        "weapons": [
+          "sztylet"
+        ],
+        "equipment": [
+          "tobołek"
+        ],
+        "career": "złodziej",
+        "race": "człowiek",
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "npcKind": "generic",
+      "checksum": "0095c8176f3c9aa9567590e0a18252f46c3c92adc545200488baa51ab732b828"
+    },
+    {
+      "id": "corebook:npc:generic:kowal",
+      "type": "person",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "generic_npc",
+      "title": "Kowal",
+      "aliases": [],
+      "summary": "Powszechnie szanowany rzemieślnik, który podkuwa konie, wyrabia i naprawia prostą broń, a czasem również zbroje.",
+      "category": "Bohaterowie niezależni: Generyczni",
+      "content": [
+        {
+          "title": "Archetyp",
+          "text": "Generyczny Bohater Niezależny przeznaczony do szybkiego wykorzystania przez Mistrza Gry."
+        },
+        {
+          "title": "Opis",
+          "text": "Powszechnie szanowany rzemieślnik, który podkuwa konie, wyrabia i naprawia prostą broń, a czasem również zbroje."
+        },
+        {
+          "title": "Profesja",
+          "text": "Profesja wzorcowa: rzemieślnik. Nazwa wpisu określa rolę, a nie imię postaci."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          246
+        ],
+        "printedPages": [
+          245
+        ]
+      },
+      "identity": {
+        "givenName": null,
+        "familyName": null,
+        "honorific": null,
+        "displayName": "Kowal",
+        "sourceSuppliedName": false,
+        "archetype": true
+      },
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 38,
+          "us": 29,
+          "k": 42,
+          "odp": 41,
+          "zr": 30,
+          "int": 34,
+          "sw": 30,
+          "ogd": 20,
+          "a": 1,
+          "zyw": 11,
+          "s": 3,
+          "wt": 4,
+          "sz": 3,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "czytanie i pisanie",
+          "plotkowanie",
+          "powożenie",
+          "rzemiosło (kowalstwo)",
+          "rzemiosło (płatnerstwo)",
+          "sekretny język (gildii)",
+          "spostrzegawczość",
+          "targowanie",
+          "wiedza (krasnoludy)",
+          "wycena",
+          "znajomość języka (khazalid)",
+          "znajomość języka (staroświatowy)"
+        ],
+        "talents": [
+          "krasnoludzki fach",
+          "krzepki",
+          "odwaga",
+          "widzenie w ciemności",
+          "zapiekła nienawiść",
+          "żyłka handlowa"
+        ],
+        "specialRules": [],
+        "armour": "lekki pancerz (skórzany kaftan)",
+        "armourPoints": "głowa 0, ręce 0, korpus 1, nogi 0",
+        "weapons": [
+          "broń jednoręczna (młot)"
+        ],
+        "equipment": [
+          "narzędzia (rzemieślnika)"
+        ],
+        "career": "rzemieślnik",
+        "race": "krasnolud",
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "npcKind": "generic",
+      "checksum": "206e05d6bb0ba28039972a1b9de8422e816568673f0d1ea8a768f2657ffd801d"
+    },
+    {
+      "id": "corebook:npc:generic:kramarz",
+      "type": "person",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "generic_npc",
+      "title": "Kramarz",
+      "aliases": [],
+      "summary": "Handlarz prowadzący kram, sklepik, niewielką oberżę albo tawernę w mieście lub porcie Imperium.",
+      "category": "Bohaterowie niezależni: Generyczni",
+      "content": [
+        {
+          "title": "Archetyp",
+          "text": "Generyczny Bohater Niezależny przeznaczony do szybkiego wykorzystania przez Mistrza Gry."
+        },
+        {
+          "title": "Opis",
+          "text": "Handlarz prowadzący kram, sklepik, niewielką oberżę albo tawernę w mieście lub porcie Imperium."
+        },
+        {
+          "title": "Profesja",
+          "text": "Profesja wzorcowa: mieszczanin. Nazwa wpisu określa rolę, a nie imię postaci."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          246
+        ],
+        "printedPages": [
+          245
+        ]
+      },
+      "identity": {
+        "givenName": null,
+        "familyName": null,
+        "honorific": null,
+        "displayName": "Kramarz",
+        "sourceSuppliedName": false,
+        "archetype": true
+      },
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 28,
+          "us": 25,
+          "k": 28,
+          "odp": 31,
+          "zr": 32,
+          "int": 43,
+          "sw": 30,
+          "ogd": 39,
+          "a": 1,
+          "zyw": 11,
+          "s": 2,
+          "wt": 3,
+          "sz": 4,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "czytanie i pisanie",
+          "mocna głowa",
+          "plotkowanie",
+          "powożenie",
+          "przeszukiwanie",
+          "spostrzegawczość",
+          "targowanie",
+          "wiedza (Imperium)",
+          "wycena",
+          "znajomość języka (kislevski)",
+          "znajomość języka (staroświatowy) +10"
+        ],
+        "talents": [
+          "błyskotliwość",
+          "charyzmatyczny",
+          "czuły słuch",
+          "żyłka handlowa"
+        ],
+        "specialRules": [],
+        "armour": "lekki pancerz (skórzany kaftan)",
+        "armourPoints": "głowa 0, ręce 0, korpus 1, nogi 0",
+        "weapons": [
+          "broń jednoręczna (pałka)"
+        ],
+        "equipment": [
+          "sklepik lub tawerna"
+        ],
+        "career": "mieszczanin",
+        "race": "człowiek",
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "npcKind": "generic",
+      "checksum": "c7210e396417f32d0632f6ed55658b4945f2e546cca7b0b7f730104ebff0a4f4"
+    },
+    {
+      "id": "corebook:npc:generic:najmita",
+      "type": "person",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "generic_npc",
+      "title": "Najmita",
+      "aliases": [],
+      "summary": "Osiłek albo wojownik do wynajęcia, zwykle mający za sobą służbę w armii lub garnizonie straży miejskiej.",
+      "category": "Bohaterowie niezależni: Generyczni",
+      "content": [
+        {
+          "title": "Archetyp",
+          "text": "Generyczny Bohater Niezależny przeznaczony do szybkiego wykorzystania przez Mistrza Gry."
+        },
+        {
+          "title": "Opis",
+          "text": "Osiłek albo wojownik do wynajęcia, zwykle mający za sobą służbę w armii lub garnizonie straży miejskiej."
+        },
+        {
+          "title": "Profesja",
+          "text": "Profesja wzorcowa: najemnik. Nazwa wpisu określa rolę, a nie imię postaci."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          246,
+          247
+        ],
+        "printedPages": [
+          245,
+          246
+        ]
+      },
+      "identity": {
+        "givenName": null,
+        "familyName": null,
+        "honorific": null,
+        "displayName": "Najmita",
+        "sourceSuppliedName": false,
+        "archetype": true
+      },
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 35,
+          "us": 30,
+          "k": 33,
+          "odp": 35,
+          "zr": 30,
+          "int": 25,
+          "sw": 35,
+          "ogd": 28,
+          "a": 1,
+          "zyw": 11,
+          "s": 3,
+          "wt": 3,
+          "sz": 4,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "hazard",
+          "plotkowanie +10",
+          "powożenie",
+          "sekretny język (bitewny)",
+          "spostrzegawczość",
+          "unik",
+          "wiedza (Imperium)",
+          "wiedza (Tilea)",
+          "znajomość języka (staroświatowy)",
+          "znajomość języka (tileański)"
+        ],
+        "talents": [
+          "błyskawiczne przeładowanie",
+          "opanowanie",
+          "rozbrajanie",
+          "strzał mierzony",
+          "strzelec wyborowy"
+        ],
+        "specialRules": [],
+        "armour": "średni pancerz (skórznia, kaftan kolczy i kolczy czepiec)",
+        "armourPoints": "głowa 3, ręce 1, korpus 3, nogi 1",
+        "weapons": [
+          "kusza",
+          "broń jednoręczna (miecz)",
+          "tarcza"
+        ],
+        "equipment": [
+          "20 bełtów"
+        ],
+        "career": "najemnik",
+        "race": "człowiek",
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "npcKind": "generic",
+      "checksum": "d3565628a4bce3e3aac00f1adf0077a123958ba232a5982cc6ac6d8871a13704"
+    },
+    {
+      "id": "corebook:npc:generic:straznik-miejski",
+      "type": "person",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "generic_npc",
+      "title": "Strażnik miejski",
+      "aliases": [],
+      "summary": "Stróż prawa patrolujący ulice miast i portów, chroniący targowiska oraz urzędy i aresztujący przestępców.",
+      "category": "Bohaterowie niezależni: Generyczni",
+      "content": [
+        {
+          "title": "Archetyp",
+          "text": "Generyczny Bohater Niezależny przeznaczony do szybkiego wykorzystania przez Mistrza Gry."
+        },
+        {
+          "title": "Opis",
+          "text": "Stróż prawa patrolujący ulice miast i portów, chroniący targowiska oraz urzędy i aresztujący przestępców."
+        },
+        {
+          "title": "Profesja",
+          "text": "Profesja wzorcowa: strażnik. Nazwa wpisu określa rolę, a nie imię postaci."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          247
+        ],
+        "printedPages": [
+          246
+        ]
+      },
+      "identity": {
+        "givenName": null,
+        "familyName": null,
+        "honorific": null,
+        "displayName": "Strażnik miejski",
+        "sourceSuppliedName": false,
+        "archetype": true
+      },
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 31,
+          "us": 31,
+          "k": 33,
+          "odp": 41,
+          "zr": 30,
+          "int": 38,
+          "sw": 28,
+          "ogd": 30,
+          "a": 1,
+          "zyw": 12,
+          "s": 3,
+          "wt": 4,
+          "sz": 4,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "nauka (prawo)",
+          "plotkowanie +10",
+          "przeszukiwanie",
+          "spostrzegawczość",
+          "tropienie",
+          "unik",
+          "wiedza (Imperium)",
+          "zastraszanie",
+          "znajomość języka (staroświatowy)"
+        ],
+        "talents": [
+          "błyskotliwość",
+          "niezwykle odporny",
+          "ogłuszanie",
+          "opanowanie",
+          "rozbrajanie",
+          "silny cios"
+        ],
+        "specialRules": [],
+        "armour": "lekki pancerz (skórzana kurta)",
+        "armourPoints": "głowa 0, ręce 1, korpus 1, nogi 0",
+        "weapons": [
+          "broń jednoręczna (pałka)",
+          "sztylet"
+        ],
+        "equipment": [
+          "latarnia na drągu",
+          "mundur"
+        ],
+        "career": "strażnik",
+        "race": "człowiek",
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "npcKind": "generic",
+      "checksum": "ea8de0eceb02e9c3162b3d9ee899f2ccb624372d9e857c29c9190cea564fe567"
+    },
+    {
+      "id": "corebook:npc:generic:szuler",
+      "type": "person",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "generic_npc",
+      "title": "Szuler",
+      "aliases": [],
+      "summary": "Zawodowy hazardzista, który zna gry karciane i kościane oraz potrafi oszukiwać za pomocą znaczonych kart i podrabianych kości.",
+      "category": "Bohaterowie niezależni: Generyczni",
+      "content": [
+        {
+          "title": "Archetyp",
+          "text": "Generyczny Bohater Niezależny przeznaczony do szybkiego wykorzystania przez Mistrza Gry."
+        },
+        {
+          "title": "Opis",
+          "text": "Zawodowy hazardzista, który zna gry karciane i kościane oraz potrafi oszukiwać za pomocą znaczonych kart i podrabianych kości."
+        },
+        {
+          "title": "Profesja",
+          "text": "Profesja wzorcowa: kanciarz. Nazwa wpisu określa rolę, a nie imię postaci."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          247
+        ],
+        "printedPages": [
+          246
+        ]
+      },
+      "identity": {
+        "givenName": null,
+        "familyName": null,
+        "honorific": null,
+        "displayName": "Szuler",
+        "sourceSuppliedName": false,
+        "archetype": true
+      },
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 25,
+          "us": 31,
+          "k": 28,
+          "odp": 32,
+          "zr": 38,
+          "int": 42,
+          "sw": 30,
+          "ogd": 38,
+          "a": 1,
+          "zyw": 12,
+          "s": 2,
+          "wt": 3,
+          "sz": 5,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "gadanina",
+          "hazard",
+          "kuglarstwo (aktorstwo)",
+          "plotkowanie +10",
+          "przekonywanie",
+          "sekretny język (złodziejski)",
+          "spostrzegawczość",
+          "wiedza (Imperium)",
+          "wycena",
+          "znajomość języka (staroświatowy) +10"
+        ],
+        "talents": [
+          "bardzo szybki",
+          "geniusz arytmetyczny",
+          "łotrzyk",
+          "przemawianie",
+          "szósty zmysł"
+        ],
+        "specialRules": [],
+        "armour": "lekki pancerz (skórzany kaftan)",
+        "armourPoints": "głowa 0, ręce 0, korpus 1, nogi 0",
+        "weapons": [
+          "sztylet"
+        ],
+        "equipment": [
+          "talia kart",
+          "para kości do gry"
+        ],
+        "career": "kanciarz",
+        "race": "człowiek",
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "npcKind": "generic",
+      "checksum": "8023a2cc03d87366c92545b734753c2ee92831c29c590060e34e957be6c95212"
+    },
+    {
+      "id": "corebook:npc:generic:pirat",
+      "type": "person",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "generic_npc",
+      "title": "Pirat",
+      "aliases": [],
+      "summary": "Morski albo rzeczny rozbójnik napadający przede wszystkim na samotne statki handlowe, łodzie przewoźników i flisaków.",
+      "category": "Bohaterowie niezależni: Generyczni",
+      "content": [
+        {
+          "title": "Archetyp",
+          "text": "Generyczny Bohater Niezależny przeznaczony do szybkiego wykorzystania przez Mistrza Gry."
+        },
+        {
+          "title": "Opis",
+          "text": "Morski albo rzeczny rozbójnik napadający przede wszystkim na samotne statki handlowe, łodzie przewoźników i flisaków."
+        },
+        {
+          "title": "Profesja",
+          "text": "Profesja wzorcowa: żeglarz. Nazwa wpisu określa rolę, a nie imię postaci."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          247
+        ],
+        "printedPages": [
+          246
+        ]
+      },
+      "identity": {
+        "givenName": null,
+        "familyName": null,
+        "honorific": null,
+        "displayName": "Pirat",
+        "sourceSuppliedName": false,
+        "archetype": true
+      },
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 33,
+          "us": 32,
+          "k": 40,
+          "odp": 35,
+          "zr": 29,
+          "int": 25,
+          "sw": 30,
+          "ogd": 28,
+          "a": 1,
+          "zyw": 11,
+          "s": 4,
+          "wt": 3,
+          "sz": 4,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "mocna głowa",
+          "plotkowanie",
+          "pływanie",
+          "spostrzegawczość",
+          "unik",
+          "wiedza (Imperium)",
+          "wiedza (Jałowa Kraina)",
+          "wioślarstwo",
+          "wspinaczka",
+          "znajomość języka (bretoński)",
+          "znajomość języka (staroświatowy)",
+          "żeglarstwo"
+        ],
+        "talents": [
+          "bijatyka",
+          "niezwykle odporny",
+          "obieżyświat",
+          "silny cios",
+          "urodzony wojownik"
+        ],
+        "specialRules": [],
+        "armour": "lekki pancerz (skórzana kurta)",
+        "armourPoints": "głowa 0, ręce 1, korpus 1, nogi 0",
+        "weapons": [
+          "broń jednoręczna (kordelas)",
+          "łuk"
+        ],
+        "equipment": [
+          "20 strzał"
+        ],
+        "career": "żeglarz",
+        "race": "człowiek",
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "npcKind": "generic",
+      "checksum": "4e3e0466aaabff172371421646d5c59272ae5caa9215146ca6193767aeb7020c"
+    },
+    {
+      "id": "corebook:npc:generic:zawadiaka",
+      "type": "person",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "generic_npc",
+      "title": "Zawadiaka",
+      "aliases": [],
+      "summary": "Młody szlachcic prowadzący z nudów lub dla przyjemności hulaszcze życie i często gnębiący ludzi niższego stanu.",
+      "category": "Bohaterowie niezależni: Generyczni",
+      "content": [
+        {
+          "title": "Archetyp",
+          "text": "Generyczny Bohater Niezależny przeznaczony do szybkiego wykorzystania przez Mistrza Gry."
+        },
+        {
+          "title": "Opis",
+          "text": "Młody szlachcic prowadzący z nudów lub dla przyjemności hulaszcze życie i często gnębiący ludzi niższego stanu."
+        },
+        {
+          "title": "Profesja",
+          "text": "Profesja wzorcowa: szlachcic. Nazwa wpisu określa rolę, a nie imię postaci."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          248
+        ],
+        "printedPages": [
+          247
+        ]
+      },
+      "identity": {
+        "givenName": null,
+        "familyName": null,
+        "honorific": null,
+        "displayName": "Zawadiaka",
+        "sourceSuppliedName": false,
+        "archetype": true
+      },
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 36,
+          "us": 27,
+          "k": 31,
+          "odp": 30,
+          "zr": 43,
+          "int": 29,
+          "sw": 30,
+          "ogd": 35,
+          "a": 1,
+          "zyw": 11,
+          "s": 3,
+          "wt": 3,
+          "sz": 4,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "czytanie i pisanie",
+          "gadanina",
+          "hazard",
+          "jeździectwo",
+          "mocna głowa",
+          "plotkowanie",
+          "przekonywanie",
+          "wiedza (Imperium) +10",
+          "znajomość języka (staroświatowy) +10"
+        ],
+        "talents": [
+          "broń specjalna (parująca)",
+          "broń specjalna (szermiercza)",
+          "charyzmatyczny",
+          "etykieta",
+          "przemawianie",
+          "szybki refleks"
+        ],
+        "specialRules": [],
+        "armour": "lekki pancerz (skórzana kurta i skórzane nogawice)",
+        "armourPoints": "głowa 0, ręce 1, korpus 1, nogi 1",
+        "weapons": [
+          "rapier",
+          "lewak"
+        ],
+        "equipment": [
+          "strój szlachecki",
+          "sakiewka z 3k10 zk"
+        ],
+        "career": "szlachcic",
+        "race": "człowiek",
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "npcKind": "generic",
+      "checksum": "41a3afd41df5208de155af90e6832a0ceadb2cab43fb041c3a03c4582b418ec8"
+    },
+    {
+      "id": "corebook:npc:generic:zbir",
+      "type": "person",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "generic_npc",
+      "title": "Zbir",
+      "aliases": [],
+      "summary": "Groźny przestępca trudniący się rozbojem, napadami i kradzieżą, czasem wynajmowany do pobicia albo zamordowania wskazanej osoby.",
+      "category": "Bohaterowie niezależni: Generyczni",
+      "content": [
+        {
+          "title": "Archetyp",
+          "text": "Generyczny Bohater Niezależny przeznaczony do szybkiego wykorzystania przez Mistrza Gry."
+        },
+        {
+          "title": "Opis",
+          "text": "Groźny przestępca trudniący się rozbojem, napadami i kradzieżą, czasem wynajmowany do pobicia albo zamordowania wskazanej osoby."
+        },
+        {
+          "title": "Profesja",
+          "text": "Profesja wzorcowa: oprych. Nazwa wpisu określa rolę, a nie imię postaci."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          248
+        ],
+        "printedPages": [
+          247
+        ]
+      },
+      "identity": {
+        "givenName": null,
+        "familyName": null,
+        "honorific": null,
+        "displayName": "Zbir",
+        "sourceSuppliedName": false,
+        "archetype": true
+      },
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 33,
+          "us": 26,
+          "k": 43,
+          "odp": 31,
+          "zr": 32,
+          "int": 25,
+          "sw": 36,
+          "ogd": 30,
+          "a": 1,
+          "zyw": 12,
+          "s": 4,
+          "wt": 3,
+          "sz": 4,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "hazard",
+          "mocna głowa",
+          "plotkowanie",
+          "sekretny język (złodziejski)",
+          "unik",
+          "wiedza (Imperium)",
+          "zastraszanie",
+          "znajomość języka (staroświatowy)"
+        ],
+        "talents": [
+          "bardzo silny",
+          "odporność na trucizny",
+          "ogłuszanie",
+          "rozbrajanie",
+          "szybki refleks",
+          "szybkie wyciągnięcie",
+          "zapasy"
+        ],
+        "specialRules": [],
+        "armour": "lekki pancerz (skórzana kurta)",
+        "armourPoints": "głowa 0, ręce 1, korpus 1, nogi 0",
+        "weapons": [
+          "broń jednoręczna (pałka)",
+          "kastet"
+        ],
+        "equipment": [
+          "płaszcz z kapturem"
+        ],
+        "career": "oprych",
+        "race": "człowiek",
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "npcKind": "generic",
+      "checksum": "992361e2ee5da0da4716e74731ab562b2cdec597ea51439021958328e5de7e6a"
+    },
+    {
+      "id": "corebook:npc:generic:zboj",
+      "type": "person",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "generic_npc",
+      "title": "Zbój",
+      "aliases": [],
+      "summary": "Wygnaniec albo zbiegły przestępca żyjący poza miastami i napadający na samotnych podróżnych oraz słabo chronione karawany.",
+      "category": "Bohaterowie niezależni: Generyczni",
+      "content": [
+        {
+          "title": "Archetyp",
+          "text": "Generyczny Bohater Niezależny przeznaczony do szybkiego wykorzystania przez Mistrza Gry."
+        },
+        {
+          "title": "Opis",
+          "text": "Wygnaniec albo zbiegły przestępca żyjący poza miastami i napadający na samotnych podróżnych oraz słabo chronione karawany."
+        },
+        {
+          "title": "Profesja",
+          "text": "Profesja wzorcowa: banita. Nazwa wpisu określa rolę, a nie imię postaci."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          248
+        ],
+        "printedPages": [
+          247
+        ]
+      },
+      "identity": {
+        "givenName": null,
+        "familyName": null,
+        "honorific": null,
+        "displayName": "Zbój",
+        "sourceSuppliedName": false,
+        "archetype": true
+      },
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 29,
+          "us": 42,
+          "k": 30,
+          "odp": 31,
+          "zr": 35,
+          "int": 30,
+          "sw": 28,
+          "ogd": 25,
+          "a": 1,
+          "zyw": 12,
+          "s": 3,
+          "wt": 3,
+          "sz": 4,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "opieka nad zwierzętami",
+          "plotkowanie",
+          "powożenie",
+          "skradanie się",
+          "spostrzegawczość",
+          "ukrywanie się",
+          "unik",
+          "wiedza (Imperium)",
+          "wspinaczka",
+          "zastawianie pułapek",
+          "znajomość języka (staroświatowy)"
+        ],
+        "talents": [
+          "strzał mierzony",
+          "szybki refleks",
+          "wędrowiec"
+        ],
+        "specialRules": [],
+        "armour": "lekki pancerz (skórzana kurta i skórzany czepiec)",
+        "armourPoints": "głowa 1, ręce 1, korpus 1, nogi 0",
+        "weapons": [
+          "łuk",
+          "broń jednoręczna (miecz)",
+          "tarcza"
+        ],
+        "equipment": [
+          "20 strzał"
+        ],
+        "career": "banita",
+        "race": "człowiek",
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "npcKind": "generic",
+      "checksum": "bc40a668e72c6f5ae598b9380d0ebc211b0db75494bcdbc178d923a1a629142a"
+    },
+    {
+      "id": "corebook:npc:generic:zebrak",
+      "type": "person",
+      "entryType": "creature",
+      "scope": "bestiary",
+      "kind": "generic_npc",
+      "title": "Żebrak",
+      "aliases": [],
+      "summary": "Ubogi mieszkaniec miasta żyjący z jałmużny, czasem zbierający informacje dla miejskich gangów albo gildii złodziei.",
+      "category": "Bohaterowie niezależni: Generyczni",
+      "content": [
+        {
+          "title": "Archetyp",
+          "text": "Generyczny Bohater Niezależny przeznaczony do szybkiego wykorzystania przez Mistrza Gry."
+        },
+        {
+          "title": "Opis",
+          "text": "Ubogi mieszkaniec miasta żyjący z jałmużny, czasem zbierający informacje dla miejskich gangów albo gildii złodziei."
+        },
+        {
+          "title": "Profesja",
+          "text": "Profesja wzorcowa: chłop. Nazwa wpisu określa rolę, a nie imię postaci."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          248
+        ],
+        "printedPages": [
+          247
+        ]
+      },
+      "identity": {
+        "givenName": null,
+        "familyName": null,
+        "honorific": null,
+        "displayName": "Żebrak",
+        "sourceSuppliedName": false,
+        "archetype": true
+      },
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 25,
+          "us": 25,
+          "k": 28,
+          "odp": 37,
+          "zr": 31,
+          "int": 29,
+          "sw": 37,
+          "ogd": 33,
+          "a": 1,
+          "zyw": 11,
+          "s": 2,
+          "wt": 3,
+          "sz": 4,
+          "mag": 0,
+          "po": 0,
+          "pp": 0
+        },
+        "skills": [
+          "kuglarstwo (śpiew)",
+          "oswajanie",
+          "plotkowanie",
+          "pływanie",
+          "powożenie",
+          "przekonywanie",
+          "skradanie się",
+          "sztuka przetrwania",
+          "ukrywanie się",
+          "wiedza (Imperium)",
+          "wioślarstwo",
+          "znajomość języka (staroświatowy)"
+        ],
+        "talents": [
+          "chodu!",
+          "czuły słuch",
+          "odporność na choroby",
+          "twardziel"
+        ],
+        "specialRules": [],
+        "armour": "brak",
+        "armourPoints": "głowa 0, ręce 0, korpus 0, nogi 0",
+        "weapons": [
+          "broń jednoręczna (kula)"
+        ],
+        "equipment": [
+          "miseczka żebracza",
+          "łachmany"
+        ],
+        "career": "chłop",
+        "race": "człowiek",
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        }
+      },
+      "npcKind": "generic",
+      "checksum": "1de3382100543bd5872db81b4f0acf396874586ac0fc82063d2665593dd4ea93"
+    },
+    {
+      "id": "corebook:scenario:npc:gerhard-schiller",
+      "type": "person",
+      "entryType": "creature",
+      "scope": "scenario",
+      "kind": "named_npc",
+      "title": "Gerhard Schiller",
+      "aliases": [],
+      "summary": "Kapitan straży Untergardu, doświadczony żołnierz wybrany przez mieszkańców na przywódcę miasta; surowy, sprawiedliwy i oddany obronie ocalałych.",
+      "category": "Scenariusz: Bohaterowie niezależni",
+      "content": [
+        {
+          "title": "Rola w scenariuszu",
+          "text": "Kapitan straży Untergardu, doświadczony żołnierz wybrany przez mieszkańców na przywódcę miasta; surowy, sprawiedliwy i oddany obronie ocalałych."
+        },
+        {
+          "title": "Profesje",
+          "text": "Obecna: oficer. Poprzednie: strażnik|sierżant."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          250
+        ],
+        "printedPages": [
+          249
+        ]
+      },
+      "identity": {
+        "givenName": "Gerhard",
+        "familyName": "Schiller",
+        "honorific": null,
+        "displayName": "Gerhard Schiller",
+        "sourceSuppliedName": true
+      },
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 50,
+          "us": 46,
+          "k": 43,
+          "odp": 44,
+          "zr": 40,
+          "int": 42,
+          "sw": 45,
+          "ogd": 50,
+          "a": 2,
+          "zyw": 15,
+          "s": 4,
+          "wt": 4,
+          "sz": 4,
+          "mag": 0,
+          "po": 4,
+          "pp": 0
+        },
+        "skills": [
+          "czytanie i pisanie",
+          "dowodzenie +10",
+          "jeździectwo",
+          "nauka (prawo)",
+          "plotkowanie +10",
+          "przeszukiwanie",
+          "sekretny język (bitewny)",
+          "spostrzegawczość +10",
+          "tropienie",
+          "unik",
+          "wiedza (Imperium)",
+          "wiedza (Jałowa Kraina)",
+          "zastraszanie",
+          "znajomość języka (staroświatowy)",
+          "znajomość języka (tileański)"
+        ],
+        "talents": [
+          "bijatyka",
+          "błyskotliwość",
+          "groźny",
+          "niezwykle odporny",
+          "ogłuszanie",
+          "opanowanie",
+          "rozbrajanie",
+          "silny cios"
+        ],
+        "specialRules": [],
+        "armour": "średni pancerz (zbroja kolcza)",
+        "armourPoints": "głowa 3, ręce 3, korpus 3, nogi 3",
+        "weapons": [
+          "broń jednoręczna (miecz)",
+          "sztylet",
+          "tarcza"
+        ],
+        "equipment": [
+          "mundur"
+        ],
+        "career": "oficer",
+        "race": "człowiek",
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        },
+        "previousCareers": [
+          "strażnik",
+          "sierżant"
+        ]
+      },
+      "npcKind": "named",
+      "checksum": "861a5a5c4e2e583a7ae25a63dfcd174e5fd252f2cdd028586ca3837f970cef22"
+    },
+    {
+      "id": "corebook:scenario:npc:babunia-moescher",
+      "type": "person",
+      "entryType": "creature",
+      "scope": "scenario",
+      "kind": "named_npc",
+      "title": "Babunia Moescher",
+      "aliases": [],
+      "summary": "Najstarsza mieszkanka Untergardu, uzdrowicielka i opiekunka sierot, która ukrywa wyszkolenie w magii zwierząt oraz długo pielęgnowane pragnienie zemsty.",
+      "category": "Scenariusz: Bohaterowie niezależni",
+      "content": [
+        {
+          "title": "Rola w scenariuszu",
+          "text": "Najstarsza mieszkanka Untergardu, uzdrowicielka i opiekunka sierot, która ukrywa wyszkolenie w magii zwierząt oraz długo pielęgnowane pragnienie zemsty."
+        },
+        {
+          "title": "Profesje",
+          "text": "Obecna: wędrowna czarodziejka. Poprzednie: guślarka|uczennica czarodzieja."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          250
+        ],
+        "printedPages": [
+          249
+        ]
+      },
+      "identity": {
+        "givenName": "Babunia",
+        "familyName": "Moescher",
+        "honorific": null,
+        "displayName": "Babunia Moescher",
+        "sourceSuppliedName": true
+      },
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 28,
+          "us": 30,
+          "k": 30,
+          "odp": 31,
+          "zr": 35,
+          "int": 56,
+          "sw": 53,
+          "ogd": 45,
+          "a": 1,
+          "zyw": 13,
+          "s": 3,
+          "wt": 3,
+          "sz": 4,
+          "mag": 2,
+          "po": 5,
+          "pp": 0
+        },
+        "skills": [
+          "czytanie i pisanie",
+          "leczenie",
+          "nauka (magia) +10",
+          "nauka (teologia)",
+          "opieka nad zwierzętami",
+          "oswajanie +10",
+          "plotkowanie +10",
+          "przekonywanie",
+          "przeszukiwanie",
+          "sekretny język (magiczny)",
+          "splatanie magii +10",
+          "spostrzegawczość",
+          "wiedza (Imperium)",
+          "wiedza (Jałowa Kraina)",
+          "wykrywanie magii",
+          "znajomość języka (klasyczny)",
+          "znajomość języka (staroświatowy)"
+        ],
+        "talents": [
+          "błyskotliwość",
+          "gusła",
+          "magia prosta (gusła)",
+          "magia prosta (tajemna)",
+          "magia tajemna (zwierzęta)",
+          "widzenie w ciemności",
+          "odporność psychiczna",
+          "zmysł magii"
+        ],
+        "specialRules": [],
+        "armour": "brak",
+        "armourPoints": "głowa 0, ręce 0, korpus 0, nogi 0",
+        "weapons": [
+          "kij"
+        ],
+        "equipment": [
+          "plecak",
+          "księga wiedzy tajemnej",
+          "sakiewka z 30 zk",
+          "przybory do pisania"
+        ],
+        "career": "wędrowna czarodziejka",
+        "race": "człowiek",
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        },
+        "previousCareers": [
+          "guślarka",
+          "uczennica czarodzieja"
+        ]
+      },
+      "npcKind": "named",
+      "checksum": "4718b05ddd9e8b2394629f441fb245fc12b171e6db8d02e6b0c036284957ba12"
+    },
+    {
+      "id": "corebook:scenario:npc:hans-baumer",
+      "type": "person",
+      "entryType": "creature",
+      "scope": "scenario",
+      "kind": "named_npc",
+      "title": "Hans Baumer",
+      "aliases": [],
+      "summary": "Drwal, łowca i zwiadowca z okolic Untergardu, który patroluje las, zdobywa żywność i ostrzega mieszkańców przed ruchami zwierzoludzi.",
+      "category": "Scenariusz: Bohaterowie niezależni",
+      "content": [
+        {
+          "title": "Rola w scenariuszu",
+          "text": "Drwal, łowca i zwiadowca z okolic Untergardu, który patroluje las, zdobywa żywność i ostrzega mieszkańców przed ruchami zwierzoludzi."
+        },
+        {
+          "title": "Profesje",
+          "text": "Obecna: leśnik. Poprzednie: brak podanych."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          251
+        ],
+        "printedPages": [
+          250
+        ]
+      },
+      "identity": {
+        "givenName": "Hans",
+        "familyName": "Baumer",
+        "honorific": null,
+        "displayName": "Hans Baumer",
+        "sourceSuppliedName": true
+      },
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 42,
+          "us": 25,
+          "k": 41,
+          "odp": 34,
+          "zr": 35,
+          "int": 33,
+          "sw": 38,
+          "ogd": 25,
+          "a": 1,
+          "zyw": 14,
+          "s": 4,
+          "wt": 3,
+          "sz": 5,
+          "mag": 0,
+          "po": 3,
+          "pp": 0
+        },
+        "skills": [
+          "plotkowanie",
+          "sekretne znaki (zwiadowców)",
+          "sekretny język (zwiadowców)",
+          "skradanie się",
+          "tropienie",
+          "ukrywanie się",
+          "wspinaczka",
+          "znajomość języka (staroświatowy)"
+        ],
+        "talents": [
+          "bardzo szybki",
+          "broń specjalna (broń dwuręczna)",
+          "czuły słuch",
+          "odporność na choroby",
+          "wędrowiec"
+        ],
+        "specialRules": [],
+        "armour": "lekki pancerz (skórzana kurta)",
+        "armourPoints": "głowa 0, ręce 1, korpus 1, nogi 0",
+        "weapons": [
+          "broń dwuręczna (dwuręczny topór)",
+          "łuk"
+        ],
+        "equipment": [
+          "plecak",
+          "10 strzał"
+        ],
+        "career": "leśnik",
+        "race": "człowiek",
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        },
+        "previousCareers": []
+      },
+      "npcKind": "named",
+      "checksum": "e49db1b72fd28cb7c88051f832eb55b10407b4f8d06c6d48d91b8802eba8531f"
+    },
+    {
+      "id": "corebook:scenario:npc:ojciec-dietrich",
+      "type": "person",
+      "entryType": "creature",
+      "scope": "scenario",
+      "kind": "named_npc",
+      "title": "Ojciec Dietrich",
+      "aliases": [],
+      "summary": "Kapłan Sigmara przybyły z Altdorfu, duchowy doradca kapitana Schillera i opiekun wiernych po śmierci miejscowego kapłana.",
+      "category": "Scenariusz: Bohaterowie niezależni",
+      "content": [
+        {
+          "title": "Rola w scenariuszu",
+          "text": "Kapłan Sigmara przybyły z Altdorfu, duchowy doradca kapitana Schillera i opiekun wiernych po śmierci miejscowego kapłana."
+        },
+        {
+          "title": "Profesje",
+          "text": "Obecna: kapłan. Poprzednie: akolita."
+        }
+      ],
+      "source": {
+        "pdfPages": [
+          251
+        ],
+        "printedPages": [
+          250
+        ]
+      },
+      "identity": {
+        "givenName": "Dietrich",
+        "familyName": null,
+        "honorific": "Ojciec",
+        "displayName": "Ojciec Dietrich",
+        "sourceSuppliedName": true
+      },
+      "bestiary": true,
+      "profile": {
+        "attributes": {
+          "ww": 37,
+          "us": 27,
+          "k": 41,
+          "odp": 37,
+          "zr": 24,
+          "int": 30,
+          "sw": 48,
+          "ogd": 43,
+          "a": 1,
+          "zyw": 13,
+          "s": 4,
+          "wt": 3,
+          "sz": 4,
+          "mag": 0,
+          "po": 3,
+          "pp": 0
+        },
+        "skills": [
+          "czytanie i pisanie",
+          "leczenie",
+          "nauka (historia)",
+          "nauka (teologia) +10",
+          "przekonywanie",
+          "spostrzegawczość",
+          "znajomość języka (klasyczny)",
+          "znajomość języka (staroświatowy)"
+        ],
+        "talents": [
+          "bardzo silny",
+          "charyzmatyczny",
+          "morderczy atak",
+          "odporność na magię",
+          "przemawianie",
+          "urodzony wojownik"
+        ],
+        "specialRules": [],
+        "armour": "średni pancerz (skórznia, kaftan kolczy, hełm)",
+        "armourPoints": "głowa 3, ręce 1, korpus 3, nogi 1",
+        "weapons": [
+          "broń jednoręczna (młot bojowy)"
+        ],
+        "equipment": [
+          "modlitewnik",
+          "symbol Sigmara",
+          "relikwia",
+          "tobołek",
+          "przybory do pisania"
+        ],
+        "career": "kapłan",
+        "race": "człowiek",
+        "token": {
+          "width": 100,
+          "height": 100,
+          "disposition": "neutral",
+          "hidden": false
+        },
+        "previousCareers": [
+          "akolita"
+        ]
+      },
+      "npcKind": "named",
+      "checksum": "865e967ae866a0b978144b63ade34ffd876667f13238c1be463f5abc69da7b43"
+    }
+  ],
+  "counts": {
+    "records": 83,
+    "rulesEntries": 12,
+    "worldEntries": 27,
+    "scenarioEntries": 14,
+    "bestiaryEntries": 34,
+    "creaturesAndAnimals": 19,
+    "genericNpcProfiles": 11,
+    "namedNpcProfiles": 4
+  }
+}
