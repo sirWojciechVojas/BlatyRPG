@@ -1,0 +1,201 @@
+.token-resource-settings {
+  padding: 7px 8px;
+}
+.token-resource-settings > header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 5px;
+}
+.token-resource-settings > header div {
+  display: grid;
+}
+.token-resource-settings > header h3 {
+  margin: 0;
+  color: #d9b57c;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+.token-resource-settings > header small,
+.token-resource-settings > header span {
+  color: #aa9475;
+  font-size: 7px;
+}
+
+.token-resource-position-picker {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.55fr) minmax(0, 1.45fr);
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  padding: 5px;
+  background: #15100c;
+  border: 1px solid #493522;
+  border-radius: 3px;
+}
+
+.token-resource-position-picker > div:first-child {
+  display: grid;
+  gap: 2px;
+}
+
+.token-resource-position-picker strong {
+  color: #d9b57c;
+  font-size: 9px;
+}
+
+.token-resource-position-picker > div:first-child small {
+  color: #8f7c63;
+  font-size: 7px;
+  line-height: 1.2;
+}
+
+.token-resource-position-picker__options {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.token-resource-position-picker__options button {
+  display: grid;
+  min-width: 0;
+  height: 62px;
+  place-items: center;
+  gap: 2px;
+  padding: 3px 2px;
+  color: #a9967b;
+  font-size: 7px;
+  background: #100d0a;
+  border: 1px solid #493522;
+  border-radius: 3px;
+}
+
+.token-resource-position-picker__options button:hover,
+.token-resource-position-picker__options button.active {
+  color: #ffe8bd;
+  background: #332315;
+  border-color: #c08a4c;
+}
+
+.token-resource-position-picker__options button > small {
+  overflow: hidden;
+  font-size: 7px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.token-resource-position-picker__options button > span {
+  position: relative;
+  display: block;
+  width: 32px;
+  height: 36px;
+}
+
+.token-resource-position-picker__options button i {
+  position: absolute;
+  top: 9px;
+  left: 8px;
+  width: 16px;
+  height: 23px;
+  background: #5b568e;
+  border-radius: 50% 50% 35% 35%;
+}
+
+.token-resource-position-picker__options button b {
+  position: absolute;
+  left: 2px;
+  display: grid;
+  width: 28px;
+  gap: 1px;
+}
+
+.token-resource-position-picker__options button em {
+  display: block;
+  height: 3px;
+  background: #56ae74;
+  border: 1px solid #b8d9b8;
+}
+
+.token-resource-position-picker__options button em:nth-child(2) {
+  background: #5d87bb;
+}
+
+.token-resource-position-picker__options button em:nth-child(3) {
+  background: #c3534f;
+}
+
+.token-resource-position-picker__mock--above b { bottom: 28px; }
+.token-resource-position-picker__mock--top-overlap b { top: 6px; }
+.token-resource-position-picker__mock--bottom-overlap b { bottom: 2px; }
+.token-resource-position-picker__mock--below b { top: 29px; }
+
+.token-resource-settings__bars,
+.token-resource-settings__bubbles {
+  display: grid;
+  gap: 4px;
+}
+.token-resource-settings__bubbles {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 5px;
+}
+
+.token-resource-settings fieldset {
+  display: grid;
+  grid-template-columns: minmax(70px, 1fr) 30px 50px 50px minmax(
+      120px,
+      1.35fr
+    ) minmax(100px, 1fr);
+  gap: 3px;
+  margin: 0;
+  padding: 4px;
+  border: 1px solid #493522;
+  border-radius: 3px;
+}
+.token-resource-settings__bubbles fieldset {
+  grid-template-columns: 1fr;
+}
+.token-resource-settings legend {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+  margin: 0;
+  padding: 0 3px;
+  color: #cbb18a;
+  font-size: 8px;
+}
+
+.token-resource-settings__movement-source {
+  color: #74c88f;
+}
+.token-resource-settings legend label {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.token-resource-settings input,
+.token-resource-settings select {
+  min-width: 0;
+  height: 25px !important;
+  padding: 2px 4px !important;
+  font-size: 8px;
+}
+.token-resource-settings input[type="color"] {
+  padding: 2px !important;
+}
+
+@media (max-width: 760px) {
+  .token-resource-position-picker {
+    grid-template-columns: 1fr;
+  }
+  .token-resource-settings fieldset {
+    grid-template-columns: 1fr 34px 55px 55px;
+  }
+  .token-resource-settings fieldset input:nth-last-child(-n + 2) {
+    grid-column: span 2;
+  }
+  .token-resource-settings__bubbles {
+    grid-template-columns: 1fr;
+  }
+}

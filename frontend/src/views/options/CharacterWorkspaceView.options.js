@@ -3,16 +3,7 @@ import CharacterList from "@/components/characters/CharacterList.vue";
 import CharacterSheetEditor from "@/components/characters/CharacterSheetEditor.vue";
 import { characterApiClient } from "@/lib/character/characterApiClient";
 import { characterCatalogApiClient } from "@/lib/character/characterCatalogApiClient";
-
-const errorKey = (error, scope) => {
-  if (error?.status === 401) return "characters.errors.session";
-  if (error?.status === 403) return "characters.errors.forbidden";
-  if (error?.status === 409 || error?.code === "character_conflict") {
-    return "characters.errors.conflict";
-  }
-  if (error?.network) return "characters.errors.network";
-  return `characters.errors.${scope}`;
-};
+import { characterErrorKey } from "@/lib/character/characterErrorKey";
 
 export default {
   name: "CharacterWorkspaceView",
@@ -91,7 +82,7 @@ export default {
         if (nextId) await this.selectCharacter(nextId);
       } catch (error) {
         if (this.isCurrentList(sequence, campaignId)) {
-          this.loadError = this.$t(errorKey(error, "load"));
+          this.loadError = this.$t(characterErrorKey(error, "load"));
         }
       } finally {
         if (this.isCurrentList(sequence, campaignId)) this.loading = false;
@@ -103,7 +94,7 @@ export default {
         if (this.isCurrentList(sequence, campaignId)) this.games = games;
       } catch (error) {
         if (this.isCurrentList(sequence, campaignId)) {
-          this.createError = this.$t(errorKey(error, "catalog"));
+          this.createError = this.$t(characterErrorKey(error, "catalog"));
         }
       }
     },
@@ -123,7 +114,7 @@ export default {
         this.replaceCharacter(character);
       } catch (error) {
         if (this.isCurrentSheet(sequence, campaignId, characterId)) {
-          this.saveError = this.$t(errorKey(error, "load"));
+          this.saveError = this.$t(characterErrorKey(error, "load"));
         }
       } finally {
         if (this.isCurrentSheet(sequence, campaignId, characterId)) {
@@ -151,7 +142,7 @@ export default {
         this.notice = this.$t("characters.notices.saved");
       } catch (error) {
         if (this.isCurrentSave(sequence, campaignId, characterId)) {
-          this.saveError = this.$t(errorKey(error, "save"));
+          this.saveError = this.$t(characterErrorKey(error, "save"));
         }
       } finally {
         if (sequence === this.saveRequestSequence) this.saving = false;
@@ -180,7 +171,7 @@ export default {
         this.notice = this.$t("characters.notices.created");
       } catch (error) {
         if (this.isCurrentCreate(sequence, campaignId)) {
-          this.createError = this.$t(errorKey(error, "create"));
+          this.createError = this.$t(characterErrorKey(error, "create"));
         }
       } finally {
         if (sequence === this.createRequestSequence) this.creating = false;
@@ -211,7 +202,7 @@ export default {
         if (nextId) await this.selectCharacter(nextId);
       } catch (error) {
         if (this.isCurrentDelete(sequence, campaignId, characterId)) {
-          this.saveError = this.$t(errorKey(error, "delete"));
+          this.saveError = this.$t(characterErrorKey(error, "delete"));
         }
       } finally {
         if (sequence === this.deleteRequestSequence) this.deleting = false;

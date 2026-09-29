@@ -14,6 +14,7 @@ export const installWorkspaceGroup5 = (deps) => {
       return;
     }
     deps.hydratingStackInstance = true;
+    const consumption = item.CONSUMPTION_CONFIGURATION || {};
     Object.assign(deps.stackInstanceDraft, deps.emptyStackInstance(), {
       id: Number(item.ID),
       templateId: Number(item.INV_ID),
@@ -33,6 +34,13 @@ export const installWorkspaceGroup5 = (deps) => {
         ...deps.emptyStackInstance().weapon,
         ...(item.WEAPON || {}),
       },
+      consumptionMode: consumption.mode || "inherit",
+      consumptionProfileId: consumption.profileId || null,
+      consumptionIdentification: consumption.identification || "unknown",
+      consumptionPortions: Math.max(1, Number(consumption.portions || 1)),
+      consumptionTemplateProfileId: consumption.templateProfileId || null,
+      consumptionTemplateProfilePreview: consumption.templateProfile || null,
+      consumptionProfilePreview: consumption.resolvedProfile || null,
     });
     deps.hydratingStackInstance = false;
     deps.store.commit("shop/setFormStatus", {
@@ -89,6 +97,14 @@ export const installWorkspaceGroup5 = (deps) => {
       weapon: {
         ...deps.stackInstanceDraft.weapon,
       },
+      consumptionMode: deps.stackInstanceDraft.consumptionMode,
+      consumptionProfileId: deps.stackInstanceDraft.consumptionProfileId,
+      consumptionIdentification:
+        deps.stackInstanceDraft.consumptionIdentification,
+      consumptionPortions: Math.max(
+        1,
+        Number(deps.stackInstanceDraft.consumptionPortions || 1),
+      ),
       ownerCode: deps.profileDraft.ownerCode || "BG1",
     });
     if (!saved) return;

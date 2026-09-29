@@ -96,8 +96,7 @@ trait ShopModuleControllerPart1
         $characters = $characterBuilder->get()->getResultArray();
         $characters = $this->characterAssetService->hydrateCharacters($characters);
 
-        $role = strtolower((string) ($auth['role'] ?? ''));
-        $isPrivileged = $developmentEnabled || in_array($role, ['gm', 'admin'], true);
+        $isPrivileged = $developmentEnabled || $this->authContextService->isGmOrAdmin($auth);
         $userId = (int) ($auth['user_id'] ?? 0);
         if (!$isPrivileged) {
             $claims = array_values(array_filter($claims, static function (array $claim) use ($userId): bool {
@@ -122,11 +121,9 @@ trait ShopModuleControllerPart1
             array_map(static fn (array $character): int => (int) ($character['user_id'] ?? 0), $characters)
         ))));
         $userNames = [];
-        $userRoles = [];
         if ($relevantUserIds) {
-            foreach ($db->table('users')->select('id, username, role')->whereIn('id', $relevantUserIds)->get()->getResultArray() as $user) {
+            foreach ($db->table('users')->select('id, username')->whereIn('id', $relevantUserIds)->get()->getResultArray() as $user) {
                 $userNames[(int) $user['id']] = (string) ($user['username'] ?? ('User ' . $user['id']));
-                $userRoles[(int) $user['id']] = strtolower((string) ($user['role'] ?? 'user'));
             }
         }
         $options = [];
@@ -153,9 +150,6 @@ trait ShopModuleControllerPart1
             ];
             $options[] = $option;
             $claimUserId = (int) ($claim['user_id'] ?? 0);
-            if (in_array($userRoles[$claimUserId] ?? 'user', ['gm', 'admin'], true)) {
-                continue;
-            }
             $addToPlayer(
                 'user:' . $claimUserId,
                 $userNames[$claimUserId] ?? ('User ' . $claimUserId),
@@ -186,8 +180,8 @@ trait ShopModuleControllerPart1
             $gamerName = trim((string) ($characterData['meta']['gamer_name'] ?? ''));
             $normalizedGamerName = strtolower($gamerName);
             if (
-                in_array($userRoles[$characterUserId] ?? 'user', ['gm', 'admin'], true)
-                || ($characterUserId <= 0 && in_array($normalizedGamerName, ['gm', 'game master', 'mistrz gry'], true))
+                $characterUserId <= 0
+                && in_array($normalizedGamerName, ['gm', 'game master', 'mistrz gry'], true)
             ) {
                 continue;
             }

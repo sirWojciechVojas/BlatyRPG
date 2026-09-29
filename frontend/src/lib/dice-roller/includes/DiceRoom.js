@@ -35,7 +35,8 @@ export class DiceRoom {
     this.params = Teal.get_url_params();
     this.users = true;
     const fallbackScale =
-      typeof options.diceScale === "number" && Number.isFinite(options.diceScale)
+      typeof options.diceScale === "number" &&
+      Number.isFinite(options.diceScale)
         ? options.diceScale
         : 1;
     this.diceThrowScale =
@@ -125,10 +126,8 @@ export class DiceRoom {
         ["mouseup", "touchend"],
         this.on_toggle_dice_display.bind(this),
       );
-      Teal.bind(
-        this.toggle_dice_display,
-        ["mousedown", "touchstart"],
-        (ev) => ev.stopPropagation(),
+      Teal.bind(this.toggle_dice_display, ["mousedown", "touchstart"], (ev) =>
+        ev.stopPropagation(),
       );
       this.updateDiceDisplayToggle();
     }
@@ -139,10 +138,8 @@ export class DiceRoom {
         ["mouseup", "touchend"],
         this.on_toggle_drag_throw.bind(this),
       );
-      Teal.bind(
-        this.toggle_drag_throw,
-        ["mousedown", "touchstart"],
-        (ev) => ev.stopPropagation(),
+      Teal.bind(this.toggle_drag_throw, ["mousedown", "touchstart"], (ev) =>
+        ev.stopPropagation(),
       );
       this.updateDragThrowToggle();
     }
@@ -199,10 +196,7 @@ export class DiceRoom {
       function (ev) {
         let notationVectors = null;
         if (this.canDragThrow()) {
-          notationVectors = this.DiceBox.endDragThrow(
-            ev,
-            Teal.id("set").value,
-          );
+          notationVectors = this.DiceBox.endDragThrow(ev, Teal.id("set").value);
         }
 
         if (!notationVectors || notationVectors.error) {

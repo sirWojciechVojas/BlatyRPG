@@ -11,13 +11,13 @@ final class AdminPayloadValidatorTest extends CIUnitTestCase
             'username' => ' GameMaster ',
             'email' => ' GM@Example.COM ',
             'password' => 'LongSafePassword123',
-            'role' => 'GM',
+            'role' => 'USER',
         ]);
 
         $this->assertTrue($result['valid']);
         $this->assertSame('GameMaster', $result['data']['username']);
         $this->assertSame('gm@example.com', $result['data']['email']);
-        $this->assertSame('gm', $result['data']['role']);
+        $this->assertSame('user', $result['data']['role']);
     }
 
     public function testRejectsWeakAndManipulatedCreatePayload(): void
@@ -41,15 +41,15 @@ final class AdminPayloadValidatorTest extends CIUnitTestCase
     {
         $validator = new AdminPayloadValidator();
         $valid = $validator->validateRole(['role' => 'ADMIN']);
-        $player = $validator->validateRole(['role' => 'PLAYER']);
-        $legacy = $validator->validateRole(['role' => 'user']);
+        $user = $validator->validateRole(['role' => 'USER']);
+        $legacyGm = $validator->validateRole(['role' => 'gm']);
         $invalid = $validator->validateRole(['role' => 'owner', 'user_id' => 1]);
 
         $this->assertTrue($valid['valid']);
         $this->assertSame('admin', $valid['data']['role']);
-        $this->assertTrue($player['valid']);
-        $this->assertSame('player', $player['data']['role']);
-        $this->assertFalse($legacy['valid']);
+        $this->assertTrue($user['valid']);
+        $this->assertSame('user', $user['data']['role']);
+        $this->assertFalse($legacyGm['valid']);
         $this->assertFalse($invalid['valid']);
         $this->assertArrayHasKey('user_id', $invalid['errors']);
     }

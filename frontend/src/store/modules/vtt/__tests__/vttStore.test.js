@@ -32,8 +32,10 @@ const apiMock = (canManage) => {
   };
 };
 
-const setup = (api) => {
-  const store = createStore({ modules: { vtt: createVttModule(api) } });
+const setup = (api, realtime = null) => {
+  const modules = { vtt: createVttModule(api) };
+  if (realtime) modules.realtime = realtime;
+  const store = createStore({ modules });
   store.commit("vtt/SET_CAMPAIGN", 7);
   return store;
 };
@@ -70,5 +72,40 @@ describe("VTT scene store", () => {
     expect(api.create).toHaveBeenCalledWith(7, { name: "New scene" });
     expect(store.state.vtt.selectedSceneId).toBe(2);
     expect(store.getters["vtt/selectedScene"].name).toBe("New scene");
+  });
+
+  it("duplicates the selected scene through the existing create API", async () => {
+    const api = apiMock(true);
+    const store = setup(api);
+    await store.dispatch("vtt/initialize");
+
+    await store.dispatch("vtt/duplicateSelectedScene", "Old road — copy");
+
+    expect(api.create).toHaveBeenCalledWith(
+      7,
+      expect.objectContaining({ name: "Old road — copy", sortOrder: 1 }),
+    );
+    expect(api.create.mock.calls[0][1]).not.toHaveProperty("id");
+    expect(api.create.mock.calls[0][1]).not.toHaveProperty("revision");
+  });
+
+  it("publishes authoritative global illumination after a scene update", async () => {
+    const api = apiMock(true);
+    api.update.mockResolvedValue({
+      scene: scene({ globalLightLevel: 0.2, revision: 2 }),
+      capabilities: { canManage: true, canViewHidden: true },
+    });
+    const syncSceneLighting = vi.fn();
+    const store = setup(api, {
+      namespaced: true,
+      actions: { syncSceneLighting },
+    });
+    await store.dispatch("vtt/initialize");
+    await store.dispatch("vtt/updateSelectedScene", { globalLightLevel: 0.2 });
+
+    expect(syncSceneLighting).toHaveBeenCalledWith(
+      expect.any(Object),
+      expect.objectContaining({ id: 1, globalLightLevel: 0.2, revision: 2 }),
+    );
   });
 });

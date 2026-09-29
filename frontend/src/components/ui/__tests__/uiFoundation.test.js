@@ -88,6 +88,28 @@ describe("route UI foundation", () => {
     expect(source).not.toMatch(/ui-shell--public\s*>\s*:first-child\s*\{/);
   });
 
+  it("loads one stable application scrollbar without layout shifts", () => {
+    const index = readFileSync(
+      resolve(process.cwd(), "src/styles/ui/index.css"),
+      "utf8",
+    );
+    const source = readFileSync(
+      resolve(process.cwd(), "src/styles/ui/scrollbar.css"),
+      "utf8",
+    );
+
+    expect(index.trimEnd()).toMatch(/@import "\.\/scrollbar\.css";$/);
+    expect(source).toMatch(/html\s*\{[^}]*scrollbar-gutter:\s*stable;/s);
+    expect(source).toMatch(
+      /html:has\(> body\.ui-shell--workspace\)\s*\{[^}]*scrollbar-gutter:\s*auto;/s,
+    );
+    expect(source).not.toMatch(/\*\s*\{[^}]*scrollbar-gutter:/s);
+    expect(source).toContain("scrollbar-width: thin");
+    expect(source).toContain("scrollbar-color:");
+    expect(source).toContain("*::-webkit-scrollbar-thumb");
+    expect(source).not.toMatch(/overflow-y:\s*scroll/);
+  });
+
   it("keeps each UI foundation file below 300 lines", () => {
     const files = [
       "src/components/ui/routeUi.js",
@@ -100,6 +122,7 @@ describe("route UI foundation", () => {
       "src/styles/ui/primitives.css",
       "src/styles/ui/tooltip.css",
       "src/styles/ui/navigation.css",
+      "src/styles/ui/scrollbar.css",
     ];
 
     files.forEach((file) => {

@@ -5,10 +5,12 @@ namespace App\Services\Shop;
 class ShopLegacyMapper
 {
     private $itemIconResolver;
+    private $consumptionCatalog;
 
     public function __construct()
     {
         $this->itemIconResolver = new ShopItemIconResolver();
+        $this->consumptionCatalog = new \App\Services\Consumption\ConsumptionCatalog();
     }
 
     private function templateDetailPayload(array $template): array
@@ -36,6 +38,7 @@ class ShopLegacyMapper
             'ATTRIBUTES' => array_values((array) ($template['attributes_json'] ?? [])),
             'MECHANICS' => array_values((array) ($template['mechanics_json'] ?? [])),
             'MECHANICS_MODE' => strtoupper((string) ($template['mechanics_mode'] ?? 'EXTEND')),
+            'CONSUMPTION_PROFILE_ID' => $template['consumption_profile_id'] ?? null,
         ];
     }
 
@@ -47,6 +50,30 @@ class ShopLegacyMapper
             'DESCRIPTION' => (string) ($template['description'] ?? ''),
             'DRAFT' => (int) ($template['draft'] ?? 0),
         ], $this->templateDetailPayload($template));
+    }
+
+    /**
+     * Returns the editable consumption state for the GM warehouse only.
+     * This is intentionally separate from the player-facing CONSUMPTION
+     * payload, which must not disclose unidentified poisons.
+     */
+    public function instanceConsumptionConfiguration(array $template, array $instance): array
+    {
+        $resolution = $this->consumptionCatalog->resolve($template, $instance);
+        $templateProfile = $this->consumptionCatalog->profile($template['consumption_profile_id'] ?? null);
+        $profile = $resolution['profile'] ?? null;
+
+        return [
+            'mode' => strtolower((string) ($instance['consumption_mode'] ?? 'inherit')),
+            'profileId' => $instance['consumption_profile_id'] ?? null,
+            'identification' => (string) ($instance['consumption_identification'] ?? 'unknown'),
+            'portions' => max(1, (int) ($instance['consumption_portions'] ?? 1)),
+            'templateProfileId' => $template['consumption_profile_id'] ?? null,
+            'source' => (string) ($resolution['source'] ?? 'template'),
+            'resolvedProfileId' => $profile['id'] ?? null,
+            'templateProfile' => $templateProfile ? $this->consumptionCatalog->adminSummary($templateProfile) : null,
+            'resolvedProfile' => $profile ? $this->consumptionCatalog->adminSummary($profile) : null,
+        ];
     }
 
     public function profileToApi(array $profile): array
@@ -99,23 +126,28 @@ class ShopLegacyMapper
     public function shopEntryFromTemplateRow(array $row, array $template): array
     {
         $price = $row['price_override'] !== null ? (int) $row['price_override'] : (int) ($template['prize'] ?? 0);
+        $profile = $this->consumptionCatalog->profile($template['consumption_profile_id'] ?? null);
+        $view = $this->consumptionCatalog->playerView($profile, 'unknown', 1, ['accessible' => false]);
+        $name = $view['name'] ?? (string) ($template['name'] ?? '');
 
-        return array_merge([
+        $payload = array_merge([
             'ID' => (int) $row['template_id'],
             'INV_ID' => (int) $row['template_id'],
             'ITEM_PLACE' => 'STOISKO',
             'SLOT' => 'STOISKO',
-            'PERSONAL_PSEU' => (string) ($template['name'] ?? ''),
+            'PERSONAL_PSEU' => $name,
             'PERSONAL_DESC' => (string) ($template['description'] ?? ''),
             'PERSONAL_COST' => $price,
             'QUANTITY' => $row['quantity'] === null ? null : (int) $row['quantity'],
             'OWNER_OPT' => 'DEFAULT',
             'OWNER' => 'BG1',
-            'NAME' => (string) ($template['name'] ?? ''),
+            'NAME' => $name,
             'DESCRIPTION' => (string) ($template['description'] ?? ''),
             'ACTIVE_PRICE' => $price,
             'PRICE_OVERRIDE' => $row['price_override'],
         ], $this->templateDetailPayload($template));
+        unset($payload['CONSUMPTION_PROFILE_ID']);
+        return $this->protectUnidentifiedConsumptionPayload($payload, $profile, 'unknown');
     }
 
     public function inventoryFromTemplateRow(
@@ -129,24 +161,36 @@ class ShopLegacyMapper
     ): array {
         $price = $row['price_override'] !== null ? (int) $row['price_override'] : (int) ($template['prize'] ?? 0);
 
-        return array_merge([
+        $profile = $this->consumptionCatalog->profile($template['consumption_profile_id'] ?? null);
+        $consumption = $this->consumptionCatalog->playerView(
+            $profile,
+            'unknown',
+            max(1, (int) ($row['quantity'] ?? 1)),
+            ['accessible' => $ownerOpt !== 'TRASH']
+        );
+        $name = $consumption['name'] ?? (string) ($template['name'] ?? '');
+        $payload = array_merge([
             'ID' => (int) $row['id'],
             'INV_ID' => (int) $row['template_id'],
             'ITEM_PLACE' => $itemPlace,
             'SLOT' => $itemPlace,
-            'PERSONAL_PSEU' => $ownerOpt === 'TRASH' ? 'Usuniety' : 'Ekwipunek',
+            'PERSONAL_PSEU' => $ownerOpt === 'TRASH' ? 'Usuniety' : $name,
             'PERSONAL_DESC' => (string) ($template['description'] ?? ''),
             'PERSONAL_COST' => $price,
             'QUANTITY' => max(1, (int) ($row['quantity'] ?? 1)),
             'OWNER_OPT' => $ownerOpt,
             'OWNER' => $ownerCode,
-            'NAME' => (string) ($template['name'] ?? ''),
+            'NAME' => $name,
             'DESCRIPTION' => (string) ($template['description'] ?? ''),
             'ACTIVE_PRICE' => $price,
             'PRICE_OVERRIDE' => $row['price_override'],
             'TRASH_KIND' => $trashKind,
             'TRASH_SOURCE_ID' => $trashSourceId,
+            'ITEM_RECORD_KIND' => 'template_stack',
+            'CONSUMPTION' => $consumption,
         ], $this->templateDetailPayload($template));
+        unset($payload['CONSUMPTION_PROFILE_ID']);
+        return $this->protectUnidentifiedConsumptionPayload($payload, $profile, 'unknown');
     }
 
     public function inventoryFromInstanceRow(
@@ -160,29 +204,57 @@ class ShopLegacyMapper
         ?int $trashSourceId = null
     ): array {
         $meta = (array) ($instance['data_override_json'] ?? []);
+        if (
+            ($meta['LEGACY_SOURCE'] ?? '') === 'blatyrpg-old-wfrp'
+            && empty($meta['ICON_OVERRIDDEN'])
+        ) {
+            unset($meta['IMG_CLASS'], $meta['ICON'], $meta['icon'], $meta['sprite'], $meta['asset_id']);
+        }
 
+        $resolution = $this->consumptionCatalog->resolve($template, $instance);
+        $portions = $resolution['profile']
+            ? max(0, (int) ($instance['consumption_portions'] ?? 1)) : 0;
+        $identification = (string) ($instance['consumption_identification'] ?? 'unknown');
+        $consumption = $this->consumptionCatalog->playerView(
+            $resolution['profile'],
+            $identification,
+            $portions,
+            ['accessible' => $ownerOpt !== 'TRASH']
+        );
+        $displayName = $consumption['name'] ?? (string) ($instance['name_override'] ?: ($template['name'] ?? ''));
         $payload = array_merge([
             'ID' => (int) $instance['id'],
             'INV_ID' => (int) $instance['template_id'],
             'ITEM_PLACE' => $itemPlace,
             'SLOT' => $itemPlace,
-            'PERSONAL_PSEU' => (string) ($instance['name_override'] ?? 'Przedmiot'),
+            'PERSONAL_PSEU' => $displayName,
             'PERSONAL_DESC' => (string) ($instance['note'] ?? ($template['description'] ?? '')),
             'PERSONAL_COST' => (int) (($placement['price_override'] ?? $template['prize']) ?? 0),
-            'QUANTITY' => 1,
+            'QUANTITY' => $portions ?: 1,
             'OWNER_OPT' => $ownerOpt,
             'OWNER' => $ownerCode,
-            'NAME' => (string) ($instance['name_override'] ?: ($template['name'] ?? '')),
+            'NAME' => $displayName,
             'DESCRIPTION' => (string) ($instance['note'] ?: ($template['description'] ?? '')),
             'ACTIVE_PRICE' => (int) (($placement['price_override'] ?? $template['prize']) ?? 0),
             'PRICE_OVERRIDE' => $placement['price_override'],
             'TRASH_KIND' => $trashKind,
             'TRASH_SOURCE_ID' => $trashSourceId,
+            'ITEM_RECORD_KIND' => 'instance',
+            'CONSUMPTION' => $consumption,
         ], $this->templateDetailPayload($template), $meta, [
             'CHARGE' => (int) (($meta['CHARGE'] ?? $template['charge']) ?? 0),
             'ATTRIBUTES' => array_values((array) ($meta['ATTRIBUTES'] ?? $template['attributes_json'] ?? [])),
             'INSTANCE_META' => $meta,
         ]);
+
+        // A placement is the authoritative source of an item's owner. Legacy
+        // inventory metadata contains numeric OWNER/OWNER_OPT fields from the
+        // old character sheet; merging them above must not detach the item
+        // from its current character container.
+        $payload['OWNER_OPT'] = $ownerOpt;
+        $payload['OWNER'] = $ownerCode;
+        unset($payload['CONSUMPTION_PROFILE_ID']);
+        $payload = $this->protectUnidentifiedConsumptionPayload($payload, $resolution['profile'], $identification);
 
         $icon = $this->itemIconResolver->resolve(
             $payload,
@@ -195,6 +267,20 @@ class ShopLegacyMapper
         $payload['sprite'] = $icon;
         $payload['asset_id'] = $icon;
 
+        return $payload;
+    }
+
+    /** Keep a concealed poison's identity out of every player-facing field. */
+    private function protectUnidentifiedConsumptionPayload(array $payload, ?array $profile, string $identification): array
+    {
+        if (!$profile || empty($profile['hiddenRisk']) || in_array($identification, ['identified', 'examined'], true)) {
+            return $payload;
+        }
+        $description = (string) ($profile['description'] ?? '');
+        $payload['PERSONAL_DESC'] = $description;
+        $payload['DESCRIPTION'] = $description;
+        foreach (['DETAILS', 'ITEM_ID', 'MECHANICS', 'ATTRIBUTES', 'WEAPON'] as $key) unset($payload[$key]);
+        $payload['INSTANCE_META'] = [];
         return $payload;
     }
 

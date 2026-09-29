@@ -1,4 +1,8 @@
 .home-page .section {
+  display: grid;
+  min-height: calc(100vh - var(--landing-topbar-height));
+  min-height: calc(100svh - var(--landing-topbar-height));
+  align-items: center;
   padding: clamp(42px, 6vw, 72px) clamp(18px, 6vw, 90px);
   border-bottom: 1px solid var(--landing-border);
 }

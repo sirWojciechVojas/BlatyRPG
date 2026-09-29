@@ -1,0 +1,108 @@
+.token-selection-toolbar {
+  position: absolute;
+  z-index: 330;
+  top: 2.7rem;
+  left: 3rem;
+  display: flex;
+  gap: 0.14rem;
+  padding: 0.2rem;
+  background: rgb(18 24 33 / 94%);
+  border: 1px solid var(--ui-color-border, #2c3747);
+  border-radius: var(--ui-radius-sm, 0.25rem);
+  box-shadow: var(--ui-shadow-sm, 0 4px 12px rgb(0 0 0 / 35%));
+  backdrop-filter: blur(8px);
+}
+
+.token-selection-toolbar::before {
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  width: 0.4rem;
+  height: 1px;
+  content: "";
+  background: var(--ui-color-border, #2c3747);
+}
+
+.token-selection-toolbar button {
+  display: grid;
+  width: 1.9rem;
+  height: 1.9rem;
+  padding: 0;
+  color: var(--ui-color-text-muted, #9ba8ba);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--ui-radius-sm, 0.25rem);
+  place-items: center;
+}
+
+.token-selection-toolbar button:hover,
+.token-selection-toolbar__button--active {
+  color: #f5ce81 !important;
+  background: rgb(212 162 76 / 16%) !important;
+  border-color: #d4a24c !important;
+}
+
+.token-selection-toolbar svg {
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.scene-canvas--area-selection {
+  cursor: crosshair;
+}
+
+.scene-canvas--area-selection .scene-token-wrap,
+.scene-canvas--area-selection .scene-token-wrap * {
+  pointer-events: none !important;
+}
+
+.token-area-selection {
+  position: absolute;
+  z-index: 700;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.token-area-selection__shape {
+  fill: rgb(222 166 66 / 13%);
+  stroke: #f2c466;
+  stroke-width: 2;
+  stroke-dasharray: 8 5;
+  filter: drop-shadow(0 0 4px rgb(240 181 74 / 75%));
+  animation: token-selection-flow 0.7s linear infinite;
+}
+
+.token-area-selection__candidates rect {
+  fill: rgb(75 205 134 / 12%);
+  stroke: #68e5a2;
+  stroke-width: 3;
+  stroke-dasharray: 5 4;
+  filter: drop-shadow(0 0 5px rgb(72 211 137 / 80%));
+}
+
+.token-area-selection__nodes circle {
+  fill: #fff1b2;
+  stroke: #5d3610;
+  stroke-width: 1.5;
+}
+
+.token-area-selection__count circle {
+  fill: rgb(25 20 15 / 95%);
+  stroke: #f2c466;
+  stroke-width: 2;
+}
+
+.token-area-selection__count text {
+  fill: #fff1c4;
+  font-weight: 800;
+  font-size: 12px;
+}
+
+@keyframes token-selection-flow {
+  to { stroke-dashoffset: -26; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .token-area-selection__shape { animation: none; }
+}

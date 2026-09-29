@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>BlatyRPG — Character HUD v8</title>
+  <link rel="stylesheet" href="preview.css">
+</head>
+<body>
+  <section class="hud-runtime" id="character-hud" aria-label="Panel postaci">
+    <div class="hud-runtime__stage">
+      <!-- Avatar jest dostarczany przez aplikację. W podglądzie rama pozostaje pusta.
+      <img class="hud-avatar-image" src="avatar.png" width="175" height="175" alt="Avatar postaci">
+      -->
+      <div class="hud-hp-fill" id="hp-fill" style="--hp:.75" aria-hidden="true"></div>
+      <span class="hud-sprite hud-sprite--hp-foreground hud-hp-foreground" aria-hidden="true"></span>
+      <p class="hud-text hud-name">Enguerrand Rocheteau</p>
+      <output class="hud-text hud-health" id="hp-value" aria-label="Punkty życia" aria-live="polite">12 / 16</output>
+      <button type="button" class="hud-control hud-sprite hud-sprite--button-minus hud-minus" id="hp-minus" aria-label="Zmniejsz HP" title="Zmniejsz HP">
+        <span class="hud-sprite hud-sprite--symbol-minus" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="hud-control hud-sprite hud-sprite--button-plus hud-plus" id="hp-plus" aria-label="Zwiększ HP" title="Zwiększ HP">
+        <span class="hud-sprite hud-sprite--symbol-plus" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="hud-control hud-sprite hud-sprite--button-menu hud-menu--icon-character" aria-label="Karta postaci" title="Karta postaci">
+        <span class="hud-sprite hud-sprite--icon-character" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="hud-control hud-sprite hud-sprite--button-menu hud-menu--icon-development" aria-label="Rozwój postaci" title="Rozwój postaci">
+        <span class="hud-sprite hud-sprite--icon-development" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="hud-control hud-sprite hud-sprite--button-menu hud-menu--icon-combat" aria-label="Walka" title="Walka">
+        <span class="hud-sprite hud-sprite--icon-combat" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="hud-control hud-sprite hud-sprite--button-menu hud-menu--icon-inventory" aria-label="Ekwipunek" title="Ekwipunek">
+        <span class="hud-sprite hud-sprite--icon-inventory" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="hud-control hud-sprite hud-sprite--button-menu hud-menu--icon-book" aria-label="Księga" title="Księga">
+        <span class="hud-sprite hud-sprite--icon-book" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="hud-control hud-sprite hud-sprite--button-menu hud-menu--icon-scroll" aria-label="Zwoje" title="Zwoje">
+        <span class="hud-sprite hud-sprite--icon-scroll" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="hud-control hud-sprite hud-sprite--button-menu hud-menu--icon-quill" aria-label="Historia postaci" title="Historia postaci">
+        <span class="hud-sprite hud-sprite--icon-quill" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="hud-control hud-sprite hud-sprite--button-menu hud-menu--icon-journal" aria-label="Dziennik" title="Dziennik">
+        <span class="hud-sprite hud-sprite--icon-journal" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="hud-control hud-sprite hud-sprite--button-menu hud-menu--icon-map" aria-label="Mapa" title="Mapa">
+        <span class="hud-sprite hud-sprite--icon-map" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="hud-control hud-sprite hud-sprite--button-menu hud-menu--icon-bestiary" aria-label="Bestiariusz" title="Bestiariusz">
+        <span class="hud-sprite hud-sprite--icon-bestiary" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="hud-control hud-sprite hud-sprite--button-menu hud-menu--icon-talents" aria-label="Talenty" title="Talenty">
+        <span class="hud-sprite hud-sprite--icon-talents" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="hud-control hud-sprite hud-sprite--button-menu hud-menu--icon-purse" aria-label="Sakiewka" title="Sakiewka">
+        <span class="hud-sprite hud-sprite--icon-purse" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="hud-control hud-sprite hud-sprite--button-menu hud-menu--icon-star" aria-label="Zdolności" title="Zdolności">
+        <span class="hud-sprite hud-sprite--icon-star" aria-hidden="true"></span>
+      </button>
+      <button type="button" class="hud-control hud-sprite hud-sprite--button-menu hud-menu--icon-settings" aria-label="Ustawienia" title="Ustawienia">
+        <span class="hud-sprite hud-sprite--icon-settings" aria-hidden="true"></span>
+      </button>
+      <p class="hud-text hud-summary">Wydane 600 &nbsp;·&nbsp; Wolne 300</p>
+      <p class="hud-text hud-xp-label hud-xp-label--min">Wymagane do awansu</p>
+      <p class="hud-text hud-xp-label hud-xp-label--max">Pełny rozwój</p>
+      <p class="hud-text hud-pd">PD 900</p>
+      <p class="hud-text hud-xp-value hud-xp-value--min">40%</p>
+      <p class="hud-text hud-xp-value hud-xp-value--max">37,5%</p>
+      <div class="hud-xp-fill hud-xp-fill--min" style="--xp:.4" role="progressbar" aria-label="Wymagane do awansu" aria-valuemin="0" aria-valuemax="100" aria-valuenow="40"></div>
+      <div class="hud-xp-fill hud-xp-fill--max" style="--xp:.375" role="progressbar" aria-label="Pełny rozwój" aria-valuemin="0" aria-valuemax="100" aria-valuenow="37.5"></div>
+      <span class="hud-sprite hud-sprite--dice-d100 hud-die" role="img" aria-label="Złota kostka k100 z numerami"></span>
+      <span class="hud-control hud-sprite hud-sprite--button-3d hud-mode" aria-label="Podgląd kostki 3D">
+        <span class="hud-mode-label">3D</span>
+      </span>
+    </div>
+  </section>
+  <script>
+  (() => {
+    const hud = document.getElementById('character-hud');
+    const fill = document.getElementById('hp-fill');
+    const value = document.getElementById('hp-value');
+    const minus = document.getElementById('hp-minus');
+    const plus = document.getElementById('hp-plus');
+    let hp = 12;
+    const maxHp = 16;
+    function changeHp(delta) {
+      hp = Math.max(0, Math.min(maxHp, hp + delta));
+      fill.style.setProperty('--hp', hp / maxHp);
+      value.textContent = `${hp} / ${maxHp}`;
+      minus.disabled = hp === 0;
+      plus.disabled = hp === maxHp;
+    }
+    minus.addEventListener('click', () => changeHp(-1));
+    plus.addEventListener('click', () => changeHp(1));
+
+    // Zachowaj proporcje, jeżeli okno jest węższe od wersji Full HD.
+    function fitNarrowViewport() {
+      const width = document.documentElement.clientWidth;
+      if (width < 804) {
+        const scale = width / 1072;
+        hud.style.setProperty('--hud-width', `${width}px`);
+        hud.style.setProperty('--hud-height', `${376 * scale}px`);
+        hud.style.setProperty('--hud-scale', scale);
+      } else {
+        ['--hud-width', '--hud-height', '--hud-scale'].forEach(key => hud.style.removeProperty(key));
+      }
+    }
+    fitNarrowViewport();
+    window.addEventListener('resize', fitNarrowViewport, { passive: true });
+  })();
+  </script>
+</body>
+</html>

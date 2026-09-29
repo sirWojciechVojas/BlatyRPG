@@ -87,7 +87,7 @@ describe("authSession", () => {
         expires_at: 61,
         user: { id: 1, role: "user" },
       }),
-    ).toMatchObject({ expiresAt: 61_000, user: { role: "player" } });
+    ).toMatchObject({ expiresAt: 61_000, user: { role: "user" } });
   });
 
   it("expires proactively and notifies subscribers", () => {

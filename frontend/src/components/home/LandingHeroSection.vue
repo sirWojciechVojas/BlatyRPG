@@ -29,19 +29,25 @@
       </div>
       <div class="hero-metrics">
         <div class="metric">
-          <span class="metric-value">VTT</span>
+          <span class="metric-value">{{
+            $t("landing.hero.metrics.scenesValue")
+          }}</span>
           <span class="metric-label">{{
             $t("landing.hero.metrics.scenes")
           }}</span>
         </div>
         <div class="metric">
-          <span class="metric-value">WS</span>
+          <span class="metric-value">{{
+            $t("landing.hero.metrics.latencyValue")
+          }}</span>
           <span class="metric-label">{{
             $t("landing.hero.metrics.latency")
           }}</span>
         </div>
         <div class="metric">
-          <span class="metric-value">3D</span>
+          <span class="metric-value">{{
+            $t("landing.hero.metrics.hostingValue")
+          }}</span>
           <span class="metric-label">{{
             $t("landing.hero.metrics.hosting")
           }}</span>

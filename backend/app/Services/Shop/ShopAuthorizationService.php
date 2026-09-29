@@ -3,6 +3,7 @@
 namespace App\Services\Shop;
 
 use App\Models\CampaignModel;
+use App\Models\CampaignMemberModel;
 use App\Models\ShopOwnerClaimModel;
 
 class ShopAuthorizationService
@@ -10,15 +11,18 @@ class ShopAuthorizationService
     private $authContextService;
     private $ownerClaimModel;
     private $campaignModel;
+    private $campaignMembers;
 
     public function __construct(
         ?AuthContextService $authContextService = null,
         ?ShopOwnerClaimModel $ownerClaimModel = null,
-        ?CampaignModel $campaignModel = null
+        ?CampaignModel $campaignModel = null,
+        ?CampaignMemberModel $campaignMembers = null
     ) {
         $this->authContextService = $authContextService ?: new AuthContextService();
         $this->ownerClaimModel = $ownerClaimModel ?: new ShopOwnerClaimModel();
         $this->campaignModel = $campaignModel ?: new CampaignModel();
+        $this->campaignMembers = $campaignMembers ?: new CampaignMemberModel();
     }
 
     /** Resolves dashboard shop access in one query instead of one per campaign. */
@@ -47,11 +51,18 @@ class ShopAuthorizationService
         if ($userId < 1) {
             return $access;
         }
-        if ($role === 'gm') {
-            foreach ($owners as $campaignId => $ownerId) {
-                $access[$campaignId] = $ownerId === $userId;
+        foreach ($owners as $campaignId => $ownerId) {
+            $access[$campaignId] = $ownerId === $userId;
+        }
+        $memberships = $this->campaignMembers->select('campaign_id, role')
+            ->where('user_id', $userId)
+            ->where('is_active', 1)
+            ->whereIn('campaign_id', array_keys($access))
+            ->findAll();
+        foreach ($memberships as $membership) {
+            if (strtolower((string) ($membership['role'] ?? '')) === 'gm') {
+                $access[(int) $membership['campaign_id']] = true;
             }
-            return $access;
         }
 
         $claims = $this->ownerClaimModel
@@ -70,22 +81,18 @@ class ShopAuthorizationService
 
     public function assertCampaignAccess(array $authContext, int $campaignId): array
     {
-        $role = strtolower((string) ($authContext['role'] ?? ''));
-        if ($role === 'admin' || !empty($authContext['development_access'])) {
+        if (array_key_exists('campaign_authorized', $authContext)
+            && !$authContext['campaign_authorized']) {
+            return $this->forbidden('Campaign is outside current user access.');
+        }
+        if ($this->authContextService->isGmOrAdmin($authContext)
+            || !empty($authContext['development_access'])) {
             return ['ok' => true];
         }
 
         $userId = (int) ($authContext['user_id'] ?? 0);
         if (!$userId) {
             return $this->forbidden('User context is missing.');
-        }
-
-        if ($role === 'gm') {
-            $campaign = $this->campaignModel
-                ->where('id', $campaignId)
-                ->where('game_master_id', $userId)
-                ->first();
-            return $campaign ? ['ok' => true] : $this->forbidden('Campaign is not assigned to current GM.');
         }
 
         $claim = $this->ownerClaimModel
@@ -97,15 +104,8 @@ class ShopAuthorizationService
 
     public function assertGm(array $authContext, ?int $campaignId = null): array
     {
-        $role = strtolower((string) ($authContext['role'] ?? ''));
-        if ($role === 'admin') {
+        if ($this->authContextService->isGmOrAdmin($authContext)) {
             return ['ok' => true];
-        }
-        if ($role === 'gm' && !empty($authContext['development_access'])) {
-            return ['ok' => true];
-        }
-        if ($role === 'gm' && $campaignId !== null) {
-            return $this->assertCampaignAccess($authContext, $campaignId);
         }
 
         return $this->forbidden('GM permissions are required.');

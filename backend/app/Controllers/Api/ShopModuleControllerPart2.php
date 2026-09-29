@@ -284,6 +284,9 @@ trait ShopModuleControllerPart2
         if (trim((string) ($input['NAME'] ?? '')) === '') {
             return $this->fail(['code' => 'invalid_payload', 'message' => 'NAME is required.'], 400);
         }
+        if (!$this->consumptionProfileInputIsValid($input)) {
+            return $this->fail(['code' => 'invalid_consumption_profile'], 422);
+        }
 
         $record = $this->legacyTemplateInputToRecord((int) $campaignId, $input);
         $this->templateModel->insert($record);

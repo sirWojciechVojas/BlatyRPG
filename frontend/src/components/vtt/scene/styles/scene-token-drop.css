@@ -1,0 +1,119 @@
+.token-drop-preview {
+  position: absolute;
+  z-index: 650;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.token-drop-preview > svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.token-drop-preview line {
+  stroke: #ffd66f;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-dasharray: 5 12;
+  filter: drop-shadow(0 0 7px #ff8a24);
+  animation: token-drop-trail 0.48s linear infinite;
+}
+
+.token-drop-preview__target {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: top 45ms linear, left 45ms linear;
+}
+
+.token-drop-preview__portrait {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  display: grid;
+  overflow: hidden;
+  place-items: center;
+  color: #2a1706;
+  font-weight: 900;
+  font-size: 1.2rem;
+  background: radial-gradient(circle at 35% 25%, #fff2bc, #a95118);
+  border: 3px solid #fff0a5;
+  border-radius: 50%;
+  box-shadow: 0 0 9px #fff2a8, 0 0 25px #ff8b26, 0 13px 18px rgb(0 0 0 / 72%);
+  animation: token-drop-float 0.72s ease-in-out infinite alternate;
+}
+
+.token-drop-preview__portrait::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(115deg, transparent 25%, rgb(255 255 255 / 48%) 48%, transparent 70%);
+  translate: -120% 0;
+  animation: token-drop-shine 1.2s ease-in-out infinite;
+}
+
+.token-drop-preview__portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.token-drop-preview__orbit {
+  position: absolute;
+  z-index: 1;
+  border: 2px dashed #ffd163;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 5px #ff8c28);
+}
+
+.token-drop-preview__orbit--inner {
+  inset: -9px;
+  animation: token-drop-orbit 1s linear infinite;
+}
+
+.token-drop-preview__orbit--outer {
+  inset: -19px;
+  border-color: #fff0a4 transparent #f28424;
+  animation: token-drop-orbit 1.7s linear infinite reverse;
+}
+
+.token-drop-preview strong {
+  position: absolute;
+  z-index: 3;
+  top: calc(100% + 17px);
+  left: 50%;
+  min-width: max-content;
+  max-width: 15rem;
+  padding: 5px 9px;
+  overflow: hidden;
+  color: #281505;
+  font-size: 12px;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: linear-gradient(135deg, #fff1bc, #e9952c);
+  border: 1px solid #fff3c9;
+  border-radius: 999px;
+  box-shadow: 0 5px 15px rgb(0 0 0 / 72%);
+  transform-origin: top center;
+}
+
+@keyframes token-drop-trail { to { stroke-dashoffset: -17; } }
+@keyframes token-drop-orbit { to { rotate: 360deg; } }
+@keyframes token-drop-float { to { translate: 0 -7px; scale: 1.07; } }
+@keyframes token-drop-shine { 55%, 100% { translate: 120% 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .token-drop-preview line,
+  .token-drop-preview__portrait,
+  .token-drop-preview__portrait::after,
+  .token-drop-preview__orbit {
+    animation: none;
+  }
+}

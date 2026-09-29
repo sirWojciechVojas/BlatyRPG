@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { createSceneApiClient } from "@/lib/vtt/sceneApiClient";
+import { cloneSceneDraft } from "@/lib/vtt/sceneNormalizer";
 
 const apiScene = {
   id: 4,
@@ -10,10 +11,36 @@ const apiScene = {
   height: 900,
   grid_type: "hex_pointy",
   grid_size: 72,
+  darkness_level: "0.650",
+  global_illumination: 1,
+  fog_exploration: 0,
   revision: 3,
 };
 
 describe("sceneApiClient", () => {
+  it("clones only writable scene data", () => {
+    expect(
+      cloneSceneDraft(
+        {
+          ...apiScene,
+          backgroundUrl: apiScene.background_url,
+          sortOrder: 4,
+          revision: 9,
+        },
+        "Ruins — copy",
+      ),
+    ).toMatchObject({
+      name: "Ruins — copy",
+      backgroundUrl: apiScene.background_url,
+      width: 1600,
+      height: 900,
+      sortOrder: 5,
+    });
+    expect(
+      cloneSceneDraft({ ...apiScene, revision: 9 }, "Copy"),
+    ).not.toHaveProperty("revision");
+  });
+
   it("uses campaign routes and normalizes scene snapshots", async () => {
     const request = vi.fn().mockResolvedValue({
       scene: apiScene,
@@ -28,7 +55,11 @@ describe("sceneApiClient", () => {
       backgroundUrl: "https://example.test/ruins.webp",
       gridType: "hex_pointy",
       gridSize: 72,
+      globalLightLevel: 0.883,
+      globalIllumination: true,
+      fogExploration: false,
     });
+    expect(result.scene.darknessLevel).toBeCloseTo(0.117);
   });
 
   it("whitelists update fields and sends the optimistic revision", async () => {

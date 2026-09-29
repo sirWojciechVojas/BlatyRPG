@@ -1,3 +1,5 @@
+import { createRealtimeTimers } from "./realtimeTimers";
+
 const expiryTime = (value) => {
   const numeric = Number(value);
   if (Number.isFinite(numeric) && numeric > 0) {
@@ -8,24 +10,23 @@ const expiryTime = (value) => {
 };
 
 export const createAuthExpiryScheduler = (options = {}) => {
-  const setTimer = options.setTimeout || setTimeout;
-  const clearTimer = options.clearTimeout || clearTimeout;
+  const timers = createRealtimeTimers(options);
   const now = options.now || Date.now;
   const leadMs = Math.max(1_000, Number(options.authRefreshLeadMs) || 5_000);
   let timer = null;
 
   const cancel = () => {
-    if (timer !== null) clearTimer?.(timer);
+    if (timer !== null) timers.clear?.(timer);
     timer = null;
   };
 
   const schedule = (expiresAt) => {
     cancel();
     const expiry = expiryTime(expiresAt);
-    if (!expiry || !setTimer) return false;
+    if (!expiry || !timers.set) return false;
     const remaining = expiry - now();
     if (remaining <= leadMs) return false;
-    timer = setTimer(() => {
+    timer = timers.set(() => {
       timer = null;
       options.onRefresh?.();
     }, remaining - leadMs);

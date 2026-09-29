@@ -59,7 +59,7 @@ final class AuthAccountAuthenticationTest extends CIUnitTestCase
         );
 
         $this->assertSame(7, $result['id']);
-        $this->assertSame('player', $result['role']);
+        $this->assertSame('user', $result['role']);
     }
 
     /**

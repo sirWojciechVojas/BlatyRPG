@@ -22,7 +22,12 @@ final class CampaignPresenter
             'isActive' => !empty($campaign['is_active']),
             'gameMasterId' => (int) $campaign['game_master_id'],
             'settings' => self::settings($campaign['settings_json'] ?? []),
+            'globalRole' => (string) (
+                $context['globalRole'] ?? $context['auth']['role'] ?? 'player'
+            ),
+            'campaignRole' => $context['campaignRole'] ?? null,
             'accessRole' => (string) $context['accessRole'],
+            'isAdmin' => !empty($context['isAdmin']),
             'capabilities' => $context['capabilities'],
             'createdAt' => $campaign['created_at'] ?? null,
             'updatedAt' => $campaign['updated_at'] ?? null,

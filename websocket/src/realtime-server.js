@@ -1,8 +1,12 @@
 import { randomUUID } from "node:crypto";
 import { WebSocket } from "ws";
 import { BackendChatClient } from "./backend-chat-client.js";
+import { BackendTokenClient } from "./backend-token-client.js";
+import { BackendSceneSnapshotClient } from "./backend-scene-snapshot-client.js";
+import { BackendHandoutClient } from "./backend-handout-client.js";
 import { createChatHandler } from "./chat-handler.js";
 import { createHttpTransport } from "./http-transport.js";
+import { routeRealtimeFeature } from "./feature-router.js";
 import { PresenceRegistry } from "./presence-registry.js";
 import {
   CLOSE_CODES,
@@ -15,15 +19,21 @@ import {
 } from "./protocol.js";
 import { FixedWindowRateLimiter } from "./rate-limiter.js";
 import { RoomRegistry } from "./room-registry.js";
+import { createSceneFeatureHandlers } from "./scene-feature-handlers.js";
 import { TicketError, TicketVerifier } from "./ticket-verifier.js";
+import { createTokenHandler } from "./token-handler.js";
+import { createFogHandler } from "./fog-handler.js";
+import { createHandoutHandler } from "./handout-handler.js";
 
-const closeReason = (value) => String(value || "connection_closed").slice(0, 100);
+const closeReason = (value) =>
+  String(value || "connection_closed").slice(0, 100);
 
 export const createRealtimeServer = (config, dependencies = {}) => {
   const sessions = new Set();
   const rooms = dependencies.rooms || new RoomRegistry();
   const ticketVerifier =
-    dependencies.ticketVerifier || new TicketVerifier(config, dependencies.ticketOptions);
+    dependencies.ticketVerifier ||
+    new TicketVerifier(config, dependencies.ticketOptions);
   let stopping = false;
 
   const broadcastPresence = (change) => {
@@ -36,7 +46,8 @@ export const createRealtimeServer = (config, dependencies = {}) => {
       actorUserId: change.userId,
       payload: { change: change.change, user: change.user },
     });
-    for (const session of rooms.sessions(change.campaignId)) sendEvent(session.ws, event);
+    for (const session of rooms.sessions(change.campaignId))
+      sendEvent(session.ws, event);
   };
 
   const presence =
@@ -61,7 +72,9 @@ export const createRealtimeServer = (config, dependencies = {}) => {
       createServerEvent({
         type: "protocol.error",
         campaignId: session.campaignId || null,
-        sequence: session.campaignId ? rooms.currentSequence(session.campaignId) : null,
+        sequence: session.campaignId
+          ? rooms.currentSequence(session.campaignId)
+          : null,
         actorUserId: session.userId || null,
         payload: { code, requestId },
       }),
@@ -82,6 +95,28 @@ export const createRealtimeServer = (config, dependencies = {}) => {
     onAuthenticationFailure: (session) =>
       closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized"),
   });
+  const tokens = createTokenHandler({
+    backend: dependencies.tokenBackend || new BackendTokenClient(config),
+    rooms,
+    onAuthenticationFailure: (session) =>
+      closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized"),
+  });
+  const snapshots =
+    dependencies.snapshotBackend || new BackendSceneSnapshotClient(config);
+  const sceneFeatures = createSceneFeatureHandlers(
+    config,
+    dependencies,
+    rooms,
+    (session) =>
+      closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized"),
+  );
+  const fog = createFogHandler({ rooms });
+  const handouts = createHandoutHandler({
+    backend: dependencies.handoutBackend || new BackendHandoutClient(config),
+    rooms,
+    onAuthenticationFailure: (session) =>
+      closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized"),
+  });
 
   const sessionEvent = (session, type, payload = {}) =>
     createServerEvent({
@@ -92,7 +127,12 @@ export const createRealtimeServer = (config, dependencies = {}) => {
       payload,
     });
 
-  const sendPresenceSnapshot = (session, lastSequence, requestId = null, type = "presence.snapshot") => {
+  const sendPresenceSnapshot = (
+    session,
+    lastSequence,
+    requestId = null,
+    type = "presence.snapshot",
+  ) => {
     const latestSequence = rooms.currentSequence(session.campaignId);
     sendEvent(
       session.ws,
@@ -106,8 +146,43 @@ export const createRealtimeServer = (config, dependencies = {}) => {
     );
   };
 
+  const sendSyncSnapshot = async (
+    session,
+    lastSequence,
+    requestId = null,
+    sceneId = null,
+  ) => {
+    let snapshot = null;
+    let snapshotError = null;
+    if (sceneId !== null) {
+      try {
+        snapshot = await snapshots.get(session, sceneId);
+      } catch (error) {
+        if (Number(error?.status) === 401) {
+          closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized");
+          return;
+        }
+        snapshotError = String(error?.code || "snapshot_unavailable");
+      }
+    }
+    const latestSequence = rooms.currentSequence(session.campaignId);
+    sendEvent(
+      session.ws,
+      sessionEvent(session, "sync.snapshot", {
+        requestId,
+        requestedAfter: lastSequence,
+        latestSequence,
+        resyncRequired: lastSequence !== latestSequence,
+        users: presence.snapshot(session.campaignId),
+        ...(snapshot ? { snapshot } : {}),
+        ...(snapshotError ? { snapshotError } : {}),
+      }),
+    );
+  };
+
   const detach = (session, options = {}) => {
-    if (!session.authenticated || session.detached || session.superseded) return;
+    if (!session.authenticated || session.detached || session.superseded)
+      return;
     session.detached = true;
     rooms.remove(session);
     broadcastPresence(presence.remove(session, options));
@@ -125,7 +200,9 @@ export const createRealtimeServer = (config, dependencies = {}) => {
     session.authTimer = null;
 
     const replaced = rooms.add(session);
-    const change = replaced ? presence.replace(replaced, session) : presence.add(session);
+    const change = replaced
+      ? presence.replace(replaced, session)
+      : presence.add(session);
     if (replaced) {
       replaced.superseded = true;
       clearTimeout(replaced.expiryTimer);
@@ -134,7 +211,13 @@ export const createRealtimeServer = (config, dependencies = {}) => {
 
     const lifetime = Math.max(0, session.expiresAt - Date.now());
     session.expiryTimer = setTimeout(
-      () => closeSession(session, CLOSE_CODES.AUTH, "auth_expired", "ticket_expired"),
+      () =>
+        closeSession(
+          session,
+          CLOSE_CODES.AUTH,
+          "auth_expired",
+          "ticket_expired",
+        ),
       lifetime,
     );
     session.expiryTimer.unref?.();
@@ -165,16 +248,28 @@ export const createRealtimeServer = (config, dependencies = {}) => {
 
   const handleAuthenticatedMessage = (session, message) => {
     const parsed = parseAuthenticatedMessage(message);
-    if (parsed.type === "chat.send" || parsed.type === "chat.sync") {
-      chat.handle(session, parsed);
+    if (
+      routeRealtimeFeature(
+        { chat, tokens, fog, handouts, ...sceneFeatures },
+        session,
+        parsed,
+      )
+    )
       return;
-    }
     if (parsed.type === "sync.request") {
-      sendPresenceSnapshot(session, parsed.lastSequence, parsed.requestId, "sync.snapshot");
+      void sendSyncSnapshot(
+        session,
+        parsed.lastSequence,
+        parsed.requestId,
+        parsed.sceneId,
+      );
       return;
     }
     if (parsed.type === "campaign.leave") {
-      sendEvent(session.ws, sessionEvent(session, "session.left", { requestId: parsed.requestId }));
+      sendEvent(
+        session.ws,
+        sessionEvent(session, "session.left", { requestId: parsed.requestId }),
+      );
       detach(session, { grace: false, reason: "left" });
       session.ws.close(1000, "campaign_left");
     }
@@ -182,12 +277,18 @@ export const createRealtimeServer = (config, dependencies = {}) => {
 
   const handleMessage = (session, data, isBinary) => {
     if (!session.rateLimiter.consume()) {
-      closeSession(session, CLOSE_CODES.RATE_LIMIT, "rate_limited", "rate_limited");
+      closeSession(
+        session,
+        CLOSE_CODES.RATE_LIMIT,
+        "rate_limited",
+        "rate_limited",
+      );
       return;
     }
     try {
       const message = parseMessage(data, isBinary);
-      if (!session.authenticated) authenticate(session, parseAuthMessage(message));
+      if (!session.authenticated)
+        authenticate(session, parseAuthMessage(message));
       else handleAuthenticatedMessage(session, message);
     } catch (error) {
       const code =
@@ -195,7 +296,8 @@ export const createRealtimeServer = (config, dependencies = {}) => {
           ? error.code
           : "internal_error";
       if (!session.authenticated) {
-        const reason = code === "ticket_expired" ? "auth_expired" : "auth_failed";
+        const reason =
+          code === "ticket_expired" ? "auth_expired" : "auth_failed";
         closeSession(session, CLOSE_CODES.AUTH, reason, code);
       } else sendProtocolError(session, code);
     }
@@ -218,7 +320,8 @@ export const createRealtimeServer = (config, dependencies = {}) => {
     };
     sessions.add(session);
     session.authTimer = setTimeout(
-      () => closeSession(session, CLOSE_CODES.AUTH, "auth_timeout", "auth_timeout"),
+      () =>
+        closeSession(session, CLOSE_CODES.AUTH, "auth_timeout", "auth_timeout"),
       config.authTimeoutMs,
     );
     session.authTimer.unref?.();
@@ -226,7 +329,9 @@ export const createRealtimeServer = (config, dependencies = {}) => {
     ws.on("pong", () => {
       session.alive = true;
     });
-    ws.on("message", (data, isBinary) => handleMessage(session, data, isBinary));
+    ws.on("message", (data, isBinary) =>
+      handleMessage(session, data, isBinary),
+    );
     ws.on("error", () => {});
     ws.on("close", () => {
       sessions.delete(session);
@@ -280,5 +385,14 @@ export const createRealtimeServer = (config, dependencies = {}) => {
       });
     });
 
-  return { start, stop, httpServer, wss, sessions, rooms, presence, ticketVerifier };
+  return {
+    start,
+    stop,
+    httpServer,
+    wss,
+    sessions,
+    rooms,
+    presence,
+    ticketVerifier,
+  };
 };

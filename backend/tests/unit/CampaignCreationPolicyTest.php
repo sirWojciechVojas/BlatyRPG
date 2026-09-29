@@ -18,14 +18,14 @@ final class CampaignCreationPolicyTest extends CIUnitTestCase
 
     public function authenticatedRoleProvider(): array
     {
-        return [['player'], ['gm'], ['admin']];
+        return [['user'], ['admin']];
     }
 
     public function testAnonymousAndUnknownRolesCannotCreate(): void
     {
         $policy = new CampaignCreationPolicy();
         $this->assertFalse($policy->allows([
-            'user_id' => 7, 'role' => 'player', 'anonymous' => true,
+            'user_id' => 7, 'role' => 'user', 'anonymous' => true,
         ]));
         $this->assertFalse($policy->allows([
             'user_id' => 7, 'role' => 'root', 'anonymous' => false,

@@ -43,6 +43,9 @@ trait ShopModuleControllerPart3
         }
 
         $input = $this->request->getJSON(true) ?: [];
+        if (!$this->consumptionProfileInputIsValid($input, $existing)) {
+            return $this->fail(['code' => 'invalid_consumption_profile'], 422);
+        }
         $record = $this->legacyTemplateInputToRecord((int) $campaignId, $input, $existing);
 
         $this->templateModel->update((int) $templateId, $record);
@@ -125,6 +128,7 @@ trait ShopModuleControllerPart3
             'item_id', 'item_genre', 'img_class', 'prize', 'charge', 'draft',
             'currency_code', 'weapon_json', 'attributes_json',
             'mechanics_json', 'mechanics_mode',
+            'consumption_profile_id',
         ]));
         $copy['name'] = trim((string) ($input['name'] ?? ('Kopia — '.$source['name'])));
         $copy['campaign_id'] = (int) $campaignId;
@@ -188,6 +192,12 @@ trait ShopModuleControllerPart3
             'ATTRIBUTES' => $attributes,
             'WEAPON' => (array) ($input['weapon'] ?? $template['weapon_json'] ?? []),
         ];
+        $consumptionMode = strtolower(trim((string) ($input['consumptionMode'] ?? 'inherit')));
+        $consumptionProfileId = trim((string) ($input['consumptionProfileId'] ?? ''));
+        if (!in_array($consumptionMode, ['inherit', 'disabled', 'override'], true)
+            || ($consumptionMode === 'override' && !$this->consumptionProfileExists($consumptionProfileId))) {
+            return $this->fail(['code' => 'invalid_consumption_profile'], 422);
+        }
         $meta['IMG_CLASS'] = $this->itemIconResolver->resolve([
             'NAME' => $name,
             'DESCRIPTION' => $description,
@@ -201,6 +211,11 @@ trait ShopModuleControllerPart3
         $this->itemInstanceModel->insert([
             'campaign_id' => (int) $campaignId,
             'template_id' => $templateId,
+            'consumption_mode' => $consumptionMode,
+            'consumption_profile_id' => $consumptionMode === 'override' ? $consumptionProfileId : null,
+            'consumption_identification' => $this->consumptionIdentification($input['consumptionIdentification'] ?? 'unknown'),
+            'consumption_portions' => isset($input['consumptionPortions'])
+                ? max(1, (int) $input['consumptionPortions']) : 1,
             'name_override' => $name,
             'note' => $description,
             'data_override_json' => $meta,

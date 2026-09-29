@@ -82,12 +82,46 @@ describe("authApiClient", () => {
     expect(request.mock.calls[2][0]).toBe("/auth/password-reset/confirm");
   });
 
-  it("maps the legacy global user role to player", async () => {
+  it("keeps the regular application account role", async () => {
     const request = vi.fn().mockResolvedValue({
       user: { id: 4, username: "player", role: "user" },
     });
     await expect(createAuthApiClient({ request }).me()).resolves.toMatchObject({
-      role: "player",
+      role: "user",
     });
+  });
+
+  it("lists and revokes only explicitly selected account sessions", async () => {
+    const request = vi
+      .fn()
+      .mockResolvedValueOnce({
+        sessions: [
+          {
+            id: "8",
+            is_current: true,
+            last_seen_at: "2026-08-23 12:00:00",
+          },
+        ],
+      })
+      .mockResolvedValue({ message: "ok" });
+    const client = createAuthApiClient({ request });
+
+    await expect(client.sessions()).resolves.toEqual([
+      {
+        id: 8,
+        isCurrent: true,
+        createdAt: null,
+        lastSeenAt: "2026-08-23 12:00:00",
+        expiresAt: null,
+      },
+    ]);
+    await client.revokeSession(9);
+    await client.revokeOtherSessions();
+
+    expect(request.mock.calls.slice(1)).toEqual([
+      ["/auth/sessions/9", { method: "DELETE" }],
+      ["/auth/sessions/revoke-others", { method: "POST" }],
+    ]);
+    expect(() => client.revokeSession("foreign")).toThrow(TypeError);
   });
 });

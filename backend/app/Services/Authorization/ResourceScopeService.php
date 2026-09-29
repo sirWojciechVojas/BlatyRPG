@@ -31,6 +31,14 @@ final class ResourceScopeService
         $query = $this->db->table($table)->where('id', $resourceId);
         if ($type === ResourceType::CAMPAIGN) {
             $query->where('id', $campaignId);
+        } elseif ($type === ResourceType::CHARACTER
+            && $this->db->tableExists('character_campaigns')) {
+            $assigned = $this->db->table('character_campaigns')
+                ->where('character_id', $resourceId)
+                ->where('campaign_id', $campaignId)->countAllResults();
+            if (!$assigned) {
+                throw new CampaignException('resource_not_found', 'Resource was not found.', 404);
+            }
         } elseif ($this->db->fieldExists('campaign_id', $table)) {
             $query->where('campaign_id', $campaignId);
         } else {

@@ -8,7 +8,10 @@ class ScenePayloadValidator
         'name', 'description', 'background_url', 'width', 'height', 'padding',
         'background_color', 'grid_type', 'grid_size', 'grid_distance', 'grid_unit',
         'grid_offset_x', 'grid_offset_y', 'grid_color', 'grid_opacity', 'is_visible',
-        'sort_order',
+        'sort_order', 'darkness_level', 'global_illumination', 'global_light_level',
+        'fog_exploration', 'fog_enabled', 'dynamic_vision', 'exploration_memory',
+        'fog_unexplored_color', 'fog_unexplored_opacity', 'fog_explored_opacity',
+        'fog_edge_softness', 'fog_update_during_drag',
     ];
 
     public function validateCreate(array $payload): array
@@ -74,8 +77,12 @@ class ScenePayloadValidator
         }
 
         $numbers = [
-            'grid_distance' => [0.01, 1000000], 'grid_offset_x' => [-50000, 50000],
+            'darkness_level' => [0, 1], 'global_light_level' => [0, 1],
+            'grid_distance' => [0.01, 1000000],
+            'grid_offset_x' => [-50000, 50000],
             'grid_offset_y' => [-50000, 50000], 'grid_opacity' => [0, 1],
+            'fog_unexplored_opacity' => [0, 1], 'fog_explored_opacity' => [0, 1],
+            'fog_edge_softness' => [0, 200],
         ];
         foreach ($numbers as $field => $range) {
             if (array_key_exists($field, $payload)) {
@@ -96,7 +103,7 @@ class ScenePayloadValidator
                 $data['grid_type'] = $type;
             }
         }
-        foreach (['background_color', 'grid_color'] as $field) {
+        foreach (['background_color', 'grid_color', 'fog_unexplored_color'] as $field) {
             if (!array_key_exists($field, $payload)) {
                 continue;
             }
@@ -107,13 +114,23 @@ class ScenePayloadValidator
                 $data[$field] = $color;
             }
         }
-        if (array_key_exists('is_visible', $payload)) {
-            $visible = filter_var($payload['is_visible'], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
-            if ($visible === null) {
-                $errors['is_visible'] = 'Value must be boolean.';
+        foreach (['is_visible', 'global_illumination', 'fog_exploration', 'fog_enabled',
+            'dynamic_vision', 'exploration_memory', 'fog_update_during_drag'] as $field) {
+            if (!array_key_exists($field, $payload)) continue;
+            $value = filter_var($payload[$field], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            if ($value === null) {
+                $errors[$field] = 'Value must be boolean.';
             } else {
-                $data['is_visible'] = $visible ? 1 : 0;
+                $data[$field] = $value ? 1 : 0;
             }
+        }
+
+        if (array_key_exists('global_light_level', $data)) {
+            $data['darkness_level'] = 1 - $data['global_light_level'];
+            $data['global_illumination'] = 0;
+        } elseif (array_key_exists('darkness_level', $data)) {
+            $legacyMultiplier = !empty($data['global_illumination']) ? 0.18 : 1;
+            $data['global_light_level'] = 1 - $data['darkness_level'] * $legacyMultiplier;
         }
 
         $revision = null;

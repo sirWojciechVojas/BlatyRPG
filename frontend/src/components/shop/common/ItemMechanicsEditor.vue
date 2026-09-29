@@ -25,6 +25,14 @@
         >
           + {{ $t("shop.workspace.mechanics.add") }}
         </button>
+        <button
+          v-if="selectedOwnMechanic"
+          type="button"
+          class="danger"
+          @click="removeMechanic"
+        >
+          {{ $t("shop.workspace.mechanics.remove") }}
+        </button>
       </div>
     </header>
 
@@ -326,12 +334,6 @@
           </div>
           <p v-if="parametersError" role="alert">{{ parametersError }}</p>
         </details>
-
-        <footer>
-          <button type="button" class="danger" @click="removeMechanic">
-            {{ $t("shop.workspace.mechanics.remove") }}
-          </button>
-        </footer>
       </div>
 
       <div v-else-if="selectedInheritedMechanic" class="item-mechanics-preview">
@@ -354,10 +356,25 @@
             }}
           </dd>
           <dt>{{ $t("shop.workspace.mechanics.effects") }}</dt>
-          <dd>{{ selectedInheritedMechanic.effects.length }}</dd>
+          <dd>
+            <template v-if="selectedInheritedMechanic.effects.length">
+              <ul class="item-mechanics-preview__effects">
+                <li
+                  v-for="(effect, index) in selectedInheritedMechanic.effects"
+                  :key="`${effect.type}-${index}`"
+                >
+                  {{ effect.description || effect.value || effect.type }}
+                </li>
+              </ul>
+            </template>
+            <template v-else>0</template>
+          </dd>
         </dl>
         <button
-          v-if="mode !== 'INHERIT'"
+          v-if="
+            mode !== 'INHERIT' &&
+            selectedInheritedMechanic.source !== 'CONSUMPTION'
+          "
           type="button"
           class="primary"
           @click="overrideInherited"

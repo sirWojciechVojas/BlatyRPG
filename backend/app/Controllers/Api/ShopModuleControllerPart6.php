@@ -165,6 +165,10 @@ trait ShopModuleControllerPart6
             'mechanics_mode' => (new ShopItemMechanicsService())->normalizeMode(
                 $input['MECHANICS_MODE'] ?? ($existing['mechanics_mode'] ?? 'EXTEND')
             ),
+            'consumption_profile_id' => trim((string) (
+                $input['CONSUMPTION_PROFILE_ID'] ?? $input['consumptionProfileId']
+                ?? ($existing['consumption_profile_id'] ?? '')
+            )) ?: null,
         ];
         $record['img_class'] = $this->itemIconResolver->resolve(
             $record,
@@ -182,5 +186,25 @@ trait ShopModuleControllerPart6
             },
             (array) $values
         ))));
+    }
+
+    private function consumptionProfileInputIsValid(array $input, array $existing = []): bool
+    {
+        if (!array_key_exists('CONSUMPTION_PROFILE_ID', $input)
+            && !array_key_exists('consumptionProfileId', $input)) return true;
+        $id = trim((string) ($input['CONSUMPTION_PROFILE_ID'] ?? $input['consumptionProfileId'] ?? ''));
+        return $id === '' || $this->consumptionProfileExists($id);
+    }
+
+    private function consumptionProfileExists(string $id): bool
+    {
+        return (new \App\Services\Consumption\ConsumptionCatalog())->profile($id) !== null;
+    }
+
+    private function consumptionIdentification($value): string
+    {
+        $value = strtolower(trim((string) $value));
+        return in_array($value, ['unknown', 'suspected', 'identified', 'examined'], true)
+            ? $value : 'unknown';
     }
 }

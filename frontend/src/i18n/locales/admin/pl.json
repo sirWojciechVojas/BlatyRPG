@@ -8,6 +8,9 @@
       "back": "Wróć do kampanii",
       "retry": "Spróbuj ponownie",
       "refresh": "Odśwież",
+      "searchUsers": "Szukaj użytkownika…",
+      "searchCampaigns": "Szukaj Stołu…",
+      "searchCharacters": "Szukaj postaci, Stołu lub właściciela…",
       "createUser": "Utwórz konto",
       "saving": "Zapisywanie…"
     },
@@ -15,44 +18,147 @@
       "title": "Podsumowanie",
       "users": "Użytkownicy",
       "admins": "Administratorzy",
-      "campaigns": "Kampanie"
+      "campaigns": "Kampanie",
+      "activeCampaigns": "Aktywne Stoły",
+      "memberships": "Członkostwa",
+      "activeSessions": "Aktywne sesje"
+    },
+    "metricsHints": {
+      "users": "wszystkie konta",
+      "admins": "dostęp administracyjny",
+      "campaigns": "utworzone Stoły",
+      "activeCampaigns": "gotowe do gry",
+      "memberships": "aktywne przypisania",
+      "activeSessions": "ważne logowania"
+    },
+    "tabs": {
+      "label": "Sekcje panelu administratora",
+      "overview": "Przegląd",
+      "users": "Użytkownicy",
+      "campaigns": "Stoły",
+      "characters": "Postacie",
+      "activity": "Aktywność",
+      "system": "System"
+    },
+    "charts": {
+      "growth": "Nowe konta i Stoły",
+      "weeks": "tygodni",
+      "accounts": "Typy kont",
+      "statuses": "Status Stołów",
+      "systems": "Systemy RPG",
+      "membershipRoles": "Role przy Stołach",
+      "total": "razem",
+      "noData": "Brak danych do wyświetlenia."
+    },
+    "quick": {
+      "title": "Szybkie działania",
+      "addUser": "Dodaj konto",
+      "reviewTables": "Przejrzyj Stoły",
+      "openLanding": "Otwórz ekran startowy"
     },
     "users": {
       "title": "Użytkownicy",
-      "description": "Role są egzekwowane przez API przy każdym żądaniu.",
+      "description": "Uprawnienia aplikacji są niezależne od roli użytkownika w poszczególnych kampaniach.",
       "you": "To Ty",
-      "changeRole": "Zmień rolę użytkownika {name}"
+      "changeRole": "Zmień rolę użytkownika {name}",
+      "empty": "Brak użytkowników spełniających kryteria."
     },
     "create": {
       "title": "Nowe konto",
-      "description": "Utwórz konto gracza, MG albo administratora. Hasło musi mieć co najmniej 12 znaków."
+      "description": "Utwórz zwykłe konto albo konto administratora. MG i Gracza przypisuje się osobno przy każdym Stole.",
+      "passwordHint": "Minimum 12 znaków, mała i wielka litera oraz cyfra."
     },
     "campaigns": {
       "title": "Kampanie",
-      "description": "Przegląd właścicieli i aktywnych członkostw."
+      "description": "Przegląd właścicieli i aktywnych członkostw.",
+      "empty": "Brak Stołów spełniających kryteria."
+    },
+    "characters": {
+      "title": "Wszystkie postacie",
+      "description": "Przeciągaj postacie do wielu kontenerów Stołów i właścicieli. MG zawsze wynika z roli w konkretnym Stole.",
+      "catalog": "Katalog postaci",
+      "dragHint": "Przeciągnij postać do dowolnej liczby kontenerów.",
+      "tableContainers": "Kontenery Stołów",
+      "ownerContainers": "Kontenery właścicieli",
+      "multiTableHint": "Jedna postać może należeć do wielu Stołów.",
+      "multiOwnerHint": "Jedna postać może mieć wielu MG w różnych Stołach.",
+      "assignmentCount": "Stoły: {tables} · MG: {owners}",
+      "dropHere": "Upuść postać tutaj",
+      "removeFromTable": "Usuń postać z tego Stołu",
+      "removeFromOwner": "Usuń tego MG z właścicieli postaci",
+      "empty": "Brak postaci spełniających kryteria."
     },
     "fields": {
       "user": "Użytkownik",
       "username": "Login",
       "email": "E-mail",
       "password": "Hasło tymczasowe",
-      "role": "Rola",
+      "role": "Uprawnienia aplikacji",
       "campaign": "Kampania",
+      "character": "Postać",
       "campaigns": "Kampanie",
       "system": "System",
       "gameMaster": "Mistrz gry",
+      "currentOwner": "Obecny właściciel",
+      "gameMasterOwner": "Właściciel MG",
       "members": "Członkowie",
-      "status": "Status"
+      "status": "Status",
+      "created": "Utworzono",
+      "lastActivity": "Ostatnia aktywność"
     },
-    "roles": { "player": "Gracz", "gm": "Mistrz gry", "admin": "Administrator" },
-    "status": { "active": "Aktywna", "inactive": "Nieaktywna" },
+    "roles": { "user": "Użytkownik", "admin": "Administrator" },
+    "status": {
+      "all": "Wszystkie statusy",
+      "active": "Aktywna",
+      "inactive": "Nieaktywna",
+      "paused": "Wstrzymana",
+      "archived": "Archiwalna"
+    },
+    "campaignRoles": {
+      "gm": "MG",
+      "assistant": "Asystent MG",
+      "player": "Gracz",
+      "observer": "Obserwator"
+    },
+    "activity": {
+      "title": "Ostatnia aktywność",
+      "user_created": "utworzenie konta",
+      "campaign_activity": "aktywność Stołu"
+    },
+    "system": {
+      "title": "Stan usług",
+      "operational": "Działa prawidłowo",
+      "environment": "Środowisko",
+      "database": "Baza danych",
+      "generated": "Odczyt danych",
+      "updated": "Aktualizacja:",
+      "security": "Kontrola dostępu",
+      "sessions": "Odwoływalne sesje użytkowników",
+      "accountRoles": "Konta tylko user / admin",
+      "campaignRoles": "Role przypisane osobno do Stołów",
+      "backendGuard": "Uprawnienia egzekwowane przez backend",
+      "roleModel": "Model uprawnień",
+      "application": "Poziom aplikacji",
+      "perTable": "Osobno przy każdym Stole"
+    },
     "errors": {
       "network": "Brak połączenia z API.",
       "load": "Nie udało się wczytać panelu.",
       "create": "Nie udało się utworzyć konta.",
       "role": "Nie udało się zmienić roli.",
-      "validation": "Sprawdź poprawność danych i ich unikalność.",
-      "lastAdmin": "Nie można odebrać roli ostatniemu administratorowi."
+      "characterAssignment": "Nie udało się zmienić przypisania postaci.",
+      "characterCampaign": "Postać i Stół muszą korzystać z tego samego systemu RPG i świata.",
+      "characterCandidate": "Wybrany użytkownik nie jest aktywnym MG tego Stołu.",
+      "validation": "Nie udało się utworzyć konta. Popraw oznaczone pola.",
+      "lastAdmin": "Nie można odebrać roli ostatniemu administratorowi.",
+      "fields": {
+        "username": "Login musi mieć od 3 do 100 znaków.",
+        "usernameTaken": "Ten login jest już zajęty.",
+        "email": "Podaj prawidłowy adres e-mail.",
+        "emailTaken": "Ten adres e-mail jest już zajęty.",
+        "password": "Hasło musi mieć 12–200 znaków oraz zawierać małą literę, wielką literę i cyfrę.",
+        "role": "Wybierz obsługiwane uprawnienia aplikacji."
+      }
     }
   }
 }

@@ -6,7 +6,7 @@ use App\Services\Auth\PasswordPolicy;
 
 class AdminPayloadValidator
 {
-    private const ROLES = ['player', 'gm', 'admin'];
+    private const ROLES = ['user', 'admin'];
 
     public function validateCreateUser(array $payload): array
     {
@@ -25,7 +25,7 @@ class AdminPayloadValidator
         if (!PasswordPolicy::isStrong($password)) {
             $errors['password'] = PasswordPolicy::MESSAGE;
         }
-        $role = strtolower(trim((string) ($payload['role'] ?? 'player')));
+        $role = strtolower(trim((string) ($payload['role'] ?? 'user')));
         if (!in_array($role, self::ROLES, true)) {
             $errors['role'] = 'Unsupported user role.';
         }

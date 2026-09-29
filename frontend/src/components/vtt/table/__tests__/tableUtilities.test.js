@@ -1,28 +1,75 @@
 import { describe, expect, it } from "vitest";
 
-import { TABLE_UTILITIES, utilityById } from "../tableUtilities";
+import {
+  IMPLEMENTED_TABLE_UTILITIES,
+  TABLE_UTILITIES,
+  utilityById,
+} from "../tableUtilities";
 
 describe("table utilities", () => {
   it("keeps one stable compact rail entry for every required panel", () => {
     expect(TABLE_UTILITIES.map(({ id }) => id)).toEqual([
       "chat",
+      "combat",
       "graphics",
       "characters",
+      "items",
       "handouts",
       "scenario",
+      "scenes",
+      "tables",
       "shop",
       "jukebox",
+      "compendium",
       "notifications",
       "settings",
     ]);
-    expect(new Set(TABLE_UTILITIES.map(({ id }) => id)).size).toBe(9);
+    expect(new Set(TABLE_UTILITIES.map(({ id }) => id)).size).toBe(14);
     expect(
       TABLE_UTILITIES.every(({ icon, labelKey }) => icon && labelKey),
     ).toBe(true);
   });
 
+  it("marks only integrated panels as available", () => {
+    expect(IMPLEMENTED_TABLE_UTILITIES).toEqual([
+      "chat",
+      "combat",
+      "graphics",
+      "characters",
+      "handouts",
+      "compendium",
+      "scenario",
+      "scenes",
+      "shop",
+      "notifications",
+      "settings",
+    ]);
+  });
+
   it("resolves only registered panels", () => {
     expect(utilityById("chat")?.labelKey).toBe("vtt.table.rail.chat");
     expect(utilityById("unknown")).toBeNull();
+  });
+
+  it("opens character editing in a wide, high-density workspace", () => {
+    expect(utilityById("characters")).toMatchObject({
+      windowWidth: 1480,
+      windowHeight: 900,
+    });
+  });
+
+  it("opens handouts in a large floating workspace", () => {
+    expect(utilityById("handouts")).toMatchObject({
+      windowWidth: 1120,
+      windowHeight: 780,
+    });
+  });
+
+  it("opens the full compendium as a viewport-filling workspace", () => {
+    expect(utilityById("compendium")).toMatchObject({
+      windowWidth: 1480,
+      windowHeight: 920,
+      fillViewport: true,
+    });
   });
 });

@@ -254,6 +254,23 @@ describe("realtimeSession", () => {
     expect(socket.sent.at(-1).type).toBe("sync.request");
   });
 
+  it("requests the selected scene as part of a reconnect snapshot", async () => {
+    const { session } = setup({ getSyncContext: () => ({ sceneId: 14 }) });
+    session.connect(7);
+    await flush();
+    const socket = FakeWebSocket.instances[0];
+    socket.open();
+    socket.message(event("session.ready"));
+
+    expect(socket.sent.at(-1)).toEqual(
+      expect.objectContaining({
+        v: 1,
+        type: "sync.request",
+        sceneId: 14,
+      }),
+    );
+  });
+
   it("cancels an in-flight ticket when the route changes campaign", async () => {
     const pending = [];
     const ticketApi = {

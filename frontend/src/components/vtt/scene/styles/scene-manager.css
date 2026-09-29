@@ -1,0 +1,55 @@
+.scene-manager-panel {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+}
+
+.scene-manager-panel__actions,
+.scene-manager-panel__footer-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  padding: 0.4rem;
+}
+
+.scene-manager-panel__actions {
+  border-bottom: 1px solid var(--ui-color-border, #2c3747);
+}
+
+.scene-manager-panel .scene-navigation {
+  min-height: 5rem;
+}
+
+.scene-manager-panel__details {
+  border-top: 1px solid var(--ui-color-border, #2c3747);
+  background: var(--ui-color-surface-subtle, #171f2a);
+}
+
+.scene-manager-panel__details dl {
+  display: grid;
+  gap: 1px;
+  margin: 0;
+  font-size: 0.68rem;
+}
+
+.scene-manager-panel__details dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.3rem 0.45rem;
+  background: var(--ui-color-surface, #121821);
+}
+
+.scene-manager-panel__details dt {
+  color: var(--ui-color-text-muted, #9ba8ba);
+}
+
+.scene-manager-panel__details dd {
+  margin: 0;
+  font-weight: 700;
+}
+
+.scene-manager-panel__footer-actions .scene-button--danger {
+  margin-left: auto;
+}

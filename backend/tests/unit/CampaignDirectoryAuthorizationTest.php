@@ -34,7 +34,7 @@ final class CampaignDirectoryUserStub extends UserModel
 /** @internal */
 final class CampaignDirectoryAuthorizationTest extends CIUnitTestCase
 {
-    public function testCurrentDatabaseRoleOverridesStaleAdminJwtRole(): void
+    public function testCurrentRegularAccountCanCreateCampaignDespiteStaleAdminJwtRole(): void
     {
         $service = $this->service([
             'id' => 7,
@@ -47,11 +47,11 @@ final class CampaignDirectoryAuthorizationTest extends CIUnitTestCase
                 'user_id' => 7,
                 'role' => 'admin',
                 'anonymous' => false,
-            ], ['name' => 'Must not be created']);
-            $this->fail('A demoted administrator must not create campaigns.');
+            ], ['name' => '']);
+            $this->fail('An invalid campaign payload must be rejected.');
         } catch (CampaignException $exception) {
-            $this->assertSame(403, $exception->status());
-            $this->assertSame('forbidden', $exception->errorCode());
+            $this->assertSame(422, $exception->status());
+            $this->assertSame('validation_failed', $exception->errorCode());
         }
     }
 

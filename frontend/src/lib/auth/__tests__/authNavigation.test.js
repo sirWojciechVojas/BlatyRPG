@@ -18,7 +18,7 @@ describe("authNavigation", () => {
     expect(defaultAuthenticatedRoute({ user: { role: "ADMIN" } })).toEqual({
       name: "admin",
     });
-    expect(defaultAuthenticatedRoute({ user: { role: "gm" } })).toEqual({
+    expect(defaultAuthenticatedRoute({ user: { role: "user" } })).toEqual({
       name: "tables",
     });
     expect(defaultAuthenticatedRoute(null)).toEqual({ name: "tables" });

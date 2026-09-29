@@ -1,0 +1,94 @@
+.scene-light-layer { position: absolute; z-index: 20; inset: 0; pointer-events: none; }
+.scene-light-layer__visual,
+.scene-light-layer__editor { position: absolute; inset: 0; width: 100%; height: 100%; }
+.scene-light-layer__visual { overflow: hidden; pointer-events: none; }
+.scene-lighting__ambient { transition: fill-opacity 600ms ease; }
+.scene-lighting__fog { transition: fill-opacity 300ms ease; }
+.scene-lighting--flicker { animation: scene-light-flicker var(--light-animation-duration) steps(5, end) infinite; }
+.scene-lighting--pulse { animation: scene-light-pulse var(--light-animation-duration) ease-in-out infinite; }
+.scene-lighting--vortex { animation: scene-light-vortex var(--light-animation-duration) linear infinite; }
+@keyframes scene-light-flicker { 0%, 100% { opacity: 1; } 35% { opacity: var(--light-animation-opacity); } 70% { opacity: .9; } }
+@keyframes scene-light-pulse { 50% { opacity: var(--light-animation-opacity); transform: scale(var(--light-animation-scale)); } }
+@keyframes scene-light-vortex { 50% { opacity: .9; transform: rotate(180deg) scale(var(--light-animation-scale)); } to { transform: rotate(360deg); } }
+.scene-light-layer__editor { z-index: 1; overflow: visible; pointer-events: auto; cursor: crosshair; }
+.scene-light__dim { fill: rgb(255 210 122 / 8%); stroke: #e7b64e; stroke-width: 2; stroke-dasharray: 8 5; vector-effect: non-scaling-stroke; }
+.scene-light__bright { fill: none; stroke: #fff0a6; stroke-width: 1; stroke-dasharray: 4 3; vector-effect: non-scaling-stroke; }
+.scene-light__source { fill: #ffcf66; stroke: #533a12; stroke-width: 3; vector-effect: non-scaling-stroke; cursor: move; }
+.scene-light__direction { stroke: #fff0a6; stroke-width: 2; stroke-dasharray: 5 3; vector-effect: non-scaling-stroke; pointer-events: none; }
+.scene-light__hit { fill: transparent; stroke: none; pointer-events: all; cursor: move; }
+.scene-light--selected .scene-light__source { stroke: #fff; filter: drop-shadow(0 0 4px #ffdb7b); }
+.scene-light--disabled { opacity: 0.38; }
+.light-hud { position: absolute; z-index: 2; display: flex; align-items: center; gap: 2px; padding: 3px; background: rgb(18 13 10 / 96%); border: 1px solid #80613d; border-radius: 4px; box-shadow: 0 4px 14px rgb(0 0 0 / 65%); transform: translate(-50%, calc(-100% - 14px)); pointer-events: auto; }
+.light-hud button,
+.light-hud > input { width: 25px; height: 25px; padding: 0; color: #b9aa92; font-weight: 750; font-size: 10px; background: #33251a; border: 1px solid #674e34; }
+.light-hud button.active { color: #ffe29b; border-color: #d39a4c; }
+.light-hud label { display: flex; width: 72px; }
+.light-hud label input { width: 100%; }
+.light-hud__danger { color: #ff9e9e !important; }
+.scene-light--draft { opacity: 0.8; }
+.light-properties { position: absolute; z-index: 4; top: 12px; right: 12px; width: min(410px, calc(100% - 24px)); padding: 8px; color: #d8cbb9; background: rgb(18 13 10 / 97%); border: 1px solid #80613d; border-radius: 5px; box-shadow: 0 8px 30px rgb(0 0 0 / 70%); pointer-events: auto; }
+.light-properties header,
+.light-properties footer { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.light-properties header { margin-bottom: 7px; }
+.light-properties header button { width: 24px; height: 24px; }
+.light-properties__grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.light-properties__wide { grid-column: 1 / -1; }
+.light-properties__grid label { display: grid; gap: 2px; min-width: 0; font-size: 11px; }
+.light-properties input,
+.light-properties select,
+.light-properties button { min-height: 27px; color: #ddd0bf; background: #2b2119; border: 1px solid #604b38; border-radius: 3px; }
+.light-properties input[type="color"] { width: 100%; padding: 2px; }
+.light-properties__toggles { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 8px; margin: 8px 0; font-size: 11px; }
+.light-properties__toggles label { display: flex; align-items: center; gap: 5px; }
+.light-properties footer { justify-content: flex-end; }
+.light-properties footer button { padding: 3px 10px; }
+.light-properties__groups { display: flex; gap: 2px; margin-bottom: 7px; overflow-x: auto; }
+.light-properties__groups button { flex: 0 0 auto; padding: 3px 6px; font-size: 10px; }
+.light-properties__groups button.active { color: #ffe29b; border-color: #d39a4c; }
+.light-properties__hint { margin: 6px 0; color: #a99a86; font-size: 10px; }
+.light-properties__status { min-height: 16px; margin: 6px 0; font-size: 10px; }
+.light-properties__status--saving { color: #d8c38f; }
+.light-properties__status--saved { color: #9ed7a4; }
+.light-properties__status--error { color: #ff9e9e; }
+.light-tool-toolbar { position: absolute; z-index: 3; top: 8px; left: 50%; display: flex; align-items: center; gap: 3px; max-width: calc(100% - 24px); padding: 4px; overflow-x: auto; color: #d8cbb9; background: rgb(18 13 10 / 96%); border: 1px solid #80613d; border-radius: 5px; box-shadow: 0 4px 16px rgb(0 0 0 / 60%); transform: translateX(-50%); pointer-events: auto; }
+.light-tool-toolbar button,
+.light-tool-toolbar select,
+.light-tool-toolbar input { flex: 0 0 auto; min-height: 27px; color: #d8cbb9; background: #2b2119; border: 1px solid #604b38; border-radius: 3px; }
+.light-tool-toolbar button { padding: 3px 7px; }
+.light-tool-toolbar input[type="color"] { width: 30px; padding: 2px; }
+.light-tool-toolbar__lumens { display: flex; align-items: center; gap: 3px; font-size: 10px; }
+.light-tool-toolbar__lumens input { width: 76px; }
+.light-tool-toolbar__global { display: flex; align-items: center; gap: 2px; font-size: 10px; }
+.light-tool-toolbar__global input { width: 48px; }
+.light-tool-toolbar button.active { color: #ffe29b; border-color: #d39a4c; }
+.light-tool-toolbar__danger,
+.light-management__danger { color: #ff9e9e !important; }
+.light-management { position: absolute; z-index: 3; top: 48px; right: 8px; width: min(680px, calc(100% - 16px)); max-height: min(52%, 430px); padding: 6px; overflow: auto; color: #d8cbb9; background: rgb(18 13 10 / 96%); border: 1px solid #80613d; border-radius: 5px; pointer-events: auto; }
+.light-management header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+.light-management button,
+.light-management select,
+.light-management input { min-width: 0; min-height: 25px; color: #d8cbb9; background: #2b2119; border: 1px solid #604b38; border-radius: 3px; }
+.light-management ol { display: grid; gap: 3px; padding: 0; margin: 0; list-style: none; }
+.light-management__head,
+.light-management li { display: grid; grid-template-columns: minmax(120px, 1fr) 100px 80px 42px 48px 88px; gap: 4px; align-items: center; }
+.light-management__head { padding: 0 4px 3px; color: #918572; font-size: 9px; text-transform: uppercase; }
+.light-management li { padding: 3px; border: 1px solid transparent; border-radius: 3px; cursor: pointer; }
+.light-management li.selected { background: rgb(211 154 76 / 12%); border-color: #80613d; }
+.light-management__global { border-color: #604b38 !important; cursor: default !important; }
+.light-management__level { display: flex; align-items: center; gap: 2px; font-size: 10px; }
+.light-management__level input { width: 57px; }
+.light-management__lock { text-align: center; opacity: .65; }
+.light-management__name { overflow: hidden; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
+.light-management__type { overflow: hidden; font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.light-management__swatch { width: 18px; height: 18px; border: 1px solid #fff8; border-radius: 50%; }
+.light-management__swatch--global { background: #fff; box-shadow: 0 0 5px #fff9; }
+.light-management__toggle.active { color: #ffe29b; border-color: #d39a4c; }
+.light-management__actions { display: flex; gap: 2px; }
+.light-management__actions button { width: 27px; padding: 0; }
+.light-context-menu { position: absolute; z-index: 5; display: grid; width: 180px; gap: 3px; padding: 5px; color: #d8cbb9; background: rgb(18 13 10 / 98%); border: 1px solid #80613d; border-radius: 5px; box-shadow: 0 6px 20px rgb(0 0 0 / 70%); pointer-events: auto; }
+.light-context-menu header { display: flex; align-items: center; justify-content: space-between; gap: 5px; }
+.light-context-menu button,
+.light-context-menu select { min-height: 26px; color: #d8cbb9; background: #2b2119; border: 1px solid #604b38; border-radius: 3px; }
+.light-context-menu header button { width: 26px; }
+.light-context-menu hr { width: 100%; margin: 2px 0; border: 0; border-top: 1px solid #604b38; }
+.light-context-menu__danger { color: #ff9e9e !important; }

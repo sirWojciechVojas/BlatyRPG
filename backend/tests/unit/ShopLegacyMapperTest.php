@@ -97,6 +97,10 @@ final class ShopLegacyMapperTest extends CIUnitTestCase
                     'CHARGE' => 42,
                     'IMG_CLASS' => 'v0999',
                     'ATTRIBUTES' => ['HEAVY', 'DURABLE'],
+                    'SLOT' => 'armR1',
+                    'ITEM_PLACE' => 'armR1',
+                    'OWNER_OPT' => 2,
+                    'OWNER' => 17,
                 ],
             ],
             ['name' => 'Miecz', 'description' => 'Opis', 'img_class' => 'v0010', 'prize' => 120, 'charge' => 10],
@@ -114,8 +118,40 @@ final class ShopLegacyMapperTest extends CIUnitTestCase
         $this->assertSame('v0999', $result['ICON']);
         $this->assertSame('v0999', $result['icon']);
         $this->assertSame(['HEAVY', 'DURABLE'], $result['ATTRIBUTES']);
+        $this->assertSame('armR1', $result['SLOT']);
+        $this->assertSame('armR1', $result['ITEM_PLACE']);
         $this->assertSame('PLAYER', $result['OWNER_OPT']);
         $this->assertSame('BG2', $result['OWNER']);
+        $this->assertSame(2, $result['INSTANCE_META']['OWNER_OPT']);
+        $this->assertSame(17, $result['INSTANCE_META']['OWNER']);
+    }
+
+    public function testLegacyCharacterInventoryKeepsTheTemplateIconAfterASlotMove(): void
+    {
+        $mapper = new ShopLegacyMapper();
+
+        $result = $mapper->inventoryFromInstanceRow(
+            ['price_override' => null],
+            [
+                'id' => 11,
+                'template_id' => 5,
+                'name_override' => 'Miecz rodowy',
+                'note' => 'Pamiątka',
+                'data_override_json' => [
+                    'LEGACY_SOURCE' => 'blatyrpg-old-wfrp',
+                    'IMG_CLASS' => 'v0001',
+                    'SLOT' => 'armR1',
+                    'ITEM_PLACE' => 'armR1',
+                ],
+            ],
+            ['name' => 'Miecz', 'description' => 'Opis', 'img_class' => 'v0423', 'prize' => 120, 'charge' => 10],
+            'PLAYER',
+            'CHAR_4',
+            'armR1'
+        );
+
+        $this->assertSame('v0423', $result['IMG_CLASS']);
+        $this->assertSame('v0423', $result['ICON']);
     }
 
     public function testLegacyShopRowUsesConcreteItemNameInsteadOfTechnicalOwnerLabel(): void

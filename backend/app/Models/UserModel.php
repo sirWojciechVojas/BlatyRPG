@@ -26,7 +26,7 @@ class UserModel extends Model
         'username' => 'required|min_length[3]|max_length[100]|is_unique[users.username]',
         'email' => 'required|max_length[255]|valid_email|is_unique[users.email]',
         'password_hash' => 'required|min_length[12]|max_length[255]',
-        'role' => 'permit_empty|in_list[user,player,gm,admin]',
+        'role' => 'permit_empty|in_list[user,admin]',
     ];
     protected $validationMessages = [
         'email' => ['is_unique' => 'Ten adres email jest już zajęty.'],

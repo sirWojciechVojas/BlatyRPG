@@ -39,6 +39,14 @@ class CharacterLegacySeeder extends Seeder
 
         $sysId = $wfrpSystem->id;
         $uniId = $oldWorld->id;
+        $assetService = $db->tableExists('character_asset_sets')
+            && $db->tableExists('character_assets')
+            && $db->fieldExists('asset_set_id', 'characters')
+                ? new \App\Services\CharacterAssetService()
+                : null;
+        $telaesinAssetSetId = $assetService
+            ? $this->ensureTelaesinAssetSet($db)
+            : null;
 
         echo "🧙‍♂️ Pełna migracja postaci (Statystyki 16 cech + Umiejętności + Zdolności)... \n";
 
@@ -448,6 +456,15 @@ class CharacterLegacySeeder extends Seeder
             ]
         ];
 
+        $legacyBrassById = [
+            1 => 0, 2 => 0, 3 => 0, 4 => 50, 5 => 39616, 6 => 173824,
+            7 => 110912, 8 => 38400, 9 => 17680, 10 => 110912, 11 => 38400,
+            12 => 110912, 13 => 8429, 14 => 17680, 15 => 17680, 16 => 27680,
+            17 => 0, 18 => 0, 19 => 0, 20 => 0, 21 => 75896, 22 => 0,
+            23 => 0, 24 => 0, 25 => 0, 26 => 0, 27 => 0, 28 => 0,
+            29 => 0, 30 => 0, 31 => 0, 32 => 0, 33 => 0, 34 => 0,
+        ];
+
         // ==========================================
         // INSERT DO BAZY
         // ==========================================
@@ -507,9 +524,13 @@ class CharacterLegacySeeder extends Seeder
             ];
 
             // Sprawdzamy duplikaty po nazwie
-            $exists = $charBuilder->where('name', $char['usedname'])->countAllResults();
+            $existingCharacter = $charBuilder
+                ->select('id, asset_set_id')
+                ->where('name', $char['usedname'])
+                ->get()
+                ->getRowArray();
             
-            if ($exists == 0) {
+            if (!$existingCharacter) {
                 $charBuilder->insert([
                     'user_id'     => null,
                     'campaign_id' => null, 
@@ -517,13 +538,71 @@ class CharacterLegacySeeder extends Seeder
                     'universe_id' => $uniId,
                     'name'        => $char['usedname'],
                     'avatar_url'  => $char['avatar'],
+                    'avatar'      => $char['avatar'],
+                    'brass'       => max(0, (int) ($char['brass'] ?? $legacyBrassById[(int) $char['id']] ?? 0)),
+                    'primary_currency_code' => (string) ($char['meta'][2] ?? '') === '3'
+                        ? 'wfrp_bretonnia'
+                        : 'wfrp_empire',
                     'data'        => json_encode($jsonData, JSON_UNESCAPED_UNICODE),
                     'created_at'  => date('Y-m-d H:i:s')
                 ]);
+                $existingCharacter = [
+                    'id' => (int) $db->insertID(),
+                    'asset_set_id' => null,
+                ];
                 $count++;
+            }
+
+            if (
+                $assetService
+                && empty($existingCharacter['asset_set_id'])
+                && !empty($char['avatar'])
+            ) {
+                if ((int) $char['id'] === 23 && $telaesinAssetSetId) {
+                    $assetSet = ['id' => $telaesinAssetSetId];
+                } else {
+                    $legacyAssets = array_fill_keys(
+                        \App\Models\CharacterAssetModel::TYPES,
+                        (string) $char['avatar']
+                    );
+                    $assetSet = $assetService->createAvailableSet(
+                        (string) $char['usedname'],
+                        $legacyAssets
+                    );
+                }
+                $assetService->assignSetToCharacter(
+                    (int) $existingCharacter['id'],
+                    (int) $assetSet['id']
+                );
             }
         }
 
         echo "✅ Zaimportowano $count postaci w pełnym formacie.\n";
+    }
+
+    private function ensureTelaesinAssetSet($db): int
+    {
+        $setId = 1;
+        $set = $db->table('character_asset_sets')->where('id', $setId)->get()->getRowArray();
+        $now = date('Y-m-d H:i:s');
+        if (!$set) {
+            $db->table('character_asset_sets')->insert([
+                'id' => $setId,
+                'name' => 'Tel Aes In',
+                'status' => 'available',
+                'created_at' => $now,
+                'updated_at' => $now,
+            ]);
+            foreach (\App\Models\CharacterAssetModel::TYPES as $type) {
+                $db->table('character_assets')->insert([
+                    'asset_set_id' => $setId,
+                    'type' => $type,
+                    'public_id' => sprintf('character-assets/%06d/%s', $setId, $type),
+                    'created_at' => $now,
+                    'updated_at' => $now,
+                ]);
+            }
+        }
+        return $setId;
     }
 }

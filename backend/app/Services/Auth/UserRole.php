@@ -4,14 +4,13 @@ namespace App\Services\Auth;
 
 final class UserRole
 {
-    public const PLAYER = 'player';
-    public const GM = 'gm';
+    public const USER = 'user';
     public const ADMIN = 'admin';
 
     public static function normalize($role): string
     {
         $role = strtolower(trim((string) $role));
-        return $role === 'user' ? self::PLAYER : $role;
+        return in_array($role, ['player', 'gm'], true) ? self::USER : $role;
     }
 
     public static function isSupported($role): bool
@@ -21,6 +20,6 @@ final class UserRole
 
     public static function all(): array
     {
-        return [self::PLAYER, self::GM, self::ADMIN];
+        return [self::USER, self::ADMIN];
     }
 }

@@ -5,6 +5,7 @@ namespace App\Services\Campaign;
 use App\Models\CampaignMemberModel;
 use App\Models\CampaignModel;
 use App\Models\UserModel;
+use App\Services\Auth\UserRole;
 
 /** Canonical database-backed campaign authorization context. */
 class CampaignGuardService
@@ -52,8 +53,7 @@ class CampaignGuardService
         if (!$capabilities['canAccess']) {
             throw new CampaignException('forbidden', 'Campaign is outside your access scope.', 403);
         }
-        $isOwner = (int) ($campaign['game_master_id'] ?? 0) === $userId;
-        $isAdmin = $auth['role'] === 'admin';
+        $roleContext = CampaignRoleContext::resolve($auth, $campaign, $membership);
 
         return [
             'auth' => $auth,
@@ -67,12 +67,7 @@ class CampaignGuardService
                 'canViewHidden' => !empty($capabilities['canViewHidden']),
                 'accessLevel' => (string) ($capabilities['accessLevel'] ?? 'none'),
             ],
-            'accessRole' => $isAdmin
-                ? 'admin'
-                : ($isOwner ? CampaignRole::GM : (string) ($membership['role'] ?? 'player')),
-            'isOwner' => $isOwner,
-            'isAdmin' => $isAdmin,
-        ];
+        ] + $roleContext;
     }
 
     public function requireManage(array $auth, int $campaignId): array
@@ -91,7 +86,6 @@ class CampaignGuardService
 
     private function globalRole($role): string
     {
-        $normalized = strtolower(trim((string) $role));
-        return $normalized === 'user' ? 'player' : $normalized;
+        return UserRole::normalize($role);
     }
 }

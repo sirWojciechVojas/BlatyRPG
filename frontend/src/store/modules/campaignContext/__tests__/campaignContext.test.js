@@ -81,6 +81,18 @@ describe("campaignContext", () => {
     expect(api.changeMemberRole).toHaveBeenCalledWith(7, 4, "observer");
   });
 
+  it("reconciles in the background without clearing a ready campaign context", async () => {
+    const api = apiMock(false);
+    const store = setup(api);
+    await store.dispatch("campaignContext/selectCampaign", 7);
+
+    await store.dispatch("campaignContext/reconcile");
+
+    expect(store.state.campaignContext.phase).toBe("ready");
+    expect(store.state.campaignContext.characters).toHaveLength(1);
+    expect(api.enter).toHaveBeenCalledTimes(2);
+  });
+
   it("blocks manager operations before the API for a player", async () => {
     const api = apiMock(false);
     api.invite = vi.fn();

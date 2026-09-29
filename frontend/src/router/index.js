@@ -13,7 +13,6 @@ const routes = [
   {
     path: "/",
     name: "landing",
-    meta: { redirectAuthenticated: true },
     component: HomeView,
   },
   {
@@ -118,7 +117,12 @@ const routes = [
   {
     path: "/campaigns/:campaignId/scenes",
     name: "scene-workspace",
-    meta: { title: "Scenes", requiresAuth: true },
+    meta: {
+      title: "Table",
+      requiresAuth: true,
+      uiLayout: "workspace",
+      navigation: "hidden",
+    },
     beforeEnter: () => ensureVttStoreModuleForRoute(store),
     component: () =>
       import(
@@ -132,6 +136,28 @@ const routes = [
     component: () =>
       import(
         /* webpackChunkName: "characters" */ "../views/CharacterWorkspaceView.vue"
+      ),
+  },
+  {
+    path: "/campaigns/:campaignId/compendium",
+    name: "campaign-compendium",
+    meta: { title: "Compendium", requiresAuth: true, uiLayout: "workspace" },
+    component: () =>
+      import(
+        /* webpackChunkName: "compendium" */ "../views/CompendiumView.vue"
+      ),
+  },
+  {
+    path: "/worlds/:universeId/compendium",
+    name: "world-compendium",
+    meta: {
+      title: "Compendium editor",
+      requiresAuth: true,
+      uiLayout: "workspace",
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "compendium" */ "../views/CompendiumView.vue"
       ),
   },
   {

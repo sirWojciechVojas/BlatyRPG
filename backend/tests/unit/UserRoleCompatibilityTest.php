@@ -6,17 +6,18 @@ use CodeIgniter\Test\CIUnitTestCase;
 
 final class UserRoleCompatibilityTest extends CIUnitTestCase
 {
-    public function testLegacyUserIsPresentedAsCanonicalPlayer(): void
+    public function testLegacyRolesArePresentedAsRegularAccounts(): void
     {
         $presented = (new AuthUserPresenter())->present([
             'id' => 1,
             'username' => 'legacy',
             'email' => 'legacy@example.test',
-            'role' => 'user',
+            'role' => 'gm',
         ]);
 
-        $this->assertSame(UserRole::PLAYER, $presented['role']);
+        $this->assertSame(UserRole::USER, $presented['role']);
         $this->assertTrue(UserRole::isSupported('user'));
-        $this->assertSame(['player', 'gm', 'admin'], UserRole::all());
+        $this->assertTrue(UserRole::isSupported('player'));
+        $this->assertSame(['user', 'admin'], UserRole::all());
     }
 }

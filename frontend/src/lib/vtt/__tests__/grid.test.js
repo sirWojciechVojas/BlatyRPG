@@ -1,5 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { buildGridPattern, GRID_TYPES } from "@/lib/vtt/grid";
+import {
+  buildGridPattern,
+  gridCellAtPoint,
+  gridCellCenter,
+  gridCellDistance,
+  GRID_TYPES,
+  snapPointToGrid,
+  snapTokenPosition,
+} from "@/lib/vtt/grid";
 
 describe("VTT grid geometry", () => {
   it("builds an offset square pattern", () => {
@@ -35,5 +43,80 @@ describe("VTT grid geometry", () => {
 
   it("does not render a pattern for a gridless scene", () => {
     expect(buildGridPattern({ gridType: GRID_TYPES.GRIDLESS })).toBeNull();
+  });
+
+  it("snaps the center of differently sized tokens to a square cell", () => {
+    const scene = {
+      gridType: GRID_TYPES.SQUARE,
+      gridSize: 100,
+      gridOffsetX: 10,
+      gridOffsetY: 20,
+    };
+
+    expect(
+      snapTokenPosition(scene, { x: 72, y: 83 }, { width: 100, height: 100 }),
+    ).toEqual({ x: 110, y: 120 });
+    expect(
+      snapTokenPosition(scene, { x: 72, y: 83 }, { width: 200, height: 100 }),
+    ).toEqual({ x: 60, y: 120 });
+  });
+
+  it("snaps quarter-cell tokens without inflating their dimensions", () => {
+    expect(
+      snapTokenPosition(
+        { gridType: GRID_TYPES.SQUARE, gridSize: 4 },
+        { x: 2.6, y: 2.6 },
+        { width: 1, height: 1 },
+      ),
+    ).toEqual({ x: 1.5, y: 1.5 });
+  });
+
+  it("uses the same square cells for snapping and movement distance", () => {
+    const scene = { gridType: GRID_TYPES.SQUARE, gridSize: 100 };
+    const start = gridCellAtPoint(scene, { x: 50, y: 50 });
+    const end = gridCellAtPoint(scene, { x: 250, y: 150 });
+
+    expect(gridCellCenter(scene, start)).toEqual({ x: 50, y: 50 });
+    expect(gridCellDistance(scene, start, end)).toBe(2);
+  });
+
+  it("measures axial distance consistently on both hex orientations", () => {
+    [GRID_TYPES.HEX_POINTY, GRID_TYPES.HEX_FLAT].forEach((gridType) => {
+      const scene = { gridType, gridSize: 100 };
+      expect(gridCellDistance(scene, { q: 0, r: 0 }, { q: 2, r: -1 })).toBe(2);
+    });
+  });
+
+  it.each([
+    [GRID_TYPES.HEX_POINTY, { x: 147, y: 90 }, { x: 150, y: 86.603 }],
+    [GRID_TYPES.HEX_FLAT, { x: 90, y: 147 }, { x: 86.603, y: 150 }],
+  ])("snaps a point to the nearest %s center", (gridType, point, expected) => {
+    expect(snapPointToGrid({ gridType, gridSize: 100 }, point)).toEqual(
+      expected,
+    );
+  });
+
+  it("centers a legacy token inside the rendered pointy hex", () => {
+    const position = snapTokenPosition(
+      { gridType: GRID_TYPES.HEX_POINTY, gridSize: 100 },
+      { x: 1997, y: 299 },
+      { width: 100, height: 100 },
+    );
+
+    expect(position).toEqual({ x: 1950, y: 296.41 });
+    expect({ x: position.x + 50, y: position.y + 50 }).toEqual({
+      x: 2000,
+      y: 346.41,
+    });
+  });
+
+  it("preserves free movement on gridless scenes", () => {
+    expect(
+      snapTokenPosition(
+        { gridType: GRID_TYPES.GRIDLESS },
+        { x: 17.25, y: 44.75 },
+        { width: 160, height: 80 },
+      ),
+    ).toEqual({ x: 17.25, y: 44.75 });
   });
 });

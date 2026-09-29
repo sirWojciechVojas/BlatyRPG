@@ -25,38 +25,53 @@ export const normalizeCampaignCapabilities = (value = {}) => {
   };
 };
 
-export const normalizeCampaign = (campaign = {}) => ({
-  id: idOf(campaign.id),
-  name: text(campaign.name),
-  description: text(campaign.description),
-  bannerUrl: campaign.bannerUrl ?? campaign.banner_url ?? null,
-  systemType: text(campaign.systemType ?? campaign.system_type),
-  systemId: idOf(
-    campaign.systemId ?? campaign.system_id ?? campaign.rpg_system_id,
-  ),
-  universeId: idOf(
-    campaign.universeId ?? campaign.universe_id ?? campaign.rpg_universe_id,
-  ),
-  status: text(
-    campaign.status ||
-      ((campaign.isActive ?? campaign.is_active ?? true) ? "active" : "paused"),
-  ).toLowerCase(),
-  isActive: Boolean(campaign.isActive ?? campaign.is_active ?? true),
-  gameMasterId: idOf(campaign.gameMasterId ?? campaign.game_master_id),
-  gameMaster: objectOrEmpty(campaign.gameMaster ?? campaign.game_master),
-  settings: objectOrEmpty(campaign.settings ?? campaign.settings_json),
-  membershipRole: text(
-    campaign.membershipRole ??
-      campaign.membership_role ??
-      campaign.accessRole ??
-      campaign.access_role ??
-      "player",
-  ).toLowerCase(),
-  capabilities: normalizeCampaignCapabilities(campaign.capabilities),
-  createdAt: campaign.createdAt ?? campaign.created_at ?? null,
-  updatedAt: campaign.updatedAt ?? campaign.updated_at ?? null,
-  lastActivityAt: campaign.lastActivityAt ?? campaign.last_activity_at ?? null,
-});
+export const normalizeCampaign = (campaign = {}) => {
+  const globalRole = text(
+    campaign.globalRole ?? campaign.global_role,
+  ).toLowerCase();
+  const campaignRole = text(
+    campaign.campaignRole ??
+      campaign.campaign_role ??
+      campaign.membershipRole ??
+      campaign.membership_role,
+  ).toLowerCase();
+  const accessRole = text(
+    campaign.accessRole ?? campaign.access_role ?? campaignRole ?? "player",
+  ).toLowerCase();
+
+  return {
+    id: idOf(campaign.id),
+    name: text(campaign.name),
+    description: text(campaign.description),
+    bannerUrl: campaign.bannerUrl ?? campaign.banner_url ?? null,
+    systemType: text(campaign.systemType ?? campaign.system_type),
+    systemId: idOf(
+      campaign.systemId ?? campaign.system_id ?? campaign.rpg_system_id,
+    ),
+    universeId: idOf(
+      campaign.universeId ?? campaign.universe_id ?? campaign.rpg_universe_id,
+    ),
+    status: text(
+      campaign.status ||
+        ((campaign.isActive ?? campaign.is_active ?? true)
+          ? "active"
+          : "paused"),
+    ).toLowerCase(),
+    isActive: Boolean(campaign.isActive ?? campaign.is_active ?? true),
+    gameMasterId: idOf(campaign.gameMasterId ?? campaign.game_master_id),
+    gameMaster: objectOrEmpty(campaign.gameMaster ?? campaign.game_master),
+    settings: objectOrEmpty(campaign.settings ?? campaign.settings_json),
+    globalRole,
+    campaignRole: campaignRole || null,
+    membershipRole: campaignRole || accessRole || "player",
+    isAdmin: Boolean(campaign.isAdmin ?? campaign.is_admin),
+    capabilities: normalizeCampaignCapabilities(campaign.capabilities),
+    createdAt: campaign.createdAt ?? campaign.created_at ?? null,
+    updatedAt: campaign.updatedAt ?? campaign.updated_at ?? null,
+    lastActivityAt:
+      campaign.lastActivityAt ?? campaign.last_activity_at ?? null,
+  };
+};
 
 export const normalizeCampaignMember = (source = {}) => {
   const user = objectOrEmpty(source.user);

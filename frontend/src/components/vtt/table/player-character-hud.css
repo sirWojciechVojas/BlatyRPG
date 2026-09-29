@@ -1,0 +1,198 @@
+@import "../../../assets/app-ui/img/character-hud/v8/runtime.css";
+
+.player-character-hud {
+  position: fixed;
+  z-index: 160;
+  left: 50%;
+  bottom: -6px;
+  margin: 0;
+  color: #eee4cc;
+  font-family: Georgia, "Times New Roman", serif;
+  pointer-events: auto;
+  transform: translateX(-50%);
+}
+
+.player-character-hud *,
+.player-character-hud *::before,
+.player-character-hud *::after {
+  box-sizing: border-box;
+}
+
+.player-character-hud .hud-text {
+  margin: 0;
+  text-shadow: 0 1px 2px #000;
+}
+
+.player-character-hud .hud-name {
+  left: 342px;
+  top: 235px;
+  width: 316px;
+  height: 23px;
+  overflow: hidden;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 23px;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.player-character-hud .hud-health {
+  left: 664px;
+  top: 235px;
+  width: 68px;
+  height: 23px;
+  font-size: 18px;
+  line-height: 23px;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.player-character-hud .hud-control:hover:not(:disabled) {
+  filter: brightness(1.16);
+}
+
+.player-character-hud .hud-control:active:not(:disabled) {
+  filter: brightness(0.9);
+}
+
+.player-character-hud .hud-summary {
+  left: 55px;
+  top: 237px;
+  width: 226px;
+  height: 20px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.player-character-hud .hud-pd {
+  left: 791px;
+  top: 237px;
+  width: 87px;
+  height: 20px;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 20px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.player-character-hud .hud-xp-label,
+.player-character-hud .hud-xp-value {
+  height: 18px;
+  color: #f4eddb;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 18px;
+  text-shadow:
+    1px 1px 1px #000,
+    -1px 0 1px #000,
+    0 -1px 1px #000;
+  white-space: nowrap;
+}
+
+.player-character-hud .hud-xp-label--minimum {
+  left: 68px;
+  top: 322px;
+}
+
+.player-character-hud .hud-xp-label--complex {
+  left: 68px;
+  top: 344px;
+}
+
+.player-character-hud .hud-xp-value {
+  left: 800px;
+  width: 68px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.player-character-hud .hud-xp-value--minimum {
+  top: 322px;
+}
+
+.player-character-hud .hud-xp-value--complex {
+  top: 344px;
+}
+
+.player-character-hud .hud-xp-progress {
+  position: absolute;
+  z-index: 1;
+  left: 56px;
+  width: 822px;
+  height: 18px;
+  pointer-events: none;
+}
+
+.player-character-hud .hud-xp-progress--minimum {
+  top: 322px;
+}
+
+.player-character-hud .hud-xp-progress--complex {
+  top: 344px;
+}
+
+.player-character-hud .hud-xp-progress .hud-xp-fill {
+  position: absolute;
+  z-index: 1;
+  left: 3px;
+  width: calc(816px * clamp(0, var(--xp, 0), 1));
+  height: 12px;
+  border-radius: 3px;
+}
+
+.player-character-hud .hud-xp-progress .hud-xp-fill--min,
+.player-character-hud .hud-xp-progress .hud-xp-fill--max {
+  top: 3px;
+}
+
+.player-character-hud .hud-die-button {
+  width: 149px;
+  height: 149px;
+}
+
+.player-character-hud .hud-mode {
+  pointer-events: none;
+}
+
+.hud-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.hud-notice {
+  position: absolute;
+  right: 7%;
+  bottom: calc(100% + 8px);
+  left: 7%;
+  z-index: 5;
+  margin: 0;
+  padding: 0.25rem 0.45rem;
+  color: #e8f3dc;
+  font: 600 0.68rem/1.25 var(--ui-font-sans, sans-serif);
+  text-align: center;
+  background: rgb(28 54 28 / 94%);
+  border: 1px solid rgb(151 202 117 / 58%);
+  border-radius: 0.25rem;
+  box-shadow: 0 0.35rem 0.85rem rgb(0 0 0 / 45%);
+}
+
+.hud-notice--error {
+  color: #ffe5da;
+  background: rgb(75 24 18 / 95%);
+  border-color: rgb(238 132 104 / 72%);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player-character-hud .hud-control {
+    transition: none;
+  }
+}

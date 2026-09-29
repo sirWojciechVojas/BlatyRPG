@@ -1,6 +1,6 @@
 <template>
   <div class="dice-view">
-    <DiceRoller 
+    <DiceRoller
       class="dice-roller"
       :autoStart="true"
       :chatEnabled="false"
@@ -8,7 +8,17 @@
       :diceSelectorDimensions="{ w: 1878, h: 923 }"
       :diceScaleThrow="2"
       :diceScaleSelector="1.2"
-      :diceDisplayList="['dc','d4','d6','d8','d10','D10','d100','d12','d20']"
+      :diceDisplayList="[
+        'dc',
+        'd4',
+        'd6',
+        'd8',
+        'd10',
+        'D10',
+        'd100',
+        'd12',
+        'd20',
+      ]"
     />
   </div>
 </template>

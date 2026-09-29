@@ -1,0 +1,37 @@
+.scene-token-facing {
+  position: absolute;
+  z-index: 4;
+  inset: -6px;
+  box-sizing: border-box;
+  border: 1px solid rgb(255 220 142 / 38%);
+  border-radius: 50%;
+  opacity: 0.55;
+  transform-origin: center;
+  transition: transform 180ms ease-out, opacity 140ms ease-out;
+  pointer-events: none;
+}
+
+.scene-token-facing::before {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  width: 0;
+  height: 0;
+  content: "";
+  border-right: 5px solid transparent;
+  border-bottom: 9px solid #ffe19a;
+  border-left: 5px solid transparent;
+  filter: drop-shadow(0 0 3px rgb(255 174 52 / 85%));
+  transform: translateX(-50%);
+}
+
+.scene-token-wrap:hover .scene-token-facing,
+.scene-token-wrap--selected .scene-token-facing,
+.scene-token-wrap--dragging .scene-token-facing {
+  border-color: rgb(255 225 154 / 76%);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-token-facing { transition: none; }
+}

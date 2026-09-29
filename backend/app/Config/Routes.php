@@ -35,6 +35,17 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
     $routes->get('public/subscription-plans', 'SubscriptionPlanController::index');
     $routes->post('internal/realtime/campaigns/(:num)/chat/sync', 'InternalRealtimeChatController::sync/$1');
     $routes->post('internal/realtime/campaigns/(:num)/chat/send', 'InternalRealtimeChatController::send/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/handouts/delivery', 'InternalRealtimeHandoutController::delivery/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/tokens/move', 'InternalRealtimeTokenController::move/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/tokens/move-group', 'InternalRealtimeTokenController::moveGroup/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/tokens/change', 'InternalRealtimeTokenController::change/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/tokens/movement-requests', 'InternalRealtimeTokenController::requestMovement/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/tokens/movement-requests/(:num)/resolve', 'InternalRealtimeTokenController::resolveMovement/$1/$2');
+    $routes->post('internal/realtime/campaigns/(:num)/scenes/(:num)/snapshot', 'InternalRealtimeSceneSnapshotController::show/$1/$2');
+    $routes->post('internal/realtime/campaigns/(:num)/combat/commands', 'InternalRealtimeCombatController::command/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/walls/change', 'InternalRealtimeWallController::change/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/lights/change', 'InternalRealtimeLightController::change/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/tiles/change', 'InternalRealtimeTileController::change/$1');
 
     // ----------------------------------------
     // AUTH (PUBLIC)
@@ -62,6 +73,9 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->post('auth/logout', 'AuthSessionController::logout');
         $routes->patch('auth/profile', 'AuthSessionController::updateProfile');
         $routes->post('auth/change-password', 'AuthSessionController::changePassword');
+        $routes->get('auth/sessions', 'AuthSessionController::sessions');
+        $routes->delete('auth/sessions/(:num)', 'AuthSessionController::revokeSession/$1');
+        $routes->post('auth/sessions/revoke-others', 'AuthSessionController::revokeOtherSessions');
         $routes->get('me', 'AuthSessionController::me');
 
         // ----------------------------------------
@@ -82,8 +96,68 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->post('campaign-invitations/(:num)/accept', 'CampaignInvitationController::accept/$1');
         $routes->post('campaign-invitations/(:num)/reject', 'CampaignInvitationController::reject/$1');
         $routes->post('campaigns/(:num)/realtime-ticket', 'RealtimeTicketController::create/$1');
+        $routes->get('campaigns/(:num)/token-movement-requests', 'TokenMovementRequestController::index/$1');
         $routes->get('campaigns/(:num)/chat/messages', 'CampaignChatController::index/$1');
         $routes->post('campaigns/(:num)/chat/messages', 'CampaignChatController::create/$1');
+
+        // ----------------------------------------
+        // HANDOUT LIBRARY AND CAMPAIGN HANDOUTS
+        // ----------------------------------------
+        $routes->get('handout-library', 'HandoutLibraryController::index');
+        $routes->post('handout-library/folders', 'HandoutLibraryController::createFolder');
+        $routes->patch('handout-library/folders/(:num)', 'HandoutLibraryController::updateFolder/$1');
+        $routes->delete('handout-library/folders/(:num)', 'HandoutLibraryController::deleteFolder/$1');
+        $routes->post('handout-library/tags', 'HandoutLibraryController::createTag');
+        $routes->delete('handout-library/tags/(:num)', 'HandoutLibraryController::deleteTag/$1');
+        $routes->post('handout-library/assets', 'HandoutLibraryController::uploadAsset');
+        $routes->post('handout-library/entries', 'HandoutLibraryController::createEntry');
+        $routes->get('handout-library/entries/(:num)', 'HandoutLibraryController::show/$1');
+        $routes->patch('handout-library/entries/(:num)', 'HandoutLibraryController::updateEntry/$1');
+        $routes->delete('handout-library/entries/(:num)', 'HandoutLibraryController::deleteEntry/$1');
+        $routes->post('handout-library/entries/(:num)/restore', 'HandoutLibraryController::restoreEntry/$1');
+        $routes->get('handout-assets/(:num)/file', 'HandoutLibraryController::assetFile/$1');
+        $routes->get('campaigns/(:num)/handouts', 'CampaignHandoutController::index/$1');
+        $routes->post('campaigns/(:num)/handouts/publish', 'CampaignHandoutController::publish/$1');
+        $routes->get('campaigns/(:num)/handouts/(:num)', 'CampaignHandoutController::show/$1/$2');
+        $routes->patch('campaigns/(:num)/handouts/(:num)', 'CampaignHandoutController::update/$1/$2');
+        $routes->delete('campaigns/(:num)/handouts/(:num)', 'CampaignHandoutController::delete/$1/$2');
+        $routes->post('campaigns/(:num)/handouts/(:num)/restore', 'CampaignHandoutController::restore/$1/$2');
+        $routes->post('campaigns/(:num)/handouts/(:num)/share', 'CampaignHandoutController::share/$1/$2');
+        $routes->post('campaigns/(:num)/handouts/(:num)/transfer-author', 'CampaignHandoutController::transferAuthor/$1/$2');
+        $routes->get('campaigns/(:num)/handout-notifications', 'CampaignHandoutController::notifications/$1');
+        $routes->patch('campaigns/(:num)/handout-notifications/(:num)', 'CampaignHandoutController::readNotification/$1/$2');
+
+        // ----------------------------------------
+        // WORLD COMPENDIUM
+        // ----------------------------------------
+        $routes->get('compendiums/mine', 'CompendiumController::mine');
+        $routes->get('campaigns/(:num)/compendium', 'CampaignCompendiumController::overview/$1');
+        $routes->get('campaigns/(:num)/compendium/entries', 'CampaignCompendiumController::index/$1');
+        $routes->get('campaigns/(:num)/compendium/timeline', 'CampaignCompendiumController::timeline/$1');
+        $routes->get('campaigns/(:num)/compendium/entries/(:num)', 'CampaignCompendiumController::show/$1/$2');
+        $routes->post('campaigns/(:num)/compendium/entries/(:num)/materialize', 'CampaignCompendiumController::materialize/$1/$2');
+        $routes->get('universes/(:num)/compendium', 'CompendiumController::overview/$1');
+        $routes->get('universes/(:num)/compendium/entries', 'CompendiumController::index/$1');
+        $routes->post('universes/(:num)/compendium/entries', 'CompendiumController::create/$1');
+        $routes->get('universes/(:num)/compendium/entries/(:num)', 'CompendiumController::show/$1/$2');
+        $routes->patch('universes/(:num)/compendium/entries/(:num)', 'CompendiumController::update/$1/$2');
+        $routes->delete('universes/(:num)/compendium/entries/(:num)', 'CompendiumController::archive/$1/$2');
+        $routes->post('universes/(:num)/compendium/entries/(:num)/restore', 'CompendiumController::restore/$1/$2');
+        $routes->post('universes/(:num)/compendium/entries/(:num)/publish', 'CompendiumController::publish/$1/$2');
+        $routes->post('universes/(:num)/compendium/entries/(:num)/versions/(:num)/restore', 'CompendiumController::restoreVersion/$1/$2/$3');
+        $routes->post('universes/(:num)/compendium/tags', 'CompendiumController::createTag/$1');
+        $routes->delete('universes/(:num)/compendium/tags/(:num)', 'CompendiumController::deleteTag/$1/$2');
+        $routes->post('universes/(:num)/compendium/types', 'CompendiumController::createType/$1');
+        $routes->patch('universes/(:num)/compendium/types/(:num)', 'CompendiumController::updateType/$1/$2');
+        $routes->delete('universes/(:num)/compendium/types/(:num)', 'CompendiumController::deleteType/$1/$2');
+        $routes->put('universes/(:num)/compendium/calendar', 'CompendiumController::updateCalendar/$1');
+        $routes->put('universes/(:num)/compendium/owner', 'CompendiumController::assignOwner/$1');
+        $routes->post('universes/(:num)/compendium/editors', 'CompendiumController::addEditor/$1');
+        $routes->delete('universes/(:num)/compendium/editors/(:num)', 'CompendiumController::removeEditor/$1/$2');
+        $routes->post('universes/(:num)/compendium/assets', 'CompendiumController::uploadAsset/$1');
+        $routes->get('universes/(:num)/compendium/assets', 'CompendiumController::assets/$1');
+        $routes->delete('universes/(:num)/compendium/assets/(:num)', 'CompendiumController::deleteAsset/$1/$2');
+        $routes->get('compendium-assets/(:num)/file', 'CompendiumController::assetFile/$1');
 
         // ----------------------------------------
         // ADMINISTRATION
@@ -91,6 +165,10 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->get('admin/overview', 'AdminController::overview');
         $routes->post('admin/users', 'AdminController::createUser');
         $routes->patch('admin/users/(:num)/role', 'AdminController::changeUserRole/$1');
+        $routes->put('admin/characters/(:num)/campaigns/(:num)', 'AdminController::attachCharacterCampaign/$1/$2');
+        $routes->delete('admin/characters/(:num)/campaigns/(:num)', 'AdminController::detachCharacterCampaign/$1/$2');
+        $routes->put('admin/characters/(:num)/campaigns/(:num)/owners/(:num)', 'AdminController::attachCharacterOwner/$1/$2/$3');
+        $routes->delete('admin/characters/(:num)/campaigns/(:num)/owners/(:num)', 'AdminController::detachCharacterOwner/$1/$2/$3');
 
         // ----------------------------------------
         // CHARACTERS
@@ -104,6 +182,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->delete('campaigns/(:num)/resources/(:segment)/(:num)/permissions/(:num)', 'ResourcePermissionController::delete/$1/$2/$3/$4');
         $routes->patch('campaigns/(:num)/characters/(:num)/visibility', 'ResourcePermissionController::characterVisibility/$1/$2');
         $routes->post('campaigns/(:num)/characters/(:num)/owners', 'ResourcePermissionController::assignCharacterOwner/$1/$2');
+        $routes->post('characters/(:num)/purchase', 'CharacterController::purchase/$1');
         $routes->get('characters/(:num)/assets', 'CharacterController::assets/$1');
         $routes->put('characters/(:num)/asset-set', 'CharacterController::assignAssetSet/$1');
         $routes->get('characters', 'CharacterController::index');
@@ -149,6 +228,26 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->patch('campaigns/(:num)/scenes/(:num)', 'SceneController::update/$1/$2');
         $routes->delete('campaigns/(:num)/scenes/(:num)', 'SceneController::delete/$1/$2');
         $routes->post('campaigns/(:num)/scenes/(:num)/activate', 'SceneController::activate/$1/$2');
+        $routes->get('campaigns/(:num)/scenes/(:num)/fog', 'SceneFogController::show/$1/$2');
+        $routes->patch('campaigns/(:num)/scenes/(:num)/fog', 'SceneFogController::patch/$1/$2');
+        $routes->get('campaigns/(:num)/scenes/(:num)/tokens', 'SceneTokenController::index/$1/$2');
+        $routes->post('campaigns/(:num)/scenes/(:num)/tokens', 'SceneTokenController::create/$1/$2');
+        $routes->patch('campaigns/(:num)/scenes/(:num)/tokens/(:num)', 'SceneTokenController::update/$1/$2/$3');
+        $routes->delete('campaigns/(:num)/scenes/(:num)/tokens/(:num)', 'SceneTokenController::delete/$1/$2/$3');
+        $routes->get('campaigns/(:num)/scenes/(:num)/combat', 'SceneCombatController::show/$1/$2');
+        $routes->post('campaigns/(:num)/scenes/(:num)/combat/commands', 'SceneCombatController::command/$1/$2');
+        $routes->get('campaigns/(:num)/scenes/(:num)/walls', 'SceneWallController::index/$1/$2');
+        $routes->post('campaigns/(:num)/scenes/(:num)/walls', 'SceneWallController::create/$1/$2');
+        $routes->patch('campaigns/(:num)/scenes/(:num)/walls/(:num)', 'SceneWallController::update/$1/$2/$3');
+        $routes->delete('campaigns/(:num)/scenes/(:num)/walls/(:num)', 'SceneWallController::delete/$1/$2/$3');
+        $routes->get('campaigns/(:num)/scenes/(:num)/lights', 'SceneLightController::index/$1/$2');
+        $routes->post('campaigns/(:num)/scenes/(:num)/lights', 'SceneLightController::create/$1/$2');
+        $routes->patch('campaigns/(:num)/scenes/(:num)/lights/(:num)', 'SceneLightController::update/$1/$2/$3');
+        $routes->delete('campaigns/(:num)/scenes/(:num)/lights/(:num)', 'SceneLightController::delete/$1/$2/$3');
+        $routes->get('campaigns/(:num)/scenes/(:num)/tiles', 'SceneTileController::index/$1/$2');
+        $routes->post('campaigns/(:num)/scenes/(:num)/tiles', 'SceneTileController::create/$1/$2');
+        $routes->patch('campaigns/(:num)/scenes/(:num)/tiles/(:num)', 'SceneTileController::update/$1/$2/$3');
+        $routes->delete('campaigns/(:num)/scenes/(:num)/tiles/(:num)', 'SceneTileController::delete/$1/$2/$3');
 
         // ----------------------------------------
         // SHOP MODULE
@@ -163,6 +262,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
             $routes->get('bootstrap', 'ShopModuleController::bootstrap/$1');
             $routes->get('catalog/network', 'ShopModuleController::getCatalog/$1');
             $routes->get('catalog/item-dictionaries', 'ShopModuleController::getItemDictionaries/$1');
+            $routes->get('catalog/consumption-profiles', 'ShopModuleController::consumptionProfiles/$1');
             $routes->post('catalog/item-dictionaries', 'ShopModuleController::createItemDictionaryEntry/$1');
             $routes->put('catalog/item-dictionaries/(:num)', 'ShopModuleController::updateItemDictionaryEntry/$1/$2');
             $routes->delete('catalog/item-dictionaries/(:num)', 'ShopModuleController::deleteItemDictionaryEntry/$1/$2');
@@ -202,6 +302,8 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
             // Personalized item instances
             $routes->patch('item-instances/(:num)', 'ShopModuleController::updateItemInstance/$1/$2');
             $routes->post('item-instances', 'ShopModuleController::createItemInstance/$1');
+            $routes->post('consumption/consume', 'ShopModuleController::consumeItem/$1');
+            $routes->post('consumption/world-time', 'ShopModuleController::advanceConsumptionWorldTime/$1');
 
             // Containers
             $routes->get('containers', 'ShopModuleController::getContainers/$1');

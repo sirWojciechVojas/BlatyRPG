@@ -72,6 +72,48 @@
         />
       </DenseField>
     </div>
+    <div class="item-editor__text">
+      <DenseField label="Spożycie instancji">
+        <select v-model="instanceDraft.consumptionMode">
+          <option value="inherit">Dziedzicz z szablonu</option>
+          <option value="disabled">Wyłącz spożycie</option>
+          <option value="override">Nadpisz profilem z katalogu</option>
+        </select>
+        <ConsumptionProfilePicker
+          v-if="instanceDraft.consumptionMode === 'override'"
+          v-model="instanceDraft.consumptionProfileId"
+          empty-label="Wybierz profil"
+        />
+        <small v-if="selectedInstanceTemplate?.CONSUMPTION_PROFILE_ID">
+          Profil szablonu: {{ selectedInstanceTemplate.CONSUMPTION_PROFILE_ID }}
+        </small>
+        <small>
+          Aktualny profil:
+          {{
+            instanceDraft.consumptionMode === "override"
+              ? instanceDraft.consumptionProfileId || "—"
+              : instanceDraft.consumptionMode === "disabled"
+                ? "wyłączony"
+                : selectedInstanceTemplate?.CONSUMPTION_PROFILE_ID || "—"
+          }}
+        </small>
+      </DenseField>
+      <DenseField label="Identyfikacja">
+        <select v-model="instanceDraft.consumptionIdentification">
+          <option value="unknown">Nieznany</option>
+          <option value="suspected">Podejrzewany</option>
+          <option value="identified">Rozpoznany</option>
+          <option value="examined">Zbadany</option>
+        </select>
+      </DenseField>
+      <DenseField label="Porcje">
+        <input
+          v-model.number="instanceDraft.consumptionPortions"
+          min="1"
+          type="number"
+        />
+      </DenseField>
+    </div>
     <div class="item-attribute-editor">
       <span>{{ $t("shop.workspace.item.attributes") }}</span>
       <DomainCombobox
@@ -118,6 +160,7 @@ import SystemPriceInput from "@/components/shop/common/SystemPriceInput.vue";
 import EncumbranceInput from "@/components/shop/common/EncumbranceInput.vue";
 import ItemIcon from "@/components/shop/common/ItemIcon.vue";
 import StatusChip from "@/components/shop/common/StatusChip.vue";
+import ConsumptionProfilePicker from "@/components/shop/common/ConsumptionProfilePicker.vue";
 import { useShopWorkspaceContext } from "../shopWorkspaceContext";
 export default {
   name: "ShopWorkspaceInstanceEditor",
@@ -128,6 +171,7 @@ export default {
     EncumbranceInput,
     ItemIcon,
     StatusChip,
+    ConsumptionProfilePicker,
   },
   setup() {
     return useShopWorkspaceContext();

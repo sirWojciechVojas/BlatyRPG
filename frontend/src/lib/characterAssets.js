@@ -33,7 +33,24 @@ export const buildCharacterAssetUrl = (publicId, type = "avatar") => {
 };
 
 export const resolveCharacterAssetSource = (source, type = "avatar") => {
-  const selected = source?.assets?.[type] ?? source?.[type] ?? source;
+  const candidates =
+    source && typeof source === "object" && !Array.isArray(source)
+      ? [
+          source.assets?.[type],
+          source[type],
+          source[`${type}Url`],
+          source[`${type}_url`],
+          source,
+        ]
+      : [source];
+  for (const selected of candidates) {
+    const resolved = resolveAssetReference(selected, type);
+    if (resolved) return resolved;
+  }
+  return "";
+};
+
+const resolveAssetReference = (selected, type) => {
   if (selected && typeof selected === "object") {
     const generated = buildCharacterAssetUrl(
       selected.publicId ?? selected.public_id,

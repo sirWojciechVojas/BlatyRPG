@@ -122,21 +122,21 @@ class CharacterController extends BaseController
         });
     }
 
-    /** GET /api/character-asset-sets/available */
+    /** GET /api/character-asset-sets/available?campaignId=1 */
     public function availableAssetSets()
     {
         return $this->execute(function (): array {
-            $this->characters->assertAssetSetManager($this->auth());
+            $this->characters->assertAssetSetManager($this->auth(), $this->campaignId(true));
             $sets = $this->assets->availableSets();
             return ['count' => count($sets), 'items' => $sets];
         });
     }
 
-    /** POST /api/character-asset-sets */
+    /** POST /api/character-asset-sets?campaignId=1 */
     public function createAssetSet()
     {
         return $this->execute(function (): array {
-            $this->characters->assertAssetSetManager($this->auth());
+            $this->characters->assertAssetSetManager($this->auth(), $this->campaignId(true));
             $input = $this->jsonPayload();
             try {
                 $set = $this->assets->createAvailableSet(
@@ -190,6 +190,19 @@ class CharacterController extends BaseController
     private function characterFilters(): array
     {
         $filters = [];
+        $assignedOnly = $this->request->getGet('assignedOnly');
+        if ($assignedOnly !== null) {
+            $value = filter_var($assignedOnly, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
+            if ($value === null) {
+                throw new CharacterException(
+                    'validation_failed',
+                    'Character filter is invalid.',
+                    422,
+                    ['assignedOnly' => 'A boolean value is required.']
+                );
+            }
+            $filters['assigned_only'] = $value;
+        }
         foreach ([
             'user_id' => 'userId',
             'system_id' => 'systemId',

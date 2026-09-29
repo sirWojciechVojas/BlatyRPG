@@ -14,19 +14,30 @@ class AdminService
     private $campaigns;
     private $validator;
     private $presenter;
+    private $analytics;
+    private $characterDirectory;
+    private $characterAssignments;
 
     public function __construct(
         ?BaseConnection $db = null,
         ?UserModel $users = null,
         ?CampaignModel $campaigns = null,
         ?AdminPayloadValidator $validator = null,
-        ?AuthUserPresenter $presenter = null
+        ?AuthUserPresenter $presenter = null,
+        ?AdminOverviewAnalytics $analytics = null,
+        ?AdminCharacterDirectory $characterDirectory = null,
+        ?AdminCharacterAssignmentService $characterAssignments = null
     ) {
         $this->db = $db ?: \Config\Database::connect();
         $this->users = $users ?: new UserModel($this->db);
         $this->campaigns = $campaigns ?: new CampaignModel($this->db);
         $this->validator = $validator ?: new AdminPayloadValidator();
         $this->presenter = $presenter ?: new AuthUserPresenter();
+        $this->analytics = $analytics ?: new AdminOverviewAnalytics($this->db);
+        $this->characterDirectory = $characterDirectory
+            ?: new AdminCharacterDirectory($this->db);
+        $this->characterAssignments = $characterAssignments
+            ?: new AdminCharacterAssignmentService($this->db);
     }
 
     public function overview(array $auth): array
@@ -40,12 +51,18 @@ class AdminService
             ->orderBy('campaigns.name', 'ASC')->findAll();
         $membershipCounts = $this->groupedCounts('campaign_members', 'campaign_id');
         $userMembershipCounts = $this->groupedCounts('campaign_members', 'user_id');
+        $memberships = $this->db->table('campaign_members')
+            ->select('campaign_id, user_id, role, joined_at, created_at')
+            ->where('is_active', 1)->get()->getResultArray();
+        $analytics = $this->analytics->build($users, $campaignRows, $memberships);
+        $characterDirectory = $this->characterDirectory->all();
 
         return [
             'currentUserId' => (int) $admin['id'],
             'users' => array_map(function (array $user) use ($userMembershipCounts): array {
                 $presented = $this->presenter->present($user);
                 $presented['campaignCount'] = $userMembershipCounts[(int) $user['id']] ?? 0;
+                $presented['createdAt'] = $user['created_at'] ?? null;
                 return $presented;
             }, $users),
             'campaigns' => array_map(static function (array $campaign) use ($membershipCounts): array {
@@ -58,16 +75,13 @@ class AdminService
                     'gameMasterId' => (int) $campaign['game_master_id'],
                     'gameMasterName' => $campaign['gm_username'] ?? null,
                     'memberCount' => $membershipCounts[$campaignId] ?? 0,
+                    'status' => (string) ($campaign['status']
+                        ?? (!empty($campaign['is_active']) ? 'active' : 'paused')),
+                    'lastActivityAt' => $campaign['last_activity_at']
+                        ?? $campaign['updated_at'] ?? null,
                 ];
             }, $campaignRows),
-            'metrics' => [
-                'users' => count($users),
-                'admins' => count(array_filter($users, static function (array $user): bool {
-                    return strtolower((string) $user['role']) === 'admin';
-                })),
-                'campaigns' => count($campaignRows),
-            ],
-        ];
+        ] + $characterDirectory + $analytics;
     }
 
     public function createUser(array $auth, array $payload): array
@@ -93,6 +107,44 @@ class AdminService
         return ['user' => $this->presenter->present(
             $this->users->find((int) $this->users->getInsertID())
         )];
+    }
+
+    public function attachCharacterCampaign(array $auth, int $characterId, int $campaignId): array
+    {
+        $admin = $this->verifiedAdmin($auth);
+        return $this->characterAssignments->attachCampaign(
+            $characterId, $campaignId, (int) $admin['id']
+        );
+    }
+
+    public function detachCharacterCampaign(array $auth, int $characterId, int $campaignId): array
+    {
+        $this->verifiedAdmin($auth);
+        return $this->characterAssignments->detachCampaign($characterId, $campaignId);
+    }
+
+    public function attachCharacterOwner(
+        array $auth,
+        int $characterId,
+        int $campaignId,
+        int $userId
+    ): array {
+        $admin = $this->verifiedAdmin($auth);
+        return $this->characterAssignments->attachOwner(
+            $characterId, $campaignId, $userId, (int) $admin['id']
+        );
+    }
+
+    public function detachCharacterOwner(
+        array $auth,
+        int $characterId,
+        int $campaignId,
+        int $userId
+    ): array {
+        $this->verifiedAdmin($auth);
+        return $this->characterAssignments->detachOwner(
+            $characterId, $campaignId, $userId
+        );
     }
 
     public function changeUserRole(array $auth, int $userId, array $payload): array

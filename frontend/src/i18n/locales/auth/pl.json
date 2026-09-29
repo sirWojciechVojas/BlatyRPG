@@ -36,11 +36,86 @@
     "resetConfirm": { "title": "Ustaw nowe hasło" },
     "profile": {
       "title": "Profil użytkownika",
-      "saved": "Profil został zapisany."
+      "saved": "Profil został zapisany.",
+      "eyebrow": "Dane konta",
+      "details": "Profil i dane kontaktowe",
+      "avatarHelp": "Podaj bezpieczny adres HTTPS grafiki. Gdy grafika jest niedostępna, pokażemy inicjały."
     },
     "password": {
       "title": "Zmiana hasła",
-      "changed": "Hasło i sesja zostały bezpiecznie odnowione."
+      "changed": "Hasło i sesja zostały bezpiecznie odnowione.",
+      "hint": "Zmiana hasła zakończy pozostałe sesje konta."
+    },
+    "account": {
+      "openMenu": "Otwórz menu konta",
+      "panel": "Panel użytkownika",
+      "tables": "Moje Stoły",
+      "invitations": "Zaproszenia",
+      "admin": "Panel administratora",
+      "landing": "Ekran startowy",
+      "logout": "Wyloguj się",
+      "loggingOut": "Wylogowywanie…",
+      "user": "Użytkownik",
+      "roleAdmin": "Administrator",
+      "roleUser": "Użytkownik Blaty RPG"
+    },
+    "userPanel": {
+      "title": "Panel użytkownika",
+      "eyebrow": "Twoje konto Blaty RPG",
+      "backToTables": "Wróć do Stołów",
+      "loading": "Pobieranie danych konta…",
+      "tabs": {
+        "overview": "Przegląd",
+        "profile": "Profil",
+        "security": "Bezpieczeństwo",
+        "preferences": "Preferencje"
+      },
+      "overview": {
+        "eyebrow": "W skrócie",
+        "title": "Twoja przestrzeń gry",
+        "openTables": "Zobacz wszystkie Stoły",
+        "tables": "Dostępne Stoły",
+        "managed": "Prowadzone",
+        "invitations": "Zaproszenia",
+        "sessions": "Aktywne sesje",
+        "recentTables": "Ostatnie Stoły",
+        "noTables": "Nie należysz jeszcze do żadnego Stołu.",
+        "quickActions": "Szybkie działania",
+        "createOrJoin": "Wybierz lub utwórz Stół",
+        "reviewInvitations": "Sprawdź zaproszenia",
+        "openDice": "Otwórz Kości 3D",
+        "roles": { "gm": "Mistrz Gry", "player": "Gracz" },
+        "status": { "active": "Aktywny", "paused": "Wstrzymany" }
+      }
+    },
+    "security": {
+      "eyebrow": "Ochrona konta",
+      "title": "Hasło i aktywne sesje"
+    },
+    "sessions": {
+      "title": "Aktywne sesje",
+      "hint": "Urządzenia, na których konto pozostaje zalogowane.",
+      "current": "Ta przeglądarka",
+      "browser": "Inna sesja przeglądarki",
+      "lastActive": "Ostatnia aktywność",
+      "expires": "Wygasa",
+      "active": "Bieżąca",
+      "revoke": "Zakończ",
+      "revokeOthers": "Zakończ pozostałe",
+      "revoked": "Sesja została zakończona.",
+      "othersRevoked": "Pozostałe sesje zostały zakończone.",
+      "empty": "Brak aktywnych sesji.",
+      "unknown": "brak danych"
+    },
+    "preferences": {
+      "eyebrow": "Interfejs",
+      "title": "Preferencje aplikacji",
+      "language": "Język aplikacji",
+      "languageHint": "Zmiana obowiązuje w całym interfejsie i zostaje zapamiętana.",
+      "appearance": "Wygląd",
+      "appearanceHint": "Spójny motyw Blaty RPG zoptymalizowany do pracy przy Stole.",
+      "compactBrown": "Brązowy · kompaktowy",
+      "saved": "Preferencje zostały zapisane."
     },
     "errors": {
       "generic": "Nie udało się wykonać operacji.",

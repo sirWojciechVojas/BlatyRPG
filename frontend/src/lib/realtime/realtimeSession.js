@@ -1,12 +1,18 @@
-import { getClientInstanceId } from "./clientInstanceId";
+import { getClientInstanceId as getInstanceId } from "./clientInstanceId";
 import { createRealtimeChatTransport } from "./realtimeChatTransport";
+import { createRealtimeCombatTransport } from "./realtimeCombatTransport";
 import { createAuthExpiryScheduler } from "./authExpiryScheduler";
 import {
   authMessage,
   leaveMessage,
   syncRequestMessage,
+  fogSyncMessage,
+  handoutNotifyMessage,
 } from "./realtimeProtocol";
 import { createRealtimeEventRouter } from "./realtimeEventRouter";
+import { sceneElementTransport } from "./realtimeSceneElementTransport";
+import { createRealtimeTimers } from "./realtimeTimers";
+import { createRealtimeTokenTransport } from "./realtimeTokenTransport";
 import { createReconnectBudget } from "./reconnectBudget";
 import {
   realtimeCloseStatus,
@@ -23,12 +29,8 @@ export const createRealtimeSession = (options = {}) => {
   const WebSocketImpl =
     options.WebSocket || (typeof WebSocket === "undefined" ? null : WebSocket);
   const sequence = options.sequence || createRealtimeSequence(options);
-  const timers = {
-    set: options.setTimeout || setTimeout,
-    clear: options.clearTimeout || clearTimeout,
-  };
-  const clientInstanceId =
-    options.clientInstanceId || getClientInstanceId(options);
+  const timers = createRealtimeTimers(options);
+  const clientInstanceId = options.clientInstanceId || getInstanceId(options);
   const callbacks = {
     onEvent: options.onEvent || noop,
     onPresenceSnapshot: options.onPresenceSnapshot || noop,
@@ -37,6 +39,7 @@ export const createRealtimeSession = (options = {}) => {
     onSequenceGap: options.onSequenceGap || noop,
     onStatus: options.onStatus || noop,
   };
+  const syncContext = options.getSyncContext || (() => ({}));
   let campaignId = null;
   let generation = 0;
   let connectionSerial = 0;
@@ -80,7 +83,8 @@ export const createRealtimeSession = (options = {}) => {
     if (!authenticated || syncPending) return false;
     syncPending = true;
     setStatus("syncing");
-    return send(syncRequestMessage(sequence.get()));
+    const context = syncContext() || {};
+    return send(syncRequestMessage(sequence.get(), null, context.sceneId));
   };
   const eventRouter = createRealtimeEventRouter({
     sequence,
@@ -287,7 +291,13 @@ export const createRealtimeSession = (options = {}) => {
     requestSync,
     retry,
     sendChat: chat.sendMessage,
+    ...createRealtimeTokenTransport(() => authenticated, send),
+    ...createRealtimeCombatTransport(() => authenticated, send),
+    ...sceneElementTransport(() => authenticated, send),
+    syncFog: (payload) => authenticated && send(fogSyncMessage(payload)),
     syncChat: chat.sync,
+    notifyHandout: (payload) =>
+      authenticated && send(handoutNotifyMessage(payload)),
     snapshot: () => ({
       campaignId,
       status,

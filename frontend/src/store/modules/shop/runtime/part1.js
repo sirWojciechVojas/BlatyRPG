@@ -77,9 +77,11 @@ export const persistTradeData = (payload) => {
 };
 
 export const resolveOwnerCode = (state = {}, explicitOwnerCode = "") => {
-  const developmentSession = getShopAccessSession();
-  if (developmentSession?.ownerCode) {
-    return developmentSession.ownerCode;
+  const explicit = String(explicitOwnerCode || "")
+    .trim()
+    .toUpperCase();
+  if (explicit) {
+    return explicit;
   }
   const permissionOwnerCodes = (state?.permissions?.ownerCodes || [])
     .map((ownerCode) =>
@@ -91,15 +93,18 @@ export const resolveOwnerCode = (state = {}, explicitOwnerCode = "") => {
   const contextOwnerCode = String(state?.context?.ownerCode || "")
     .trim()
     .toUpperCase();
+  if (contextOwnerCode) {
+    return contextOwnerCode;
+  }
+  const developmentSession = getShopAccessSession();
+  if (developmentSession?.ownerCode) {
+    return developmentSession.ownerCode;
+  }
   const sessionOwnerCode =
     permissionOwnerCodes.length && !state?.permissions?.isGm
-      ? permissionOwnerCodes.includes(contextOwnerCode)
-        ? contextOwnerCode
-        : permissionOwnerCodes[0]
-      : contextOwnerCode;
-  const owner = String(
-    explicitOwnerCode || sessionOwnerCode || SHOP_DEFAULT_OWNER_CODE,
-  )
+      ? permissionOwnerCodes[0]
+      : "";
+  const owner = String(sessionOwnerCode || SHOP_DEFAULT_OWNER_CODE)
     .trim()
     .toUpperCase();
   return owner || SHOP_DEFAULT_OWNER_CODE;

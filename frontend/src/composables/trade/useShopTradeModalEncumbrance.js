@@ -1,5 +1,15 @@
 ﻿import { computed, isRef, unref } from "vue";
 import { OWNER_CODES } from "@/lib/trade/constants";
+import {
+  BG_CARRY_LIMIT,
+  BG_CARRY_UNIT_NAME,
+  BG_CARRY_UNIT_SHORT,
+  bgEncumbranceStatusLabel,
+  calculateInventoryEncumbrance as calculateItemsEncumbrance,
+  resolveEncumbranceStatus as resolveSharedEncumbranceStatus,
+  resolveItemCharge as resolveSharedItemCharge,
+  resolveItemQuantity as resolveSharedItemQuantity,
+} from "@/lib/trade/encumbrance";
 
 const hasOwn = (target, key) =>
   Object.prototype.hasOwnProperty.call(target, key);
@@ -62,12 +72,6 @@ const createVm = ({ state, api, deps }) =>
       },
     },
   );
-const bgCarryLimit = 300;
-const bgCarryUnitShort = "KP";
-const bgCarryUnitName = "Kamienie Podroznika";
-const bgCarryHighRatio = 0.7;
-const bgCarryWarningRatio = 0.9;
-
 const encumbranceOptions = {
   computed: {
     bgEncumbranceCurrent() {
@@ -80,54 +84,36 @@ const encumbranceOptions = {
       return this.bgEncumbranceCurrent + this.bgEncumbranceSelection;
     },
     bgEncumbranceRemaining() {
-      return bgCarryLimit - this.bgEncumbranceCurrent;
+      return BG_CARRY_LIMIT - this.bgEncumbranceCurrent;
     },
     bgEncumbranceOverLimit() {
-      return this.bgEncumbranceCurrent > bgCarryLimit;
+      return this.bgEncumbranceCurrent > BG_CARRY_LIMIT;
     },
     bgEncumbranceWouldExceedLimit() {
-      return this.bgEncumbranceProjected > bgCarryLimit;
+      return this.bgEncumbranceProjected > BG_CARRY_LIMIT;
     },
     bgEncumbranceStatus() {
       return this.resolveEncumbranceStatus(
         this.bgEncumbranceCurrent,
-        bgCarryLimit,
+        BG_CARRY_LIMIT,
       );
     },
     bgEncumbranceLimit() {
-      return bgCarryLimit;
+      return BG_CARRY_LIMIT;
     },
     bgEncumbranceUnitShort() {
-      return bgCarryUnitShort;
+      return BG_CARRY_UNIT_SHORT;
     },
     bgEncumbranceUnitName() {
-      return bgCarryUnitName;
+      return BG_CARRY_UNIT_NAME;
     },
   },
   methods: {
     resolveItemQuantity(item, fallback = 1) {
-      const quantity = Number(item?.QUANTITY);
-      if (!Number.isFinite(quantity)) {
-        return Math.max(0, Math.round(fallback));
-      }
-      return Math.max(0, Math.round(quantity));
+      return resolveSharedItemQuantity(item, fallback);
     },
     resolveItemCharge(item, fallback = 0) {
-      const directCharge = Number(item?.CHARGE);
-      if (Number.isFinite(directCharge) && directCharge >= 0) {
-        return directCharge;
-      }
-      const templateId = Number(item?.INV_ID ?? item?.ID);
-      if (!Number.isFinite(templateId)) {
-        return fallback;
-      }
-      const templateCharge = Number(
-        this.templateItemsMap?.[templateId]?.CHARGE,
-      );
-      if (Number.isFinite(templateCharge) && templateCharge >= 0) {
-        return templateCharge;
-      }
-      return fallback;
+      return resolveSharedItemCharge(item, this.templateItemsMap, fallback);
     },
     calculateInventoryEncumbrance() {
       const activeOwnerCode = String(
@@ -142,12 +128,7 @@ const encumbranceOptions = {
                 ).toUpperCase() === activeOwnerCode,
             )
           : this.inventoryItems || [];
-      return source.reduce((total, item) => {
-        return (
-          total +
-          this.resolveItemCharge(item, 0) * this.resolveItemQuantity(item, 1)
-        );
-      }, 0);
+      return calculateItemsEncumbrance(source, this.templateItemsMap);
     },
     calculateSelectionEncumbrance() {
       if (this.isGM) {
@@ -168,21 +149,10 @@ const encumbranceOptions = {
         return total + this.resolveItemCharge(item, 0) * quantity;
       }, 0);
     },
-    resolveEncumbranceStatus(load, limit = bgCarryLimit) {
-      if (!Number.isFinite(load) || !Number.isFinite(limit) || limit <= 0) {
-        return "Brak danych";
-      }
-      if (load > limit) {
-        return "Przeciazony";
-      }
-      const ratio = load / limit;
-      if (ratio >= bgCarryWarningRatio) {
-        return "Na granicy";
-      }
-      if (ratio >= bgCarryHighRatio) {
-        return "Ciezko";
-      }
-      return "Lekko";
+    resolveEncumbranceStatus(load, limit = BG_CARRY_LIMIT) {
+      return bgEncumbranceStatusLabel(
+        resolveSharedEncumbranceStatus(load, limit),
+      );
     },
   },
 };

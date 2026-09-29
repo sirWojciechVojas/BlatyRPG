@@ -27,6 +27,7 @@ class ShopTemplateModel extends BaseJsonModel
         'attributes_json',
         'mechanics_json',
         'mechanics_mode',
+        'consumption_profile_id',
     ];
 
     protected $useTimestamps = true;

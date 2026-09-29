@@ -1,0 +1,133 @@
+import { normalizeTokenAngle } from "./tokenFacing";
+import { normalizeTokenPermissionScope } from "./tokenPermissions";
+import { tokenResourcesWithMovement } from "./tokenResources";
+import { normalizeTokenResourceBarPosition } from "./tokenResourcePosition";
+
+const number = (value, fallback = 0) => {
+  const result = Number(value);
+  return Number.isFinite(result) ? result : fallback;
+};
+
+const movementState = (source) => {
+  const range = Math.max(
+    0,
+    number(source.movementRange ?? source.movement_range, 6),
+  );
+  const spent = Math.max(
+    0,
+    number(source.movementSpent ?? source.movement_spent),
+  );
+  return { range, spent, points: Math.max(0, range - spent) };
+};
+
+const normalizeTokenWithMovement = (source, movement) => ({
+  id: number(source.id),
+  sceneId: number(source.sceneId ?? source.scene_id),
+  characterId:
+    (source.characterId ?? source.character_id)
+      ? number(source.characterId ?? source.character_id)
+      : null,
+  name: String(source.name || ""),
+  imageUrl: String(source.imageUrl ?? source.image_url ?? ""),
+  x: number(source.x),
+  y: number(source.y),
+  width: number(source.width, 100),
+  height: number(source.height, 100),
+  rotation: normalizeTokenAngle(source.rotation),
+  facing: normalizeTokenAngle(source.facing, source.rotation),
+  rotationHandleEnabled:
+    source.rotationHandleEnabled === true ||
+    source.rotation_handle_enabled === 1,
+  facingHandleEnabled:
+    source.facingHandleEnabled === true || source.facing_handle_enabled === 1,
+  showInfoUnselected:
+    source.showInfoUnselected === true || source.show_info_unselected === 1,
+  resourceBarPosition: normalizeTokenResourceBarPosition(
+    source.resourceBarPosition ?? source.resource_bar_position,
+  ),
+  movementRange: movement.range,
+  movementSpent: movement.spent,
+  movementPoints: movement.points,
+  movementResetMode: ["turn", "round", "manual"].includes(
+    source.movementResetMode ?? source.movement_reset_mode,
+  )
+    ? (source.movementResetMode ?? source.movement_reset_mode)
+    : "turn",
+  elevation: number(source.elevation),
+  disposition: String(source.disposition || "neutral"),
+  hidden: source.hidden === true || source.hidden === 1,
+  locked: source.locked === true || source.locked === 1,
+  visibleTo: normalizeTokenPermissionScope(
+    source.visibleTo ?? source.visible_to_json,
+    source.hidden === true || source.hidden === 1 ? "gm" : "everyone",
+  ),
+  controlledBy: normalizeTokenPermissionScope(
+    source.controlledBy ?? source.controlled_by_json,
+    "inherit",
+  ),
+  editableBy: normalizeTokenPermissionScope(
+    source.editableBy ?? source.editable_by_json,
+    "gm",
+  ),
+  observerBy: normalizeTokenPermissionScope(
+    source.observerBy ?? source.observer_by_json,
+    "inherit",
+  ),
+  resources: tokenResourcesWithMovement(
+    source.resources || { bars: source.bars, bubbles: source.bubbles },
+    movement.range,
+    movement.points,
+  ),
+  statuses: Array.isArray(source.statuses) ? source.statuses : [],
+  vision: source.vision || {},
+  light: source.light || {},
+  revision: number(source.revision, 1),
+  capabilities: {
+    canControl: source.capabilities?.canControl === true,
+    canEdit: source.capabilities?.canEdit === true,
+    canObserve: source.capabilities?.canObserve === true,
+    canManage: source.capabilities?.canManage === true,
+  },
+});
+
+export const normalizeToken = (source = {}) =>
+  normalizeTokenWithMovement(source, movementState(source));
+
+export const tokenWritePayload = (changes = {}, includeRevision = false) => {
+  const allowed = [
+    "characterId",
+    "name",
+    "imageUrl",
+    "x",
+    "y",
+    "width",
+    "height",
+    "rotation",
+    "facing",
+    "rotationHandleEnabled",
+    "facingHandleEnabled",
+    "showInfoUnselected",
+    "resourceBarPosition",
+    "movementRange",
+    "movementSpent",
+    "movementResetMode",
+    "elevation",
+    "disposition",
+    "hidden",
+    "locked",
+    "visibleTo",
+    "controlledBy",
+    "editableBy",
+    "observerBy",
+    "statuses",
+    "resources",
+    "vision",
+    "waypoints",
+  ];
+  const payload = {};
+  allowed.forEach((key) => {
+    if (changes[key] !== undefined) payload[key] = changes[key];
+  });
+  if (includeRevision) payload.revision = number(changes.revision);
+  return payload;
+};

@@ -46,6 +46,48 @@ class AdminController extends BaseController
         });
     }
 
+    public function attachCharacterCampaign($characterId = null, $campaignId = null)
+    {
+        return $this->execute(function () use ($characterId, $campaignId): array {
+            return $this->admin->attachCharacterCampaign(
+                $this->auth(), (int) $characterId, (int) $campaignId
+            );
+        });
+    }
+
+    public function detachCharacterCampaign($characterId = null, $campaignId = null)
+    {
+        return $this->execute(function () use ($characterId, $campaignId): array {
+            return $this->admin->detachCharacterCampaign(
+                $this->auth(), (int) $characterId, (int) $campaignId
+            );
+        });
+    }
+
+    public function attachCharacterOwner(
+        $characterId = null,
+        $campaignId = null,
+        $userId = null
+    ) {
+        return $this->execute(function () use ($characterId, $campaignId, $userId): array {
+            return $this->admin->attachCharacterOwner(
+                $this->auth(), (int) $characterId, (int) $campaignId, (int) $userId
+            );
+        });
+    }
+
+    public function detachCharacterOwner(
+        $characterId = null,
+        $campaignId = null,
+        $userId = null
+    ) {
+        return $this->execute(function () use ($characterId, $campaignId, $userId): array {
+            return $this->admin->detachCharacterOwner(
+                $this->auth(), (int) $characterId, (int) $campaignId, (int) $userId
+            );
+        });
+    }
+
     private function auth(): array
     {
         return $this->authContext->resolveFromRequest($this->request);

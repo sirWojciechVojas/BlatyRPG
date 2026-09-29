@@ -1,0 +1,112 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
+import { parse } from "@vue/compiler-sfc";
+import { describe, expect, it } from "vitest";
+
+const template = (name) => {
+  const path = resolve(process.cwd(), `src/components/vtt/token/${name}.vue`);
+  return parse(readFileSync(path, "utf8"), { filename: path }).descriptor
+    .template.content;
+};
+
+describe("token presentation layout", () => {
+  it("keeps the token name outside the rotated artwork button", () => {
+    const source = template("SceneTokenLayer");
+    const buttonEnd = source.indexOf(
+      "</button>",
+      source.indexOf('class="scene-token"'),
+    );
+    const information = source.indexOf("<TokenInfoStack");
+
+    expect(information).toBeGreaterThan(buttonEnd);
+    expect(template("TokenInfoStack")).toContain('class="scene-token-name"');
+    expect(source).toContain("<TokenResourceOverlay");
+    expect(source).not.toContain("token.id !== hudTokenId");
+    expect(source).not.toMatch(
+      /v-if="tokenInfoVisible\(token\)"\s+class="scene-token-facing"/u,
+    );
+  });
+
+  it("raises the complete selected token presentation above collisions", () => {
+    const layer = template("SceneTokenLayer");
+    const styles = readFileSync(
+      resolve(
+        process.cwd(),
+        "src/components/vtt/scene/styles/scene-tokens.css",
+      ),
+      "utf8",
+    );
+
+    expect(layer).toContain("scene-token-wrap--selected");
+    expect(layer).toContain("scene-token-wrap--hud");
+    expect(styles).toContain(".scene-token-wrap--selected");
+    expect(styles).toContain(".scene-token-wrap--hud");
+  });
+
+  it("keeps multi-selection free of token information and HUD controls", () => {
+    const layer = template("SceneTokenLayer");
+
+    expect(layer).toContain(
+      "tokenStates[token.id].selected && !hasMultiSelection",
+    );
+    expect(layer).toContain("token.id === hudTokenId && !hasMultiSelection");
+  });
+
+  it("shows movement reach without duplicating the movement resource label", () => {
+    const range = template("TokenMovementRange");
+
+    expect(range).toContain("token-movement-range__shade");
+    expect(range).toContain("token-movement-range__reachable");
+    expect(range).not.toContain("<output");
+    expect(range).not.toContain("rangePreview");
+  });
+
+  it("positions the resource stack independently from the token name", () => {
+    const source = template("TokenInfoStack");
+
+    expect(source.indexOf("<TokenResourceBars")).toBeLessThan(
+      source.indexOf('class="scene-token-name"'),
+    );
+    expect(source).not.toContain("TokenMovementBar");
+    expect(source).toContain("scene-token-info-stack--${position}");
+  });
+
+  it("balances four actions on both HUD rails", () => {
+    const source = template("TokenHud");
+    const left = source.split("token-hud__rail--left")[1].split("</div>")[0];
+    const right = source.split("token-hud__rail--right")[1].split("</div>")[0];
+
+    expect(left.match(/<button/g)).toHaveLength(4);
+    expect(right.match(/<button/g)).toHaveLength(4);
+  });
+
+  it("gives each resource bubble a stable color slot", () => {
+    expect(template("TokenResourceOverlay")).toContain(
+      "token-resource-bubble--slot-${entry.index + 1}",
+    );
+  });
+
+  it("offers explicit movement and bar linkage controls", () => {
+    const resources = template("TokenResourceSettings");
+
+    expect(resources).toContain("bar.movementSource");
+    expect(resources).toContain("bubble.linkedBarIndex");
+    expect(template("TokenMovementSettings")).toContain(
+      "movement.resourceSource",
+    );
+  });
+
+  it("renders the unsaved token draft with shared resource visuals", () => {
+    const panel = template("TokenSettingsPanel");
+    const preview = template("TokenSettingsPreview");
+
+    expect(panel).toContain("<TokenSettingsPreview");
+    expect(panel.indexOf("<TokenSettingsPreview")).toBeLessThan(
+      panel.indexOf('class="token-settings-panel__body"'),
+    );
+    expect(preview).toContain("<TokenInfoStack");
+    expect(preview).toContain("<TokenResourceOverlay");
+    expect(preview).toContain("previewToken.rotation");
+    expect(preview).toContain("previewToken.facing");
+  });
+});

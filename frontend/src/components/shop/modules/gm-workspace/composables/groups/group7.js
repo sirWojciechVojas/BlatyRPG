@@ -111,6 +111,10 @@ export const installWorkspaceGroup7 = (deps) => {
       currencyCode: deps.displayCurrencyCode(item.CURRENCY),
       charge: Number(item.CHARGE || 0),
       attributes: [...(item.ATTRIBUTES || [])],
+      consumptionMode: "inherit",
+      consumptionProfileId: null,
+      consumptionIdentification: "unknown",
+      consumptionPortions: 1,
     });
     deps.hydratingInstance = false;
     deps.store.commit("shop/setFormStatus", {

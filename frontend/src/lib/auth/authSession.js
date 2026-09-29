@@ -46,12 +46,12 @@ const absoluteExpiry = (value, secondsAllowed = false) => {
 
 const normalizeUser = (user) => {
   if (!user || typeof user !== "object") return null;
-  const role = String(user.role || "player").toLowerCase();
+  const role = String(user.role || "user").toLowerCase();
   return {
     id: Number(user.id) || user.id || null,
     username: String(user.username || user.login || ""),
     email: String(user.email || ""),
-    role: role === "user" ? "player" : role,
+    role: ["player", "gm"].includes(role) ? "user" : role,
     avatarUrl: user.avatarUrl || user.avatar_url || null,
   };
 };

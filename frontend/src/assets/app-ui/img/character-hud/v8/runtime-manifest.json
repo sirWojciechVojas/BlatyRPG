@@ -1,0 +1,499 @@
+{
+  "schemaVersion": 2,
+  "baseCanvas": {
+    "width": 1072,
+    "height": 376
+  },
+  "profiles": [
+    {
+      "id": "fhd",
+      "viewport": [
+        1920,
+        1080
+      ],
+      "width": 804,
+      "height": 282,
+      "scale": 0.75,
+      "files": [
+        "hud-shell-fhd.webp",
+        "hud-atlas.webp",
+        "hp-fill.webp",
+        "xp-min-fill.webp",
+        "xp-max-fill.webp"
+      ],
+      "imageRequestCount": 5,
+      "totalImageBytes": 202206,
+      "avatarApertureWidth": 131.25,
+      "avatarApertureHeight": 131.25,
+      "xpFrameGap": 3.0,
+      "xpRowGap": 3.0,
+      "visibleHeight": 276,
+      "heightIncrease": 18
+    },
+    {
+      "id": "qhd",
+      "viewport": [
+        2560,
+        1440
+      ],
+      "width": 1072,
+      "height": 376,
+      "scale": 1,
+      "files": [
+        "hud-shell.webp",
+        "hud-atlas.webp",
+        "hp-fill.webp",
+        "xp-min-fill.webp",
+        "xp-max-fill.webp"
+      ],
+      "imageRequestCount": 5,
+      "totalImageBytes": 263838,
+      "avatarApertureWidth": 175,
+      "avatarApertureHeight": 175,
+      "xpFrameGap": 4,
+      "xpRowGap": 4,
+      "visibleHeight": 370,
+      "heightIncrease": 24
+    }
+  ],
+  "selection": {
+    "type": "css-media-query",
+    "qhdMinViewportWidth": 2240,
+    "default": "fhd",
+    "manualOverride": "data-profile=fhd|qhd",
+    "units": "CSS viewport pixels"
+  },
+  "files": [
+    {
+      "file": "hud-shell.webp",
+      "width": 1072,
+      "height": 376,
+      "bytes": 195408,
+      "profiles": [
+        "qhd"
+      ],
+      "lossless": true
+    },
+    {
+      "file": "hud-shell-fhd.webp",
+      "width": 804,
+      "height": 282,
+      "bytes": 133776,
+      "profiles": [
+        "fhd"
+      ],
+      "lossless": true
+    },
+    {
+      "file": "hud-atlas.webp",
+      "width": 512,
+      "height": 256,
+      "bytes": 59112,
+      "profiles": [
+        "qhd",
+        "fhd"
+      ],
+      "lossless": true
+    },
+    {
+      "file": "hp-fill.webp",
+      "width": 264,
+      "height": 19,
+      "bytes": 6032,
+      "profiles": [
+        "qhd",
+        "fhd"
+      ],
+      "lossless": true
+    },
+    {
+      "file": "xp-min-fill.webp",
+      "width": 264,
+      "height": 6,
+      "bytes": 1530,
+      "profiles": [
+        "qhd",
+        "fhd"
+      ],
+      "lossless": true
+    },
+    {
+      "file": "xp-max-fill.webp",
+      "width": 264,
+      "height": 6,
+      "bytes": 1756,
+      "profiles": [
+        "qhd",
+        "fhd"
+      ],
+      "lossless": true
+    }
+  ],
+  "atlas": {
+    "file": "hud-atlas.webp",
+    "width": 512,
+    "height": 256,
+    "padding": 2,
+    "sprites": {
+      "hp-foreground": {
+        "x": 2,
+        "y": 2,
+        "width": 413,
+        "height": 29
+      },
+      "dice-d100": {
+        "x": 2,
+        "y": 35,
+        "width": 149,
+        "height": 149
+      },
+      "button-menu": {
+        "x": 2,
+        "y": 188,
+        "width": 52,
+        "height": 36
+      },
+      "button-minus": {
+        "x": 58,
+        "y": 188,
+        "width": 32,
+        "height": 29
+      },
+      "button-plus": {
+        "x": 58,
+        "y": 221,
+        "width": 32,
+        "height": 29
+      },
+      "button-3d": {
+        "x": 2,
+        "y": 228,
+        "width": 28,
+        "height": 25
+      },
+      "icon-combat": {
+        "x": 94,
+        "y": 188,
+        "width": 26,
+        "height": 24
+      },
+      "icon-book": {
+        "x": 94,
+        "y": 216,
+        "width": 26,
+        "height": 24
+      },
+      "icon-map": {
+        "x": 124,
+        "y": 188,
+        "width": 26,
+        "height": 24
+      },
+      "icon-talents": {
+        "x": 124,
+        "y": 216,
+        "width": 26,
+        "height": 24
+      },
+      "icon-inventory": {
+        "x": 154,
+        "y": 188,
+        "width": 25,
+        "height": 24
+      },
+      "icon-star": {
+        "x": 154,
+        "y": 216,
+        "width": 25,
+        "height": 24
+      },
+      "icon-scroll": {
+        "x": 419,
+        "y": 2,
+        "width": 24,
+        "height": 24
+      },
+      "icon-bestiary": {
+        "x": 447,
+        "y": 2,
+        "width": 23,
+        "height": 24
+      },
+      "icon-settings": {
+        "x": 474,
+        "y": 2,
+        "width": 23,
+        "height": 24
+      },
+      "icon-quill": {
+        "x": 419,
+        "y": 30,
+        "width": 22,
+        "height": 24
+      },
+      "icon-journal": {
+        "x": 445,
+        "y": 30,
+        "width": 22,
+        "height": 24
+      },
+      "icon-purse": {
+        "x": 471,
+        "y": 30,
+        "width": 22,
+        "height": 24
+      },
+      "icon-character": {
+        "x": 34,
+        "y": 228,
+        "width": 20,
+        "height": 24
+      },
+      "icon-development": {
+        "x": 155,
+        "y": 58,
+        "width": 20,
+        "height": 24
+      },
+      "symbol-plus": {
+        "x": 155,
+        "y": 35,
+        "width": 14,
+        "height": 17
+      },
+      "symbol-minus": {
+        "x": 497,
+        "y": 30,
+        "width": 12,
+        "height": 7
+      }
+    }
+  },
+  "xpLayout": {
+    "well": {
+      "x": 48,
+      "y": 314,
+      "width": 838,
+      "height": 54
+    },
+    "min": {
+      "x": 56,
+      "y": 322,
+      "width": 822,
+      "height": 18
+    },
+    "max": {
+      "x": 56,
+      "y": 344,
+      "width": 822,
+      "height": 18
+    },
+    "gap": 4,
+    "gapFhd": 3,
+    "rowGap": 4,
+    "rowGapFhd": 3,
+    "rows": [
+      {
+        "kind": "min",
+        "y": 322,
+        "height": 18
+      },
+      {
+        "kind": "max",
+        "y": 344,
+        "height": 18
+      }
+    ]
+  },
+  "avatarImage": {
+    "x": 448.5,
+    "y": 28,
+    "width": 175,
+    "height": 175
+  },
+  "hpWell": {
+    "x": 324.5,
+    "y": 226,
+    "width": 423,
+    "height": 39
+  },
+  "hp": {
+    "x": 329.5,
+    "y": 232,
+    "width": 413,
+    "height": 29,
+    "fillX": 333.5,
+    "fillY": 237,
+    "fillWidth": 405,
+    "fillHeight": 19
+  },
+  "dice": {
+    "x": 899.5,
+    "y": 209.5,
+    "width": 149,
+    "height": 149,
+    "centerX": 974,
+    "centerY": 284,
+    "sourceWidth": 144,
+    "sourceHeight": 144,
+    "centerDeltaYQhd": 10,
+    "diameterDeltaQhd": 5
+  },
+  "controls": [
+    {
+      "icon": "icon-character",
+      "x": 55,
+      "y": 272,
+      "width": 52,
+      "height": 36
+    },
+    {
+      "icon": "icon-development",
+      "x": 114,
+      "y": 272,
+      "width": 52,
+      "height": 36
+    },
+    {
+      "icon": "icon-combat",
+      "x": 173,
+      "y": 272,
+      "width": 52,
+      "height": 36
+    },
+    {
+      "icon": "icon-inventory",
+      "x": 232,
+      "y": 272,
+      "width": 52,
+      "height": 36
+    },
+    {
+      "icon": "icon-book",
+      "x": 291,
+      "y": 272,
+      "width": 52,
+      "height": 36
+    },
+    {
+      "icon": "icon-scroll",
+      "x": 350,
+      "y": 272,
+      "width": 52,
+      "height": 36
+    },
+    {
+      "icon": "icon-quill",
+      "x": 409,
+      "y": 272,
+      "width": 52,
+      "height": 36
+    },
+    {
+      "icon": "icon-journal",
+      "x": 468,
+      "y": 272,
+      "width": 52,
+      "height": 36
+    },
+    {
+      "icon": "icon-map",
+      "x": 527,
+      "y": 272,
+      "width": 52,
+      "height": 36
+    },
+    {
+      "icon": "icon-bestiary",
+      "x": 586,
+      "y": 272,
+      "width": 52,
+      "height": 36
+    },
+    {
+      "icon": "icon-talents",
+      "x": 645,
+      "y": 272,
+      "width": 52,
+      "height": 36
+    },
+    {
+      "icon": "icon-purse",
+      "x": 704,
+      "y": 272,
+      "width": 52,
+      "height": 36
+    },
+    {
+      "icon": "icon-star",
+      "x": 763,
+      "y": 272,
+      "width": 52,
+      "height": 36
+    },
+    {
+      "icon": "icon-settings",
+      "x": 822,
+      "y": 272,
+      "width": 52,
+      "height": 36
+    }
+  ],
+  "notes": [
+    "QHD to baza; Full HD jest skalą 75% na obu osiach, bez spłaszczania kół.",
+    "Przy FHD pobierany jest mniejszy shell; atlas i trzy kafle są wspólne. Razem 5 obrazów na wybrany profil.",
+    "Avatar użytkownika, CSS i opcjonalny JSON nie wchodzą do podanego transferu obrazów.",
+    "Rama źródłowa avatara ma otwór 175x175 px; wyświetlenie FHD wynosi 131.25x131.25 CSS px.",
+    "Panel jest dokowany na bottom:-6px; dolne 6 CSS px wypada poza viewport. Nie odejmować kolejnych 6px w kontenerze.",
+    "Kostka pochodzi bezpośrednio z załącznika użytkownika dice-d100.png, 144x144px.",
+    "Dostarczona tekstura środka została powtórzona 1:1 w podkładzie HUD-u, bez dodatkowego żądania obrazu w runtime.",
+    "Kostka: średnica QHD 149px (+5), środek przesunięty o 10px w dół. Full HD: średnica 111.75px (+3.75), przesunięcie środka 7.5px. Wnęka jest koncentryczna i ma 166px."
+  ],
+  "revision": 8,
+  "placement": {
+    "horizontal": "center",
+    "position": "fixed",
+    "bottomCssPx": -6,
+    "clipAtViewport": true,
+    "clippedBottomCssPx": 6
+  },
+  "interior": {
+    "tile": "frame-center-bg.png",
+    "tileWidth": 128,
+    "tileHeight": 128,
+    "x": 42,
+    "y": 266,
+    "width": 988,
+    "height": 110,
+    "repeatX": true,
+    "repeatY": true,
+    "sourcePixelsUnchanged": true,
+    "mask": "menu and XP area through the bottom edge; wood retained around HP"
+  },
+  "xpLabels": {
+    "min": {
+      "text": "Wymagane do awansu",
+      "x": 68,
+      "y": 322
+    },
+    "max": {
+      "text": "Pełny rozwój",
+      "x": 68,
+      "y": 344
+    },
+    "valueX": 800,
+    "placement": "inside full-width bars",
+    "fontSizeQhd": 16,
+    "fontSizeFhd": 12,
+    "lineHeightQhd": 18
+  },
+  "diceRecess": {
+    "x": 891,
+    "y": 201,
+    "width": 166,
+    "height": 166,
+    "apertureDiameter": 149,
+    "centerX": 974,
+    "centerY": 284
+  }
+}

@@ -1,5 +1,5 @@
 const canonicalRole = (session) =>
-  String(session?.user?.role || "player").toLowerCase();
+  String(session?.user?.role || "user").toLowerCase();
 
 export const defaultAuthenticatedRoute = (session) =>
   canonicalRole(session) === "admin" ? { name: "admin" } : { name: "tables" };

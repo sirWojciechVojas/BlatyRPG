@@ -46,12 +46,13 @@ export const normalizeCharacter = (source = {}) => ({
   updatedAt: source.updatedAt ?? source.updated_at ?? null,
 });
 
-const campaignQuery = (campaignId) => {
+const campaignQuery = (campaignId, assignedOnly = false) => {
   const id = Number(campaignId);
   if (!Number.isInteger(id) || id < 1) {
     throw new TypeError("campaignId must be a positive integer");
   }
-  return `campaignId=${encodeURIComponent(id)}`;
+  const scope = `campaignId=${encodeURIComponent(id)}`;
+  return assignedOnly ? `${scope}&assignedOnly=true` : scope;
 };
 
 const unwrapCharacter = (payload) =>
@@ -61,9 +62,10 @@ const unwrapCharacter = (payload) =>
 
 export const createCharacterApiClient = (client = jsonApiClient) => ({
   async list(campaignId, options = {}) {
+    const { assignedOnly = false, ...requestOptions } = options;
     const payload = await client.request(
-      `/characters?${campaignQuery(campaignId)}`,
-      options,
+      `/characters?${campaignQuery(campaignId, assignedOnly)}`,
+      requestOptions,
     );
     return {
       characters: unwrapItems(payload)

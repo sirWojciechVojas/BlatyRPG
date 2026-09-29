@@ -8,6 +8,9 @@
       "back": "Back to campaigns",
       "retry": "Try again",
       "refresh": "Refresh",
+      "searchUsers": "Search users…",
+      "searchCampaigns": "Search Tables…",
+      "searchCharacters": "Search characters, Tables or owners…",
       "createUser": "Create account",
       "saving": "Saving…"
     },
@@ -15,48 +18,150 @@
       "title": "Summary",
       "users": "Users",
       "admins": "Administrators",
-      "campaigns": "Campaigns"
+      "campaigns": "Campaigns",
+      "activeCampaigns": "Active Tables",
+      "memberships": "Memberships",
+      "activeSessions": "Active sessions"
+    },
+    "metricsHints": {
+      "users": "all accounts",
+      "admins": "administrative access",
+      "campaigns": "created Tables",
+      "activeCampaigns": "ready to play",
+      "memberships": "active assignments",
+      "activeSessions": "valid logins"
+    },
+    "tabs": {
+      "label": "Administrator panel sections",
+      "overview": "Overview",
+      "users": "Users",
+      "campaigns": "Tables",
+      "characters": "Characters",
+      "activity": "Activity",
+      "system": "System"
+    },
+    "charts": {
+      "growth": "New accounts and Tables",
+      "weeks": "weeks",
+      "accounts": "Account types",
+      "statuses": "Table status",
+      "systems": "RPG systems",
+      "membershipRoles": "Roles at Tables",
+      "total": "total",
+      "noData": "No data to display."
+    },
+    "quick": {
+      "title": "Quick actions",
+      "addUser": "Add account",
+      "reviewTables": "Review Tables",
+      "openLanding": "Open landing page"
     },
     "users": {
       "title": "Users",
-      "description": "Roles are enforced by the API on every request.",
+      "description": "Application privileges are independent from each campaign membership role.",
       "you": "You",
-      "changeRole": "Change {name}'s role"
+      "changeRole": "Change {name}'s role",
+      "empty": "No users match the criteria."
     },
     "create": {
       "title": "New account",
-      "description": "Create a player, game master or administrator account. Passwords require at least 12 characters."
+      "description": "Create a regular or administrator account. GM and Player are assigned separately at each Table.",
+      "passwordHint": "At least 12 characters with lower-case, upper-case and numeric characters."
     },
     "campaigns": {
       "title": "Campaigns",
-      "description": "Overview of owners and active memberships."
+      "description": "Overview of owners and active memberships.",
+      "empty": "No Tables match the criteria."
+    },
+    "characters": {
+      "title": "All characters",
+      "description": "Drag characters into multiple Table and owner containers. A GM always comes from their role at a specific Table.",
+      "catalog": "Character catalog",
+      "dragHint": "Drag a character into any number of containers.",
+      "tableContainers": "Table containers",
+      "ownerContainers": "Owner containers",
+      "multiTableHint": "One character may belong to multiple Tables.",
+      "multiOwnerHint": "One character may have multiple GMs across Tables.",
+      "assignmentCount": "Tables: {tables} · GMs: {owners}",
+      "dropHere": "Drop a character here",
+      "removeFromTable": "Remove character from this Table",
+      "removeFromOwner": "Remove this GM from the character owners",
+      "empty": "No characters match the criteria."
     },
     "fields": {
       "user": "User",
       "username": "Username",
       "email": "Email",
       "password": "Temporary password",
-      "role": "Role",
+      "role": "Application privileges",
       "campaign": "Campaign",
+      "character": "Character",
       "campaigns": "Campaigns",
       "system": "System",
       "gameMaster": "Game master",
+      "currentOwner": "Current owner",
+      "gameMasterOwner": "GM owner",
       "members": "Members",
-      "status": "Status"
+      "status": "Status",
+      "created": "Created",
+      "lastActivity": "Last activity"
     },
     "roles": {
-      "player": "Player",
-      "gm": "Game master",
+      "user": "User",
       "admin": "Administrator"
     },
-    "status": { "active": "Active", "inactive": "Inactive" },
+    "status": {
+      "all": "All statuses",
+      "active": "Active",
+      "inactive": "Inactive",
+      "paused": "Paused",
+      "archived": "Archived"
+    },
+    "campaignRoles": {
+      "gm": "GM",
+      "assistant": "Assistant GM",
+      "player": "Player",
+      "observer": "Observer"
+    },
+    "activity": {
+      "title": "Recent activity",
+      "user_created": "account created",
+      "campaign_activity": "Table activity"
+    },
+    "system": {
+      "title": "Service status",
+      "operational": "Operating normally",
+      "environment": "Environment",
+      "database": "Database",
+      "generated": "Data read",
+      "updated": "Updated:",
+      "security": "Access control",
+      "sessions": "Revocable user sessions",
+      "accountRoles": "Accounts limited to user / admin",
+      "campaignRoles": "Roles assigned separately per Table",
+      "backendGuard": "Permissions enforced by the backend",
+      "roleModel": "Permission model",
+      "application": "Application level",
+      "perTable": "Separately at every Table"
+    },
     "errors": {
       "network": "The API is unavailable.",
       "load": "The panel could not be loaded.",
       "create": "The account could not be created.",
       "role": "The role could not be changed.",
-      "validation": "Check the data and its uniqueness.",
-      "lastAdmin": "The last administrator cannot be demoted."
+      "characterAssignment": "The character assignment could not be changed.",
+      "characterCampaign": "The character and Table must use the same RPG system and world.",
+      "characterCandidate": "The selected user is not an active GM at this Table.",
+      "validation": "The account could not be created. Correct the marked fields.",
+      "lastAdmin": "The last administrator cannot be demoted.",
+      "fields": {
+        "username": "Username must contain between 3 and 100 characters.",
+        "usernameTaken": "This username is already in use.",
+        "email": "Enter a valid email address.",
+        "emailTaken": "This email address is already in use.",
+        "password": "Password must be 12–200 characters and include lower-case, upper-case and numeric characters.",
+        "role": "Select supported application privileges."
+      }
     }
   }
 }

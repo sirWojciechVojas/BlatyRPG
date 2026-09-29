@@ -269,7 +269,10 @@ export class DiceBox {
 
   addCannonShapes(body, geometry) {
     if (!body || !geometry) return;
-    if (Array.isArray(geometry.cannon_shapes) && geometry.cannon_shapes.length) {
+    if (
+      Array.isArray(geometry.cannon_shapes) &&
+      geometry.cannon_shapes.length
+    ) {
       geometry.cannon_shapes.forEach((entry) => {
         if (!entry || !entry.shape) return;
         body.addShape(
@@ -855,11 +858,7 @@ export class DiceBox {
     const radius = (dicemesh.geometry && dicemesh.geometry.coin_radius) || 1;
     const dirX = barrierDir.x || 0;
     const dirY = barrierDir.y || 0;
-    const offset = new CANNON.Vec3(
-      dirX * radius * 0.8,
-      dirY * radius * 0.8,
-      0,
-    );
+    const offset = new CANNON.Vec3(dirX * radius * 0.8, dirY * radius * 0.8, 0);
     const impulse = new CANNON.Vec3(
       dirX * this.coinConfig.barrierNudgeImpulse,
       dirY * this.coinConfig.barrierNudgeImpulse,
@@ -902,7 +901,10 @@ export class DiceBox {
 
   getRageMultiplier(notationVectors) {
     if (!notationVectors || typeof notationVectors.boost !== "number") return 1;
-    const rage = Math.max(0, Math.min(3, Math.floor(notationVectors.boost / 4)));
+    const rage = Math.max(
+      0,
+      Math.min(3, Math.floor(notationVectors.boost / 4)),
+    );
     if (!rage) return 1;
     return 1 + rage * 0.5;
   }
@@ -933,7 +935,8 @@ export class DiceBox {
       let args = notationVectors.set[i].args;
 
       for (let k = 0; k < numdice; k++) {
-        const randFn = diceobj.shape == "d2" ? this.rand.bind(this) : Math.random;
+        const randFn =
+          diceobj.shape == "d2" ? this.rand.bind(this) : Math.random;
         let vec = this.vectorRand(vector, randFn);
 
         vec.x /= dist;
@@ -1196,12 +1199,8 @@ export class DiceBox {
     dicemesh.castShadow = this.shadows;
     dicemesh.body = new CANNON.Body({
       allowSleep: true,
-      sleepSpeedLimit: isCoin
-        ? this.coinConfig.sleepSpeedLimit
-        : 75,
-      sleepTimeLimit: isCoin
-        ? this.coinConfig.sleepTimeLimit
-        : 0.9,
+      sleepSpeedLimit: isCoin ? this.coinConfig.sleepSpeedLimit : 75,
+      sleepTimeLimit: isCoin ? this.coinConfig.sleepTimeLimit : 0.9,
       mass: diceobj.mass,
       material: isCoin ? this.coin_body_material : this.dice_body_material,
     });
@@ -1226,9 +1225,7 @@ export class DiceBox {
       vectordata.velocity.y,
       vectordata.velocity.z,
     );
-    dicemesh.body.linearDamping = isCoin
-      ? this.coinConfig.linearDamping
-      : 0.1;
+    dicemesh.body.linearDamping = isCoin ? this.coinConfig.linearDamping : 0.1;
     dicemesh.body.angularDamping = isCoin
       ? this.coinConfig.angularDamping
       : 0.1;
@@ -1333,12 +1330,8 @@ export class DiceBox {
     const isCoin = dicemesh.shape == "d2";
     dicemesh.body = new CANNON.Body({
       allowSleep: true,
-      sleepSpeedLimit: isCoin
-        ? this.coinConfig.sleepSpeedLimit
-        : 75,
-      sleepTimeLimit: isCoin
-        ? this.coinConfig.sleepTimeLimit
-        : 0.9,
+      sleepSpeedLimit: isCoin ? this.coinConfig.sleepSpeedLimit : 75,
+      sleepTimeLimit: isCoin ? this.coinConfig.sleepTimeLimit : 0.9,
       mass: dicemesh.body.mass,
       material: isCoin ? this.coin_body_material : this.dice_body_material,
     });
@@ -1351,9 +1344,7 @@ export class DiceBox {
     );
     dicemesh.body.angularVelocity.set(angle.x, angle.y, angle.z);
     dicemesh.body.velocity.set(velocity.x, velocity.y, velocity.z);
-    dicemesh.body.linearDamping = isCoin
-      ? this.coinConfig.linearDamping
-      : 0.1;
+    dicemesh.body.linearDamping = isCoin ? this.coinConfig.linearDamping : 0.1;
     dicemesh.body.angularDamping = isCoin
       ? this.coinConfig.angularDamping
       : 0.1;
@@ -1492,10 +1483,7 @@ export class DiceBox {
         if (dicemesh.shape == "d2" && this.isCoinNearlyVertical(dicemesh)) {
           dicemesh.edgeTries = (dicemesh.edgeTries || 0) + 1;
           const barrierDir = this.getCoinBarrierNudgeDirection(dicemesh);
-          if (
-            dicemesh.edgeTries % this.coinConfig.edgeNudgeInterval ===
-            0
-          ) {
+          if (dicemesh.edgeTries % this.coinConfig.edgeNudgeInterval === 0) {
             dicemesh.stopped = 0;
             if (barrierDir) {
               this.nudgeCoinFromBarrier(dicemesh, barrierDir);
@@ -1547,8 +1535,7 @@ export class DiceBox {
   animateThrow(threadid, callback, notationVectors) {
     this.animstate = "throw";
     let time = new Date().getTime();
-    this.last_time =
-      this.last_time || time - this.fixedTimeStep * 1000;
+    this.last_time = this.last_time || time - this.fixedTimeStep * 1000;
     let time_diff = (time - this.last_time) / 1000;
     ++this.iteration;
 
@@ -1732,8 +1719,7 @@ export class DiceBox {
       const materials = Array.isArray(dicemesh.material)
         ? dicemesh.material
         : null;
-      const hasEmissive =
-        materials && materials[1] && materials[1].emissive;
+      const hasEmissive = materials && materials[1] && materials[1].emissive;
       if (
         this.selector.intersected &&
         Array.isArray(this.selector.intersected.material) &&
@@ -1839,12 +1825,7 @@ export class DiceBox {
       shadowplane.depthWrite = false;
 
       this.pane = new THREE.Mesh(
-        new THREE.PlaneGeometry(
-          layoutWidth * 6,
-          layoutHeight * 6,
-          1,
-          1,
-        ),
+        new THREE.PlaneGeometry(layoutWidth * 6, layoutHeight * 6, 1, 1),
         shadowplane,
       );
       this.pane.receiveShadow = this.shadows;

@@ -1,0 +1,22 @@
+<?php
+
+namespace App\Services\Fog;
+
+class FogException extends \RuntimeException
+{
+    private $errorCode;
+    private $status;
+    private $details;
+
+    public function __construct(string $code, string $message, int $status = 400, array $details = [])
+    {
+        parent::__construct($message);
+        $this->errorCode = $code;
+        $this->status = $status;
+        $this->details = $details;
+    }
+
+    public function errorCode(): string { return $this->errorCode; }
+    public function status(): int { return $this->status; }
+    public function details(): array { return $this->details; }
+}

@@ -29,7 +29,8 @@ export class DiceRoller {
     this.assetBaseUrl = options.assetBaseUrl || "/dice_roller";
     this.themeId = options.themeId || "default";
     const fallbackScale =
-      typeof options.diceScale === "number" && Number.isFinite(options.diceScale)
+      typeof options.diceScale === "number" &&
+      Number.isFinite(options.diceScale)
         ? options.diceScale
         : 1;
     this.diceScaleThrow =
@@ -818,9 +819,7 @@ export class DiceRoller {
     if (DiceRoller.DiceRoom) {
       // Sprawdzenie, czy DiceRoller.DiceRoom.DiceBox jest zdefiniowane
       if (DiceRoller.DiceRoom.DiceBox) {
-        DiceRoller.DiceRoom.DiceBox.setDimensions(
-          DiceRoller.diceBoxDimensions,
-        );
+        DiceRoller.DiceRoom.DiceBox.setDimensions(DiceRoller.diceBoxDimensions);
       } else {
         console.warn("DiceRoller.DiceRoom.DiceBox is undefined.");
       }
@@ -1240,22 +1239,22 @@ export class DiceRoller {
         }
 
         if (data.method == "join" && data.action == "login") {
-            DiceRoller.DiceRoom = new DiceRoom(
-              data.user,
-              DiceRoller.cid,
-              DiceRoller.DiceFavorites,
-              {
-                assetBaseUrl: DiceRoller.assetBaseUrl,
-                chatEnabled: DiceRoller.chatEnabled,
-                rngSeed: DiceRoller.rngSeed,
-                dragThrowEnabled: DiceRoller.dragThrowEnabled,
-                diceScaleThrow: DiceRoller.diceScaleThrow,
-                diceScaleSelector: DiceRoller.diceScaleSelector,
-                diceDisplayEnabled: DiceRoller.diceDisplayEnabled,
-                diceBoxDimensions: DiceRoller.diceBoxDimensions,
-                diceSelectorDimensions: DiceRoller.diceSelectorDimensions,
-                diceDisplayList: DiceRoller.diceDisplayList,
-              },
+          DiceRoller.DiceRoom = new DiceRoom(
+            data.user,
+            DiceRoller.cid,
+            DiceRoller.DiceFavorites,
+            {
+              assetBaseUrl: DiceRoller.assetBaseUrl,
+              chatEnabled: DiceRoller.chatEnabled,
+              rngSeed: DiceRoller.rngSeed,
+              dragThrowEnabled: DiceRoller.dragThrowEnabled,
+              diceScaleThrow: DiceRoller.diceScaleThrow,
+              diceScaleSelector: DiceRoller.diceScaleSelector,
+              diceDisplayEnabled: DiceRoller.diceDisplayEnabled,
+              diceBoxDimensions: DiceRoller.diceBoxDimensions,
+              diceSelectorDimensions: DiceRoller.diceSelectorDimensions,
+              diceDisplayList: DiceRoller.diceDisplayList,
+            },
           );
 
           DiceRoller.show_waitform(false);

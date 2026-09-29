@@ -7,7 +7,7 @@ import { authApiClient } from "@/lib/auth/authApiClient";
 import { authSession } from "@/lib/auth/authSession";
 import options from "@/views/options/LoginView.options";
 
-const result = (role = "player") => ({
+const result = (role = "user") => ({
   token: "header.payload.signature",
   expiresIn: 3600,
   user: {
@@ -49,7 +49,7 @@ describe("LoginView", () => {
 
   it.each([
     ["admin", { name: "admin" }],
-    ["player", { name: "tables" }],
+    ["user", { name: "tables" }],
   ])("routes %s to its default view", async (role, target) => {
     vi.spyOn(authApiClient, "login").mockResolvedValue(result(role));
     const instance = context();

@@ -9,7 +9,7 @@ final class CampaignAccessPolicyTest extends CIUnitTestCase
     public function testCampaignGameMasterCanManageScenes(): void
     {
         $result = (new CampaignAccessPolicy())->evaluate(
-            ['user_id' => 7, 'role' => 'gm', 'anonymous' => false],
+            ['user_id' => 7, 'role' => 'user', 'anonymous' => false],
             ['game_master_id' => 7],
             null
         );
@@ -48,15 +48,28 @@ final class CampaignAccessPolicyTest extends CIUnitTestCase
         $this->assertFalse($result['canAccess']);
     }
 
-    public function testGlobalGmCannotAccessAnotherGmsCampaign(): void
+    public function testUserCannotAccessAnotherGameMastersCampaign(): void
     {
         $result = (new CampaignAccessPolicy())->evaluate(
-            ['user_id' => 8, 'role' => 'gm', 'anonymous' => false],
+            ['user_id' => 8, 'role' => 'user', 'anonymous' => false],
             ['game_master_id' => 7],
             null
         );
 
         $this->assertFalse($result['canAccess']);
+        $this->assertFalse($result['canManage']);
+        $this->assertFalse($result['canManageCharacters']);
+    }
+
+    public function testCampaignOwnerUsesPlayerPermissionsInAnotherCampaign(): void
+    {
+        $result = (new CampaignAccessPolicy())->evaluate(
+            ['user_id' => 8, 'role' => 'user', 'anonymous' => false],
+            ['game_master_id' => 7],
+            ['user_id' => 8, 'role' => 'player', 'is_active' => 1]
+        );
+
+        $this->assertTrue($result['canAccess']);
         $this->assertFalse($result['canManage']);
         $this->assertFalse($result['canManageCharacters']);
     }

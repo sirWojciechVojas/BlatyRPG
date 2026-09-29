@@ -12,7 +12,7 @@ final class ShopAuthorizationServiceTest extends CIUnitTestCase
     {
         $service = new ShopAuthorizationService();
 
-        $result = $service->assertGm(['role' => 'gm']);
+        $result = $service->assertGm(['role' => 'user']);
 
         $this->assertFalse($result['ok']);
     }
@@ -33,7 +33,8 @@ final class ShopAuthorizationServiceTest extends CIUnitTestCase
         $service = new ShopAuthorizationService();
 
         $result = $service->assertOwnerAccess([
-            'role' => 'gm',
+            'role' => 'user',
+            'campaign_role' => 'gm',
             'user_id' => null,
             'development_access' => true,
         ], 1, 'BG9');

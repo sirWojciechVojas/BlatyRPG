@@ -11,17 +11,20 @@ final class AuthSessionService
     private $users;
     private $tokens;
     private $policy;
+    private $presenter;
 
     public function __construct(
         ?AuthSessionModel $sessions = null,
         ?UserModel $users = null,
         ?AuthTokenService $tokens = null,
-        ?AuthSessionPolicy $policy = null
+        ?AuthSessionPolicy $policy = null,
+        ?AuthSessionPresenter $presenter = null
     ) {
         $this->sessions = $sessions ?: new AuthSessionModel();
         $this->users = $users ?: new UserModel();
         $this->tokens = $tokens ?: new AuthTokenService();
         $this->policy = $policy ?: new AuthSessionPolicy();
+        $this->presenter = $presenter ?: new AuthSessionPresenter();
     }
 
     public function issue(array $user, ?string $ip = null, ?string $userAgent = null): array
@@ -121,6 +124,52 @@ final class AuthSessionService
         $this->sessions->where('user_id', $userId)
             ->where('revoked_at', null)
             ->set(['revoked_at' => $now])
+            ->update();
+    }
+
+    public function activeForUser(int $userId, int $currentSessionId): array
+    {
+        if ($userId < 1) {
+            return [];
+        }
+        $records = $this->sessions
+            ->where('user_id', $userId)
+            ->where('revoked_at', null)
+            ->where('expires_at >=', date('Y-m-d H:i:s'))
+            ->orderBy('last_seen_at', 'DESC')
+            ->findAll();
+
+        return array_map(function (array $session) use ($currentSessionId): array {
+            return $this->presenter->present($session, $currentSessionId);
+        }, $records);
+    }
+
+    public function revokeOther(int $sessionId, int $userId, int $currentSessionId): bool
+    {
+        if ($sessionId < 1 || $userId < 1 || $sessionId === $currentSessionId) {
+            return false;
+        }
+        $session = $this->sessions->where('id', $sessionId)
+            ->where('user_id', $userId)
+            ->where('revoked_at', null)
+            ->first();
+        if (!$session) {
+            return false;
+        }
+        return (bool) $this->sessions->update($sessionId, [
+            'revoked_at' => date('Y-m-d H:i:s'),
+        ]);
+    }
+
+    public function revokeOthers(int $userId, int $currentSessionId): void
+    {
+        if ($userId < 1 || $currentSessionId < 1) {
+            return;
+        }
+        $this->sessions->where('user_id', $userId)
+            ->where('id !=', $currentSessionId)
+            ->where('revoked_at', null)
+            ->set(['revoked_at' => date('Y-m-d H:i:s')])
             ->update();
     }
 

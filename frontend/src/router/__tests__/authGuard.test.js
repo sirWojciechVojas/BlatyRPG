@@ -11,7 +11,6 @@ const buildRouter = () =>
         path: "/",
         name: "landing",
         component: View,
-        meta: { redirectAuthenticated: true },
       },
       {
         path: "/login",
@@ -72,13 +71,25 @@ describe("authentication route guard", () => {
     ["gm", "tables"],
     ["player", "tables"],
   ])(
-    "sends an authenticated %s to its default view",
+    "sends an authenticated %s from login to its default view",
     async (role, routeName) => {
       const router = buildRouter();
       router.beforeEach(createAuthGuard(authenticated(role)));
-      await router.push("/");
+      await router.push("/login");
 
       expect(router.currentRoute.value.name).toBe(routeName);
+    },
+  );
+
+  it.each(["admin", "gm", "player"])(
+    "keeps the public landing page available to an authenticated %s",
+    async (role) => {
+      const router = buildRouter();
+      router.beforeEach(createAuthGuard(authenticated(role)));
+
+      await router.push("/");
+
+      expect(router.currentRoute.value.name).toBe("landing");
     },
   );
 

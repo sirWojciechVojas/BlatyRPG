@@ -53,6 +53,32 @@ describe("campaignApiClient", () => {
     });
   });
 
+  it("keeps administrator privilege separate from the campaign role", async () => {
+    const request = vi.fn().mockResolvedValue({
+      items: [
+        {
+          id: 6,
+          name: "Guest table",
+          global_role: "admin",
+          campaign_role: "player",
+          access_role: "player",
+          is_admin: true,
+          capabilities: { canManage: true },
+        },
+      ],
+    });
+
+    const result = await createCampaignApiClient({ request }).list();
+
+    expect(result.campaigns[0]).toMatchObject({
+      globalRole: "admin",
+      campaignRole: "player",
+      membershipRole: "player",
+      isAdmin: true,
+      capabilities: { canManage: true },
+    });
+  });
+
   it("posts managed RPG catalog IDs and normalizes them", async () => {
     const request = vi.fn().mockResolvedValue({
       campaign: {

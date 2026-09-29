@@ -1,0 +1,231 @@
+.handout-window {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+  overflow: auto;
+  color: var(--ui-color-text, #edf2f8);
+  background: var(--ui-color-surface, #121821);
+  font-size: 0.82rem;
+  line-height: 1.4;
+}
+
+.handout-window button,
+.handout-window select,
+.handout-window input:not([type="checkbox"]):not([type="file"]) {
+  min-height: 28px;
+  padding: 0.25rem 0.45rem;
+  color: inherit;
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 0.25rem;
+  font: inherit;
+}
+
+.handout-window button {
+  cursor: pointer;
+}
+
+.handout-window button:hover:not(:disabled),
+.handout-window button.active {
+  background: rgba(88, 166, 255, 0.16);
+  border-color: rgba(88, 166, 255, 0.65);
+}
+
+.handout-window button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.handout-window option {
+  color: var(--ui-color-text, #edf2f8);
+  background: var(--ui-color-surface-raised, #1c2633);
+}
+
+.handout-window__toolbar {
+  position: sticky;
+  z-index: 5;
+  top: 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.4rem 0.5rem;
+  background: var(--ui-color-surface, #121821);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.handout-window__state {
+  margin-left: auto;
+  color: var(--ui-color-text-faint, #6f7d91);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.handout-window__error,
+.handout-window__empty {
+  margin: 0;
+  padding: 0.55rem;
+}
+
+.handout-window__error {
+  color: #ff9ca5;
+  background: rgba(200, 61, 75, 0.12);
+}
+
+.handout-window__empty {
+  color: var(--ui-color-text-muted, #9ba8ba);
+}
+
+.handout-window__share,
+.handout-window__fields,
+.handout-window__tags,
+.handout-window__heading,
+.handout-window__relations,
+.handout-window > .handout-document,
+.handout-window > .handout-editor {
+  margin-inline: 0.6rem;
+}
+
+.handout-window__share {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 0.4rem;
+  margin-top: 0.55rem;
+  padding: 0.5rem;
+  border: 1px solid rgba(88, 166, 255, 0.35);
+  border-radius: 0.25rem;
+}
+
+.handout-window__share label {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.handout-window__recipients {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  width: 100%;
+  gap: 0.25rem 0.6rem;
+}
+
+.handout-window__recipients label,
+.handout-window__tags label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.handout-window__fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(150px, 230px);
+  gap: 0.35rem;
+  margin-top: 0.55rem;
+}
+
+.handout-window__fields > input {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.handout-window__tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem;
+  margin-block: 0.4rem;
+}
+
+.handout-window__tags button {
+  min-height: 24px;
+  padding: 0.1rem 0.35rem;
+  font-size: 0.74rem;
+}
+
+.handout-window__tags > input {
+  min-width: 130px;
+  flex: 1;
+}
+
+.handout-window__heading {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding-block: 0.7rem 0.45rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.handout-window__heading h2,
+.handout-window__heading p {
+  margin: 0;
+}
+
+.handout-window__heading h2 {
+  font-size: 1.1rem;
+}
+
+.handout-window__heading p {
+  margin-top: 0.15rem;
+  color: var(--ui-color-text-muted, #9ba8ba);
+  font-size: 0.72rem;
+}
+
+.handout-window__tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: end;
+  gap: 0.2rem;
+}
+
+.handout-window__tag-list span {
+  padding: 0.1rem 0.32rem;
+  color: #a9d3ff;
+  background: rgba(88, 166, 255, 0.1);
+  border-radius: 0.2rem;
+  font-size: 0.7rem;
+}
+
+.handout-window > .handout-document {
+  flex: 1;
+  padding-block: 0.6rem;
+}
+
+.handout-window > .handout-editor {
+  flex: 1;
+  margin-bottom: 0.6rem;
+}
+
+.handout-window__relations {
+  margin-block: 0.6rem;
+  padding-top: 0.45rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.handout-window__relations h3 {
+  margin: 0 0 0.3rem;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+}
+
+.handout-window__relations ul {
+  margin: 0.25rem 0 0.4rem;
+  padding-left: 1rem;
+}
+
+@media (max-width: 560px) {
+  .handout-window__fields {
+    grid-template-columns: 1fr;
+  }
+
+  .handout-window__heading {
+    display: block;
+  }
+
+  .handout-window__tag-list {
+    justify-content: start;
+    margin-top: 0.4rem;
+  }
+}

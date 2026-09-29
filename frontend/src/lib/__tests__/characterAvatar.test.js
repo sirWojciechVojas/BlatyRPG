@@ -4,6 +4,7 @@ import {
   resolveCharacterAvatar,
   resolveCharacterPortrait,
   resolveCharacterToken,
+  resolveCharacterTokenSource,
 } from "@/lib/trade/characterAvatar";
 
 describe("character avatar resolver", () => {
@@ -76,5 +77,21 @@ describe("character avatar resolver", () => {
 
     expect(avatar).toBe(createCharacterInitialsAvatar("Igor z Emmanuelplatz"));
     expect(decodeURIComponent(avatar)).toContain(">IE<");
+  });
+
+  it("keeps presentation fallbacks out of persisted token data", () => {
+    const character = {
+      id: 37,
+      name: "Bez Avatara",
+      assets: {},
+      avatarUrl: "",
+    };
+
+    expect(resolveCharacterAvatar(character, character.name)).toMatch(
+      /^data:image\/svg\+xml,/u,
+    );
+    expect(resolveCharacterTokenSource(character, character, character)).toBe(
+      "",
+    );
   });
 });

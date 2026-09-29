@@ -81,6 +81,52 @@ class AuthSessionController extends BaseController
         });
     }
 
+    public function sessions()
+    {
+        return $this->execute(function (): array {
+            $auth = $this->auth();
+            return ['sessions' => $this->sessions->activeForUser(
+                (int) $auth['user_id'],
+                (int) $auth['session_id']
+            )];
+        });
+    }
+
+    public function revokeSession($sessionId)
+    {
+        return $this->execute(function () use ($sessionId): array {
+            $auth = $this->auth();
+            if ((int) $sessionId === (int) $auth['session_id']) {
+                throw new AuthException(
+                    'current_session',
+                    'Use sign out to end the current session.',
+                    422
+                );
+            }
+            $revoked = $this->sessions->revokeOther(
+                (int) $sessionId,
+                (int) $auth['user_id'],
+                (int) $auth['session_id']
+            );
+            if (!$revoked) {
+                throw new AuthException('session_not_found', 'Session was not found.', 404);
+            }
+            return ['message' => 'Session revoked.'];
+        });
+    }
+
+    public function revokeOtherSessions()
+    {
+        return $this->execute(function (): array {
+            $auth = $this->auth();
+            $this->sessions->revokeOthers(
+                (int) $auth['user_id'],
+                (int) $auth['session_id']
+            );
+            return ['message' => 'Other sessions revoked.'];
+        });
+    }
+
     private function auth(): array
     {
         $auth = $this->authContext->resolveFromRequest($this->request);

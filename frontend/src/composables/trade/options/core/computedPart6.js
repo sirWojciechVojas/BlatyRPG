@@ -250,6 +250,12 @@ export const createCoreComputedPart6 = (runtime) => {
     },
     activeBgOwner() {
       if (!this.isGM) {
+        const contextOwner = String(this.context?.ownerCode || "")
+          .trim()
+          .toUpperCase();
+        if (contextOwner) {
+          return contextOwner;
+        }
         const permittedOwners = (this.permissions?.ownerCodes || [])
           .map((ownerCode) =>
             String(ownerCode || "")
@@ -257,12 +263,6 @@ export const createCoreComputedPart6 = (runtime) => {
               .toUpperCase(),
           )
           .filter(Boolean);
-        const contextOwner = String(this.context?.ownerCode || "")
-          .trim()
-          .toUpperCase();
-        if (permittedOwners.includes(contextOwner)) {
-          return contextOwner;
-        }
         return (
           permittedOwners[0] ||
           this.actorOwnerCodes[0] ||

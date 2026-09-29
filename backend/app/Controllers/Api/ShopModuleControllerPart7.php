@@ -3,9 +3,59 @@
 namespace App\Controllers\Api;
 
 use App\Services\Shop\ShopPricingPreviewService;
+use App\Services\Consumption\ConsumptionCatalog;
+use App\Services\Consumption\ConsumptionException;
+use App\Services\Consumption\ConsumptionService;
 
 trait ShopModuleControllerPart7
 {
+    public function consumptionProfiles($campaignId)
+    {
+        $gmCheck = $this->authorizationService->assertGm($this->resolveAuth(), (int) $campaignId);
+        if (!$gmCheck['ok']) return $this->respondError($gmCheck);
+        $catalog = new ConsumptionCatalog();
+        $profiles = array_map([$catalog, 'adminSummary'], $catalog->profiles((string) ($this->request->getGet('q') ?? '')));
+        return $this->response->setJSON(['count' => count($profiles), 'items' => $profiles]);
+    }
+
+    public function consumeItem($campaignId)
+    {
+        $auth = $this->resolveAuth();
+        $payload = $this->request->getJSON(true) ?: [];
+        $ownerCode = $this->authorizationService->resolveOwnerCode(
+            $auth,
+            (int) $campaignId,
+            (string) ($payload['ownerCode'] ?? '')
+        );
+        $ownerCheck = $this->authorizationService->assertOwnerAccess($auth, (int) $campaignId, $ownerCode);
+        if (!$ownerCheck['ok']) return $this->respondError($ownerCheck);
+        try {
+            return $this->response->setJSON((new ConsumptionService())->consume(
+                (int) $campaignId,
+                $ownerCode,
+                $payload,
+                (string) $this->request->getHeaderLine('Idempotency-Key')
+            ));
+        } catch (ConsumptionException $exception) {
+            return $this->fail(['code' => $exception->domainCode(), 'message' => $exception->getMessage()], $exception->status());
+        }
+    }
+
+    public function advanceConsumptionWorldTime($campaignId)
+    {
+        $gmCheck = $this->authorizationService->assertGm($this->resolveAuth(), (int) $campaignId);
+        if (!$gmCheck['ok']) return $this->respondError($gmCheck);
+        try {
+            $payload = $this->request->getJSON(true) ?: [];
+            return $this->response->setJSON((new ConsumptionService())->advanceWorldTime(
+                (int) $campaignId,
+                (int) ($payload['minutes'] ?? 0)
+            ));
+        } catch (ConsumptionException $exception) {
+            return $this->fail(['code' => $exception->domainCode(), 'message' => $exception->getMessage()], $exception->status());
+        }
+    }
+
     public function previewShopPricing($campaignId, $shopId)
     {
         $gmCheck = $this->authorizationService->assertGm($this->resolveAuth(), (int) $campaignId);

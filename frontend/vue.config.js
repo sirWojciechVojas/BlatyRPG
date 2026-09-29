@@ -26,6 +26,15 @@ module.exports = defineConfig({
       webSocketURL:
         process.env.WDS_SOCKET_URL ||
         `auto://0.0.0.0:0${process.env.WDS_SOCKET_PATH || "/ws"}`,
+      overlay: {
+        errors: true,
+        warnings: true,
+        runtimeErrors: (error) =>
+          ![
+            "ResizeObserver loop completed with undelivered notifications.",
+            "ResizeObserver loop limit exceeded",
+          ].includes(error?.message),
+      },
     },
     webSocketServer: "ws",
     hot: true,
@@ -41,4 +50,20 @@ module.exports = defineConfig({
         },
       }
     : {},
+
+  chainWebpack: (config) => {
+    const runtimeAssets = /character-hud[\\/](?:runtime|v8)[\\/].*\.webp$/iu;
+
+    // Keep the versioned HUD WebP textures independently cacheable.
+    // The default `asset` rule inlines small files, which would otherwise place
+    // the shared button and frame textures inside the JavaScript chunk.
+    config.module.rule("images").exclude.add(runtimeAssets);
+    config.module
+      .rule("character-hud-runtime")
+      .test(runtimeAssets)
+      .type("asset/resource")
+      .set("generator", {
+        filename: "img/[name].[contenthash:8][ext]",
+      });
+  },
 });

@@ -166,6 +166,10 @@
   border-color: rgba(133, 106, 176, 0.65);
   color: #cfbced;
 }
+.item-mechanics-editor__list .source-consumption {
+  border-color: rgba(83, 163, 104, 0.7);
+  color: #a9d9a8;
+}
 .item-mechanics-editor__list > p,
 .item-mechanics-editor__effects > p {
   margin: 0;
@@ -276,11 +280,6 @@
   color: #ef9987;
   font-size: 0.6rem;
 }
-.item-mechanics-editor__form > footer {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 0.28rem;
-}
 .item-mechanics-preview,
 .item-mechanics-editor__placeholder {
   align-self: start;
@@ -317,6 +316,12 @@
 .item-mechanics-preview dd {
   margin: 0;
   color: #dfc79f;
+}
+.item-mechanics-preview__effects {
+  display: grid;
+  gap: 0.18rem;
+  margin: 0;
+  padding-left: 1rem;
 }
 @media (max-width: 1100px) {
   .item-mechanics-editor__identity {

@@ -2,7 +2,11 @@
   <section
     ref="viewport"
     class="scene-canvas"
-    :class="{ 'scene-canvas--dragging': dragging }"
+    :class="{
+      'scene-canvas--dragging': dragging,
+      'scene-canvas--area-selection': tokenAreaSelectionActive,
+      [`scene-canvas--tool-${activeTool}`]: true,
+    }"
     tabindex="0"
     role="region"
     :aria-label="
@@ -14,7 +18,22 @@
     @pointermove="movePan"
     @pointerup="endPan"
     @pointercancel="endPan"
+    @click="addTokenPolygonPoint"
+    @dblclick="finishTokenPolygonSelection"
+    @dragover.prevent="previewDrop"
+    @dragleave="leaveDropPreview"
+    @drop.prevent="dropContent"
   >
+    <TokenAreaSelectionToolbar
+      v-if="activeTool === 'tokens'"
+      :model-value="tokenSelectionMode"
+      @update:model-value="setTokenSelectionMode"
+    />
+    <SceneMeasurementOverlay
+      :scene="scene"
+      :active-tool="activeTool"
+      :scale="camera.scale"
+    />
     <p v-if="!scene" class="scene-canvas__empty">
       {{ $t("vtt.scene.workspace.noScene") }}
     </p>
@@ -59,6 +78,116 @@
         <p v-if="backgroundFailed" class="scene-canvas__image-error">
           {{ $t("vtt.scene.workspace.backgroundError") }}
         </p>
+        <SceneTileLayer
+          :scene="scene"
+          :tiles="tiles"
+          :active-tool="activeTool"
+          :selected-id="selectedTileId"
+          :can-manage="canManageTiles"
+          :busy="tileBusy"
+          :scale="camera.scale"
+          @select="$emit('tile-select', $event)"
+          @create="$emit('tile-create', $event)"
+          @update="$emit('tile-update', $event)"
+          @delete="$emit('tile-delete', $event)"
+        />
+        <SceneLightLayer
+          :scene="scene"
+          :lights="lights"
+          :walls="walls"
+          :active-tool="activeTool"
+          :selected-id="selectedLightId"
+          :can-manage="canManageLights"
+          :busy="lightBusy"
+          @select="$emit('light-select', $event)"
+          @create="$emit('light-create', $event)"
+          @update="$emit('light-update', $event)"
+          @delete="$emit('light-delete', $event)"
+        />
+        <SceneWallLayer
+          :scene="scene"
+          :walls="walls"
+          :active-tool="activeTool"
+          :selected-id="selectedWallId"
+          :can-manage="canManageWalls"
+          :busy="wallBusy"
+          :toolbar-target="wallToolbarTarget"
+          @select="$emit('wall-select', $event)"
+          @create="$emit('wall-create', $event)"
+          @create-many="$emit('wall-create-many', $event)"
+          @insert-opening="$emit('wall-insert-opening', $event)"
+          @update="$emit('wall-update', $event)"
+          @update-many="$emit('wall-update-many', $event)"
+          @delete="$emit('wall-delete', $event)"
+        />
+        <TokenVisionOverlay
+          :scene="scene"
+          :tokens="visionShapeTokens"
+          :walls="walls"
+          :can-manage="canManageScene"
+        />
+        <TokenMovementRange
+          :scene="scene"
+          :tokens="displayTokens"
+          :token-id="activeMovementTokenId"
+          :enabled="activeMovementTokenId !== null"
+        />
+        <SceneFogLayer
+          :scene="scene"
+          :tokens="fogTokens"
+          :walls="walls"
+          :lights="lights"
+          :members="members"
+          :characters="characters"
+          :fog-state="fogState"
+          :camera="camera"
+          :viewport-size="viewportSize"
+          :scene-padding="mapDimensions.padding"
+          :active-tool="activeTool"
+          :can-manage="canManageScene"
+          :preview="fogPreview"
+          :busy="fogBusy"
+          @patch="$emit('fog-patch', $event)"
+          @preview-change="$emit('fog-preview-change', $event)"
+          @visibility-change="fogVisibility = $event"
+        />
+        <SceneTokenLayer
+          :scene="scene"
+          :tokens="displayTokens"
+          :selected-id="selectedTokenId"
+          :selected-ids="selectedTokenIds"
+          :targeted-ids="targetedTokenIds"
+          :active-turn-id="activeTurnId"
+          :waiting-turn-ids="waitingTurnIds"
+          :members="members"
+          :characters="characters"
+          :scale="camera.scale"
+          :busy="tokenBusy"
+          :movement-mode-token-id="activeMovementTokenId"
+          @select="$emit('token-select', $event)"
+          @move="$emit('token-move', $event)"
+          @move-group="$emit('token-move-group', $event)"
+          @movement-depleted="$emit('token-movement-depleted', $event)"
+          @movement-limit="$emit('token-movement-limit', $event)"
+          @update="$emit('token-update', $event)"
+          @target="$emit('token-target', $event)"
+          @delete="$emit('token-delete', $event)"
+          @open-actor="$emit('open-actor', $event)"
+          @vision-preview="applyTokenVisionPreview"
+          @vision-angle-preview="applyTokenVisionAnglePreview"
+          @movement-mode="toggleMovementMode"
+        />
+        <TokenAreaSelectionOverlay
+          :scene="scene"
+          :tokens="displayTokens"
+          :selection="tokenSelection"
+          :scale="camera.scale"
+        />
+        <TokenDropPreview
+          :scene="scene"
+          :preview="actorDropPreview"
+          :scale="camera.scale"
+        />
       </div>
     </div>
   </section>
@@ -66,12 +195,101 @@
 
 <script>
 import { getCurrentInstance, nextTick } from "vue";
-import { buildGridPattern, clamp } from "@/lib/vtt/grid";
+import SceneTokenLayer from "@/components/vtt/token/SceneTokenLayer.vue";
+import TokenAreaSelectionOverlay from "@/components/vtt/token/TokenAreaSelectionOverlay.vue";
+import TokenAreaSelectionToolbar from "@/components/vtt/token/TokenAreaSelectionToolbar.vue";
+import SceneWallLayer from "@/components/vtt/wall/SceneWallLayer.vue";
+import SceneLightLayer from "@/components/vtt/light/SceneLightLayer.vue";
+import SceneTileLayer from "@/components/vtt/tile/SceneTileLayer.vue";
+import SceneFogLayer from "@/components/vtt/fog/SceneFogLayer.vue";
+import SceneMeasurementOverlay from "./SceneMeasurementOverlay.vue";
+import TokenDropPreview from "@/components/vtt/token/TokenDropPreview.vue";
+import TokenMovementRange from "@/components/vtt/token/TokenMovementRange.vue";
+import TokenVisionOverlay from "@/components/vtt/token/TokenVisionOverlay.vue";
+import { sceneCanvasCameraMethods } from "./sceneCanvasCameraMethods";
+import { sceneCanvasComputed } from "./sceneCanvasComputed";
+import { sceneCanvasDropMethods } from "./sceneCanvasDropMethods";
+import { tokenAreaSelectionMethods } from "@/components/vtt/token/tokenAreaSelectionMethods";
 
 export default {
   name: "SceneCanvas",
-  props: { scene: { type: Object, default: null } },
-  emits: ["camera-change"],
+  components: {
+    SceneLightLayer,
+    SceneFogLayer,
+    SceneMeasurementOverlay,
+    SceneTokenLayer,
+    TokenAreaSelectionOverlay,
+    TokenAreaSelectionToolbar,
+    TokenDropPreview,
+    TokenMovementRange,
+    TokenVisionOverlay,
+    SceneTileLayer,
+    SceneWallLayer,
+  },
+  props: {
+    scene: { type: Object, default: null },
+    activeTool: { type: String, default: "select" },
+    tokens: { type: Array, default: () => [] },
+    selectedTokenId: { type: [Number, String], default: null },
+    selectedTokenIds: { type: Array, default: () => [] },
+    targetedTokenIds: { type: Array, default: () => [] },
+    activeTurnId: { type: [Number, String], default: null },
+    waitingTurnIds: { type: Array, default: () => [] },
+    members: { type: Array, default: () => [] },
+    characters: { type: Array, default: () => [] },
+    tokenBusy: { type: Boolean, default: false },
+    canCreateToken: { type: Boolean, default: false },
+    walls: { type: Array, default: () => [] },
+    selectedWallId: { type: [Number, String], default: null },
+    canManageWalls: { type: Boolean, default: false },
+    wallBusy: { type: Boolean, default: false },
+    wallToolbarTarget: { type: String, default: "" },
+    lights: { type: Array, default: () => [] },
+    selectedLightId: { type: [Number, String], default: null },
+    canManageLights: { type: Boolean, default: false },
+    lightBusy: { type: Boolean, default: false },
+    tiles: { type: Array, default: () => [] },
+    selectedTileId: { type: [Number, String], default: null },
+    canManageTiles: { type: Boolean, default: false },
+    tileBusy: { type: Boolean, default: false },
+    canManageScene: { type: Boolean, default: false },
+    fogState: { type: Object, default: null },
+    fogPreview: {
+      type: Object,
+      default: () => ({ mode: "gm", id: null }),
+    },
+    fogBusy: { type: Boolean, default: false },
+  },
+  emits: [
+    "camera-change",
+    "token-select",
+    "token-move",
+    "token-move-group",
+    "token-movement-depleted",
+    "token-movement-limit",
+    "token-update",
+    "token-target",
+    "token-delete",
+    "token-create",
+    "open-actor",
+    "wall-select",
+    "wall-create",
+    "wall-create-many",
+    "wall-insert-opening",
+    "wall-update",
+    "wall-update-many",
+    "wall-delete",
+    "light-select",
+    "light-create",
+    "light-update",
+    "light-delete",
+    "tile-select",
+    "tile-create",
+    "tile-update",
+    "tile-delete",
+    "fog-patch",
+    "fog-preview-change",
+  ],
   data() {
     return {
       camera: { x: 0, y: 0, scale: 1 },
@@ -82,41 +300,24 @@ export default {
       hasFitted: false,
       viewportSize: { width: 0, height: 0 },
       patternId: `scene-grid-${getCurrentInstance().uid}`,
+      actorDropPreview: null,
+      tokenSelectionMode: "point",
+      tokenSelection: null,
+      fogVisibility: {
+        constrained: false,
+        visibleTokenIds: [],
+        visionTokenIds: [],
+      },
+      tokenVisionPreviews: {},
+      tokenVisionAnglePreviews: {},
+      movementModeTokenId: null,
     };
   },
-  computed: {
-    pattern() {
-      return this.scene ? buildGridPattern(this.scene) : null;
-    },
-    mapDimensions() {
-      if (!this.scene) return { width: 0, height: 0, padding: 0 };
-      const padding = Math.max(0, Number(this.scene.padding) || 0);
-      return {
-        width: this.scene.width + padding * 2,
-        height: this.scene.height + padding * 2,
-        padding,
-      };
-    },
-    mapStyle() {
-      if (!this.scene) return {};
-      return {
-        width: `${this.mapDimensions.width}px`,
-        height: `${this.mapDimensions.height}px`,
-        backgroundColor: this.scene.backgroundColor,
-        transform: `translate(${this.camera.x}px, ${this.camera.y}px) scale(${this.camera.scale})`,
-      };
-    },
-    contentStyle() {
-      return {
-        top: `${this.mapDimensions.padding}px`,
-        left: `${this.mapDimensions.padding}px`,
-        width: `${this.scene?.width || 0}px`,
-        height: `${this.scene?.height || 0}px`,
-      };
-    },
-  },
+  computed: sceneCanvasComputed,
   watch: {
     "scene.id"() {
+      this.cancelTokenAreaSelection();
+      this.movementModeTokenId = null;
       this.backgroundFailed = false;
       this.hasFitted = false;
       nextTick(this.fit);
@@ -124,8 +325,16 @@ export default {
     "scene.backgroundUrl"() {
       this.backgroundFailed = false;
     },
+    activeTool(value) {
+      if (value !== "tokens") this.cancelTokenAreaSelection();
+      if (!["select", "tokens"].includes(value))
+        this.movementModeTokenId = null;
+    },
+    selectedTokenId: "clearInvalidMovementMode",
+    selectedTokenIds: { deep: true, handler: "clearInvalidMovementMode" },
   },
   mounted() {
+    window.addEventListener("dragend", this.clearDropPreview);
     if (typeof ResizeObserver !== "undefined") {
       this.resizeObserver = new ResizeObserver(([entry]) => {
         this.resizeViewport(entry.contentRect.width, entry.contentRect.height);
@@ -135,119 +344,30 @@ export default {
     nextTick(this.fit);
   },
   beforeUnmount() {
+    this.cancelTokenAreaSelection();
+    window.removeEventListener("dragend", this.clearDropPreview);
     this.resizeObserver?.disconnect();
   },
   methods: {
-    emitCamera() {
-      this.$emit("camera-change", {
-        zoomPercent: Math.round(this.camera.scale * 100),
-      });
+    ...sceneCanvasCameraMethods,
+    ...sceneCanvasDropMethods,
+    ...tokenAreaSelectionMethods,
+    applyTokenVisionPreview(preview) {
+      this.tokenVisionPreviews = preview?.positions || {};
     },
-    resizeViewport(width, height) {
-      if (!this.hasFitted) {
-        this.viewportSize = { width, height };
-        nextTick(this.fit);
-        return;
-      }
-      this.camera.x += (width - this.viewportSize.width) / 2;
-      this.camera.y += (height - this.viewportSize.height) / 2;
-      this.viewportSize = { width, height };
-      this.emitCamera();
+    applyTokenVisionAnglePreview(preview) {
+      if (!preview) return;
+      const next = { ...this.tokenVisionAnglePreviews };
+      if (preview.changes) next[preview.tokenId] = preview.changes;
+      else delete next[preview.tokenId];
+      this.tokenVisionAnglePreviews = next;
     },
-    fit() {
-      if (!this.scene || !this.$refs.viewport) return;
-      const { clientWidth, clientHeight } = this.$refs.viewport;
-      const { width, height } = this.mapDimensions;
-      const scale = clamp(
-        Math.min(
-          Math.max(1, clientWidth - 48) / width,
-          Math.max(1, clientHeight - 48) / height,
-        ),
-        0.05,
-        2,
-      );
-      this.camera = {
-        scale,
-        x: (clientWidth - width * scale) / 2,
-        y: (clientHeight - height * scale) / 2,
-      };
-      this.viewportSize = { width: clientWidth, height: clientHeight };
-      this.hasFitted = true;
-      this.emitCamera();
+    toggleMovementMode(tokenId) {
+      this.movementModeTokenId =
+        String(this.movementModeTokenId) === String(tokenId) ? null : tokenId;
     },
-    zoomBy(factor, origin) {
-      if (!this.scene || !this.$refs.viewport) return;
-      const rect = this.$refs.viewport.getBoundingClientRect();
-      const point = origin || {
-        x: rect.width / 2,
-        y: rect.height / 2,
-      };
-      const nextScale = clamp(this.camera.scale * factor, 0.05, 4);
-      const mapX = (point.x - this.camera.x) / this.camera.scale;
-      const mapY = (point.y - this.camera.y) / this.camera.scale;
-      this.camera = {
-        scale: nextScale,
-        x: point.x - mapX * nextScale,
-        y: point.y - mapY * nextScale,
-      };
-      this.emitCamera();
-    },
-    onWheel(event) {
-      const rect = this.$refs.viewport.getBoundingClientRect();
-      this.zoomBy(event.deltaY < 0 ? 1.12 : 1 / 1.12, {
-        x: event.clientX - rect.left,
-        y: event.clientY - rect.top,
-      });
-    },
-    onKeydown(event) {
-      if (!this.scene) return;
-      const pan = {
-        ArrowLeft: [40, 0],
-        ArrowRight: [-40, 0],
-        ArrowUp: [0, 40],
-        ArrowDown: [0, -40],
-      }[event.key];
-      if (pan) {
-        event.preventDefault();
-        this.camera.x += pan[0];
-        this.camera.y += pan[1];
-        this.emitCamera();
-        return;
-      }
-      if (["+", "="].includes(event.key)) {
-        event.preventDefault();
-        this.zoomBy(1.2);
-      } else if (["-", "_"].includes(event.key)) {
-        event.preventDefault();
-        this.zoomBy(1 / 1.2);
-      } else if (event.key === "0" || event.key === "Home") {
-        event.preventDefault();
-        this.fit();
-      }
-    },
-    startPan(event) {
-      if (!this.scene || ![0, 1].includes(event.button)) return;
-      this.dragging = true;
-      this.pointer = {
-        id: event.pointerId,
-        x: event.clientX,
-        y: event.clientY,
-        cameraX: this.camera.x,
-        cameraY: this.camera.y,
-      };
-      event.currentTarget.setPointerCapture?.(event.pointerId);
-    },
-    movePan(event) {
-      if (!this.dragging || this.pointer?.id !== event.pointerId) return;
-      this.camera.x = this.pointer.cameraX + event.clientX - this.pointer.x;
-      this.camera.y = this.pointer.cameraY + event.clientY - this.pointer.y;
-    },
-    endPan(event) {
-      if (this.pointer?.id !== event.pointerId) return;
-      this.dragging = false;
-      this.pointer = null;
-      event.currentTarget.releasePointerCapture?.(event.pointerId);
-      this.emitCamera();
+    clearInvalidMovementMode() {
+      if (this.activeMovementTokenId === null) this.movementModeTokenId = null;
     },
   },
 };

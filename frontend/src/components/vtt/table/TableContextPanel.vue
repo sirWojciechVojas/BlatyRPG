@@ -4,8 +4,16 @@
       <p class="table-context-panel__intro">
         {{ $t("vtt.table.graphics.description") }}
       </p>
+      <small v-if="canManage" class="table-context-panel__hint">
+        {{ $t("vtt.table.graphics.dragHint") }}
+      </small>
       <div v-if="graphics.length" class="table-context-panel__gallery">
-        <figure v-for="asset in graphics" :key="asset.key">
+        <figure
+          v-for="asset in graphics"
+          :key="asset.key"
+          :draggable="canManage"
+          @dragstart="startAssetDrag($event, asset)"
+        >
           <img :src="asset.url" :alt="asset.label" loading="lazy" />
           <figcaption>{{ asset.label }}</figcaption>
         </figure>
@@ -131,6 +139,8 @@
 </template>
 
 <script>
+import { writeTileAssetDrag } from "@/lib/vtt/tileDrop";
+
 export default {
   name: "TableContextPanel",
   props: {
@@ -168,6 +178,9 @@ export default {
     },
   },
   methods: {
+    startAssetDrag(event, asset) {
+      if (this.canManage) writeTileAssetDrag(event.dataTransfer, asset);
+    },
     campaignRoute(name) {
       return { name, params: { campaignId: this.campaign.id } };
     },

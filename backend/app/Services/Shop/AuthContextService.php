@@ -2,12 +2,24 @@
 
 namespace App\Services\Shop;
 
+use App\Services\Auth\AuthSessionService;
 use App\Services\Auth\AuthContextService as BaseAuthContextService;
+use App\Services\Campaign\CampaignException;
+use App\Services\Campaign\CampaignGuardService;
 use CodeIgniter\HTTP\RequestInterface;
 
 /** Shop compatibility adapter for development-only character selectors. */
 class AuthContextService extends BaseAuthContextService
 {
+    private $campaignGuard;
+
+    public function __construct(
+        ?AuthSessionService $sessions = null,
+        ?CampaignGuardService $campaignGuard = null
+    ) {
+        parent::__construct($sessions);
+        $this->campaignGuard = $campaignGuard ?: new CampaignGuardService();
+    }
 
     public function resolveFromRequest(RequestInterface $request): array
     {
@@ -20,28 +32,35 @@ class AuthContextService extends BaseAuthContextService
         $auth['character_view'] = strtolower(trim(
             $request->getHeaderLine('X-Shop-View-Mode')
         )) === 'character';
-        if (!$this->isDevelopmentSelectorEnabled()) {
-            return $auth;
+        if ($this->isDevelopmentSelectorEnabled()) {
+            $development = $this->developmentContext($request, $auth);
+            if ($development !== null) {
+                return $development;
+            }
         }
+        return $this->campaignContext($request, $auth);
+    }
 
+    private function developmentContext(RequestInterface $request, array $auth): ?array
+    {
         $mode = strtolower(trim($request->getHeaderLine('X-Shop-Access-Mode')));
         if (!in_array($mode, ['gm', 'player'], true)) {
-            return $auth;
+            return null;
         }
-
         $ownerCode = strtoupper(trim($request->getHeaderLine('X-Shop-Owner-Code')));
+        if ($mode === 'player' && !preg_match('/^[A-Z0-9_-]{1,64}$/', $ownerCode)) {
+            return null;
+        }
         $characterId = filter_var(
             $request->getHeaderLine('X-Shop-Character-Id'),
             FILTER_VALIDATE_INT,
             ['options' => ['min_range' => 1]]
         );
-        if ($mode === 'player' && !preg_match('/^[A-Z0-9_-]{1,64}$/', $ownerCode)) {
-            return $auth;
-        }
-
         return [
             'user_id' => null,
-            'role' => $mode === 'gm' ? 'gm' : 'user',
+            'role' => 'user',
+            'campaign_role' => $mode,
+            'is_campaign_manager' => $mode === 'gm',
             'token' => $auth['token'] ?? null,
             'anonymous' => true,
             'development_access' => true,
@@ -50,6 +69,36 @@ class AuthContextService extends BaseAuthContextService
             'selected_owner_codes' => $ownerCode ? [$ownerCode] : [],
             'character_id' => $characterId !== false ? (int) $characterId : null,
         ];
+    }
+
+    private function campaignContext(RequestInterface $request, array $auth): array
+    {
+        $campaignId = $this->campaignId($request);
+        if ($campaignId === null || !empty($auth['anonymous'])) {
+            return $auth;
+        }
+        try {
+            $context = $this->campaignGuard->context($auth, $campaignId);
+        } catch (CampaignException $exception) {
+            return $auth + ['campaign_authorized' => false];
+        }
+        return $auth + [
+            'campaign_authorized' => true,
+            'global_role' => $context['globalRole'],
+            'campaign_role' => $context['campaignRole'],
+            'is_admin' => $context['isAdmin'],
+            'is_campaign_manager' => !empty($context['capabilities']['canManage']),
+        ];
+    }
+
+    private function campaignId(RequestInterface $request): ?int
+    {
+        $path = (string) $request->getServer('REQUEST_URI');
+        if ($path === '') {
+            $path = $request->getUri()->getPath();
+        }
+        return preg_match('#/api/shop/campaigns/([1-9][0-9]*)(?:/|$)#', $path, $match)
+            ? (int) $match[1] : null;
     }
 
     public function isDevelopmentSelectorEnabled(): bool

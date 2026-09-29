@@ -1,76 +1,116 @@
 <template>
   <div class="admin-page">
     <header class="admin-header">
-      <div>
-        <p>{{ $t("admin.eyebrow") }}</p>
-        <h1>{{ $t("admin.title") }}</h1>
-        <span>{{ $t("admin.subtitle") }}</span>
+      <div class="admin-heading">
+        <span class="admin-mark"><AdminIcon name="shield" /></span>
+        <div>
+          <p>{{ $t("admin.eyebrow") }}</p>
+          <h1>{{ $t("admin.title") }}</h1>
+        </div>
       </div>
-      <router-link class="admin-secondary" :to="{ name: 'home' }">
-        {{ $t("admin.actions.back") }}
-      </router-link>
+      <div class="admin-header__actions">
+        <span v-if="system.generatedAt" class="admin-sync">
+          {{ $t("admin.system.updated") }} {{ formatTime(system.generatedAt) }}
+        </span>
+        <button
+          class="admin-icon-button"
+          type="button"
+          :title="$t('admin.actions.refresh')"
+          @click="load"
+        >
+          <AdminIcon name="refresh" />
+        </button>
+        <router-link class="admin-secondary" :to="{ name: 'home' }">{{
+          $t("admin.actions.back")
+        }}</router-link>
+      </div>
     </header>
 
-    <main class="admin-main">
-      <p v-if="error" class="admin-alert error" role="alert">
-        {{ error }}
-        <button type="button" @click="load">
-          {{ $t("admin.actions.retry") }}
+    <div class="admin-shell">
+      <aside
+        class="admin-tabs nav flex-column align-items-stretch gap-1 p-1"
+        :aria-label="$t('admin.tabs.label')"
+      >
+        <button
+          v-for="tab in tabs"
+          :key="tab.id"
+          type="button"
+          class="nav-link text-start"
+          :class="{ active: activeTab === tab.id }"
+          :aria-current="activeTab === tab.id ? 'page' : undefined"
+          @click="activeTab = tab.id"
+        >
+          <span aria-hidden="true"><AdminIcon :name="tab.icon" /></span>
+          <strong>{{ tab.label }}</strong>
+          <small v-if="tab.count !== null">{{ tab.count }}</small>
         </button>
-      </p>
-      <section class="admin-metrics" :aria-label="$t('admin.metrics.title')">
-        <article v-for="metric in metricCards" :key="metric.label">
-          <strong>{{ metric.value }}</strong
-          ><span>{{ metric.label }}</span>
-        </article>
-      </section>
+      </aside>
 
-      <div v-if="loading" class="admin-loading" aria-live="polite">
-        {{ $t("admin.loading") }}
-      </div>
-      <template v-else>
-        <section class="admin-panel">
-          <div class="admin-section-heading">
-            <div>
-              <h2>{{ $t("admin.users.title") }}</h2>
-              <p>{{ $t("admin.users.description") }}</p>
-            </div>
-            <button class="admin-secondary" type="button" @click="load">
-              {{ $t("admin.actions.refresh") }}
-            </button>
-          </div>
-          <AdminUserTable
+      <main
+        class="admin-main"
+        :class="{ 'ps-0': activeTab === 'users' || activeTab === 'characters' }"
+      >
+        <p v-if="error" class="admin-alert error" role="alert">
+          {{ error }}
+          <button type="button" @click="load">
+            {{ $t("admin.actions.retry") }}
+          </button>
+        </p>
+        <div v-if="loading" class="admin-loading" aria-live="polite">
+          <i></i>{{ $t("admin.loading") }}
+        </div>
+        <template v-else>
+          <AdminOverviewTab
+            v-if="activeTab === 'overview'"
+            :metrics="metrics"
+            :analytics="analytics"
+            @navigate="activeTab = $event"
+          />
+          <AdminUsersTab
+            v-else-if="activeTab === 'users'"
+            ref="usersTab"
             :users="users"
             :current-user-id="currentUserId"
             :busy-user-id="busyUserId"
+            :creating="creating"
+            :create-error="createError"
+            :create-field-errors="createFieldErrors"
+            :role-error="roleError"
+            @create="createUser"
+            @field-change="clearCreateFieldError"
             @role-change="changeRole"
           />
-          <p v-if="roleError" class="admin-alert error" role="alert">
-            {{ roleError }}
-          </p>
-        </section>
-
-        <AdminUserCreateForm
-          ref="createForm"
-          class="admin-panel"
-          :busy="creating"
-          :error="createError"
-          @submit="createUser"
-        />
-
-        <section class="admin-panel">
-          <div class="admin-section-heading">
-            <div>
-              <h2>{{ $t("admin.campaigns.title") }}</h2>
-              <p>{{ $t("admin.campaigns.description") }}</p>
-            </div>
-          </div>
-          <AdminCampaignTable :campaigns="campaigns" />
-        </section>
-      </template>
-    </main>
+          <AdminCampaignsTab
+            v-else-if="activeTab === 'campaigns'"
+            :campaigns="campaigns"
+            :analytics="analytics"
+          />
+          <AdminCharactersTab
+            v-else-if="activeTab === 'characters'"
+            :characters="characters"
+            :campaigns="campaigns"
+            :character-campaigns="characterCampaigns"
+            :character-owners="characterOwners"
+            :game-masters="characterGameMasters"
+            :busy-key="busyAssignmentKey"
+            :error="characterError"
+            @campaign-change="setCharacterCampaign"
+            @owner-change="setCharacterOwner"
+          />
+          <AdminActivityTab
+            v-else-if="activeTab === 'activity'"
+            :activity="activity"
+            :analytics="analytics"
+          />
+          <AdminSystemTab v-else :system="system" />
+        </template>
+      </main>
+    </div>
   </div>
 </template>
 
 <script src="./options/AdminView.options.js"></script>
 <style src="./styles/AdminView.css"></style>
+<style src="./styles/AdminTables.css"></style>
+<style src="./styles/AdminOperations.css"></style>
+<style src="./styles/AdminCharacters.css"></style>

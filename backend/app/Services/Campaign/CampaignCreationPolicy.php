@@ -2,6 +2,8 @@
 
 namespace App\Services\Campaign;
 
+use App\Services\Auth\UserRole;
+
 final class CampaignCreationPolicy
 {
     public function allows(array $auth): bool
@@ -10,10 +12,6 @@ final class CampaignCreationPolicy
             return false;
         }
 
-        return in_array(
-            strtolower((string) ($auth['role'] ?? '')),
-            ['player', 'gm', 'admin'],
-            true
-        );
+        return UserRole::isSupported($auth['role'] ?? '');
     }
 }

@@ -1,132 +1,83 @@
 <template>
-  <main class="auth-page">
-    <section class="auth-panel">
-      <h1>{{ $t("auth.profile.title") }}</h1>
-      <form @submit.prevent="saveProfile">
-        <label>
-          <span>{{ $t("auth.fields.username") }}</span>
-          <input
-            v-model.trim="profile.username"
-            required
-            minlength="3"
-            maxlength="100"
+  <main class="user-panel-page" :style="styleVars">
+    <section class="user-panel-shell">
+      <header class="user-panel-header">
+        <span class="user-panel-avatar" aria-hidden="true">
+          <img
+            v-if="avatarVisible"
+            :src="user.avatarUrl"
+            alt=""
+            @error="avatarVisible = false"
           />
-        </label>
-        <label>
-          <span>{{ $t("auth.fields.email") }}</span>
-          <input
-            v-model.trim="profile.email"
-            type="email"
-            required
-            maxlength="255"
-          />
-        </label>
-        <label>
-          <span>{{ $t("auth.fields.avatar") }}</span>
-          <input v-model.trim="profile.avatarUrl" type="text" maxlength="255" />
-        </label>
-        <button type="submit" :disabled="busy">
-          {{ $t("auth.actions.saveProfile") }}
+          <span v-else>{{ initials }}</span>
+        </span>
+        <div>
+          <p>{{ $t("auth.userPanel.eyebrow") }}</p>
+          <h1>{{ displayName }}</h1>
+          <span>{{ user.email }} · {{ roleLabel }}</span>
+        </div>
+        <router-link class="user-panel-return" :to="{ name: 'tables' }">
+          {{ $t("auth.userPanel.backToTables") }}
+        </router-link>
+      </header>
+
+      <nav
+        class="user-panel-tabs"
+        role="tablist"
+        :aria-label="$t('auth.userPanel.title')"
+      >
+        <button
+          v-for="tab in tabs"
+          :key="tab.id"
+          type="button"
+          role="tab"
+          :aria-selected="activeTab === tab.id"
+          @click="selectTab(tab.id)"
+        >
+          <span aria-hidden="true">{{ tab.icon }}</span
+          >{{ $t(tab.label) }}
         </button>
-      </form>
-      <h2>{{ $t("auth.password.title") }}</h2>
-      <form @submit.prevent="changePassword">
-        <label>
-          <span>{{ $t("auth.fields.currentPassword") }}</span>
-          <input
-            v-model="password.currentPassword"
-            type="password"
-            autocomplete="current-password"
-            required
-          />
-        </label>
-        <label>
-          <span>{{ $t("auth.fields.newPassword") }}</span>
-          <input
-            v-model="password.newPassword"
-            type="password"
-            autocomplete="new-password"
-            minlength="12"
-            required
-          />
-        </label>
-        <label>
-          <span>{{ $t("auth.fields.confirmPassword") }}</span>
-          <input
-            v-model="password.confirmPassword"
-            type="password"
-            autocomplete="new-password"
-            minlength="12"
-            required
-          />
-        </label>
-        <button type="submit" :disabled="busy">
-          {{ $t("auth.actions.changePassword") }}
-        </button>
-      </form>
-      <p v-if="error" class="auth-error" role="alert">{{ error }}</p>
-      <p v-if="notice" role="status">{{ notice }}</p>
+      </nav>
+
+      <p
+        v-if="error"
+        class="user-panel-alert user-panel-alert--error"
+        role="alert"
+      >
+        {{ error }}
+      </p>
+      <p v-if="notice" class="user-panel-alert" role="status">{{ notice }}</p>
+
+      <UserOverviewTab
+        v-if="activeTab === 'overview'"
+        :campaigns="campaigns"
+        :invitations="invitations"
+        :sessions="sessions"
+        :loading="loading"
+      />
+      <UserProfileForm
+        v-else-if="activeTab === 'profile'"
+        :user="user"
+        :busy="busy === 'profile'"
+        @save="saveProfile"
+      />
+      <UserSecurityPanel
+        v-else-if="activeTab === 'security'"
+        :sessions="sessions"
+        :busy="busy"
+        @change-password="changePassword"
+        @revoke-session="revokeSession"
+        @revoke-others="revokeOtherSessions"
+      />
+      <UserPreferencesPanel
+        v-else
+        :locales="locales"
+        :current-locale="currentLocale"
+        @change-locale="changeLocale"
+      />
     </section>
   </main>
 </template>
 
-<script>
-import { authApiClient } from "@/lib/auth/authApiClient";
-import { authErrorKey } from "@/lib/auth/authErrors";
-import { authSession } from "@/lib/auth/authSession";
-
-export default {
-  name: "ProfileView",
-  data: () => ({
-    profile: { username: "", email: "", avatarUrl: "" },
-    password: { currentPassword: "", newPassword: "", confirmPassword: "" },
-    busy: false,
-    error: "",
-    notice: "",
-  }),
-  mounted() {
-    const user = authSession.read()?.user;
-    if (!user) return this.$router.replace({ name: "home" });
-    this.profile = { ...this.profile, ...user };
-  },
-  methods: {
-    async perform(operation, successKey) {
-      this.busy = true;
-      this.error = "";
-      this.notice = "";
-      try {
-        await operation();
-        this.notice = this.$t(successKey);
-      } catch (error) {
-        this.error = this.$t(authErrorKey(error));
-      } finally {
-        this.busy = false;
-      }
-    },
-    saveProfile() {
-      return this.perform(async () => {
-        const user = await authApiClient.updateProfile(this.profile);
-        authSession.updateUser(user);
-        this.profile = { ...this.profile, ...user };
-      }, "auth.profile.saved");
-    },
-    changePassword() {
-      if (this.password.newPassword !== this.password.confirmPassword) {
-        this.error = this.$t("auth.errors.passwordMismatch");
-        return;
-      }
-      return this.perform(async () => {
-        const result = await authApiClient.changePassword(this.password);
-        authSession.save(result);
-        this.password = {
-          currentPassword: "",
-          newPassword: "",
-          confirmPassword: "",
-        };
-      }, "auth.password.changed");
-    },
-  },
-};
-</script>
-
-<style src="./styles/AuthViews.css" />
+<script src="./options/ProfileView.options.js" />
+<style src="./styles/UserPanel.css" />

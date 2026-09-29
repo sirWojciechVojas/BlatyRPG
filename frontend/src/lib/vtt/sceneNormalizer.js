@@ -24,6 +24,18 @@ export const normalizeCapabilities = (value = {}) => ({
 export const normalizeScene = (source) => {
   if (!source || typeof source !== "object") return null;
   const gridType = String(read(source, "grid_type", "gridType") || "square");
+  const legacyDarkness = numberOr(
+    read(source, "darkness_level", "darknessLevel"),
+    0.2,
+  );
+  const legacyGlobal =
+    read(source, "global_illumination", "globalIllumination") === true ||
+    read(source, "global_illumination", "globalIllumination") === 1 ||
+    read(source, "global_illumination", "globalIllumination") === "1";
+  const globalLightLevel = numberOr(
+    read(source, "global_light_level", "globalLightLevel"),
+    1 - legacyDarkness * (legacyGlobal ? 0.18 : 1),
+  );
   return {
     id: idOrNull(source.id),
     campaignId: idOrNull(read(source, "campaign_id", "campaignId")),
@@ -46,6 +58,47 @@ export const normalizeScene = (source) => {
     backgroundColor: String(
       read(source, "background_color", "backgroundColor") || "#20242b",
     ),
+    globalLightLevel: Math.min(1, Math.max(0, globalLightLevel)),
+    darknessLevel: 1 - Math.min(1, Math.max(0, globalLightLevel)),
+    globalIllumination: legacyGlobal,
+    fogExploration:
+      read(source, "fog_exploration", "fogExploration") !== false &&
+      read(source, "fog_exploration", "fogExploration") !== 0 &&
+      read(source, "fog_exploration", "fogExploration") !== "0",
+    fogEnabled:
+      read(source, "fog_enabled", "fogEnabled") === true ||
+      read(source, "fog_enabled", "fogEnabled") === 1 ||
+      read(source, "fog_enabled", "fogEnabled") === "1",
+    dynamicVision:
+      read(source, "dynamic_vision", "dynamicVision") !== false &&
+      read(source, "dynamic_vision", "dynamicVision") !== 0 &&
+      read(source, "dynamic_vision", "dynamicVision") !== "0",
+    explorationMemory:
+      read(source, "exploration_memory", "explorationMemory") !== false &&
+      read(source, "exploration_memory", "explorationMemory") !== 0 &&
+      read(source, "exploration_memory", "explorationMemory") !== "0",
+    fogUnexploredColor: String(
+      read(source, "fog_unexplored_color", "fogUnexploredColor") || "#05070B",
+    ),
+    fogUnexploredOpacity: numberOr(
+      read(source, "fog_unexplored_opacity", "fogUnexploredOpacity"),
+      1,
+    ),
+    fogExploredOpacity: numberOr(
+      read(source, "fog_explored_opacity", "fogExploredOpacity"),
+      0.62,
+    ),
+    fogEdgeSoftness: (() => {
+      const softness = numberOr(
+        read(source, "fog_edge_softness", "fogEdgeSoftness"),
+        32,
+      );
+      return softness <= 0 ? 0 : Math.min(50, Math.max(20, softness));
+    })(),
+    fogUpdateDuringDrag:
+      read(source, "fog_update_during_drag", "fogUpdateDuringDrag") !== false &&
+      read(source, "fog_update_during_drag", "fogUpdateDuringDrag") !== 0 &&
+      read(source, "fog_update_during_drag", "fogUpdateDuringDrag") !== "0",
     isVisible: read(source, "is_visible", "isVisible") !== false,
     sortOrder: numberOr(read(source, "sort_order", "sortOrder"), 0),
     revision: numberOr(source.revision, 0),
@@ -78,9 +131,31 @@ const WRITE_FIELDS = [
   ["gridColor", "grid_color"],
   ["gridOpacity", "grid_opacity"],
   ["backgroundColor", "background_color"],
+  ["globalLightLevel", "global_light_level"],
+  ["fogExploration", "fog_exploration"],
+  ["fogEnabled", "fog_enabled"],
+  ["dynamicVision", "dynamic_vision"],
+  ["explorationMemory", "exploration_memory"],
+  ["fogUnexploredColor", "fog_unexplored_color"],
+  ["fogUnexploredOpacity", "fog_unexplored_opacity"],
+  ["fogExploredOpacity", "fog_explored_opacity"],
+  ["fogEdgeSoftness", "fog_edge_softness"],
+  ["fogUpdateDuringDrag", "fog_update_during_drag"],
   ["isVisible", "is_visible"],
   ["sortOrder", "sort_order"],
 ];
+
+export const cloneSceneDraft = (source = {}, name = "") => {
+  const draft = {};
+  for (const [field] of WRITE_FIELDS) {
+    if (Object.prototype.hasOwnProperty.call(source, field)) {
+      draft[field] = source[field];
+    }
+  }
+  draft.name = String(name || source.name || "").trim();
+  draft.sortOrder = numberOr(source.sortOrder, 0) + 1;
+  return draft;
+};
 
 export const toSceneWritePayload = (source = {}, includeRevision = false) => {
   const payload = {};
