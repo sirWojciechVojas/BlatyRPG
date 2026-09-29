@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, nextTick } from "vue";
+import { onBeforeUnmount, onMounted, nextTick, ref } from "vue";
 import { createDiceRoller } from "../../../lib/dice-roller/index.js";
 import DiceRollerSettingsPanel from "../DiceRollerSettingsPanel.vue";
 
@@ -15,6 +15,14 @@ export default {
     themeId: {
       type: String,
       default: "blue-felt",
+    },
+    embedded: {
+      type: Boolean,
+      default: false,
+    },
+    showAdvancedControls: {
+      type: Boolean,
+      default: true,
     },
     autoStart: {
       type: Boolean,
@@ -81,9 +89,12 @@ export default {
       ],
     },
   },
-  emits: ["ready", "error"],
-  setup(props, { emit }) {
+  emits: ["ready", "error", "roll-complete"],
+  setup(props, { emit, expose }) {
     let diceRoller = null;
+    let pendingAction = null;
+    let resizeObserver = null;
+    const root = ref(null);
     const originalBodyStyles = {
       backgroundColor: document.body.style.backgroundColor,
       color: document.body.style.color,
@@ -134,14 +145,16 @@ export default {
     const startDiceRoller = async () => {
       try {
         await nextTick();
-        document.body.style.overflow = "hidden";
-        document.body.style.margin = "0";
-        document.body.style.width = "100%";
-        document.body.style.height = "100%";
-        document.documentElement.style.overflow = "hidden";
-        document.documentElement.style.margin = "0";
-        document.documentElement.style.width = "100%";
-        document.documentElement.style.height = "100%";
+        if (!props.embedded) {
+          document.body.style.overflow = "hidden";
+          document.body.style.margin = "0";
+          document.body.style.width = "100%";
+          document.body.style.height = "100%";
+          document.documentElement.style.overflow = "hidden";
+          document.documentElement.style.margin = "0";
+          document.documentElement.style.width = "100%";
+          document.documentElement.style.height = "100%";
+        }
         const fallbackScale =
           typeof props.diceScale === "number" &&
           Number.isFinite(props.diceScale)
@@ -160,6 +173,8 @@ export default {
         diceRoller = await createDiceRoller({
           assetBaseUrl: props.assetBaseUrl,
           themeId: props.themeId,
+          embedded: props.embedded,
+          loadStyles: !props.embedded,
           autoStart: props.autoStart,
           chatEnabled: props.chatEnabled,
           rngSeed: props.rngSeed,
@@ -171,17 +186,54 @@ export default {
           diceBoxDimensions: props.diceBoxDimensions,
           diceSelectorDimensions: props.diceSelectorDimensions,
           diceDisplayList: props.diceDisplayList,
+          onRollComplete: (result) => emit("roll-complete", result),
           onError: (error) => emit("error", error),
         });
+        if (props.embedded && root.value && "ResizeObserver" in window) {
+          resizeObserver = new ResizeObserver(() => diceRoller?.resize?.());
+          resizeObserver.observe(root.value);
+        }
         emit("ready", diceRoller);
+        if (pendingAction?.type === "roll") {
+          diceRoller.roll(pendingAction.notation);
+        } else if (pendingAction?.type === "selector") {
+          diceRoller.showSelector();
+        }
+        pendingAction = null;
       } catch (error) {
         emit("error", error);
       }
     };
 
+    const roll = (notation) => {
+      if (!diceRoller) {
+        pendingAction = { type: "roll", notation };
+        return true;
+      }
+      return diceRoller.roll(notation);
+    };
+
+    const showSelector = () => {
+      if (!diceRoller) {
+        pendingAction = { type: "selector" };
+        return true;
+      }
+      return diceRoller.showSelector();
+    };
+
+    const clear = () => {
+      pendingAction = null;
+      return diceRoller?.clear?.() ?? false;
+    };
+
+    const resize = () => diceRoller?.resize?.();
+
+    expose({ roll, showSelector, clear, resize });
+
     onMounted(startDiceRoller);
 
     onBeforeUnmount(() => {
+      resizeObserver?.disconnect();
       if (diceRoller?.destroy) {
         diceRoller.destroy();
       } else if (diceRoller?.close_socket) {
@@ -190,9 +242,9 @@ export default {
       if (diceRoller?.DiceRoom?.DiceBox) {
         diceRoller.DiceRoom.DiceBox.running = false;
       }
-      removeDiceRollerStyles();
+      if (!props.embedded) removeDiceRollerStyles();
     });
 
-    return {};
+    return { root };
   },
 };
