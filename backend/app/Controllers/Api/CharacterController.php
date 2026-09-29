@@ -136,12 +136,15 @@ class CharacterController extends BaseController
     public function createAssetSet()
     {
         return $this->execute(function (): array {
-            $this->characters->assertAssetSetManager($this->auth(), $this->campaignId(true));
+            $auth = $this->auth();
+            $this->characters->assertAssetSetManager($auth, $this->campaignId(true));
             $input = $this->jsonPayload();
             try {
                 $set = $this->assets->createAvailableSet(
                     (string) ($input['name'] ?? ''),
-                    (array) ($input['publicIds'] ?? $input['public_ids'] ?? [])
+                    (array) ($input['publicIds'] ?? $input['public_ids'] ?? []),
+                    (array) ($input['mediaAssetIds'] ?? $input['media_asset_ids'] ?? []),
+                    $auth
                 );
             } catch (\InvalidArgumentException $exception) {
                 throw new CharacterException(
