@@ -217,7 +217,7 @@ final class ShopBootstrapContextBuilder
     {
         $ownerCode = strtoupper((string) ($claim['owner_code'] ?? $fallbackOwnerCode));
         $avatarAsset = (array) ($character['assets']['avatar'] ?? []);
-        $avatar = (string) ($avatarAsset['publicId'] ?? $character['avatar'] ?? $character['avatar_url'] ?? '');
+        $avatar = (string) ($avatarAsset['url'] ?? $character['avatar'] ?? $character['avatar_url'] ?? '');
         return [
             'id' => (int) $character['id'],
             'characterId' => (int) $character['id'],
