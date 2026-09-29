@@ -20,6 +20,25 @@ test("validates compact fog synchronization envelopes", () => {
       revision: 3,
     },
   );
+  assert.deepEqual(
+    parseAuthenticatedMessage({
+      v: 1,
+      type: "fog.sync",
+      requestId: "fog-shared",
+      sceneId: 4,
+      userId: 8,
+      revision: 4,
+      shared: true,
+    }),
+    {
+      type: "fog.sync",
+      requestId: "fog-shared",
+      sceneId: 4,
+      userId: 8,
+      revision: 4,
+      shared: true,
+    },
+  );
   assert.throws(
     () =>
       parseAuthenticatedMessage({

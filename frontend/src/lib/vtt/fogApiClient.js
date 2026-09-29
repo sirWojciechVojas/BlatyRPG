@@ -21,6 +21,9 @@ export const normalizeFog = (value = {}) => ({
     : [],
   revision: Number(value.revision) || 0,
   changed: value.changed === true,
+  resetAll: value.resetAll === true,
+  shared: value.shared === true,
+  explorationMode: String(value.explorationMode || "individual"),
   capabilities: value.capabilities || { canManage: false },
 });
 
@@ -40,6 +43,14 @@ export const createFogApiClient = (client = jsonApiClient) => {
         await client.request(path(campaignId, sceneId), {
           method: "PATCH",
           body: changes,
+        }),
+      );
+    },
+    async reset(campaignId, sceneId) {
+      return normalizeFog(
+        await client.request(`${path(campaignId, sceneId)}/reset`, {
+          method: "POST",
+          body: {},
         }),
       );
     },

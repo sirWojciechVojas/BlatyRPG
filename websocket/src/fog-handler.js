@@ -3,7 +3,11 @@ import { createServerEvent, sendEvent } from "./protocol.js";
 export const createFogHandler = ({ rooms }) => ({
   handle(session, request) {
     const manager = session.capabilities?.canManage === true;
-    if (Number(request.userId) !== Number(session.userId) && !manager) {
+    if (
+      Number(request.userId) !== Number(session.userId) &&
+      !manager &&
+      request.shared !== true
+    ) {
       sendEvent(
         session.ws,
         createServerEvent({
@@ -41,6 +45,7 @@ export const createFogHandler = ({ rooms }) => ({
     });
     for (const recipient of rooms.sessions(session.campaignId)) {
       const allowed =
+        request.shared === true ||
         Number(recipient.userId) === Number(request.userId) ||
         recipient.capabilities?.canManage === true;
       sendEvent(recipient.ws, allowed ? event : marker);

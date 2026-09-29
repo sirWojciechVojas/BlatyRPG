@@ -11,6 +11,8 @@ final class LightPayloadValidator
         'sourceType', 'providesVision', 'constrainedByWalls', 'animation',
         'animationSpeed', 'animationIntensity', 'elevation', 'enabled', 'hidden',
         'name', 'lumens', 'direction', 'angle', 'areaWidth', 'areaHeight',
+        'animationReverse', 'brightness', 'saturation', 'contrast',
+        'edgeSoftness', 'transitionRatio', 'assetUrl',
     ];
 
     public function create(array $payload): array
@@ -72,6 +74,18 @@ final class LightPayloadValidator
                 $this->number($payload[$field], $db, 0, 1, $data, $errors, $field);
             }
         }
+        foreach (['brightness' => 'brightness', 'saturation' => 'saturation',
+            'contrast' => 'contrast'] as $field => $db) {
+            if (array_key_exists($field, $payload)) {
+                $this->number($payload[$field], $db, 0, 2, $data, $errors, $field);
+            }
+        }
+        foreach (['edgeSoftness' => 'edge_softness',
+            'transitionRatio' => 'transition_ratio'] as $field => $db) {
+            if (array_key_exists($field, $payload)) {
+                $this->number($payload[$field], $db, 0, 1, $data, $errors, $field);
+            }
+        }
         if (array_key_exists('animationSpeed', $payload)) {
             $this->number($payload['animationSpeed'], 'animation_speed', 0.1, 10, $data, $errors, 'animationSpeed');
         }
@@ -90,10 +104,19 @@ final class LightPayloadValidator
                 $errors['name'] = 'Name must contain between 1 and 100 characters.';
             } else $data['name'] = $name;
         }
+        if (array_key_exists('assetUrl', $payload)) {
+            $url = trim((string) $payload['assetUrl']);
+            if ($url === '') $data['asset_url'] = null;
+            elseif (strlen($url) > 2048 || (!preg_match('#^/(?!/)#', $url)
+                && filter_var($url, FILTER_VALIDATE_URL) === false)) {
+                $errors['assetUrl'] = 'Asset URL is invalid.';
+            } else $data['asset_url'] = $url;
+        }
         foreach (['enabled' => 'enabled', 'hidden' => 'hidden',
             'gradualIllumination' => 'gradual_illumination',
             'providesVision' => 'provides_vision',
-            'constrainedByWalls' => 'constrained_by_walls'] as $field => $db) {
+            'constrainedByWalls' => 'constrained_by_walls',
+            'animationReverse' => 'animation_reverse'] as $field => $db) {
             if (!array_key_exists($field, $payload)) continue;
             $value = filter_var($payload[$field], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
             if ($value === null) $errors[$field] = 'A boolean is required.';
@@ -102,7 +125,9 @@ final class LightPayloadValidator
         foreach (['sourceType' => ['source_type', [
             'light', 'omni', 'directional', 'cone', 'area', 'darkness',
         ]],
-            'animation' => ['animation', ['none', 'flicker', 'pulse', 'vortex']]]
+            'animation' => ['animation', [
+                'none', 'torch', 'flicker', 'pulse', 'wave', 'vortex', 'fog', 'magical',
+            ]]]
             as $field => [$db, $allowedValues]) {
             if (!array_key_exists($field, $payload)) continue;
             $value = strtolower(trim((string) $payload[$field]));
@@ -120,6 +145,9 @@ final class LightPayloadValidator
                 'provides_vision' => 0, 'constrained_by_walls' => 1,
                 'animation' => 'none', 'animation_speed' => 1,
                 'animation_intensity' => 0.5, 'elevation' => 0,
+                'animation_reverse' => 0, 'brightness' => 1, 'saturation' => 1,
+                'contrast' => 1, 'edge_softness' => 0.5,
+                'transition_ratio' => 0.5, 'asset_url' => null,
                 'enabled' => 1, 'hidden' => 0,
                 'name' => 'Light', 'lumens' => 800, 'direction' => 0,
                 'angle' => 90, 'area_width' => 400, 'area_height' => 400,

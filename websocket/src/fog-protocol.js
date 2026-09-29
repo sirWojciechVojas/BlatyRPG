@@ -2,7 +2,15 @@ import { ProtocolError } from "./protocol-error.js";
 
 export const parseFogMessage = (message) => {
   if (message.type !== "fog.sync") return null;
-  const allowed = ["v", "type", "requestId", "sceneId", "userId", "revision"];
+  const allowed = [
+    "v",
+    "type",
+    "requestId",
+    "sceneId",
+    "userId",
+    "revision",
+    "shared",
+  ];
   for (const key of Object.keys(message))
     if (!allowed.includes(key)) throw new ProtocolError("unexpected_field");
   const positive = (value, code) => {
@@ -19,5 +27,6 @@ export const parseFogMessage = (message) => {
     sceneId: positive(message.sceneId, "scene_id_invalid"),
     userId: positive(message.userId, "fog_user_id_invalid"),
     revision: positive(message.revision, "fog_revision_invalid"),
+    ...(message.shared === true ? { shared: true } : {}),
   };
 };

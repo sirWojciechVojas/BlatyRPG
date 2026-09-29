@@ -35,7 +35,7 @@ class InternalRealtimeLightController extends BaseController
         try {
             $id = $this->positiveId($campaignId);
             $payload = $this->jsonPayload();
-            $operation = strtolower(trim((string) ($payload['operation'] ?? '')));
+            $operation = $this->operation($payload['operation'] ?? '');
             $this->exactKeys($payload, $operation);
             $sceneId = $this->positiveId($payload['sceneId'] ?? null);
             $auth = $this->principals->resolve(
@@ -99,6 +99,13 @@ class InternalRealtimeLightController extends BaseController
             throw new CampaignException('validation_failed', 'Light changes are required.', 422);
         }
         return $payload['changes'];
+    }
+
+    private function operation($value): string
+    {
+        $operation = strtolower(trim((string) $value));
+
+        return $operation === 'syncscene' ? 'syncScene' : $operation;
     }
 
     private function exactKeys(array $payload, string $operation): void

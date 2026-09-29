@@ -116,6 +116,32 @@ final class SceneFogService
             + ['changed' => $changed, 'mode' => $mode];
     }
 
+    public function resetAll(int $campaignId, int $sceneId, array $auth): array
+    {
+        [$scene, $caps, $userId] = $this->context($campaignId, $sceneId, $auth, null);
+        if (empty($caps['canManage'])) {
+            throw new FogException('forbidden', 'Only a game master can reset Fog of War.', 403);
+        }
+        $this->db->table('scene_fog_states')
+            ->where('campaign_id', $campaignId)
+            ->where('scene_id', $sceneId)
+            ->delete();
+        $cellSize = $this->cellSize($scene, null);
+        $state = $this->write(
+            $campaignId,
+            $sceneId,
+            $userId,
+            $cellSize,
+            [],
+            [],
+            null
+        );
+        return array_merge(
+            $this->present($state, $scene, $userId, true),
+            ['changed' => true, 'mode' => 'reset', 'resetAll' => true, 'shared' => true]
+        );
+    }
+
     private function context(int $campaignId, int $sceneId, array $auth, ?int $target): array
     {
         $access = $this->access->forCampaign($auth, $campaignId);
@@ -131,6 +157,15 @@ final class SceneFogService
         }
         if ($userId !== $current && !$this->members->where('campaign_id', $campaignId)->where('user_id', $userId)->first()) {
             throw new FogException('player_not_found', 'Player is not a member of this campaign.', 404);
+        }
+        if (($scene['fog_exploration_mode'] ?? 'individual') === 'shared') {
+            $campaign = $this->db->table('campaigns')
+                ->select('game_master_id')
+                ->where('id', $campaignId)
+                ->where('deleted_at', null)
+                ->get()->getRowArray();
+            $sharedUserId = (int) ($campaign['game_master_id'] ?? 0);
+            if ($sharedUserId > 0) $userId = $sharedUserId;
         }
         return [$scene, $access['capabilities'], $userId];
     }
@@ -169,7 +204,9 @@ final class SceneFogService
         int $maximum
     ): array {
         if (empty($scene['fog_enabled']) || empty($scene['dynamic_vision'])
-            || empty($scene['exploration_memory']) || !$incoming) return [];
+            || empty($scene['exploration_memory'])
+            || ($scene['fog_exploration_mode'] ?? 'individual') === 'none'
+            || !$incoming) return [];
         $cellCount = 0;
         foreach ($incoming as [$start, $end]) $cellCount += $end - $start + 1;
         if ($cellCount > 50000) {
@@ -254,6 +291,8 @@ final class SceneFogService
             'exploredRanges' => $this->decode($state['explored_ranges_json'] ?? null, $maximum),
             'forcedHiddenRanges' => $this->decode($state['forced_hidden_ranges_json'] ?? null, $maximum),
             'revision' => (int) ($state['revision'] ?? 0),
+            'explorationMode' => (string) ($scene['fog_exploration_mode'] ?? 'individual'),
+            'shared' => ($scene['fog_exploration_mode'] ?? 'individual') === 'shared',
             'visionTokenIds' => $visionTokenIds,
             'capabilities' => ['canManage' => $canManage],
         ];

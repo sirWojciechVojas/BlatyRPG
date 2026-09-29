@@ -36,6 +36,20 @@ describe("light visibility polygon", () => {
     expect(east.x).toBe(200);
   });
 
+  it("does not attenuate light through an opened proximity door", () => {
+    const door = {
+      ...wall,
+      type: "door",
+      doorType: "door",
+      doorState: "open",
+      restrictionType: "proximity",
+      proximityThreshold: 10,
+    };
+    const points = lightPolygonPoints(light, [door], scene);
+    const east = points.find((point) => point.y === 100 && point.x >= 100);
+    expect(east.x).toBe(200);
+  });
+
   it("uses independent light and vision restrictions and ignores disabled walls", () => {
     const sightOnly = {
       ...wall,
@@ -108,7 +122,7 @@ describe("light visibility polygon", () => {
         dimRadius: 100,
         softness: 0.5,
       }),
-    ).toEqual({ bright: 50, fade: 75 });
+    ).toEqual({ bright: 50, fade: 87.5 });
     expect(
       lightTransitionOffsets({
         brightRadius: 50,
@@ -141,5 +155,27 @@ describe("light visibility polygon", () => {
     expect(
       tokenVisionSource({ ...token, capabilities: { canControl: false } }),
     ).toBeNull();
+  });
+
+  it("aims token vision in the visual facing direction", () => {
+    const token = {
+      id: 7,
+      x: 400,
+      y: 400,
+      width: 100,
+      height: 100,
+      facing: 0,
+      vision: { enabled: true, range: 200, angle: 60 },
+      capabilities: { canControl: true },
+    };
+    const north = tokenVisionSource(token, { gridSize: 100 });
+    const northPoints = lightPolygonPoints(north, [], scene, "sight");
+    expect(north.direction).toBe(270);
+    expect(northPoints.every((point) => point.y <= north.y)).toBe(true);
+
+    const east = tokenVisionSource({ ...token, facing: 90 }, { gridSize: 100 });
+    const eastPoints = lightPolygonPoints(east, [], scene, "sight");
+    expect(east.direction).toBe(0);
+    expect(eastPoints.every((point) => point.x >= east.x)).toBe(true);
   });
 });
