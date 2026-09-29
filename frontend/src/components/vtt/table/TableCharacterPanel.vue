@@ -20,7 +20,11 @@
             :aria-label="$t('vtt.table.playerHud.actions.clearSelection')"
             @click="clearHudCharacterSelection"
           >
-            <img :src="avatar(chosenCharacter)" alt="" />
+            <AuthenticatedImage
+              :src="avatar(chosenCharacter)"
+              alt=""
+              draggable="false"
+            />
             <span>
               <strong>{{ chosenCharacter.name }}</strong>
               <small>{{ details(chosenCharacter) }}</small>
@@ -32,6 +36,50 @@
             >
           </button>
         </section>
+
+        <header class="table-character-panel__search-bar">
+          <label class="table-character-panel__search-field">
+            <span aria-hidden="true">⌕</span>
+            <input
+              v-model.trim="query"
+              type="search"
+              :placeholder="$t('characters.list.title')"
+              :aria-label="$t('characters.list.title')"
+            />
+          </label>
+          <nav :aria-label="$t('vtt.table.characters.listActions')">
+            <button
+              v-if="canCreate && !compact"
+              type="button"
+              class="table-character-panel__create"
+              :disabled="creating"
+              :title="$t('characters.actions.new')"
+              :aria-label="$t('characters.actions.new')"
+              @click="openCreate"
+            >
+              ＋
+            </button>
+            <button
+              v-if="canManageGroups"
+              type="button"
+              class="table-character-panel__add-group"
+              :title="$t('vtt.table.characters.addGroup')"
+              :aria-label="$t('vtt.table.characters.addGroup')"
+              @click="addGroup()"
+            >
+              ▣
+            </button>
+            <button
+              type="button"
+              :disabled="loading"
+              :title="$t('characters.actions.refresh')"
+              :aria-label="$t('characters.actions.refresh')"
+              @click="loadCharacters"
+            >
+              ↻
+            </button>
+          </nav>
+        </header>
 
         <div class="table-character-panel__groups-shell">
           <div
@@ -175,7 +223,11 @@
                       @dragend="finishCharacterDrag"
                       @click="selectCharacterIfExpanded(character.id)"
                     >
-                      <img :src="avatar(character)" alt="" />
+                      <AuthenticatedImage
+                        :src="avatar(character)"
+                        alt=""
+                        draggable="false"
+                      />
                       <span>
                         <strong>{{ character.name }}</strong>
                         <small>{{ details(character) }}</small>
@@ -185,7 +237,11 @@
                       >#{{ character.id }}</small
                     >
                     <button
-                      v-if="compact && canSelectForHud"
+                      v-if="
+                        compact &&
+                        canSelectForHud &&
+                        canSelectCharacterForHud(character)
+                      "
                       type="button"
                       class="table-character-panel__choose"
                       :disabled="
@@ -234,43 +290,14 @@
           </div>
         </div>
 
-        <footer class="table-character-panel__search-bar">
-          <input
-            v-model.trim="query"
-            type="search"
-            :placeholder="$t('characters.list.title')"
-            :aria-label="$t('characters.list.title')"
-          />
-          <button
-            v-if="canManageGroups"
-            type="button"
-            class="table-character-panel__add-group"
-            :title="$t('vtt.table.characters.addGroup')"
-            :aria-label="$t('vtt.table.characters.addGroup')"
-            @click="addGroup()"
-          >
-            ▣
-          </button>
-          <button
-            v-if="canCreate && !compact"
-            type="button"
-            class="table-character-panel__create"
-            :disabled="creating"
-            :title="$t('characters.actions.new')"
-            :aria-label="$t('characters.actions.new')"
-            @click="openCreate"
-          >
-            ＋
-          </button>
-          <button
-            type="button"
-            :disabled="loading"
-            :title="$t('characters.actions.refresh')"
-            @click="loadCharacters"
-          >
-            ↻
-          </button>
-        </footer>
+        <button
+          v-if="compact"
+          type="button"
+          class="table-character-panel__promote"
+          @click="$emit('open-window')"
+        >
+          {{ $t("vtt.table.characters.openFull") }}
+        </button>
       </div>
     </aside>
 
@@ -281,6 +308,12 @@
       <p v-if="loadError" class="table-character-panel__error" role="alert">
         {{ loadError }}
       </p>
+      <TableCharacterAccessPanel
+        v-if="canManageAccess && selectedId"
+        :character-id="selectedId"
+        :members="members"
+        @changed="handleAccessChanged"
+      />
       <TableCharacterCreateForm
         v-if="showingCreate && canCreate"
         :campaign="campaign"
@@ -294,6 +327,7 @@
       </p>
       <CharacterSheetEditor
         v-else
+        :campaign-id="campaignId"
         :character="selectedCharacter"
         :saving="saving || deleting"
         :error="saveError"
@@ -306,6 +340,7 @@
 
 <script>
 import CharacterSheetEditor from "@/components/characters/CharacterSheetEditor.vue";
+import AuthenticatedImage from "@/components/ui/AuthenticatedImage.vue";
 import { characterApiClient } from "@/lib/character/characterApiClient";
 import { characterErrorKey } from "@/lib/character/characterErrorKey";
 import {
@@ -314,6 +349,7 @@ import {
 } from "@/lib/trade/characterAvatar";
 import { beginActorDrag, endActorDrag } from "@/lib/vtt/actorDragSession";
 import TableCharacterCreateForm from "./TableCharacterCreateForm.vue";
+import TableCharacterAccessPanel from "./TableCharacterAccessPanel.vue";
 import { tableCharacterCreationMethods } from "./tableCharacterCreationMethods";
 import {
   appendGroup,
@@ -326,7 +362,12 @@ import {
 
 export default {
   name: "TableCharacterPanel",
-  components: { CharacterSheetEditor, TableCharacterCreateForm },
+  components: {
+    AuthenticatedImage,
+    CharacterSheetEditor,
+    TableCharacterAccessPanel,
+    TableCharacterCreateForm,
+  },
   props: {
     campaignId: { type: [Number, String], required: true },
     campaign: { type: Object, required: true },
@@ -334,10 +375,12 @@ export default {
     canCreateToken: { type: Boolean, default: false },
     canSelectForHud: { type: Boolean, default: false },
     canManageGroups: { type: Boolean, default: false },
+    canManageAccess: { type: Boolean, default: false },
+    members: { type: Array, default: () => [] },
     initialCharacterId: { type: [Number, String], default: null },
     selectedHudCharacterId: { type: [Number, String], default: null },
   },
-  emits: ["changed", "select-for-hud"],
+  emits: ["changed", "select-for-hud", "open-window"],
   data: () => ({
     characters: [],
     selectedId: null,
@@ -420,6 +463,10 @@ export default {
   mounted() {
     this.loadCharacters();
     window.addEventListener("resize", this.syncCharacterScrollbar);
+    window.addEventListener(
+      "blatyrpg:character-access-changed",
+      this.handleCharacterAccessRealtimeEvent,
+    );
     if (typeof ResizeObserver !== "undefined") {
       this.characterScrollbarObserver = new ResizeObserver(() =>
         this.syncCharacterScrollbar(),
@@ -432,6 +479,10 @@ export default {
     this.sheetRequestSequence += 1;
     this.createRequestSequence += 1;
     window.removeEventListener("resize", this.syncCharacterScrollbar);
+    window.removeEventListener(
+      "blatyrpg:character-access-changed",
+      this.handleCharacterAccessRealtimeEvent,
+    );
     window.removeEventListener("pointermove", this.moveCharacterScrollbarDrag);
     window.removeEventListener("pointerup", this.stopCharacterScrollbarDrag);
     this.characterScrollbarObserver?.disconnect();
@@ -467,8 +518,17 @@ export default {
         this.activeGroupId = this.groupLayout.activeGroupId;
         this.persistGroupLayout();
         this.configureCharacterCreation(result);
+        const selectedStillAvailable = this.characters.some(
+          (character) => Number(character.id) === Number(this.selectedId),
+        );
+        if (!selectedStillAvailable) {
+          this.selectedId = null;
+          this.selectedCharacter = null;
+        }
         const nextId =
-          this.initialCharacterId || this.selectedId || this.characters[0]?.id;
+          this.initialCharacterId ||
+          (selectedStillAvailable ? this.selectedId : null) ||
+          this.characters[0]?.id;
         if (!this.compact && nextId) await this.selectCharacter(nextId);
         this.$nextTick(this.syncCharacterScrollbar);
       } catch (error) {
@@ -500,6 +560,18 @@ export default {
       } finally {
         if (sequence === this.sheetRequestSequence) this.loadingSheet = false;
       }
+    },
+    async handleAccessChanged() {
+      const selectedId = this.selectedId;
+      await this.loadCharacters();
+      this.$emit("changed", selectedId);
+    },
+    handleCharacterAccessRealtimeEvent(event) {
+      if (Number(event?.detail?.campaignId) !== Number(this.campaignId)) return;
+      this.handleAccessChanged();
+    },
+    canSelectCharacterForHud(character) {
+      return this.canManageGroups || character?.capabilities?.canEdit === true;
     },
     selectCharacterIfExpanded(id) {
       if (!this.compact) this.selectCharacter(id);

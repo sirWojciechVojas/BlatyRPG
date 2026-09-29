@@ -23,7 +23,7 @@
       type="button"
       @click="$emit('select', character.id)"
     >
-      <img :src="avatar(character)" alt="" />
+      <AuthenticatedImage :src="avatar(character)" alt="" draggable="false" />
       <span>
         <strong>{{ character.name }}</strong>
         <small>
@@ -42,9 +42,11 @@
 
 <script>
 import { resolveCharacterAvatar } from "@/lib/trade/characterAvatar";
+import AuthenticatedImage from "@/components/ui/AuthenticatedImage.vue";
 
 export default {
   name: "CharacterList",
+  components: { AuthenticatedImage },
   emits: ["select"],
   props: {
     characters: { type: Array, default: () => [] },

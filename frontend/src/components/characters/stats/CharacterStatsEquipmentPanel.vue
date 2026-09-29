@@ -29,7 +29,11 @@
       </div>
       <div class="character-stats-equipment__center">
         <div class="character-stats-equipment__portrait">
-          <img :src="avatar" :alt="avatarAlt" />
+          <AuthenticatedImage
+            :src="avatar"
+            :alt="avatarAlt"
+            draggable="false"
+          />
           <span
             class="character-stats-equipment__armor-frame"
             aria-hidden="true"
@@ -345,6 +349,7 @@
 
 <script>
 import CharacterStatsInventoryCell from "./CharacterStatsInventoryCell.vue";
+import AuthenticatedImage from "@/components/ui/AuthenticatedImage.vue";
 import CharacterStatsItemDialog from "./CharacterStatsItemDialog.vue";
 import ItemIcon from "@/components/shop/common/ItemIcon.vue";
 import {
@@ -369,6 +374,7 @@ import pouchIllustration from "@/assets/app-ui/img/character-stats/inventory/pou
 export default {
   name: "CharacterStatsEquipmentPanel",
   components: {
+    AuthenticatedImage,
     CharacterStatsItemDialog,
     InventoryCell: CharacterStatsInventoryCell,
     ItemIcon,

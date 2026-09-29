@@ -1,0 +1,135 @@
+.player-hud-modal-shell__backdrop {
+  position: fixed;
+  z-index: var(--ui-z-modal-backdrop, 1050);
+  inset: 0;
+  display: grid;
+  padding:
+    12px 12px
+    calc(12px + env(safe-area-inset-bottom));
+  place-items: center;
+  background: rgb(4 3 2 / 76%);
+  backdrop-filter: blur(3px);
+}
+
+.player-hud-modal-shell {
+  --player-hud-modal-header-height: 42px;
+  display: flex;
+  width: min(var(--player-hud-modal-width), calc(100vw - 24px));
+  height: min(
+    var(--player-hud-modal-height),
+    calc(100dvh - 24px - env(safe-area-inset-bottom))
+  );
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  flex-direction: column;
+  color: #f3dfae;
+  border: 0;
+  border-radius: 0;
+  background: #100c08;
+  box-shadow:
+    0 28px 88px rgb(0 0 0 / 82%),
+    0 0 0 1px #9d743c,
+    0 0 0 3px rgb(8 5 3 / 88%) inset;
+}
+
+.player-hud-modal-shell:focus {
+  outline: none;
+}
+
+.player-hud-modal-shell__header {
+  position: relative;
+  display: flex;
+  height: var(--player-hud-modal-header-height);
+  min-height: var(--player-hud-modal-header-height);
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  padding: 0;
+  color: #fff;
+  background: url("../../../assets/app-ui/img/character-stats/titleBar-center.png")
+    center / auto 100% repeat-x;
+  box-shadow:
+    0 -1px 0 rgb(216 177 100 / 24%) inset,
+    0 2px 8px rgb(0 0 0 / 70%);
+}
+
+.player-hud-modal-shell__header h2 {
+  overflow: hidden;
+  max-width: calc(100% - 100px);
+  margin: 0;
+  color: whitesmoke;
+  font:
+    700 clamp(1.15rem, 2.2vw, 2.15rem) Garamond,
+    Georgia,
+    serif;
+  letter-spacing: 2px;
+  line-height: var(--player-hud-modal-header-height);
+  text-align: center;
+  text-overflow: ellipsis;
+  text-shadow: 2px 2px 1px rgb(0 0 0 / 65%);
+  white-space: nowrap;
+}
+
+.player-hud-modal-shell__close {
+  position: absolute;
+  right: 4px;
+  display: block;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  padding: 0;
+  color: transparent;
+  background: url("../../../assets/app-ui/img/character-stats/gfx/buttonClose.png")
+    center / contain no-repeat;
+  cursor: pointer;
+}
+
+.player-hud-modal-shell__close:hover {
+  filter: brightness(1.18);
+}
+
+.player-hud-modal-shell__close:focus-visible {
+  outline: 3px solid #f2cd81;
+  outline-offset: 2px;
+}
+
+.player-hud-modal-shell__body {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  color: #f3dfae;
+  background: #17110b;
+}
+
+.player-hud-modal-shell__body--character,
+.player-hud-modal-shell__body--shop,
+.player-hud-modal-shell__body--journal,
+.player-hud-modal-shell__body--bestiary,
+.player-hud-modal-shell__body--spells,
+.player-hud-modal-shell__body--settings {
+  overflow: hidden;
+}
+
+.player-hud-modal-shell__body--character > *,
+.player-hud-modal-shell__body--shop > *,
+.player-hud-modal-shell__body--journal > *,
+.player-hud-modal-shell__body--bestiary > *,
+.player-hud-modal-shell__body--spells > *,
+.player-hud-modal-shell__body--settings > * {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+}
+
+@media (max-width: 560px) {
+  .player-hud-modal-shell__header h2 {
+    font-size: 1.1rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .player-hud-modal-shell__backdrop {
+    backdrop-filter: none;
+  }
+}

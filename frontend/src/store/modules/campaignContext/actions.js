@@ -82,6 +82,24 @@ export const createCampaignContextActions = (api) => ({
     return dispatch("selectCampaign", state.campaignId);
   },
 
+  async refreshCharacters({ state, commit }) {
+    const campaignId = Number(state.campaignId);
+    const generation = state.generation;
+    if (!campaignId) return [];
+    try {
+      const result = await api.listCharacters(campaignId);
+      if (!current(state, generation, campaignId)) return [];
+      commit("SET_CHARACTERS", {
+        generation,
+        characters: result.characters,
+      });
+      return result.characters;
+    } catch (_error) {
+      // A realtime refresh is best effort and must not disrupt an open workspace.
+      return [];
+    }
+  },
+
   async reconcile({ state, commit }) {
     const campaignId = Number(state.campaignId);
     const generation = state.generation;

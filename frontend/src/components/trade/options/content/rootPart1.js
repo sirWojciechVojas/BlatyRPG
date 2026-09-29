@@ -20,6 +20,7 @@ export const createContentRootPart1 = (runtime) => ({
     ShopActivationDialog: runtime.ShopActivationDialog,
     ViewSettingsDialog: runtime.ViewSettingsDialog,
     WeaponStatsDialog: runtime.WeaponStatsDialog,
+    AuthenticatedImage: runtime.AuthenticatedImage,
   },
   provide() {
     // Expose full modal context for deeply nested view components via inject.

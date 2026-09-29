@@ -593,11 +593,17 @@ class CharacterLegacySeeder extends Seeder
                 'created_at' => $now,
                 'updated_at' => $now,
             ]);
+            $media = $db->tableExists('media_assets')
+                ? new \App\Services\Media\MediaService($db)
+                : null;
             foreach (\App\Models\CharacterAssetModel::TYPES as $type) {
+                $publicId = sprintf('character-assets/%06d/%s', $setId, $type);
+                $mediaAsset = $media ? $media->importCloudinaryAsset($publicId, $type) : null;
                 $db->table('character_assets')->insert([
                     'asset_set_id' => $setId,
                     'type' => $type,
-                    'public_id' => sprintf('character-assets/%06d/%s', $setId, $type),
+                    'media_asset_id' => $mediaAsset ? (int) $mediaAsset['id'] : null,
+                    'public_id' => $mediaAsset ? null : $publicId,
                     'created_at' => $now,
                     'updated_at' => $now,
                 ]);

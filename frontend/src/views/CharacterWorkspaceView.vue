@@ -51,6 +51,7 @@
       </div>
       <CharacterSheetEditor
         v-else
+        :campaign-id="campaignId"
         :character="selectedCharacter"
         :saving="saving || deleting"
         :error="saveError"

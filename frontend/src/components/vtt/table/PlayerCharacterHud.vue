@@ -8,8 +8,30 @@
     "
     :aria-busy="saving ? 'true' : 'false'"
   >
+    <div
+      v-if="pinnedSpells.length"
+      class="hud-pinned-spells"
+      role="group"
+      :aria-label="$t('vtt.table.playerHud.actions.spellPins.label')"
+    >
+      <span>{{ $t("vtt.table.playerHud.actions.spellPins.label") }}</span>
+      <button
+        v-for="spell in pinnedSpells"
+        :key="spell.id"
+        type="button"
+        :title="
+          $t('vtt.table.playerHud.actions.spellPins.cast', {
+            spell: spell.name,
+          })
+        "
+        @click="openPinnedSpell(spell.id)"
+      >
+        {{ spell.name }}
+      </button>
+    </div>
+
     <div class="hud-runtime__stage">
-      <img
+      <AuthenticatedImage
         class="hud-avatar-image"
         :src="avatar"
         :alt="$t('vtt.table.playerHud.avatarAlt', { name: character.name })"
@@ -142,12 +164,18 @@
           $t("vtt.table.playerHud.actions.rollD100")
         }}</span>
       </button>
-      <span
+      <button
+        type="button"
         class="hud-control hud-sprite hud-sprite--button-3d hud-mode"
-        aria-label="Podgląd kostki 3D"
+        :disabled="!diceAction?.available"
+        :aria-disabled="String(!diceAction?.available)"
+        :title="$t('vtt.table.playerHud.actions.choose3dDice')"
+        :aria-label="$t('vtt.table.playerHud.actions.choose3dDice')"
+        data-hud-action="dice-selector"
+        @click="$emit('open-dice-selector')"
       >
         <span class="hud-mode-label">3D</span>
-      </span>
+      </button>
     </div>
 
     <p
@@ -163,8 +191,11 @@
 
 <script>
 import { authSession } from "@/lib/auth/authSession";
+import AuthenticatedImage from "@/components/ui/AuthenticatedImage.vue";
 import { characterApiClient } from "@/lib/character/characterApiClient";
+import { magicApiClient } from "@/lib/magic/magicApiClient";
 import { resolveCharacterAvatar } from "@/lib/trade/characterAvatar";
+import { isPlayerHudModalId } from "./playerHudModalRegistry";
 import {
   cloneDataWithNumber,
   createPlayerCharacterHudModel,
@@ -181,7 +212,7 @@ const HUD_ACTIONS = Object.freeze([
   ["combat", "combat"],
   ["shop", "inventory"],
   ["history", "book"],
-  ["scrolls", "scroll"],
+  ["spells", "scroll"],
   ["notes", "quill"],
   ["journal", "journal"],
   ["map", "map"],
@@ -194,6 +225,7 @@ const HUD_ACTIONS = Object.freeze([
 
 export default {
   name: "PlayerCharacterHud",
+  components: { AuthenticatedImage },
   props: {
     campaignId: { type: [Number, String], required: true },
     characters: { type: Array, default: () => [] },
@@ -210,12 +242,10 @@ export default {
   },
   emits: [
     "visibility-change",
-    "open-character",
     "fit-map",
-    "open-shop",
     "open-dice",
-    "open-settings",
-    "open-window",
+    "open-dice-selector",
+    "open-modal",
   ],
   data: () => ({
     session: authSession.read(),
@@ -229,6 +259,9 @@ export default {
     loadedCampaignId: null,
     loadRequestSequence: 0,
     saveRequestSequence: 0,
+    magicRequestSequence: 0,
+    pinnedSpells: [],
+    pinChangeListener: null,
   }),
   computed: {
     userId() {
@@ -377,15 +410,32 @@ export default {
   },
   mounted() {
     this.updateViewportWidth();
+    this.pinChangeListener = (event) => {
+      if (
+        Number(event?.detail?.campaignId) === Number(this.campaignId) &&
+        Number(event?.detail?.characterId) === Number(this.character?.id)
+      ) {
+        this.loadPinnedSpells();
+      }
+    };
     window.addEventListener("resize", this.updateViewportWidth, {
       passive: true,
     });
+    window.addEventListener(
+      "blatyrpg:magic-pins-changed",
+      this.pinChangeListener,
+    );
   },
   beforeUnmount() {
     this.loadRequestSequence += 1;
     this.saveRequestSequence += 1;
+    this.magicRequestSequence += 1;
     this.unsubscribeAuth?.();
     window.removeEventListener("resize", this.updateViewportWidth);
+    window.removeEventListener(
+      "blatyrpg:magic-pins-changed",
+      this.pinChangeListener,
+    );
     this.$emit("visibility-change", false);
   },
   methods: {
@@ -395,12 +445,14 @@ export default {
     resetAndLoad() {
       this.loadRequestSequence += 1;
       this.saveRequestSequence += 1;
+      this.magicRequestSequence += 1;
       this.loading = false;
       this.saving = "";
       this.notice = "";
       this.noticeIsError = false;
       if (!this.eligible) {
         this.character = null;
+        this.pinnedSpells = [];
         this.loadedCampaignId = null;
         return;
       }
@@ -410,6 +462,7 @@ export default {
         String(this.loadedCampaignId ?? "") !== String(this.campaignId ?? "");
       if (selectionChanged) {
         this.character = null;
+        this.pinnedSpells = [];
         this.loadedCampaignId = null;
       }
       this.loadCharacter();
@@ -438,6 +491,7 @@ export default {
         }
         this.character = character;
         this.loadedCampaignId = campaignId;
+        this.loadPinnedSpells();
         return character;
       } catch (_error) {
         if (
@@ -458,6 +512,34 @@ export default {
         ? Number(value)
         : "—";
     },
+    async loadPinnedSpells() {
+      if (!this.character?.id) return;
+      const sequence = ++this.magicRequestSequence;
+      const campaignId = this.campaignId;
+      const characterId = this.character.id;
+      try {
+        const magic = await magicApiClient.get(campaignId, characterId);
+        if (
+          sequence !== this.magicRequestSequence ||
+          Number(characterId) !== Number(this.character?.id) ||
+          Number(campaignId) !== Number(this.campaignId)
+        ) {
+          return;
+        }
+        this.pinnedSpells = (magic?.knownSpells || [])
+          .filter((spell) => spell.pinned)
+          .sort((left, right) => (left.pinOrder || 99) - (right.pinOrder || 99))
+          .slice(0, 6);
+      } catch (_error) {
+        if (sequence === this.magicRequestSequence) this.pinnedSpells = [];
+      }
+    },
+    openPinnedSpell(spellId) {
+      this.$emit("open-modal", "spells", {
+        characterId: this.character.id,
+        spellId,
+      });
+    },
     actionLabel(action) {
       return this.$t(`vtt.table.playerHud.actions.${action.id}`);
     },
@@ -472,13 +554,15 @@ export default {
     },
     runAction(action) {
       if (!action?.available) return;
+      if (isPlayerHudModalId(action.id)) {
+        this.$emit("open-modal", action.id, {
+          characterId: this.character.id,
+        });
+        return;
+      }
       const events = {
-        character: ["open-character", this.character.id],
         map: ["fit-map"],
-        shop: ["open-shop", this.character.id],
         dice: ["open-dice"],
-        settings: ["open-settings"],
-        combat: ["open-window", "combat"],
       };
       const [event, payload] = events[action.id] || [];
       if (event) this.$emit(event, payload);

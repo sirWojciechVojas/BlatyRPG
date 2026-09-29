@@ -16,7 +16,9 @@ const componentOptions = () => {
     .replace(/import \{[\s\S]*?\} from .*?;\n/gmu, "")
     .replace("export default {", "return {");
   return new Function(
+    "AuthenticatedImage",
     "CharacterSheetEditor",
+    "TableCharacterAccessPanel",
     "TableCharacterCreateForm",
     "tableCharacterCreationMethods",
     "characterApiClient",
@@ -27,6 +29,8 @@ const componentOptions = () => {
     "endActorDrag",
     executable,
   )(
+    {},
+    {},
     {},
     {},
     {},
@@ -67,6 +71,21 @@ describe("TableCharacterPanel", () => {
     expect(template).toContain('@scroll.passive="syncCharacterScrollbar"');
   });
 
+  it("places search and grouped list actions above the character list", () => {
+    const template = descriptor.template.content;
+    const toolbar = template.indexOf(
+      'class="table-character-panel__search-bar"',
+    );
+    const groups = template.indexOf(
+      'class="table-character-panel__groups-shell"',
+    );
+
+    expect(toolbar).toBeGreaterThan(-1);
+    expect(toolbar).toBeLessThan(groups);
+    expect(template).toContain('class="table-character-panel__search-field"');
+    expect(template).toContain("vtt.table.characters.listActions");
+  });
+
   it("emits the chosen character only when HUD selection is permitted", () => {
     const emit = vi.fn();
     const selectCharacterForHud =
@@ -77,6 +96,24 @@ describe("TableCharacterPanel", () => {
 
     selectCharacterForHud.call({ canSelectForHud: true, $emit: emit }, "9");
     expect(emit).toHaveBeenCalledWith("select-for-hud", 9);
+  });
+
+  it("offers player HUD selection for a character with edit access", () => {
+    const canSelectCharacterForHud =
+      componentOptions().methods.canSelectCharacterForHud;
+
+    expect(
+      canSelectCharacterForHud.call(
+        { canManageGroups: false },
+        { capabilities: { canEdit: true } },
+      ),
+    ).toBe(true);
+    expect(
+      canSelectCharacterForHud.call(
+        { canManageGroups: false },
+        { capabilities: { canEdit: false } },
+      ),
+    ).toBe(false);
   });
 
   it("clears the HUD selection from the docked character control", () => {
@@ -101,5 +138,15 @@ describe("TableCharacterPanel", () => {
     expect(descriptor.script.content).not.toContain(
       "this.selectCharacterForHud(defaultCharacter.id)",
     );
+  });
+
+  it("promotes the compact browser and exposes GM access management only in the full view", () => {
+    const template = descriptor.template.content;
+
+    expect(template).toContain('class="table-character-panel__promote"');
+    expect(template).toContain("$emit('open-window')");
+    expect(template).toContain("<TableCharacterAccessPanel");
+    expect(template).toContain('v-if="canManageAccess && selectedId"');
+    expect(template).toContain(':members="members"');
   });
 });

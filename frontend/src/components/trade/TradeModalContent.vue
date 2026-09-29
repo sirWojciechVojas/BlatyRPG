@@ -79,7 +79,7 @@
                 "
               >
                 <div class="active-bg-avatar__frame">
-                  <img
+                  <AuthenticatedImage
                     class="active-bg-avatar__img"
                     :src="activeBgAvatar"
                     :alt="
@@ -87,6 +87,7 @@
                         name: activeBgName,
                       })
                     "
+                    draggable="false"
                     loading="lazy"
                   />
                   <span class="active-bg-avatar__badge">{{
