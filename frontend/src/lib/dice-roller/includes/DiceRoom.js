@@ -15,6 +15,11 @@ export class DiceRoom {
     this.assetBaseUrl = options.assetBaseUrl || "/dice_roller";
     this.chatEnabled =
       typeof options.chatEnabled === "boolean" ? options.chatEnabled : true;
+    this.embedded = options.embedded === true;
+    this.onRollComplete =
+      typeof options.onRollComplete === "function"
+        ? options.onRollComplete
+        : null;
 
     this.TealChat = new TealChat(Teal.id("log"));
     this.TealChat.own_user = username;
@@ -430,6 +435,15 @@ export class DiceRoom {
     return this.dragThrowEnabled && this.diceDisplayEnabled;
   }
 
+  destroy() {
+    window.removeEventListener("message", this.on_receivePostMessage);
+    if (!this.DiceBox) return;
+    this.DiceBox.running = false;
+    this.DiceBox.rolling = false;
+    this.DiceBox.clearDice();
+    this.DiceBox.renderer?.dispose?.();
+  }
+
   updateDragThrowToggle() {
     if (!this.toggle_drag_throw) return;
     const enabled = this.dragThrowEnabled;
@@ -701,6 +715,26 @@ export class DiceRoom {
       if (this.selector_div) this.selector_div.style.display = "block";
       this.deskrolling = false;
       this.DiceBox.rolling = false;
+
+      this.onRollComplete?.({
+        notation: notationVectors.notation || res.notation,
+        rolls: results.rolls,
+        labels: results.labels,
+        total: results.values,
+        dice: resultDice.map((die) => {
+          const lastValue = die?.getLastValue?.() || {};
+          const type = String(die?.notation?.type || "");
+          return {
+            type,
+            value: lastValue.value,
+            label: lastValue.label,
+            display:
+              type.toLowerCase() === "dc"
+                ? lastValue.value
+                : lastValue.label ?? lastValue.value,
+          };
+        }),
+      });
       if (!this.diceDisplayEnabled) {
         this.DiceBox.skipAfterThrow = true;
         this.DiceBox.clearDice();
@@ -717,75 +751,81 @@ export class DiceRoom {
         delete this.TealChat.roll_uuid;
       }
 
-      $(".ui-helper-hidden-accessible").remove();
+      if (this.chatEnabled) {
+        $(".ui-helper-hidden-accessible").remove();
 
-      $(".diceresult")
-        .mouseenter(function () {
-          let diceid = $(this).data("uuid");
-          for (
-            let i = 0, len = window.DiceRoller.DiceRoom.DiceBox.diceList.length;
-            i < len;
-            ++i
-          ) {
-            let dicemesh = window.DiceRoller.DiceRoom.DiceBox.diceList[i];
+        $(".diceresult")
+          .mouseenter(function () {
+            let diceid = $(this).data("uuid");
+            for (
+              let i = 0,
+                len = window.DiceRoller.DiceRoom.DiceBox.diceList.length;
+              i < len;
+              ++i
+            ) {
+              let dicemesh = window.DiceRoller.DiceRoom.DiceBox.diceList[i];
 
-            if (dicemesh.uuid == diceid) {
-              window.DiceRoller.DiceRoom.DiceBox.setSelected(dicemesh);
-              break;
-            }
-          }
-        })
-        .mouseleave(function () {
-          window.DiceRoller.DiceRoom.DiceBox.setSelected();
-        });
-
-      $(document).tooltip({
-        items: ".diceresult",
-        track: true,
-        content: function () {
-          let diceid = $(this).data("uuid");
-
-          if (!diceid) return "";
-
-          let rollhistory = "Roll History:<br>";
-
-          for (
-            let i = 0, len = window.DiceRoller.DiceRoom.DiceBox.diceList.length;
-            i < len;
-            ++i
-          ) {
-            let dicemesh = window.DiceRoller.DiceRoom.DiceBox.diceList[i];
-            if (!dicemesh || !dicemesh.notation) continue;
-            let diceobj = window.DiceRoller.DiceFactory.get(
-              dicemesh.notation.type,
-            );
-
-            if (dicemesh.uuid == diceid) {
-              for (let j = 0, len = dicemesh.result.length; j < len; ++j) {
-                let historyresult = dicemesh.result[j];
-
-                let showvalue =
-                  diceobj.display == "values"
-                    ? historyresult.value
-                    : historyresult.label;
-
-                if (historyresult.ignore)
-                  showvalue = '<span class="ignored">' + showvalue + "</span>";
-
-                rollhistory +=
-                  "Roll " +
-                  (j + 1) +
-                  ": " +
-                  showvalue +
-                  " (" +
-                  historyresult.reason +
-                  ")<br>";
+              if (dicemesh.uuid == diceid) {
+                window.DiceRoller.DiceRoom.DiceBox.setSelected(dicemesh);
+                break;
               }
             }
-          }
-          return rollhistory;
-        },
-      });
+          })
+          .mouseleave(function () {
+            window.DiceRoller.DiceRoom.DiceBox.setSelected();
+          });
+
+        $(document).tooltip({
+          items: ".diceresult",
+          track: true,
+          content: function () {
+            let diceid = $(this).data("uuid");
+
+            if (!diceid) return "";
+
+            let rollhistory = "Roll History:<br>";
+
+            for (
+              let i = 0,
+                len = window.DiceRoller.DiceRoom.DiceBox.diceList.length;
+              i < len;
+              ++i
+            ) {
+              let dicemesh = window.DiceRoller.DiceRoom.DiceBox.diceList[i];
+              if (!dicemesh || !dicemesh.notation) continue;
+              let diceobj = window.DiceRoller.DiceFactory.get(
+                dicemesh.notation.type,
+              );
+
+              if (dicemesh.uuid == diceid) {
+                for (let j = 0, len = dicemesh.result.length; j < len; ++j) {
+                  let historyresult = dicemesh.result[j];
+
+                  let showvalue =
+                    diceobj.display == "values"
+                      ? historyresult.value
+                      : historyresult.label;
+
+                  if (historyresult.ignore) {
+                    showvalue =
+                      '<span class="ignored">' + showvalue + "</span>";
+                  }
+
+                  rollhistory +=
+                    "Roll " +
+                    (j + 1) +
+                    ": " +
+                    showvalue +
+                    " (" +
+                    historyresult.reason +
+                    ")<br>";
+                }
+              }
+            }
+            return rollhistory;
+          },
+        });
+      }
     });
   }
   action_chat(res) {

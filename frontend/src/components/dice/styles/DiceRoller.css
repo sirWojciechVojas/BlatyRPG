@@ -1,7 +1,13 @@
-﻿.dice-roller-root {
+.dice-roller-root {
   position: relative;
   width: 100%;
   height: 100%;
+}
+
+.dice-roller-root--embedded {
+  overflow: hidden;
+  color: #f6efe2;
+  background: transparent;
 }
 
 #desk {
@@ -70,6 +76,36 @@
 .chat-disabled #canvas {
   height: 100vh;
 }
+
+.dice-roller-root--embedded.chat-disabled #desk,
+.dice-roller-root--embedded.chat-disabled #canvas {
+  height: 100%;
+}
+
+.dice-roller-root--embedded.chat-disabled #selector_div {
+  position: absolute;
+}
+
+.dice-roller-root--embedded #waitform {
+  position: absolute;
+  z-index: 20;
+  inset: 0;
+  pointer-events: none;
+}
+
+.dice-roller-root--embedded #sethelp,
+.dice-roller-root--embedded #labelhelp {
+  color: rgb(246 239 226 / 78%);
+  font-size: 0.78rem;
+  text-shadow: 0 1px 2px #000;
+}
+
+.dice-roller-root--embedded :deep(#fav_container),
+.dice-roller-root--embedded :deep(#control_panel),
+.dice-roller-root--embedded :deep(#log) {
+  display: none !important;
+}
+
 .dice-settings-icon {
   width: 1em;
   height: 1em;
@@ -135,4 +171,3 @@
   letter-spacing: 0.04em;
   color: #f6efe2;
 }
-

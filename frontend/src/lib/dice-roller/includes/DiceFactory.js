@@ -3,6 +3,28 @@ import * as THREE from "three";
 import * as CANNON from "cannon-es";
 import { resolveAssetPath } from "../assetPaths.js";
 import { DicePreset } from "./DicePreset.js";
+
+export const resolveDiceFaceResult = (
+  diceobj,
+  shape,
+  materialIndex,
+  reason = "natural",
+) => {
+  let faceIndex = Number(materialIndex) - 1;
+  const hasSingleMaterialPadding = ["d10", "d2"].includes(shape);
+  if (hasSingleMaterialPadding) faceIndex += 1;
+
+  const valueIndex = (faceIndex - 1) % diceobj.values.length;
+  const labelOffset = hasSingleMaterialPadding ? 1 : 2;
+  const labelCount = diceobj.labels.length - labelOffset;
+  const labelIndex = ((faceIndex - 1) % labelCount) + labelOffset;
+
+  return {
+    value: diceobj.values[valueIndex],
+    label: diceobj.labels[labelIndex],
+    reason,
+  };
+};
 export class DiceFactory {
   constructor(options = {}) {
     this.dice = {};
@@ -701,13 +723,12 @@ export class DiceFactory {
           reason: reason,
         };
       }
-      if (["d10", "d2"].includes(this.shape)) matindex += 1;
-
-      let value = diceobj.values[(matindex - 1) % diceobj.values.length];
-      let label =
-        diceobj.labels[((matindex - 1) % (diceobj.labels.length - 2)) + 2];
-
-      return { value: value, label: label, reason: reason };
+      return resolveDiceFaceResult(
+        diceobj,
+        this.shape,
+        closest_face.materialIndex,
+        reason,
+      );
     };
 
     dicemesh.storeRolledValue = function (reason) {

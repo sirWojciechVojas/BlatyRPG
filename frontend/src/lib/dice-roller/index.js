@@ -98,8 +98,14 @@ const createDiceRoller = (options = {}) => {
   const diceDisplayList = Array.isArray(options.diceDisplayList)
     ? options.diceDisplayList
     : null;
+  const embedded = options.embedded === true;
+  const loadStyles = options.loadStyles !== false;
+  const onRollComplete =
+    typeof options.onRollComplete === "function"
+      ? options.onRollComplete
+      : null;
 
-  ensureBaseStyles(assetBaseUrl);
+  if (loadStyles) ensureBaseStyles(assetBaseUrl);
 
   return new Promise((resolve, reject) => {
     const diceColors = new DiceColors();
@@ -107,11 +113,13 @@ const createDiceRoller = (options = {}) => {
 
     loadJqueryPlugins()
       .then(() => {
-        diceColors.ImageLoader(textures, (images) => {
+        diceColors.ImageLoader(textures, async (images) => {
           try {
             const diceRoller = new DiceRoller({
               assetBaseUrl,
               themeId,
+              embedded,
+              onRollComplete,
               chatEnabled,
               rngSeed,
               dragThrowEnabled,
@@ -126,6 +134,8 @@ const createDiceRoller = (options = {}) => {
             diceRoller.initialize(images, {
               assetBaseUrl,
               themeId,
+              embedded,
+              onRollComplete,
               chatEnabled,
               rngSeed,
               dragThrowEnabled,
@@ -138,7 +148,7 @@ const createDiceRoller = (options = {}) => {
               diceDisplayList,
             });
             if (options.autoStart !== false && diceRoller.button_single_press) {
-              diceRoller.button_single_press();
+              await diceRoller.button_single_press();
             }
             resolve(diceRoller);
           } catch (error) {
