@@ -21,7 +21,7 @@ final class ShopOwnerClaimBatchStub extends ShopOwnerClaimModel
         return $this;
     }
 
-    public function findAll(int $limit = 0, int $offset = 0)
+    public function findAll(?int $limit = null, int $offset = 0)
     {
         $this->findAllCalls++;
         return $this->rows;
@@ -42,7 +42,7 @@ final class ShopCampaignMemberBatchStub extends CampaignMemberModel
         return $this;
     }
 
-    public function findAll(int $limit = 0, int $offset = 0)
+    public function findAll(?int $limit = null, int $offset = 0)
     {
         return $this->rows;
     }
