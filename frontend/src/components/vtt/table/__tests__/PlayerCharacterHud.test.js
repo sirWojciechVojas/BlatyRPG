@@ -12,6 +12,7 @@ import {
   selectHudCharacter,
   tokenResourcesWithValue,
 } from "../playerCharacterHudModel";
+import { isPlayerHudModalId } from "../playerHudModalRegistry";
 
 const componentPath = resolve(
   process.cwd(),
@@ -40,6 +41,10 @@ const characterApiClient = {
   update: vi.fn(),
 };
 
+const magicApiClient = {
+  get: vi.fn(),
+};
+
 const stripImports = (source) =>
   source
     .replace(/^import .*?;\n/gmu, "")
@@ -52,8 +57,10 @@ const loadComponent = () => {
     "return {",
   );
   const dependencies = {
+    AuthenticatedImage: { template: "<img />" },
     authSession,
     characterApiClient,
+    magicApiClient,
     resolveCharacterAvatar: () => "/assets/avatar.svg",
     cloneDataWithNumber,
     createPlayerCharacterHudModel,
@@ -62,6 +69,7 @@ const loadComponent = () => {
     playerHudActions,
     selectHudCharacter,
     tokenResourcesWithValue,
+    isPlayerHudModalId,
   };
   const names = Object.keys(dependencies);
   const component = new Function(...names, executable)(
@@ -120,11 +128,10 @@ const mountHud = async (overrides = {}) => {
   const props = reactive({ ...baseProps(), ...overrides });
   const events = {
     visibility: vi.fn(),
-    character: vi.fn(),
     map: vi.fn(),
-    shop: vi.fn(),
     dice: vi.fn(),
-    window: vi.fn(),
+    diceSelector: vi.fn(),
+    modal: vi.fn(),
   };
   const store = { dispatch: vi.fn().mockResolvedValue(null) };
   const Hud = loadComponent();
@@ -134,11 +141,10 @@ const mountHud = async (overrides = {}) => {
         ...props,
         ref: "hud",
         onVisibilityChange: events.visibility,
-        onOpenCharacter: events.character,
         onFitMap: events.map,
-        onOpenShop: events.shop,
         onOpenDice: events.dice,
-        onOpenWindow: events.window,
+        onOpenDiceSelector: events.diceSelector,
+        onOpenModal: events.modal,
       });
     },
   };
@@ -164,6 +170,7 @@ beforeEach(() => {
         fullCharacter({ data: draft.data, revision: draft.revision + 1 }),
       ),
     );
+  magicApiClient.get.mockReset().mockResolvedValue({ knownSpells: [] });
   window.localStorage.clear();
 });
 
@@ -251,9 +258,13 @@ describe("PlayerCharacterHud", () => {
     expect(host.textContent).toContain("GM selection");
   });
 
-  it("never renders a foreign character returned by a stale or invalid API response", async () => {
+  it("never renders a character that has lost edit access in the detail response", async () => {
     characterApiClient.get.mockResolvedValue(
-      fullCharacter({ ownerUserId: 99, name: "Foreign" }),
+      fullCharacter({
+        ownerUserId: 99,
+        name: "Foreign",
+        capabilities: { canEdit: false },
+      }),
     );
     await mountHud();
 
@@ -270,30 +281,80 @@ describe("PlayerCharacterHud", () => {
     expect(host.querySelector(".hud-runtime")).toBeNull();
   });
 
-  it("disables unavailable actions and emits the real character, map, shop and dice actions", async () => {
+  it("routes modal actions through the shared HUD host and keeps map and dice separate", async () => {
     const { events } = await mountHud();
     const action = (id) => host.querySelector(`[data-hud-action="${id}"]`);
 
-    expect(action("history").disabled).toBe(true);
-    expect(action("advance").disabled).toBe(true);
-    expect(action("traits").disabled).toBe(true);
-    expect(action("notes").disabled).toBe(true);
+    expect(action("history").disabled).toBe(false);
+    expect(action("advance").disabled).toBe(false);
+    expect(action("traits").disabled).toBe(false);
+    expect(action("notes").disabled).toBe(false);
+    expect(action("purse").disabled).toBe(false);
+    expect(action("abilities").disabled).toBe(false);
     expect(action("character").disabled).toBe(false);
+    expect(action("journal").disabled).toBe(false);
+    expect(action("bestiary").disabled).toBe(false);
+    expect(action("spells").disabled).toBe(false);
     expect(action("map").disabled).toBe(false);
     expect(action("shop").disabled).toBe(false);
     expect(action("dice").disabled).toBe(false);
+    expect(action("dice-selector").disabled).toBe(false);
 
     action("character").click();
+    action("journal").click();
+    action("bestiary").click();
+    action("spells").click();
     action("map").click();
     action("shop").click();
     action("dice").click();
+    action("dice-selector").click();
     action("combat").click();
+    action("history").click();
+    action("advance").click();
+    action("traits").click();
+    action("notes").click();
+    action("purse").click();
+    action("abilities").click();
 
-    expect(events.character).toHaveBeenCalledWith(9);
     expect(events.map).toHaveBeenCalledOnce();
-    expect(events.shop).toHaveBeenCalledWith(9);
     expect(events.dice).toHaveBeenCalledOnce();
-    expect(events.window).toHaveBeenCalledWith("combat");
+    expect(events.diceSelector).toHaveBeenCalledOnce();
+    expect(events.modal).toHaveBeenNthCalledWith(1, "character", {
+      characterId: 9,
+    });
+    expect(events.modal).toHaveBeenNthCalledWith(2, "journal", {
+      characterId: 9,
+    });
+    expect(events.modal).toHaveBeenNthCalledWith(3, "bestiary", {
+      characterId: 9,
+    });
+    expect(events.modal).toHaveBeenNthCalledWith(4, "spells", {
+      characterId: 9,
+    });
+    expect(events.modal).toHaveBeenNthCalledWith(5, "shop", {
+      characterId: 9,
+    });
+    expect(events.modal).toHaveBeenNthCalledWith(6, "combat", {
+      characterId: 9,
+    });
+    expect(events.modal).toHaveBeenCalledTimes(12);
+  });
+
+  it("opens a pinned spell from the HUD directly in the spellbook", async () => {
+    magicApiClient.get.mockResolvedValueOnce({
+      knownSpells: [{ id: 12, name: "Kula ognia", pinned: true, pinOrder: 1 }],
+    });
+    const { events } = await mountHud();
+    await settle();
+
+    const pinned = host.querySelector(".hud-pinned-spells button");
+    expect(pinned?.textContent).toContain("Kula ognia");
+    pinned.click();
+
+    expect(events.modal).toHaveBeenCalledWith("spells", {
+      characterId: 9,
+      spellId: 12,
+    });
   });
 
   it("disables the player shop action while its module is opening", async () => {
@@ -411,6 +472,7 @@ describe("PlayerCharacterHud", () => {
         campaignId: 5,
         ownerUserId: 7,
         name: "Current campaign hero",
+        capabilities: { canEdit: true },
       },
     ];
     await settle();
@@ -421,17 +483,22 @@ describe("PlayerCharacterHud", () => {
     expect(host.textContent).not.toContain("Old campaign hero");
   });
 
-  it("uses the delivered v8 runtime and keeps the semantic d100 button", async () => {
+  it("uses the delivered v8 runtime and keeps semantic dice buttons", async () => {
     await mountHud();
     const shell = host.querySelector(".hud-runtime");
     const avatar = shell.querySelector(".hud-avatar-image");
     const dieButton = shell.querySelector('[data-hud-action="dice"]');
+    const selectorButton = shell.querySelector(
+      '[data-hud-action="dice-selector"]',
+    );
 
     expect(shell.querySelector(".hud-runtime__stage")).not.toBeNull();
     expect(avatar.width).toBe(175);
     expect(avatar.height).toBe(175);
     expect(dieButton.tagName).toBe("BUTTON");
     expect(dieButton.getAttribute("type")).toBe("button");
+    expect(selectorButton.tagName).toBe("BUTTON");
+    expect(selectorButton.getAttribute("type")).toBe("button");
     [
       "hud-shell.webp",
       "hud-shell-fhd.webp",

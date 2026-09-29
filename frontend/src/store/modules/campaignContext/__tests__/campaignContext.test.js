@@ -93,6 +93,23 @@ describe("campaignContext", () => {
     expect(api.enter).toHaveBeenCalledTimes(2);
   });
 
+  it("refreshes only the authorized character collection after a realtime change", async () => {
+    const api = apiMock(false);
+    const store = setup(api);
+    await store.dispatch("campaignContext/selectCampaign", 7);
+    api.listCharacters.mockResolvedValueOnce({
+      characters: [{ id: 12, name: "Newly shared", capabilities: {} }],
+    });
+
+    await store.dispatch("campaignContext/refreshCharacters");
+
+    expect(api.enter).toHaveBeenCalledTimes(1);
+    expect(api.listMembers).toHaveBeenCalledTimes(1);
+    expect(store.state.campaignContext.characters).toEqual([
+      { id: 12, name: "Newly shared", capabilities: {} },
+    ]);
+  });
+
   it("blocks manager operations before the API for a player", async () => {
     const api = apiMock(false);
     api.invite = vi.fn();

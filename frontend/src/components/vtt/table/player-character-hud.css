@@ -18,6 +18,46 @@
   box-sizing: border-box;
 }
 
+.hud-pinned-spells {
+  position: absolute;
+  bottom: calc(100% + 0.3rem);
+  left: 50%;
+  z-index: 6;
+  display: flex;
+  max-width: min(92vw, 46rem);
+  align-items: center;
+  gap: 0.3rem;
+  overflow-x: auto;
+  padding: 0.3rem 0.45rem;
+  color: #ead9ad;
+  border: 1px solid #66513a;
+  background: rgb(35 22 14 / 94%);
+  box-shadow: 0 0.35rem 0.9rem rgb(0 0 0 / 55%);
+  transform: translateX(-50%);
+}
+
+.hud-pinned-spells > span {
+  flex: none;
+  color: #bda77c;
+  font-size: 0.65rem;
+  text-transform: uppercase;
+}
+
+.hud-pinned-spells button {
+  flex: none;
+  padding: 0.24rem 0.4rem;
+  color: #f4e4bb;
+  border: 1px solid #806344;
+  background: linear-gradient(#65402a, #3d271a);
+  cursor: pointer;
+}
+
+.hud-pinned-spells button:hover,
+.hud-pinned-spells button:focus-visible {
+  border-color: #c79a5f;
+  background: linear-gradient(#825338, #4f301f);
+}
+
 .player-character-hud .hud-text {
   margin: 0;
   text-shadow: 0 1px 2px #000;
@@ -155,7 +195,9 @@
 }
 
 .player-character-hud .hud-mode {
-  pointer-events: none;
+  width: 28px;
+  height: 25px;
+  pointer-events: auto;
 }
 
 .hud-visually-hidden {

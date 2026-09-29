@@ -11,16 +11,19 @@ describe("shop character portrait", () => {
           name: "Tel Aes In",
           avatar: "Telaesin_g6hfpk",
           assets: {
-            avatar: { publicId: "character-assets/000001/avatar" },
-            portrait: { publicId: "character-assets/000001/portrait" },
-            token: { publicId: "character-assets/000001/token" },
+            avatar: { mediaAssetId: 1, url: "https://media.example/avatar" },
+            portrait: {
+              mediaAssetId: 2,
+              url: "https://media.example/portrait",
+            },
+            token: { mediaAssetId: 3, url: "https://media.example/token" },
           },
         },
       },
     };
 
     expect(computed.activeBgProfile.call(context).avatar).toBe(
-      "https://res.cloudinary.com/dajzxmjyc/image/upload/f_auto,q_auto,c_fill,g_auto,w_512,h_768/character-assets/000001/portrait",
+      "https://media.example/portrait",
     );
   });
 });

@@ -202,20 +202,22 @@ export const selectPlayerCharacter = ({
 } = {}) => {
   const ownerKey = idKey(userId);
   if (!ownerKey) return null;
-  const owned = characters
+  const permitted = characters
     .filter(
       (character) =>
-        idKey(character?.ownerUserId) === ownerKey &&
+        character?.capabilities?.canEdit === true &&
         (campaignId === null ||
           campaignId === undefined ||
           idsMatch(character?.campaignId, campaignId)),
     )
     .slice()
     .sort(compareCharacters);
-  if (!owned.length) return null;
+  if (!permitted.length) return null;
   return (
-    owned.find((character) => idsMatch(character.id, focusedCharacterId)) ||
-    owned.find((character) => idsMatch(character.id, selectedCharacterId)) ||
+    permitted.find((character) => idsMatch(character.id, focusedCharacterId)) ||
+    permitted.find((character) =>
+      idsMatch(character.id, selectedCharacterId),
+    ) ||
     null
   );
 };
@@ -265,7 +267,6 @@ export const isOwnedCharacter = (character, userId, characterId = null) =>
 export const isHudCharacterAllowed = ({
   character,
   summary,
-  userId,
   characterId,
   canManage = false,
 } = {}) => {
@@ -273,7 +274,11 @@ export const isHudCharacterAllowed = ({
     return false;
   }
   if (!idsMatch(summary.id, characterId)) return false;
-  return canManage || isOwnedCharacter(character, userId, characterId);
+  return (
+    canManage ||
+    (summary.capabilities?.canEdit === true &&
+      character.capabilities?.canEdit === true)
+  );
 };
 
 const hpHint = (value) =>
@@ -544,15 +549,15 @@ export const playerHudActions = (canOpenShop, canManage, shopBusy = false) => [
   { id: "character", icon: "users", available: true },
   { id: "combat", icon: "sword", available: true },
   { id: "map", icon: "fit", available: true },
-  { id: "history", icon: "book", available: false },
+  { id: "history", icon: "book", available: true },
   { id: "scrolls", icon: "file", available: false },
-  { id: "journal", icon: "file", available: false },
+  { id: "journal", icon: "file", available: true },
   { id: "equipment", icon: "package", available: false },
-  { id: "traits", icon: "users", available: false },
-  { id: "notes", icon: "file", available: false },
-  { id: "bestiary", icon: "database", available: false },
-  { id: "purse", icon: "shop", available: false },
-  { id: "abilities", icon: "light", available: false },
+  { id: "traits", icon: "users", available: true },
+  { id: "notes", icon: "file", available: true },
+  { id: "bestiary", icon: "database", available: true },
+  { id: "purse", icon: "shop", available: true },
+  { id: "abilities", icon: "light", available: true },
   {
     id: "shop",
     icon: "shop",
@@ -560,7 +565,7 @@ export const playerHudActions = (canOpenShop, canManage, shopBusy = false) => [
     busy: shopBusy === true,
   },
   { id: "dice", icon: "dice", available: true },
-  { id: "spells", icon: "light", available: false },
-  { id: "advance", icon: "sword", available: false },
+  { id: "spells", icon: "file", available: true },
+  { id: "advance", icon: "sword", available: true },
   { id: "settings", icon: "settings", available: canManage === true },
 ];

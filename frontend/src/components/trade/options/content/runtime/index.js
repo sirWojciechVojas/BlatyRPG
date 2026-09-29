@@ -17,6 +17,7 @@ import ShopActivationDialog from "@/components/shop/common/dialogs/ShopActivatio
 import OwnerOptionDialog from "@/components/shop/common/dialogs/OwnerOptionDialog.vue";
 import ViewSettingsDialog from "@/components/shop/common/dialogs/ViewSettingsDialog.vue";
 import WeaponStatsDialog from "@/components/shop/common/dialogs/WeaponStatsDialog.vue";
+import AuthenticatedImage from "@/components/ui/AuthenticatedImage.vue";
 import { tradeModalContextKey } from "@/components/shop/shopContext";
 import iconTaxonomy from "@/data/trade/iconTaxonomy.json";
 import {
@@ -46,6 +47,7 @@ const runtime = {
   OwnerOptionDialog,
   ViewSettingsDialog,
   WeaponStatsDialog,
+  AuthenticatedImage,
   tradeModalContextKey,
   iconTaxonomy,
   inventoryIconClasses,

@@ -1,91 +1,20 @@
-.player-character-stats-modal {
+.player-character-stats-content {
   --character-stats-paper: #21180e;
   --character-stats-ink: #170f09;
   --character-stats-gold: #d3aa63;
-  z-index: 1060;
-}
-
-.player-character-stats-modal .modal-dialog {
-  width: min(1600px, calc(100vw - 24px));
-  max-width: none;
-  height: min(842px, calc(100dvh - 24px - env(safe-area-inset-bottom)));
-  margin: 12px auto calc(12px + env(safe-area-inset-bottom));
-}
-
-.player-character-stats-modal__content {
   width: 100%;
   height: 100%;
   min-height: 0;
   overflow: hidden;
-  border: 0;
-  border-radius: 0;
   color: var(--character-stats-ink);
   background: url("../../../assets/app-ui/img/character-stats/CharacterStats-bg.png")
     center / cover no-repeat;
-  box-shadow: 0 24px 90px rgba(0, 0, 0, 0.82);
 }
 
-.player-character-stats-modal__header {
-  position: relative;
-  display: flex;
-  height: 42px;
-  min-height: 42px;
-  align-items: center;
-  justify-content: center;
-  border: 0;
-  padding: 0;
-  color: #fff;
-  background: url("../../../assets/app-ui/img/character-stats/titleBar-center.png")
-    center / contain repeat-x;
-}
-
-.player-character-stats-modal__header h2 {
-  overflow: hidden;
-  max-width: calc(100% - 100px);
-  margin: 0;
-  color: whitesmoke;
-  font:
-    700 clamp(1.25rem, 2.2vw, 2.35rem) Garamond,
-    Georgia,
-    serif;
-  letter-spacing: 2px;
-  line-height: 42px;
-  text-align: center;
-  text-overflow: ellipsis;
-  text-shadow: 2px 2px 1px rgba(0, 0, 0, 0.65);
-  white-space: nowrap;
-}
-
-.player-character-stats-modal__close {
-  position: absolute;
-  right: 4px;
-  display: block;
-  width: 38px;
-  height: 38px;
-  border: 0;
-  padding: 0;
-  color: transparent;
-  background: url("../../../assets/app-ui/img/character-stats/gfx/buttonClose.png")
-    center / contain no-repeat;
-  cursor: pointer;
-}
-
-.player-character-stats-modal__close:hover {
-  filter: brightness(1.18);
-}
-
-.player-character-stats-modal__close:focus-visible,
 .character-stats-panel button:focus-visible,
 .player-character-stats-modal__state button:focus-visible {
   outline: 3px solid #f2cd81;
   outline-offset: 2px;
-}
-
-.player-character-stats-modal__body {
-  height: calc(100% - 42px);
-  min-height: 0;
-  overflow: hidden;
-  padding: 0;
 }
 
 .character-stats-layout {
@@ -665,13 +594,7 @@
 }
 
 @media (max-width: 1100px) {
-  .player-character-stats-modal .modal-dialog {
-    width: calc(100vw - 12px);
-    height: calc(100dvh - 12px - env(safe-area-inset-bottom));
-    margin: 6px auto calc(6px + env(safe-area-inset-bottom));
-  }
-
-  .player-character-stats-modal__body {
+  .player-character-stats-content {
     overflow: auto;
   }
 
@@ -693,9 +616,6 @@
 }
 
 @media (max-width: 560px) {
-  .player-character-stats-modal__header h2 {
-    font-size: 1.1rem;
-  }
   .character-stats-panel {
     min-height: 620px;
   }
@@ -710,16 +630,9 @@
   }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .player-character-stats-modal.fade,
-  .player-character-stats-modal.fade .modal-dialog {
-    transition: none;
-  }
-}
-
 /* Bountify inventory: square 48px slots at desktop widths, reduced only
  * when the viewport cannot physically contain the original layout. */
-.player-character-stats-modal {
+.player-character-stats-content {
   --character-inventory-cell-size: 48px;
   --character-inventory-edge-size: 50px;
   --character-inventory-single-size: 52px;
@@ -1452,11 +1365,7 @@
  * rendered at 93.75%, which gives a 45 px centre, 47 px outer edge and a
  * 49 px detached slot. This keeps the irregular atlas cuts intact while the
  * complete 10 × 3 and 2 × 4 grids fit inside the original 639 px frame. */
-.player-character-stats-modal .modal-dialog {
-  height: min(972px, calc(100dvh - 24px - env(safe-area-inset-bottom)));
-}
-
-.player-character-stats-modal {
+.player-character-stats-content {
   --character-inventory-cell-size: 45px;
   --character-inventory-edge-size: 47px;
   --character-inventory-single-size: 49px;
@@ -2028,11 +1937,7 @@
 }
 
 @media (max-width: 1100px) {
-  .player-character-stats-modal .modal-dialog {
-    height: calc(100dvh - 12px - env(safe-area-inset-bottom));
-  }
-
-  .player-character-stats-modal__body {
+  .player-character-stats-content {
     overflow: auto;
   }
 

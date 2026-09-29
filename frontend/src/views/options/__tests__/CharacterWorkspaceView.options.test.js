@@ -133,4 +133,24 @@ describe("CharacterWorkspaceView save synchronization", () => {
 
     expect(api.create).not.toHaveBeenCalled();
   });
+
+  it("refreshes the player character chooser when access changes in this campaign", () => {
+    const context = {
+      ...options.data(),
+      campaignId: 7,
+      loadCharacters: vi.fn(),
+    };
+
+    options.methods.handleCharacterAccessChanged.call(context, {
+      detail: { campaignId: 7 },
+    });
+    options.methods.handleCharacterAccessChanged.call(context, {
+      detail: { campaignId: 8 },
+    });
+
+    expect(context.loadCharacters).toHaveBeenCalledTimes(1);
+    expect(context.loadCharacters).toHaveBeenCalledWith({
+      preserveSelection: true,
+    });
+  });
 });
