@@ -13,7 +13,7 @@ import { authApiClient } from "@/lib/auth/authApiClient";
 import { authSession } from "@/lib/auth/authSession";
 import bg1 from "@/assets/app-ui/img/bg1.jpg";
 import bg2 from "@/assets/app-ui/img/bg2.jpg";
-import background from "@/assets/app-ui/img/background.jpg";
+import background from "@/assets/app-ui/img/niceBg.webp";
 import logo from "@/assets/app-ui/img/BlatyRPG-logo.png";
 import dice20 from "@/assets/app-ui/img/dice20.png";
 import navbar from "@/assets/app-ui/gfx/navbar-bg.jpg";

@@ -1,10 +1,9 @@
-import CampaignCard from "@/components/dashboard/CampaignCard.vue";
+import CampaignCarousel from "@/components/dashboard/CampaignCarousel.vue";
 import CampaignCreateForm from "@/components/dashboard/CampaignCreateForm.vue";
 import { authApiClient } from "@/lib/auth/authApiClient";
 import { authSession } from "@/lib/auth/authSession";
 import { campaignApiClient } from "@/lib/campaign/campaignApiClient";
 import { gameCatalogApiClient } from "@/lib/catalog/gameCatalogApiClient";
-import background from "@/assets/app-ui/img/background.jpg";
 
 const sortCampaigns = (campaigns) =>
   [...campaigns].sort(
@@ -15,7 +14,7 @@ const sortCampaigns = (campaigns) =>
 
 export default {
   name: "DashboardHomeView",
-  components: { CampaignCard, CampaignCreateForm },
+  components: { CampaignCarousel, CampaignCreateForm },
   data: () => ({
     session: null,
     campaigns: [],
@@ -25,14 +24,13 @@ export default {
     isCreating: false,
     dashboardError: "",
     creationError: "",
+    showCreateForm: false,
+    carouselRange: { start: 0, end: 0, visible: 0, total: 0 },
     unsubscribeAuth: null,
   }),
   computed: {
     displayName() {
       return this.session?.user?.username || this.session?.user?.email || "";
-    },
-    styleVars() {
-      return { "--dashboard-background": `url("${background}")` };
     },
   },
   async mounted() {
@@ -97,6 +95,9 @@ export default {
         const campaign = await campaignApiClient.create(draft);
         this.campaigns = sortCampaigns([...this.campaigns, campaign]);
         this.$refs.createForm?.reset();
+        this.closeCreateCampaign(true);
+        await this.$nextTick();
+        this.$refs.carousel?.scrollToCampaign(campaign.id);
       } catch (error) {
         if (error?.status === 401) {
           await this.logout();
@@ -109,6 +110,28 @@ export default {
       } finally {
         this.isCreating = false;
       }
+    },
+    openCreateCampaign() {
+      if (!this.canCreateCampaign || this.isLoading) return;
+      this.creationError = "";
+      this.showCreateForm = true;
+      this.$nextTick(() => {
+        const dialog = this.$refs.createDialog;
+        const firstField = dialog?.querySelector("input, select, textarea");
+        (firstField || dialog)?.focus();
+      });
+    },
+    closeCreateCampaign(force = false) {
+      if (this.isCreating && !force) return;
+      const wasOpen = this.showCreateForm;
+      this.showCreateForm = false;
+      this.creationError = "";
+      if (wasOpen) {
+        this.$nextTick(() => this.$refs.newCampaignButton?.focus());
+      }
+    },
+    handleRangeChange(range) {
+      this.carouselRange = range;
     },
     async logout() {
       try {

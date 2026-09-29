@@ -1,17 +1,19 @@
 <template>
   <main class="auth-page">
     <section class="auth-panel invitations-panel">
-      <h1>{{ $t("campaignLobby.myInvitations.title") }}</h1>
-      <p v-if="loading">{{ $t("campaignLobby.loading") }}</p>
+      <h1>{{ $t("campaignInvitations.title") }}</h1>
+      <p v-if="loading">{{ $t("campaignInvitations.loading") }}</p>
       <p v-if="error" class="auth-error" role="alert">{{ error }}</p>
       <p v-if="!loading && !invitations.length">
-        {{ $t("campaignLobby.myInvitations.empty") }}
+        {{ $t("campaignInvitations.empty") }}
       </p>
       <ul>
         <li v-for="invitation in invitations" :key="invitation.id">
           <div>
             <strong>{{ invitation.campaignName }}</strong>
-            <span>{{ $t(`campaignLobby.roles.${invitation.role}`) }}</span>
+            <span>{{
+              $t(`campaignInvitations.roles.${invitation.role}`)
+            }}</span>
             <p v-if="invitation.message">{{ invitation.message }}</p>
           </div>
           <button
@@ -19,19 +21,19 @@
             :disabled="busyId === invitation.id"
             @click="respond(invitation.id, 'accept')"
           >
-            {{ $t("campaignLobby.actions.accept") }}
+            {{ $t("campaignInvitations.actions.accept") }}
           </button>
           <button
             type="button"
             :disabled="busyId === invitation.id"
             @click="respond(invitation.id, 'reject')"
           >
-            {{ $t("campaignLobby.actions.reject") }}
+            {{ $t("campaignInvitations.actions.reject") }}
           </button>
         </li>
       </ul>
       <router-link :to="{ name: 'home' }">{{
-        $t("campaignLobby.actions.back")
+        $t("campaignInvitations.actions.back")
       }}</router-link>
     </section>
   </main>
@@ -53,10 +55,10 @@ export default {
   },
   methods: {
     message(error) {
-      if (error?.network) return this.$t("campaignLobby.errors.network");
+      if (error?.network) return this.$t("campaignInvitations.errors.network");
       if (error?.status === 429)
-        return this.$t("campaignLobby.errors.rateLimited");
-      return this.$t("campaignLobby.errors.generic");
+        return this.$t("campaignInvitations.errors.rateLimited");
+      return this.$t("campaignInvitations.errors.generic");
     },
     async load() {
       this.loading = true;

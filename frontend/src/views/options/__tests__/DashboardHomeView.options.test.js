@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, it, vi } from "vitest";
 
-vi.mock("@/components/dashboard/CampaignCard.vue", () => ({ default: {} }));
+vi.mock("@/components/dashboard/CampaignCarousel.vue", () => ({ default: {} }));
 vi.mock("@/components/dashboard/CampaignCreateForm.vue", () => ({
   default: {},
 }));
@@ -15,9 +15,9 @@ describe("DashboardHomeView authentication boundary", () => {
     expect(options.data()).not.toHaveProperty("isLoggingIn");
   });
 
-  it("uses the existing campaign card and creation form", () => {
+  it("uses the campaign carousel and existing creation form", () => {
     expect(Object.keys(options.components)).toEqual([
-      "CampaignCard",
+      "CampaignCarousel",
       "CampaignCreateForm",
     ]);
   });
