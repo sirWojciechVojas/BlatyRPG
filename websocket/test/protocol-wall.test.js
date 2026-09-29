@@ -84,3 +84,38 @@ test("accepts window wall segments", () => {
   assert.equal(message.changes.blocksSight, false);
   assert.equal(message.changes.blocksLight, false);
 });
+
+test("accepts a validated selected-token context only for door interaction", () => {
+  const message = parseAuthenticatedMessage({
+    v: 1,
+    type: "wall.change",
+    requestId: "door-interact-1",
+    operation: "interact",
+    sceneId: 4,
+    wallId: 8,
+    revision: 2,
+    changes: {
+      doorState: "open",
+      actingTokenIds: [12, 12, 13],
+      silent: true,
+    },
+  });
+
+  assert.deepEqual(message.changes.actingTokenIds, [12, 13]);
+  assert.equal(message.changes.silent, true);
+  assert.throws(
+    () => parseAuthenticatedMessage({
+      v: 1,
+      type: "wall.change",
+      requestId: "door-update-context-1",
+      operation: "update",
+      sceneId: 4,
+      wallId: 8,
+      revision: 2,
+      changes: { actingTokenIds: [12] },
+    }),
+    (error) =>
+      error instanceof ProtocolError &&
+      error.code === "wall_acting_token_ids_invalid",
+  );
+});

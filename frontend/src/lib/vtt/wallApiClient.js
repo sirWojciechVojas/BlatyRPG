@@ -45,6 +45,29 @@ export const createWallApiClient = (client = jsonApiClient) => {
         body: { revision: numberRevision(revision) },
       });
     },
+    async interact(
+      campaignId,
+      sceneId,
+      wallId,
+      revision,
+      doorState,
+      actingTokenIds = [],
+      silent = false,
+    ) {
+      const payload = await client.request(
+        `${item(campaignId, sceneId, wallId)}/interact`,
+        {
+          method: "POST",
+          body: {
+            revision: numberRevision(revision),
+            doorState,
+            actingTokenIds: actingTokenIds.map(Number),
+            silent: Boolean(silent),
+          },
+        },
+      );
+      return normalizeWall(payload.wall);
+    },
   };
 };
 

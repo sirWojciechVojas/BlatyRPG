@@ -58,4 +58,24 @@ describe("wallApiClient", () => {
       body: { doorState: "open", enabled: false, revision: 2 },
     });
   });
+
+  it("sends selected token context with a door interaction", async () => {
+    const request = vi.fn().mockResolvedValue({ wall: apiWall });
+    const client = createWallApiClient({ request });
+
+    await client.interact(7, 4, 8, 2, "open", [21], true);
+
+    expect(request).toHaveBeenCalledWith(
+      "/campaigns/7/scenes/4/walls/8/interact",
+      {
+        method: "POST",
+        body: {
+          revision: 2,
+          doorState: "open",
+          actingTokenIds: [21],
+          silent: true,
+        },
+      },
+    );
+  });
 });

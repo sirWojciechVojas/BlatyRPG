@@ -90,3 +90,72 @@ test("broadcasts committed walls without revealing secret metadata", async () =>
   assert.equal(publicUpdate.payload.wall.blocksSight, true);
   assert.equal(publicUpdate.payload.wall.enabled, true);
 });
+
+test("projects secret wall audio only after the authoritative wall publish", async () => {
+  const audioCalls = [];
+  const setup = await startTestServer(
+    {},
+    {
+      wallBackend: {
+        change: async () => ({
+          operation: "update",
+          sound: "open",
+          wall: {
+            id: 8,
+            sceneId: 4,
+            name: "Hidden passage",
+            type: "secret",
+            doorType: "secret",
+            x1: 0,
+            y1: 50,
+            x2: 100,
+            y2: 50,
+            revision: 2,
+            doorState: "open",
+            soundConfig: { version: 2, rules: [{ geometry: { points: [0.5] } }] },
+          },
+        }),
+        audioState: async (session, sceneId) => {
+          audioCalls.push(["state", session.userId, sceneId]);
+          return { sceneId, activeLoops: [], serverTime: 1000 };
+        },
+        audioCue: async (session, sceneId, wallId, cue) => {
+          audioCalls.push(["cue", session.userId, sceneId, wallId, cue]);
+          return {
+            sceneId,
+            serverTime: 1000,
+            items: [{
+              playbackId: `opaque-${session.userId}`,
+              audio: { id: 5, title: "Door", url: "/safe/audio/5" },
+              volume: 0.5,
+              loop: false,
+              fadeInMs: 10,
+              fadeOutMs: 20,
+            }],
+          };
+        },
+      },
+    },
+  );
+  running.push(setup);
+  const sender = await connect(setup.url, 1, "client-instance-0001", {
+    canManage: true,
+  });
+  const regular = await connect(setup.url, 2, "client-instance-0002");
+
+  sender.send(request);
+  await sender.event("wall.ack");
+  const [state, cue] = await Promise.all([
+    regular.event("wall.audio.state"),
+    regular.event("wall.audio.cue"),
+  ]);
+
+  assert.deepEqual(state.payload.activeLoops, []);
+  assert.equal(cue.payload.items[0].playbackId, "opaque-2");
+  assert.equal(cue.payload.items[0].volume, 0.5);
+  assert.equal(JSON.stringify(cue.payload).includes("geometry"), false);
+  assert.deepEqual(audioCalls, [
+    ["state", 2, 4],
+    ["cue", 2, 4, 8, "open"],
+  ]);
+});

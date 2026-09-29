@@ -4,11 +4,16 @@ namespace App\Services\Wall;
 
 final class WallPayloadValidator
 {
-    private const TYPES = ['wall', 'door', 'window', 'secret'];
+    private const TYPES = ['wall', 'door', 'window', 'secret', 'terrain', 'invisible', 'ethereal'];
+    private const WALL_TYPES = ['solid', 'terrain', 'invisible', 'ethereal', 'custom'];
+    private const DOOR_TYPES = ['none', 'door', 'secret', 'window'];
+    private const RESTRICTIONS = ['normal', 'limited', 'proximity'];
     private const STATES = ['closed', 'open', 'locked'];
     private const FIELDS = [
         'name', 'type', 'x1', 'y1', 'x2', 'y2', 'blocksMovement', 'blocksSight',
         'blocksLight', 'doorState', 'color', 'enabled', 'hidden',
+        'wallType', 'doorType', 'restrictionType', 'blocksSound',
+        'proximityThreshold', 'playerOperable', 'soundConfig', 'animationConfig',
     ];
 
     public function create(array $payload): array
@@ -53,11 +58,46 @@ final class WallPayloadValidator
             if (!in_array($type, self::TYPES, true)) $errors['type'] = 'Wall type is invalid.';
             else $data['type'] = $type;
         }
-        foreach (['blocksMovement', 'blocksSight', 'blocksLight', 'enabled', 'hidden'] as $field) {
+        foreach (['wallType' => ['wall_type', self::WALL_TYPES],
+            'doorType' => ['door_type', self::DOOR_TYPES],
+            'restrictionType' => ['restriction_type', self::RESTRICTIONS]]
+            as $field => [$column, $values]) {
+            if (!array_key_exists($field, $payload)) continue;
+            $value = strtolower(trim((string) $payload[$field]));
+            if (!in_array($value, $values, true)) $errors[$field] = 'Value is invalid.';
+            else $data[$column] = $value;
+        }
+        foreach (['blocksMovement', 'blocksSight', 'blocksLight', 'blocksSound',
+            'playerOperable', 'enabled', 'hidden'] as $field) {
             if (!array_key_exists($field, $payload)) continue;
             $value = filter_var($payload[$field], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
             if ($value === null) $errors[$field] = 'A boolean is required.';
             else $data[$this->snake($field)] = $value ? 1 : 0;
+        }
+        if (array_key_exists('proximityThreshold', $payload)) {
+            $threshold = $payload['proximityThreshold'];
+            if (!is_numeric($threshold) || !is_finite((float) $threshold)
+                || (float) $threshold < 0 || (float) $threshold > 100000) {
+                $errors['proximityThreshold'] = 'Proximity threshold is invalid.';
+            } else $data['proximity_threshold'] = (float) $threshold;
+        }
+        if (array_key_exists('soundConfig', $payload)) {
+            if (!is_array($payload['soundConfig'])) {
+                $errors['soundConfig'] = 'Configuration must be an object.';
+            } elseif (strlen((string) json_encode($payload['soundConfig'])) > 16384) {
+                $errors['soundConfig'] = 'Configuration is too large.';
+            } else {
+                $sound = (new WallSoundConfigValidator())->validate($payload['soundConfig']);
+                if (!$sound['valid']) $errors += $sound['errors'];
+                else $data['sound_config_json'] = json_encode($sound['config']);
+            }
+        }
+        if (array_key_exists('animationConfig', $payload)) {
+            if (!is_array($payload['animationConfig'])) {
+                $errors['animationConfig'] = 'Configuration must be an object.';
+            } elseif (strlen((string) json_encode($payload['animationConfig'])) > 16384) {
+                $errors['animationConfig'] = 'Configuration is too large.';
+            } else $data['animation_config_json'] = json_encode($payload['animationConfig']);
         }
         if (array_key_exists('color', $payload)) {
             if ($payload['color'] === null || trim((string) $payload['color']) === '') {
@@ -73,10 +113,16 @@ final class WallPayloadValidator
             $state = strtolower(trim((string) $payload['doorState']));
             if (!in_array($state, self::STATES, true)) $errors['doorState'] = 'Door state is invalid.';
             else $data['door_state'] = $state;
-        } elseif (!$partial && in_array($type, ['door', 'secret'], true)) $data['door_state'] = 'closed';
+        } elseif (!$partial && in_array($type, ['door', 'secret', 'window'], true)) $data['door_state'] = 'closed';
+        if (!$partial || array_key_exists('type', $payload)) $this->applyLegacyPreset($type, $data);
+        if (!$partial && in_array(($data['door_type'] ?? 'none'), ['door', 'secret', 'window'], true)) {
+            $data += ['door_state' => 'closed'];
+        }
         if (!$partial) $data += [
             'blocks_movement' => 1, 'blocks_sight' => 1, 'blocks_light' => 1,
-            'enabled' => 1, 'hidden' => 0,
+            'blocks_sound' => 1, 'wall_type' => 'solid', 'door_type' => 'none',
+            'restriction_type' => 'normal', 'proximity_threshold' => 10,
+            'player_operable' => 1, 'enabled' => 1, 'hidden' => 0,
         ];
         if ($this->zeroLength($data, $partial)) $errors['geometry'] = 'Wall must have a length.';
         return $partial ? $this->revision($payload, $data, $errors) : [
@@ -109,5 +155,27 @@ final class WallPayloadValidator
     private function snake(string $value): string
     {
         return strtolower((string) preg_replace('/(?<!^)[A-Z]/', '_$0', $value));
+    }
+
+    private function applyLegacyPreset(string $type, array &$data): void
+    {
+        if ($type === 'wall') {
+            $data += ['wall_type' => 'solid', 'door_type' => 'none'];
+        } elseif ($type === 'terrain') {
+            $data += ['wall_type' => 'terrain', 'door_type' => 'none',
+                'restriction_type' => 'limited'];
+        } elseif ($type === 'invisible') {
+            $data += ['wall_type' => 'invisible', 'door_type' => 'none', 'blocks_sight' => 0,
+                'blocks_light' => 0, 'blocks_sound' => 0];
+        } elseif ($type === 'ethereal') {
+            $data += ['wall_type' => 'ethereal', 'door_type' => 'none', 'blocks_movement' => 0,
+                'blocks_sound' => 0];
+        } elseif (in_array($type, ['door', 'secret', 'window'], true)) {
+            $data += ['door_type' => $type];
+            if ($type === 'window') {
+                $data += ['blocks_sight' => 0, 'blocks_light' => 0,
+                    'restriction_type' => 'proximity'];
+            }
+        }
     }
 }

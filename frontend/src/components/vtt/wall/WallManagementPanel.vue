@@ -80,7 +80,11 @@
           >
             {{ flag.symbol }}
           </button>
-          <template v-if="['door', 'secret'].includes(wall.type)">
+          <template
+            v-if="
+              ['door', 'secret', 'window'].includes(wall.doorType || wall.type)
+            "
+          >
             <button
               type="button"
               :class="{ active: wall.doorState === 'open' }"

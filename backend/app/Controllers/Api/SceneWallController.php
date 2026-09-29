@@ -54,4 +54,15 @@ class SceneWallController extends CampaignApiController
             $this->jsonPayload()
         ));
     }
+
+    public function interact($campaignId = null, $sceneId = null, $wallId = null)
+    {
+        return $this->execute(fn (): array => $this->walls->interact(
+            $this->positiveId($campaignId),
+            $this->positiveId($sceneId),
+            $this->positiveId($wallId),
+            $this->auth(),
+            $this->jsonPayload()
+        ));
+    }
 }
