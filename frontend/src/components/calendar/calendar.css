@@ -1,0 +1,799 @@
+.campaign-calendar {
+  --calendar-ink: #2b2118;
+  --calendar-muted: #6b5942;
+  --calendar-brass: #9a7337;
+  --calendar-brass-light: #c3a365;
+  --calendar-paper: #d7c39b;
+  --calendar-paper-dark: #b9a477;
+  --calendar-wood: #24160e;
+  position: relative;
+  display: flex;
+  min-width: 0;
+  height: 100%;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+  color: var(--calendar-ink);
+  background:
+    linear-gradient(rgb(224 207 169 / 92%), rgb(198 177 133 / 94%)),
+    url("../../assets/app-ui/img/bg-trading.jpg") center / cover;
+  font-family: Georgia, "Times New Roman", serif;
+  text-align: left;
+}
+
+.campaign-calendar button,
+.campaign-calendar input,
+.campaign-calendar select,
+.campaign-calendar textarea {
+  font: inherit;
+}
+
+.campaign-calendar button {
+  color: inherit;
+}
+
+.campaign-calendar__state {
+  display: grid;
+  height: 100%;
+  place-content: center;
+  gap: 0.75rem;
+  color: #dec890;
+  background: #17110c;
+  text-align: center;
+}
+
+.campaign-calendar__toolbar {
+  display: flex;
+  min-height: 2.55rem;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.28rem 0.42rem;
+  color: #e8d6a6;
+  border-bottom: 1px solid #7b5a2b;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 5%), transparent),
+    #24160e;
+}
+
+.campaign-calendar__toolbar button,
+.campaign-calendar__dialog button,
+.campaign-calendar__day-panel button,
+.campaign-calendar__time-manager button {
+  min-height: 1.75rem;
+  padding: 0.18rem 0.48rem;
+  color: #e2d2aa;
+  border: 1px solid #70562f;
+  border-radius: 2px;
+  background: #2d2117;
+}
+
+.campaign-calendar__toolbar button:hover,
+.campaign-calendar__toolbar button.is-active,
+.campaign-calendar button.is-brass {
+  color: #20170f;
+  border-color: #c2a15f;
+  background: #b99755;
+}
+
+.campaign-calendar__current {
+  min-width: 15rem;
+  margin-right: auto;
+  line-height: 1.05;
+}
+
+.campaign-calendar__current strong,
+.campaign-calendar__current span {
+  display: block;
+}
+
+.campaign-calendar__current strong {
+  overflow: hidden;
+  font-size: 0.78rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.campaign-calendar__current span {
+  margin-top: 0.12rem;
+  color: #9eac90;
+  font-family: Arial, sans-serif;
+  font-size: 0.58rem;
+}
+
+.campaign-calendar__current span.is-error {
+  color: #dc8d73;
+}
+
+.campaign-calendar__navigation,
+.campaign-calendar__view-switch {
+  display: flex;
+  gap: 0.18rem;
+}
+
+.campaign-calendar__navigation button,
+.campaign-calendar__view-switch button,
+.campaign-calendar__toolbar > button {
+  font-family: Arial, sans-serif;
+  font-size: 0.67rem;
+  white-space: nowrap;
+}
+
+.campaign-calendar__content {
+  display: grid;
+  min-height: 0;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr) 14.5rem;
+}
+
+.campaign-calendar__content.has-time-manager {
+  grid-template-columns: minmax(0, 1fr) 18rem;
+}
+
+.campaign-calendar__sidebar {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  flex-direction: column;
+  overflow: hidden;
+  color: #dfcea4;
+  border-left: 1px solid #775a31;
+  background: #251a12;
+}
+
+.campaign-calendar__operation-error {
+  display: flex;
+  min-height: 2rem;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.25rem 0.45rem;
+  color: #f0d5c7;
+  border-bottom: 1px solid #824a36;
+  background: #4e291f;
+  font-family: Arial, sans-serif;
+  font-size: 0.65rem;
+}
+
+.campaign-calendar__operation-error span {
+  flex: 1;
+}
+
+.campaign-calendar__operation-error button {
+  min-height: 1.5rem;
+  padding: 0.1rem 0.4rem;
+  color: #f2ddbd;
+  border: 1px solid #a6754c;
+  background: #2d2117;
+  font-size: 0.62rem;
+}
+
+.campaign-calendar__main {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 0.45rem;
+}
+
+.campaign-calendar__month h3 {
+  margin: 0 0 0.35rem;
+  color: #39271a;
+  font-size: 1rem;
+  text-align: center;
+}
+
+.campaign-calendar__weekdays,
+.campaign-calendar__month-grid {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+}
+
+.campaign-calendar__weekdays {
+  border-top: 1px solid #80683f;
+  border-left: 1px solid #80683f;
+}
+
+.campaign-calendar__weekdays span {
+  overflow: hidden;
+  padding: 0.22rem 0.12rem;
+  border-right: 1px solid #80683f;
+  border-bottom: 1px solid #80683f;
+  background: rgb(104 77 40 / 18%);
+  font-family: Arial, sans-serif;
+  font-size: 0.56rem;
+  font-weight: 700;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.campaign-calendar__month-grid {
+  min-height: 25rem;
+  border-left: 1px solid #8e754c;
+}
+
+.campaign-calendar__day,
+.campaign-calendar__month-grid .is-empty {
+  min-width: 0;
+  min-height: 4.7rem;
+  border: 0;
+  border-right: 1px solid #8e754c;
+  border-bottom: 1px solid #8e754c;
+  border-radius: 0;
+  background: rgb(236 220 181 / 68%);
+}
+
+.campaign-calendar__month-grid .is-empty {
+  background: rgb(72 50 29 / 12%);
+}
+
+.campaign-calendar__day {
+  position: relative;
+  display: block;
+  padding: 0.24rem;
+  color: var(--calendar-ink);
+  text-align: left;
+}
+
+.campaign-calendar__day:hover,
+.campaign-calendar__day.is-selected {
+  outline: 2px solid #825e27;
+  outline-offset: -2px;
+  background: #d8bd82;
+}
+
+.campaign-calendar__day.is-world-day {
+  box-shadow: inset 0 0 0 2px #9c3d2c;
+}
+
+.campaign-calendar__day-number {
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.campaign-calendar__day > small {
+  display: block;
+  overflow: hidden;
+  margin-top: 0.55rem;
+  font-family: Arial, sans-serif;
+  font-size: 0.56rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.campaign-calendar__event-marks {
+  position: absolute;
+  right: 0.2rem;
+  bottom: 0.25rem;
+  display: flex;
+  gap: 0.12rem;
+}
+
+.campaign-calendar__event-marks i,
+.campaign-calendar__agenda-row > i,
+.campaign-calendar__day-event > i {
+  width: 0.42rem;
+  height: 0.42rem;
+  flex: 0 0 auto;
+  border: 1px solid rgb(44 29 17 / 45%);
+  border-radius: 50%;
+}
+
+.campaign-calendar__moon {
+  display: inline-block;
+  width: 0.72rem;
+  height: 0.72rem;
+  margin: 0 0.18rem;
+  vertical-align: -0.08rem;
+  border: 1px solid #4a3a27;
+  border-radius: 50%;
+  background: #30271e;
+}
+
+.campaign-calendar__moon--pelnia {
+  background: #e5d9b9;
+}
+
+.campaign-calendar__moon--pierwsza-kwadra,
+.campaign-calendar__moon--polowka {
+  background: linear-gradient(90deg, #30271e 50%, #e5d9b9 50%);
+}
+
+.campaign-calendar__moon--ostatnia-kwadra {
+  background: linear-gradient(90deg, #e5d9b9 50%, #30271e 50%);
+}
+
+.campaign-calendar__moon--sierp-przybywajacy,
+.campaign-calendar__moon--garbaty-przybywajacy,
+.campaign-calendar__moon--sierp,
+.campaign-calendar__moon--garbaty {
+  background: radial-gradient(circle at 34% 50%, #30271e 0 48%, #e5d9b9 51%);
+}
+
+.campaign-calendar__moon--sierp-ubywajacy,
+.campaign-calendar__moon--garbaty-ubywajacy {
+  background: radial-gradient(circle at 66% 50%, #30271e 0 48%, #e5d9b9 51%);
+}
+
+.campaign-calendar__special-band {
+  display: flex;
+  width: 100%;
+  min-height: 2rem;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0.3rem 0;
+  padding: 0.35rem 0.65rem;
+  color: #ead9aa;
+  border: 1px solid #8b682f;
+  border-radius: 1px;
+  background: #342016;
+  text-align: left;
+}
+
+.campaign-calendar__special-band span {
+  color: #c2a875;
+  font-family: Arial, sans-serif;
+  font-size: 0.6rem;
+}
+
+.campaign-calendar__special-band.is-selected {
+  box-shadow: inset 0 0 0 2px #c7a45c;
+}
+
+.campaign-calendar__year {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(12rem, 1fr));
+  gap: 0.38rem;
+}
+
+.campaign-calendar__special-band--year {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+.campaign-calendar__year-month {
+  padding: 0.28rem;
+  border: 1px solid #8d7448;
+  background: rgb(231 213 173 / 55%);
+}
+
+.campaign-calendar__year-title {
+  width: 100%;
+  padding: 0 0 0.2rem;
+  border: 0;
+  background: transparent;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.campaign-calendar__year-weekdays,
+.campaign-calendar__year-grid {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 1px;
+}
+
+.campaign-calendar__year-weekdays span {
+  color: #6b5638;
+  font-family: Arial, sans-serif;
+  font-size: 0.48rem;
+  text-align: center;
+}
+
+.campaign-calendar__year-grid button,
+.campaign-calendar__year-grid i {
+  display: grid;
+  min-height: 1.18rem;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgb(105 80 42 / 28%);
+  border-radius: 0;
+  background: rgb(246 232 199 / 50%);
+  font-family: Arial, sans-serif;
+  font-size: 0.52rem;
+  font-style: normal;
+}
+
+.campaign-calendar__year-grid i {
+  background: transparent;
+}
+
+.campaign-calendar__year-grid button.has-events {
+  border-bottom: 2px solid #74552f;
+}
+
+.campaign-calendar__year-grid button.is-world-day {
+  color: #7e2519;
+  font-weight: 800;
+}
+
+.campaign-calendar__year-grid button.is-selected {
+  background: #bc9857;
+}
+
+.campaign-calendar__agenda {
+  border: 1px solid #8d7448;
+  background: rgb(232 215 175 / 52%);
+}
+
+.campaign-calendar__agenda-row {
+  display: grid;
+  width: 100%;
+  min-height: 2.35rem;
+  align-items: center;
+  grid-template-columns: 15rem 0.6rem minmax(8rem, 1fr) 8rem;
+  gap: 0.4rem;
+  padding: 0.26rem 0.5rem;
+  border: 0;
+  border-bottom: 1px solid #a58a5d;
+  border-radius: 0;
+  background: transparent;
+  text-align: left;
+}
+
+.campaign-calendar__agenda-row:hover {
+  background: rgb(152 111 50 / 12%);
+}
+
+.campaign-calendar__agenda-row.is-system {
+  background: rgb(82 48 25 / 10%);
+}
+
+.campaign-calendar__agenda-row time,
+.campaign-calendar__agenda-row small {
+  color: #6b5638;
+  font-family: Arial, sans-serif;
+  font-size: 0.62rem;
+}
+
+.campaign-calendar__day-panel {
+  min-width: 0;
+  min-height: 7rem;
+  flex: 1;
+  overflow: auto;
+  padding: 0.5rem;
+  color: #dfcea4;
+  background: transparent;
+}
+
+.campaign-calendar__day-panel > header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.35rem;
+}
+
+.campaign-calendar__day-panel > header > div {
+  min-width: 0;
+  flex: 1;
+}
+
+.campaign-calendar__day-panel header strong,
+.campaign-calendar__day-panel header small {
+  display: block;
+}
+
+.campaign-calendar__day-panel header strong {
+  font-size: 0.78rem;
+}
+
+.campaign-calendar__day-panel header small,
+.campaign-calendar__day-panel button {
+  font-family: Arial, sans-serif;
+  font-size: 0.59rem;
+}
+
+.campaign-calendar__day-panel dl {
+  margin: 0.55rem 0;
+}
+
+.campaign-calendar__day-panel dl > div {
+  display: grid;
+  grid-template-columns: 5.4rem 1fr;
+  padding: 0.18rem 0;
+  border-bottom: 1px solid rgb(196 164 98 / 18%);
+  font-size: 0.65rem;
+}
+
+.campaign-calendar__day-panel dt {
+  color: #ad9568;
+}
+
+.campaign-calendar__day-panel dd {
+  margin: 0;
+}
+
+.campaign-calendar__moon-control {
+  min-width: 0;
+}
+
+.campaign-calendar__moon-select {
+  width: 100%;
+  min-height: 1.55rem;
+  margin-top: 0.22rem;
+  padding: 0.16rem 0.25rem;
+  color: #241a12;
+  border: 1px solid #8f754c;
+  border-radius: 1px;
+  background: #d8c69d;
+  font-family: Arial, sans-serif;
+  font-size: 0.6rem;
+}
+
+.campaign-calendar__day-section {
+  margin-top: 0.65rem;
+}
+
+.campaign-calendar__day-section h4 {
+  margin: 0 0 0.25rem;
+  color: #c8aa68;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+}
+
+.campaign-calendar__day-section p {
+  margin: 0.18rem 0;
+  font-size: 0.67rem;
+}
+
+.campaign-calendar__day-section p span {
+  color: #a89061;
+  font-family: Arial, sans-serif;
+  font-size: 0.53rem;
+}
+
+.campaign-calendar__day-event {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 0.4rem;
+  margin: 0.18rem 0;
+  padding: 0.25rem 0.35rem;
+  text-align: left;
+}
+
+.campaign-calendar__day-event:disabled {
+  opacity: 1;
+}
+
+.campaign-calendar__day-event span,
+.campaign-calendar__day-event strong,
+.campaign-calendar__day-event small {
+  display: block;
+}
+
+.campaign-calendar__day-event small {
+  color: #a99670;
+}
+
+.campaign-calendar__empty {
+  padding: 0.7rem;
+  color: #78664b;
+  font-family: Arial, sans-serif;
+  font-size: 0.65rem;
+  text-align: center;
+}
+
+.campaign-calendar__day-panel .campaign-calendar__empty {
+  color: #a99670;
+}
+
+.campaign-calendar__scrim {
+  position: absolute;
+  z-index: 5;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 0.6rem;
+  background: rgb(10 7 5 / 72%);
+}
+
+.campaign-calendar__dialog {
+  width: min(43rem, 96%);
+  max-height: 96%;
+  overflow: auto;
+  color: var(--calendar-ink);
+  border: 1px solid #9d783c;
+  border-radius: 2px;
+  background: #d5c097;
+  box-shadow: 0 18px 55px rgb(0 0 0 / 60%);
+}
+
+.campaign-calendar__dialog > header {
+  display: flex;
+  min-height: 2.2rem;
+  align-items: center;
+  padding: 0.3rem 0.45rem 0.3rem 0.65rem;
+  color: #ead8ab;
+  border-bottom: 1px solid #80602e;
+  background: #2c1c12;
+}
+
+.campaign-calendar__dialog > header h3 {
+  flex: 1;
+  margin: 0;
+  font-size: 0.86rem;
+}
+
+.campaign-calendar__form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.42rem;
+  padding: 0.55rem;
+}
+
+.campaign-calendar__form-grid label,
+.campaign-calendar__participants > span {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 0.14rem;
+  color: #59452d;
+  font-family: Arial, sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+
+.campaign-calendar__form-grid .is-wide {
+  grid-column: 1 / -1;
+}
+
+.campaign-calendar__form-grid input,
+.campaign-calendar__form-grid select,
+.campaign-calendar__form-grid textarea {
+  min-width: 0;
+  min-height: 1.75rem;
+  padding: 0.24rem 0.35rem;
+  color: #241a12;
+  border: 1px solid #8f754c;
+  border-radius: 1px;
+  background: #eadcb9;
+  font-family: Arial, sans-serif;
+  font-size: 0.68rem;
+}
+
+.campaign-calendar__form-grid textarea {
+  resize: vertical;
+}
+
+.campaign-calendar__form-grid .campaign-calendar__check {
+  flex-direction: row;
+  align-items: center;
+}
+
+.campaign-calendar__form-grid .campaign-calendar__check input,
+.campaign-calendar__participants input {
+  min-height: 0;
+}
+
+.campaign-calendar__form-grid input:disabled {
+  cursor: not-allowed;
+  opacity: 0.52;
+}
+
+.campaign-calendar__participants {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.65rem;
+  padding: 0.35rem;
+  border: 1px solid #a58a5c;
+}
+
+.campaign-calendar__participants > span {
+  width: 100%;
+}
+
+.campaign-calendar__participants label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  font-weight: 400;
+}
+
+.campaign-calendar__dialog footer {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.45rem 0.55rem;
+  border-top: 1px solid #9c8153;
+}
+
+.campaign-calendar__dialog footer span {
+  flex: 1;
+}
+
+.campaign-calendar__dialog button.is-danger {
+  color: #f1d3c7;
+  border-color: #784132;
+  background: #56291f;
+}
+
+.campaign-calendar__form-error {
+  margin: 0 0.55rem 0.45rem;
+  color: #7b241b;
+  font-family: Arial, sans-serif;
+  font-size: 0.65rem;
+}
+
+.campaign-calendar__time-manager {
+  width: 100%;
+}
+
+.campaign-calendar__time-manager--embedded {
+  display: grid;
+  min-width: 0;
+  flex: 0 0 auto;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: auto;
+  padding: 0.42rem;
+  color: #dfcea4;
+  border: 0;
+  border-top: 1px solid #8c6936;
+  background: #302117;
+  box-shadow: inset 0 1px rgb(255 255 255 / 3%);
+}
+
+.campaign-calendar__selected-world-date {
+  min-width: 0;
+  padding: 0.28rem 0.38rem;
+  border: 1px solid rgb(196 164 98 / 38%);
+  background: rgb(15 10 7 / 32%);
+}
+
+.campaign-calendar__selected-world-date span,
+.campaign-calendar__selected-world-date strong {
+  display: block;
+}
+
+.campaign-calendar__selected-world-date span {
+  color: #ad9568;
+  font-family: Arial, sans-serif;
+  font-size: 0.54rem;
+  text-transform: uppercase;
+}
+
+.campaign-calendar__selected-world-date strong {
+  overflow: hidden;
+  margin-top: 0.1rem;
+  font-size: 0.69rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.campaign-calendar__time-manager--embedded > button {
+  white-space: nowrap;
+}
+
+.campaign-calendar__time-manager--embedded > button:disabled {
+  cursor: default;
+  opacity: 0.55;
+}
+
+@media (max-width: 900px) {
+  .campaign-calendar__toolbar {
+    flex-wrap: wrap;
+  }
+
+  .campaign-calendar__current {
+    min-width: 100%;
+  }
+
+  .campaign-calendar__content {
+    grid-template-columns: minmax(0, 1fr) 12rem;
+  }
+
+  .campaign-calendar__content.has-time-manager {
+    grid-template-columns: minmax(0, 1fr) 16rem;
+  }
+
+  .campaign-calendar__year {
+    grid-template-columns: repeat(2, minmax(11rem, 1fr));
+  }
+
+  .campaign-calendar__agenda-row {
+    grid-template-columns: 11rem 0.6rem minmax(6rem, 1fr);
+  }
+
+  .campaign-calendar__agenda-row small {
+    display: none;
+  }
+}
