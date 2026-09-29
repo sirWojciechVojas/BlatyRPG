@@ -99,7 +99,8 @@ export const createRealtimeChatActions = (ensureSession) => ({
   },
   sendChatMessage(context, value) {
     const body = String(value || "").trim();
-    if (!body || !context.state.chat.capabilities.canSend) return null;
+    const chat = context.state.chat;
+    if (!body || (chat.initialized && !chat.capabilities.canSend)) return null;
     const previous = context.state.chat.pending;
     const pending =
       previous?.body === body ? previous : { body, nonce: nonce() };

@@ -1,7 +1,7 @@
 .table-workspace-header {
   grid-area: header;
   display: grid;
-  grid-template-columns: auto minmax(8rem, 1fr) minmax(14rem, auto) auto auto;
+  grid-template-columns: auto minmax(8rem, 1fr) minmax(14rem, auto) auto auto auto;
   align-items: center;
   gap: 0.45rem;
   min-width: 0;
@@ -105,6 +105,48 @@
   padding: 0 0.45rem !important;
 }
 
+.table-workspace-header__calendar {
+  display: grid !important;
+  width: min(18rem, 24vw) !important;
+  height: 2.15rem !important;
+  min-width: 9.5rem;
+  align-content: center;
+  justify-items: end;
+  gap: 0 !important;
+  padding: 0.15rem 0.45rem !important;
+  color: #e4c77e !important;
+  border-color: rgb(210 164 87 / 45%) !important;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 3%), transparent),
+    #21170f !important;
+  font-family: Georgia, "Times New Roman", serif;
+  text-align: right;
+}
+
+.table-workspace-header__calendar small,
+.table-workspace-header__calendar strong {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.table-workspace-header__calendar small {
+  color: #9f8a63;
+  font-family: var(--ui-font-body, Arial, sans-serif);
+  font-size: 0.48rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.table-workspace-header__calendar strong {
+  font-size: 0.68rem;
+  line-height: 1.15;
+}
+
 .table-workspace-header button:disabled {
   cursor: not-allowed;
   opacity: 0.45;
@@ -112,11 +154,15 @@
 
 @media (max-width: 1050px) {
   .table-workspace-header {
-    grid-template-columns: auto minmax(6rem, 1fr) minmax(11rem, auto) auto;
+    grid-template-columns: auto minmax(6rem, 1fr) minmax(11rem, auto) auto auto;
   }
 
   .table-workspace-header__presence {
     display: none;
+  }
+
+  .table-workspace-header__calendar {
+    width: min(15rem, 30vw) !important;
   }
 }
 
@@ -125,6 +171,14 @@
   .table-workspace-header__identity > span,
   .table-workspace-header__pause span,
   .table-workspace-header__members {
+    display: none;
+  }
+
+  .table-workspace-header__calendar {
+    min-width: 7rem;
+  }
+
+  .table-workspace-header__calendar small {
     display: none;
   }
 }

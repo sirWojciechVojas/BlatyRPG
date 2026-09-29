@@ -7,4 +7,6 @@ export const sceneElementTransport = (isAuthenticated, send) => ({
     isAuthenticated() && send(sceneElementChangeMessage("light", payload)),
   changeTile: (payload) =>
     isAuthenticated() && send(sceneElementChangeMessage("tile", payload)),
+  changeRegion: (payload) =>
+    isAuthenticated() && send(sceneElementChangeMessage("region", payload)),
 });

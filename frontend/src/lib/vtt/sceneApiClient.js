@@ -40,6 +40,13 @@ export const createSceneApiClient = (client = jsonApiClient) => {
       });
       return normalizeSceneResponse(payload);
     },
+    async duplicate(campaignId, sceneId, name) {
+      const payload = await client.request(
+        `${item(campaignId, sceneId)}/duplicate`,
+        { method: "POST", body: { name: String(name || "").trim() } },
+      );
+      return normalizeSceneResponse(payload);
+    },
     async update(campaignId, sceneId, changes) {
       const payload = await client.request(item(campaignId, sceneId), {
         method: "PATCH",
@@ -66,6 +73,23 @@ export const createSceneApiClient = (client = jsonApiClient) => {
         ...normalizeSceneResponse(payload),
         activeSceneId:
           payload.activeSceneId ?? payload.active_scene_id ?? sceneId,
+      };
+    },
+    async transitionDarkness(campaignId, sceneId, revision, target, duration) {
+      const payload = await client.request(
+        `${item(campaignId, sceneId)}/darkness-transition`,
+        {
+          method: "POST",
+          body: {
+            revision: Number(revision),
+            target: Number(target),
+            duration: Number(duration),
+          },
+        },
+      );
+      return {
+        ...normalizeSceneResponse(payload),
+        serverTime: payload.serverTime || null,
       };
     },
   };

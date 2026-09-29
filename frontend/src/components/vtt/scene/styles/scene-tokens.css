@@ -5,6 +5,10 @@
   pointer-events: none;
 }
 
+.scene-token-layer--foreground {
+  z-index: 625;
+}
+
 .scene-token-wrap {
   position: absolute;
   left: 0;

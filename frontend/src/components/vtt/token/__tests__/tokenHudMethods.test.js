@@ -50,6 +50,7 @@ describe("token HUD interactions", () => {
     const context = {
       hasMultiSelection: false,
       tokenStates: { 7: { selected: false } },
+      isTokenExpanded: vi.fn(() => false),
     };
     expect(
       tokenHudMethods.tokenInfoVisible.call(context, {
@@ -65,6 +66,10 @@ describe("token HUD interactions", () => {
     ).toBe(true);
     context.tokenStates[7].selected = true;
     expect(tokenHudMethods.tokenInfoVisible.call(context, { id: 7 })).toBe(
+      false,
+    );
+    context.isTokenExpanded.mockReturnValue(true);
+    expect(tokenHudMethods.tokenInfoVisible.call(context, { id: 7 })).toBe(
       true,
     );
   });
@@ -73,6 +78,7 @@ describe("token HUD interactions", () => {
     const context = {
       hasMultiSelection: true,
       tokenStates: { 7: { selected: true } },
+      isTokenExpanded: vi.fn(() => false),
     };
 
     expect(
@@ -81,5 +87,33 @@ describe("token HUD interactions", () => {
         showInfoUnselected: true,
       }),
     ).toBe(false);
+  });
+
+  it("keeps token settings open until the authoritative save succeeds", () => {
+    let update;
+    const context = {
+      settingsTokenId: 7,
+      $emit: vi.fn((event, payload) => {
+        if (event === "update") update = payload;
+      }),
+    };
+
+    tokenHudMethods.saveTokenSettings.call(
+      context,
+      { id: 7, sceneId: 4 },
+      { name: "Updated token" },
+    );
+
+    expect(context.settingsTokenId).toBe(7);
+    expect(update).toEqual(
+      expect.objectContaining({
+        token: expect.objectContaining({ id: 7 }),
+        changes: { name: "Updated token" },
+        onSuccess: expect.any(Function),
+      }),
+    );
+
+    update.onSuccess();
+    expect(context.settingsTokenId).toBeNull();
   });
 });

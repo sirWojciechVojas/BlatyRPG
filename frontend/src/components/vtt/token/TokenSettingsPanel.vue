@@ -9,7 +9,7 @@
     <header>
       <div class="token-settings-panel__identity">
         <span class="token-settings-panel__preview">
-          <img
+          <AuthenticatedImage
             v-if="draft.imageUrl && !imageFailed"
             :src="draft.imageUrl"
             alt=""
@@ -44,12 +44,19 @@
         >
           {{ $t(`vtt.token.settings.tabs.${tab}`) }}
         </button>
-        <TokenSettingsTransfer
-          v-if="canManage"
-          :draft="draft"
-          @apply="applyTransfer"
-        />
       </nav>
+
+      <p v-if="syncLink" class="token-settings-panel__sync-warning" role="note">
+        <strong>{{ $t("vtt.tokenSync.listenerBadge") }}</strong>
+        {{ $t("vtt.tokenSync.localEditWarning") }}
+        <span v-if="syncLink.divergedFields?.length">
+          {{
+            $t("vtt.tokenSync.diverged", {
+              fields: syncLink.divergedFields.map(syncFieldLabel).join(", "),
+            })
+          }}
+        </span>
+      </p>
 
       <div class="token-settings-panel__workspace">
         <TokenSettingsPreview
@@ -129,6 +136,13 @@
       </div>
 
       <footer>
+        <button
+          v-if="canManage"
+          type="button"
+          @click="$emit('assign-character')"
+        >
+          {{ $t("vtt.token.assignment.action") }}
+        </button>
         <button type="button" @click="$emit('close')">
           {{ $t("vtt.token.settings.cancel") }}
         </button>
@@ -142,11 +156,11 @@
 
 <script>
 import TokenAppearanceSettings from "./TokenAppearanceSettings.vue";
+import AuthenticatedImage from "@/components/ui/AuthenticatedImage.vue";
 import TokenMovementSettings from "./TokenMovementSettings.vue";
 import TokenPermissionField from "./TokenPermissionField.vue";
 import TokenResourceSettings from "./TokenResourceSettings.vue";
 import TokenSettingsPreview from "./TokenSettingsPreview.vue";
-import TokenSettingsTransfer from "./TokenSettingsTransfer.vue";
 import TokenVisionSettings from "./TokenVisionSettings.vue";
 import {
   createTokenSettingsDraft,
@@ -157,12 +171,12 @@ import {
 export default {
   name: "TokenSettingsPanel",
   components: {
+    AuthenticatedImage,
     TokenAppearanceSettings,
     TokenMovementSettings,
     TokenPermissionField,
     TokenResourceSettings,
     TokenSettingsPreview,
-    TokenSettingsTransfer,
     TokenVisionSettings,
   },
   props: {
@@ -173,8 +187,9 @@ export default {
     actor: { type: Object, default: null },
     anchor: { type: Object, default: () => ({}) },
     busy: { type: Boolean, default: false },
+    syncLink: { type: Object, default: null },
   },
-  emits: ["save", "close"],
+  emits: ["save", "close", "assign-character"],
   data() {
     return {
       draft: createTokenSettingsDraft(this.token, this.gridSize),
@@ -236,6 +251,10 @@ export default {
     window.removeEventListener("keydown", this.onKeydown);
   },
   methods: {
+    syncFieldLabel(field) {
+      const key = `vtt.tokenSync.fields.${field}`;
+      return this.$te(key) ? this.$t(key) : String(field);
+    },
     resize() {
       this.viewport = { width: window.innerWidth, height: window.innerHeight };
     },
@@ -244,14 +263,16 @@ export default {
     },
     save() {
       if (!this.valid) return;
+      if (
+        this.syncLink &&
+        !window.confirm(this.$t("vtt.tokenSync.localEditConfirm"))
+      ) {
+        return;
+      }
       this.$emit(
         "save",
         tokenSettingsPayload(this.draft, this.gridSize, this.canManage),
       );
-    },
-    applyTransfer(draft) {
-      this.draft = draft;
-      this.activeTab = "general";
     },
   },
 };

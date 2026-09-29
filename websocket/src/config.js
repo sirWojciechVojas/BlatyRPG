@@ -71,6 +71,16 @@ export const createConfig = (env = process.env) => {
     port: integer(env.WS_PORT, 8081, "WS_PORT", 0, 65535),
     path: pathValue(env.WS_PATH, "/realtime", "WS_PATH"),
     healthPath: pathValue(env.WS_HEALTH_PATH, "/health", "WS_HEALTH_PATH"),
+    calendarPublishPath: pathValue(
+      env.WS_CALENDAR_PUBLISH_PATH,
+      "/internal/calendar",
+      "WS_CALENDAR_PUBLISH_PATH",
+    ),
+    characterAccessPublishPath: pathValue(
+      env.WS_CHARACTER_ACCESS_PUBLISH_PATH,
+      "/internal/character-access",
+      "WS_CHARACTER_ACCESS_PUBLISH_PATH",
+    ),
     allowedOrigins: origins(env.WS_ALLOWED_ORIGINS),
     allowMissingOrigin: boolean(env.WS_ALLOW_MISSING_ORIGIN, false),
     backendInternalUrl: internalUrl(env.WS_BACKEND_INTERNAL_URL),

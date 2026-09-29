@@ -1,5 +1,8 @@
 <template>
-  <div class="scene-token-layer">
+  <div
+    class="scene-token-layer"
+    :class="{ 'scene-token-layer--foreground': foreground }"
+  >
     <TokenDragIndicator
       :scene="scene"
       :indicator="dragIndicator"
@@ -48,10 +51,11 @@
         @pointerenter="hoveredTokenId = token.id"
         @pointerleave="hoveredTokenId = null"
         @click.stop="selectToken($event, token.id)"
-        @dblclick.stop="openTokenActor(token)"
+        @dblclick.stop="openTokenActorFromDoubleClick(token)"
+        @wheel="rotateTokenFacingWithWheel($event, token)"
         @contextmenu.prevent.stop="toggleTokenHud(token.id)"
       >
-        <img
+        <AuthenticatedImage
           v-if="token.imageUrl"
           :src="token.imageUrl"
           alt=""
@@ -85,7 +89,7 @@
       </button>
       <TokenInfoStack v-if="tokenInfoVisible(token)" :token="token" />
       <TokenRotationHandles
-        v-if="tokenStates[token.id].selected && !hasMultiSelection"
+        v-if="isTokenExpanded(token.id)"
         :token="displayTokenAngles(token)"
         :disabled="busy"
         :scale="scale"
@@ -112,6 +116,7 @@
         :busy="busy"
         :targeted="tokenStates[token.id].targeted"
         :scale="scale"
+        :synchronized="Boolean(incomingSyncLink(token.id))"
         @pointerdown.stop
         @move-start="startDrag($event, token)"
         @status="toggleTokenStatus(token, $event)"
@@ -121,6 +126,7 @@
         @lock="toggleTokenLock(token)"
         @settings="openTokenSettings($event, token)"
         @open-actor="$emit('open-actor', $event)"
+        @assign-character="$emit('assign-character', token)"
         @delete="$emit('delete', token)"
         @close="hudTokenId = null"
       />
@@ -135,7 +141,9 @@
         :actor="settingsActor"
         :anchor="settingsAnchor"
         :busy="busy"
+        :sync-link="settingsSyncLink"
         @save="saveTokenSettings(settingsToken, $event)"
+        @assign-character="$emit('assign-character', settingsToken)"
         @close="settingsTokenId = null"
       />
     </Teleport>
@@ -144,6 +152,7 @@
 
 <script>
 import TokenHud from "./TokenHud.vue";
+import AuthenticatedImage from "@/components/ui/AuthenticatedImage.vue";
 import TokenInfoStack from "./TokenInfoStack.vue";
 import TokenDragIndicator from "./TokenDragIndicator.vue";
 import TokenStateOverlay from "./TokenStateOverlay.vue";
@@ -157,17 +166,24 @@ import { tokenLayerMotionMethods } from "./tokenLayerMotionMethods";
 import { tokenLayerWatchers } from "./tokenLayerWatchers";
 import { tokenDisplayPosition } from "./tokenMotion";
 import { tokenHudMethods } from "./tokenHudMethods";
+import { tokenPresentationMethods } from "./tokenPresentationMethods";
 import { tokenRotationMethods } from "./tokenRotationMethods";
-import { tokenFacingStyle } from "@/lib/vtt/tokenFacing";
+import {
+  tokenFacingStyle,
+  tokenFacingWheelChanges,
+} from "@/lib/vtt/tokenFacing";
 import {
   activeTokenUiStates,
   tokenUiClasses,
   tokenUiFlags,
 } from "@/lib/vtt/tokenUiState";
 
+const FACING_WHEEL_COMMIT_DELAY = 180;
+
 export default {
   name: "SceneTokenLayer",
   components: {
+    AuthenticatedImage,
     TokenDragIndicator,
     TokenHud,
     TokenInfoStack,
@@ -189,7 +205,9 @@ export default {
     characters: { type: Array, default: () => [] },
     scale: { type: Number, default: 1 },
     busy: { type: Boolean, default: false },
+    foreground: { type: Boolean, default: false },
     movementModeTokenId: { type: [Number, String], default: null },
+    tokenSyncLinks: { type: Array, default: () => [] },
   },
   emits: [
     "select",
@@ -201,6 +219,7 @@ export default {
     "target",
     "delete",
     "open-actor",
+    "assign-character",
     "vision-preview",
     "vision-angle-preview",
     "movement-mode",
@@ -217,6 +236,10 @@ export default {
     settingsTokenId: null,
     settingsAnchor: {},
     anglePreview: {},
+    expandedTokenId: null,
+    presentationClickTokenId: null,
+    presentationClickTimer: null,
+    facingWheelTimers: new Map(),
   }),
   computed: {
     hasMultiSelection() {
@@ -234,6 +257,11 @@ export default {
           (actor) => actor.id === this.settingsToken.characterId,
         ) || null
       );
+    },
+    settingsSyncLink() {
+      return this.settingsToken
+        ? this.incomingSyncLink(this.settingsToken.id)
+        : null;
     },
     effectiveSelectedIds() {
       return this.selectedIds.length
@@ -274,25 +302,69 @@ export default {
     this.cancelDrag();
     this.pendingTimers.forEach((timer) => window.clearTimeout(timer));
     this.pendingTimers.clear();
+    this.clearPresentationClick();
+    this.facingWheelTimers.forEach((timer) => window.clearTimeout(timer));
+    this.facingWheelTimers.clear();
   },
   methods: {
     ...tokenDragMethods,
     ...tokenLayerMotionMethods,
     ...tokenHudMethods,
+    ...tokenPresentationMethods,
     ...tokenRotationMethods,
+    incomingSyncLink(tokenId) {
+      return (
+        this.tokenSyncLinks.find(
+          (link) => Number(link.targetTokenId) === Number(tokenId),
+        ) || null
+      );
+    },
     facingStyle: tokenFacingStyle,
     stateClasses: tokenUiClasses,
-    selectToken(event, tokenId) {
-      if (this.hudTokenId !== tokenId) this.hudTokenId = null;
-      this.$emit("select", {
-        tokenId,
-        additive: event.ctrlKey || event.metaKey || event.shiftKey,
+    rotateTokenFacingWithWheel(event, token) {
+      if (
+        this.busy ||
+        token.locked ||
+        token.capabilities?.canControl !== true ||
+        this.hasMultiSelection ||
+        !this.tokenStates[token.id]?.selected
+      ) {
+        return;
+      }
+      const changes = tokenFacingWheelChanges(
+        this.displayTokenAngles(token),
+        event.deltaY,
+      );
+      if (!changes) return;
+
+      event.preventDefault();
+      event.stopPropagation();
+      this.anglePreview = {
+        ...this.anglePreview,
+        [token.id]: {
+          ...(this.anglePreview[token.id] || {}),
+          ...changes,
+        },
+      };
+      this.$emit("vision-angle-preview", {
+        tokenId: token.id,
+        changes: this.anglePreview[token.id],
       });
-    },
-    toggleTokenHud(tokenId) {
-      const opening = this.hudTokenId !== tokenId;
-      this.hudTokenId = opening ? tokenId : null;
-      if (opening) this.$emit("select", { tokenId, additive: false });
+
+      const previousTimer = this.facingWheelTimers.get(token.id);
+      if (previousTimer) window.clearTimeout(previousTimer);
+      const timer = window.setTimeout(() => {
+        this.facingWheelTimers.delete(token.id);
+        const preview = this.anglePreview[token.id];
+        if (!preview) return;
+        const committed = { facing: preview.facing };
+        if (token.rotationFollowsFacing === true) {
+          committed.rotation = preview.rotation;
+        }
+        this.clearTokenAnglePreview(token.id);
+        this.$emit("update", { token, changes: committed });
+      }, FACING_WHEEL_COMMIT_DELAY);
+      this.facingWheelTimers.set(token.id, timer);
     },
     stateLabel(token, flags) {
       const labels = activeTokenUiStates(flags)
@@ -319,7 +391,7 @@ export default {
     movementToggleVisible(token) {
       return (
         !this.hasMultiSelection &&
-        this.tokenStates[token.id].selected &&
+        this.isTokenExpanded(token.id) &&
         token.capabilities?.canControl === true
       );
     },

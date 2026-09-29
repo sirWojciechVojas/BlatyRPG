@@ -16,9 +16,40 @@ export const rotateTokenFacing = (token, delta) => ({
   ),
 });
 
+export const tokenFacingDelta = (current, next) => {
+  const delta = normalizeTokenAngle(next) - normalizeTokenAngle(current);
+  if (delta > 180) return delta - 360;
+  if (delta < -180) return delta + 360;
+  return delta;
+};
+
+export const tokenFacingChanges = (token, nextFacing) => {
+  const currentFacing = normalizeTokenAngle(token?.facing, token?.rotation);
+  const facing = normalizeTokenAngle(nextFacing, currentFacing);
+  if (token?.rotationFollowsFacing !== true) return { facing };
+
+  return {
+    facing,
+    rotation: normalizeTokenAngle(
+      Number(token?.rotation) + tokenFacingDelta(currentFacing, facing),
+      token?.rotation,
+    ),
+  };
+};
+
+export const tokenFacingWheelChanges = (token, deltaY, step = 15) => {
+  const direction = Math.sign(Number(deltaY));
+  if (!direction) return null;
+  const currentFacing = normalizeTokenAngle(token?.facing, token?.rotation);
+  return tokenFacingChanges(token, currentFacing + direction * Number(step));
+};
+
 export const tokenFacingStyle = (token) => ({
   transform: `rotate(${normalizeTokenAngle(
     token?.facing,
     token?.rotation,
   )}deg)`,
 });
+
+export const tokenFacingToGeometryDirection = (value, fallback = 0) =>
+  normalizeTokenAngle(normalizeTokenAngle(value, fallback) - 90);

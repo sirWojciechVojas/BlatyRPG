@@ -212,14 +212,12 @@ describe("realtime token synchronization", () => {
     );
   });
 
-  it("sends angle changes through the existing session", () => {
+  it("sends angle changes and waits for the server ack", async () => {
     const changeToken = vi.fn().mockReturnValue(true);
     const actions = createRealtimeTokenActions(() => ({ changeToken }));
     const token = { id: 9, sceneId: 4, revision: 3 };
 
-    expect(actions.changeToken({}, { token, changes: { facing: 135 } })).toBe(
-      true,
-    );
+    const sent = actions.changeToken({}, { token, changes: { facing: 135 } });
     expect(changeToken).toHaveBeenCalledWith(
       expect.objectContaining({
         sceneId: 4,
@@ -228,5 +226,13 @@ describe("realtime token synchronization", () => {
         changes: { facing: 135 },
       }),
     );
+    routeRealtimeTokenEvent(
+      { rootState: { vtt: {} }, commit: vi.fn(), dispatch: vi.fn() },
+      {
+        type: "token.ack",
+        payload: { requestId: changeToken.mock.calls[0][0].requestId },
+      },
+    );
+    await expect(sent).resolves.toBe(true);
   });
 });

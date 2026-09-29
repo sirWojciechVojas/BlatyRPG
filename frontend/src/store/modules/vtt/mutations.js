@@ -17,6 +17,31 @@ export const vttMutations = {
     state.error = null;
     state.unauthorized = false;
   },
+  BEGIN_SCENE_LOADING(state, { sceneId = null, steps = [] } = {}) {
+    state.sceneLoading = {
+      active: true,
+      sceneId: sceneId === null ? null : Number(sceneId),
+      detail: "",
+      steps: steps.map((step) => ({ ...step })),
+    };
+  },
+  SET_SCENE_LOADING_STEP(state, { id, status, detail = undefined } = {}) {
+    const steps = state.sceneLoading.steps.map((step) =>
+      step.id === id ? { ...step, ...(status ? { status } : {}) } : step,
+    );
+    state.sceneLoading = {
+      ...state.sceneLoading,
+      ...(detail === undefined ? {} : { detail }),
+      steps,
+    };
+  },
+  FINISH_SCENE_LOADING(state) {
+    state.sceneLoading = {
+      ...state.sceneLoading,
+      active: false,
+      detail: "",
+    };
+  },
   CLEAR_ERROR(state) {
     state.error = null;
   },
@@ -190,6 +215,25 @@ export const vttMutations = {
     state.error = error;
     state.unauthorized = error.status === 401 || error.status === 403;
   },
+  SET_TOKEN_SYNC_PHASE(state, phase) {
+    state.tokenSyncPhase = phase;
+    if (["loading", "saving"].includes(phase)) state.tokenSyncError = null;
+  },
+  RECEIVE_TOKEN_SYNC(state, catalog) {
+    state.tokenSyncCatalog = {
+      scenes: Array.isArray(catalog?.scenes) ? catalog.scenes : [],
+      tokens: Array.isArray(catalog?.tokens) ? catalog.tokens : [],
+      links: Array.isArray(catalog?.links) ? catalog.links : [],
+      syncFields: Array.isArray(catalog?.syncFields) ? catalog.syncFields : [],
+      capabilities: catalog?.capabilities || { canManage: false },
+    };
+    state.tokenSyncPhase = "ready";
+    state.tokenSyncError = null;
+  },
+  TOKEN_SYNC_FAILED(state, error) {
+    state.tokenSyncPhase = "error";
+    state.tokenSyncError = error;
+  },
   RECEIVE_WALLS(state, { sceneId, items, capabilities }) {
     const key = String(sceneId);
     state.wallsByScene = { ...state.wallsByScene, [key]: items };
@@ -268,6 +312,46 @@ export const vttMutations = {
   },
   LIGHT_FAILED(state, error) {
     state.lightPhase = "error";
+    state.error = error;
+  },
+  RECEIVE_REGIONS(state, { sceneId, items, capabilities }) {
+    const key = String(sceneId);
+    state.regionsByScene = { ...state.regionsByScene, [key]: items };
+    state.regionCapabilitiesByScene = {
+      ...state.regionCapabilitiesByScene,
+      [key]: capabilities,
+    };
+    state.regionPhase = "ready";
+    if (!items.some((region) => region.id === state.selectedRegionId)) {
+      state.selectedRegionId = null;
+    }
+  },
+  UPSERT_REGION(state, region) {
+    const key = String(region.sceneId);
+    const items = [...(state.regionsByScene[key] || [])];
+    const index = items.findIndex((item) => item.id === region.id);
+    if (index < 0) items.push(region);
+    else items.splice(index, 1, region);
+    state.regionsByScene = { ...state.regionsByScene, [key]: items };
+  },
+  REMOVE_REGION(state, { sceneId, regionId }) {
+    const key = String(sceneId);
+    state.regionsByScene = {
+      ...state.regionsByScene,
+      [key]: (state.regionsByScene[key] || []).filter(
+        (region) => region.id !== regionId,
+      ),
+    };
+    if (state.selectedRegionId === regionId) state.selectedRegionId = null;
+  },
+  SELECT_REGION(state, regionId) {
+    state.selectedRegionId = regionId;
+  },
+  SET_REGION_PHASE(state, phase) {
+    state.regionPhase = phase;
+  },
+  REGION_FAILED(state, error) {
+    state.regionPhase = "error";
     state.error = error;
   },
   RECEIVE_TILES(state, { sceneId, items, capabilities }) {
@@ -358,5 +442,10 @@ export const vttMutations = {
     state.phase = "error";
     state.error = error;
     state.unauthorized = error.status === 401 || error.status === 403;
+    state.sceneLoading = {
+      ...state.sceneLoading,
+      active: false,
+      detail: "",
+    };
   },
 };

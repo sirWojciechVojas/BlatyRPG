@@ -6,6 +6,8 @@ import { createLightHandler } from "./light-handler.js";
 import { createWallHandler } from "./wall-handler.js";
 import { createTileHandler } from "./tile-handler.js";
 import { createCombatHandler } from "./combat-handler.js";
+import { BackendRegionClient } from "./backend-region-client.js";
+import { createRegionHandler } from "./region-handler.js";
 
 export const createSceneFeatureHandlers = (
   config,
@@ -20,6 +22,11 @@ export const createSceneFeatureHandlers = (
   }),
   lights: createLightHandler({
     backend: dependencies.lightBackend || new BackendLightClient(config),
+    rooms,
+    onAuthenticationFailure,
+  }),
+  regions: createRegionHandler({
+    backend: dependencies.regionBackend || new BackendRegionClient(config),
     rooms,
     onAuthenticationFailure,
   }),

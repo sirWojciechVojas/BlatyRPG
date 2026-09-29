@@ -20,12 +20,20 @@ final class TokenPresenter
             $movementRange,
             $movementSpent
         );
+        $assetId = isset($row['token_template_asset_id'])
+            ? (int) $row['token_template_asset_id'] : null;
+        $campaignId = isset($row['campaign_id']) ? (int) $row['campaign_id'] : 0;
+        $imageUrl = $assetId && $campaignId
+            ? '/api/campaigns/' . $campaignId . '/token-template-assets/' . $assetId . '/file'
+            : (string) ($row['image_url'] ?? '');
         return [
             'id' => (int) $row['id'],
             'sceneId' => (int) $row['scene_id'],
             'characterId' => isset($row['character_id']) ? (int) $row['character_id'] : null,
+            'tokenTemplateId' => isset($row['token_template_id']) ? (int) $row['token_template_id'] : null,
+            'tokenTemplateAssetId' => $assetId,
             'name' => (string) $row['name'],
-            'imageUrl' => (string) ($row['image_url'] ?? ''),
+            'imageUrl' => $imageUrl,
             'x' => (float) $row['x'],
             'y' => (float) $row['y'],
             'width' => (float) $row['width'],
@@ -34,6 +42,7 @@ final class TokenPresenter
             'facing' => (float) ($row['facing'] ?? $row['rotation']),
             'rotationHandleEnabled' => !empty($row['rotation_handle_enabled']),
             'facingHandleEnabled' => !empty($row['facing_handle_enabled']),
+            'rotationFollowsFacing' => !empty($row['rotation_follows_facing']),
             'showInfoUnselected' => !empty($row['show_info_unselected']),
             'resourceBarPosition' => in_array(
                 $row['resource_bar_position'] ?? 'below',

@@ -11,6 +11,7 @@ final class TilePresenter
             'sceneId' => (int) $row['scene_id'],
             'name' => (string) $row['name'],
             'assetUrl' => (string) $row['asset_url'],
+            'mediaAssetId' => isset($row['media_asset_id']) ? (int) $row['media_asset_id'] : null,
             'mediaType' => (string) $row['media_type'],
             'layer' => (string) $row['layer'],
             'x' => (float) $row['x'],

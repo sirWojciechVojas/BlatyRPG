@@ -36,6 +36,7 @@ describe("tokenSettingsDraft", () => {
         height: 100,
         visibleTo: { mode: "users", userIds: [8] },
         rotationHandleEnabled: true,
+        rotationFollowsFacing: true,
         movementRange: 8,
         movementSpent: 2,
         movementResetMode: "round",
@@ -53,6 +54,7 @@ describe("tokenSettingsDraft", () => {
     expect(payload.visibleTo).toEqual({ mode: "users", userIds: [8] });
     expect(payload.rotationHandleEnabled).toBe(true);
     expect(payload.facingHandleEnabled).toBe(false);
+    expect(payload.rotationFollowsFacing).toBe(true);
     expect(payload.movementRange).toBe(8);
     expect(payload.movementSpent).toBe(2);
     expect(payload.movementResetMode).toBe("round");
@@ -121,6 +123,26 @@ describe("tokenSettingsDraft", () => {
       shapeBorderOpacity: 0.6,
       shapeFillColor: "#65d7ff",
       shapeFillOpacity: 0.2,
+    });
+  });
+
+  it("uses facing as the single direction for directional vision", () => {
+    const draft = createTokenSettingsDraft(
+      {
+        name: "Scout",
+        rotation: 15,
+        facing: 135,
+        vision: { enabled: true, angle: 90, direction: 20 },
+      },
+      100,
+    );
+    expect(draft.vision.direction).toBe(135);
+
+    draft.facing = 225;
+    draft.vision.direction = 20;
+    expect(tokenSettingsPayload(draft, 100, true)).toMatchObject({
+      facing: 225,
+      vision: { direction: 225 },
     });
   });
 

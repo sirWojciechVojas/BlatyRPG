@@ -3,6 +3,9 @@
 namespace App\Services\Tile;
 
 use App\Models\SceneTileModel;
+use App\Services\Media\ExternalMediaUrl;
+use App\Services\Media\MediaException;
+use App\Services\Media\MediaService;
 use App\Services\Scene\SceneException;
 use App\Services\Scene\SceneResourceAccessService;
 use App\Services\Scene\SceneService;
@@ -15,19 +18,22 @@ final class SceneTileService
     private $scenes;
     private $access;
     private $validator;
+    private $media;
 
     public function __construct(
         ?BaseConnection $db = null,
         ?SceneTileModel $tiles = null,
         ?SceneService $scenes = null,
         ?SceneResourceAccessService $access = null,
-        ?TilePayloadValidator $validator = null
+        ?TilePayloadValidator $validator = null,
+        ?MediaService $media = null
     ) {
         $this->db = $db ?: \Config\Database::connect();
         $this->tiles = $tiles ?: new SceneTileModel($this->db);
         $this->scenes = $scenes ?: new SceneService($this->db);
         $this->access = $access ?: new SceneResourceAccessService();
         $this->validator = $validator ?: new TilePayloadValidator();
+        $this->media = $media ?: new MediaService($this->db);
     }
 
     public function list(int $campaignId, int $sceneId, array $auth): array
@@ -59,6 +65,7 @@ final class SceneTileService
         $data = $validated['data'] + [
             'campaign_id' => $campaignId, 'scene_id' => $sceneId, 'revision' => 1,
         ];
+        $data = $this->attachCentralAsset($data, $auth, $campaignId);
         if (!$this->tiles->insert($data)) {
             throw new TileException('validation_failed', 'Tile could not be created.', 422, $this->tiles->errors());
         }
@@ -78,12 +85,16 @@ final class SceneTileService
         $validated = $this->validator->update($payload);
         $this->assertValid($validated);
         $this->assertGeometry(array_merge($row, $validated['data']), $scene);
+        $data = $validated['data'];
+        if (array_key_exists('asset_url', $data)) {
+            $data = $this->attachCentralAsset($data, $auth, $campaignId, $row);
+        }
         $this->writeRevision(
             $campaignId,
             $sceneId,
             $tileId,
             $validated['revision'],
-            $validated['data']
+            $data
         );
         return ['tile' => $this->present($campaignId, $sceneId, $tileId)];
     }
@@ -152,6 +163,59 @@ final class SceneTileService
             ->where('scene_id', $sceneId)->where('id', $tileId)->first();
         if (!$row) throw new TileException('tile_not_found', 'Tile was not found.', 404);
         return $row;
+    }
+
+    /**
+     * Keeps the legacy asset_url contract intact while linking resolvable media
+     * to the central registry. Relative legacy routes are only linked to their
+     * existing campaign asset; arbitrary remote bytes are never downloaded.
+     */
+    private function attachCentralAsset(array $data, array $auth, int $campaignId, array $existing = []): array
+    {
+        if (!$this->db->fieldExists('media_asset_id', 'scene_tiles')) {
+            return $data;
+        }
+        $url = (string) ($data['asset_url'] ?? '');
+        $mediaAssetId = $this->internalAssetId($campaignId, $url);
+        if ($mediaAssetId === null && ExternalMediaUrl::canonicalize($url) !== null) {
+            try {
+                $registered = $this->media->registerExternalUrl($auth, [
+                    'sourceUrl' => $url,
+                    'mediaType' => $data['media_type'] ?? $existing['media_type'] ?? 'image',
+                    'category' => 'maps',
+                    'name' => $data['name'] ?? $existing['name'] ?? 'Tile',
+                ]);
+                $mediaAssetId = (int) $registered['id'];
+            } catch (MediaException $exception) {
+                throw new TileException(
+                    $exception->errorCode(),
+                    $exception->getMessage(),
+                    $exception->status(),
+                    $exception->errors()
+                );
+            }
+        }
+        $data['media_asset_id'] = $mediaAssetId;
+        return $data;
+    }
+
+    private function internalAssetId(int $campaignId, string $url): ?int
+    {
+        $path = (string) parse_url($url, PHP_URL_PATH);
+        if (preg_match('#^/api/campaigns/(\d+)/maps/assets/(\d+)/file$#', $path, $matches) === 1
+            && (int) $matches[1] === $campaignId && $this->db->tableExists('map_assets')) {
+            $row = $this->db->table('map_assets')->select('media_asset_id')
+                ->where('id', (int) $matches[2])->where('campaign_id', $campaignId)
+                ->where('deleted_at', null)->get()->getRowArray();
+            if (!empty($row['media_asset_id'])) return (int) $row['media_asset_id'];
+        }
+        if (preg_match('#^/api/campaigns/(\d+)/scene-assets/([a-f0-9]{32}\.(?:png|jpg|webp|gif))/file$#', $path, $matches) === 1
+            && (int) $matches[1] === $campaignId && $this->db->tableExists('scene_media_assets')) {
+            $row = $this->db->table('scene_media_assets')->select('media_asset_id')
+                ->where('campaign_id', $campaignId)->where('legacy_key', $matches[2])->get()->getRowArray();
+            if (!empty($row['media_asset_id'])) return (int) $row['media_asset_id'];
+        }
+        return null;
     }
 
     private function present(int $campaignId, int $sceneId, int $tileId): array

@@ -1,4 +1,6 @@
 import { snapTokenPosition } from "@/lib/vtt/grid";
+import { tokenTemplateApiClient } from "@/lib/vtt/tokenTemplateApiClient";
+import { characterApiClient } from "@/lib/character/characterApiClient";
 
 const REALTIME_CHANGE_FIELDS = new Set([
   "characterId",
@@ -10,6 +12,7 @@ const REALTIME_CHANGE_FIELDS = new Set([
   "facing",
   "rotationHandleEnabled",
   "facingHandleEnabled",
+  "rotationFollowsFacing",
   "showInfoUnselected",
   "resourceBarPosition",
   "movementRange",
@@ -34,6 +37,42 @@ const isRealtimeTokenChange = (changes) => {
     fields.length > 0 &&
     fields.every((field) => REALTIME_CHANGE_FIELDS.has(field))
   );
+};
+
+const latestToken = (component, token) =>
+  (
+    component.$store.state?.vtt?.tokensByScene?.[String(token.sceneId)] || []
+  ).find((item) => Number(item.id) === Number(token.id)) || token;
+
+const realtimeTokenUpdate = async (
+  component,
+  token,
+  changes,
+  allowRetry = true,
+) => {
+  const current = latestToken(component, token);
+  try {
+    const sent = await component.$store.dispatch("realtime/changeToken", {
+      token: current,
+      changes,
+    });
+    if (sent) {
+      component.$store.commit?.("vtt/PATCH_TOKEN", {
+        id: current.id,
+        sceneId: current.sceneId,
+        ...changes,
+      });
+      return latestToken(component, { ...current, ...changes });
+    }
+    return await component.$store.dispatch("vtt/updateToken", {
+      token: current,
+      changes,
+    });
+  } catch (error) {
+    if (error?.status !== 409 || !allowRetry) throw error;
+    await component.$store.dispatch("vtt/loadTokens", { silent: true });
+    return realtimeTokenUpdate(component, token, changes, false);
+  }
 };
 
 export const tableTokenMethods = {
@@ -80,6 +119,42 @@ export const tableTokenMethods = {
         height: size,
       })
       .catch(() => {});
+  },
+  async placeTokenTemplate(payload = {}) {
+    const template = payload.template || payload;
+    if (!template?.id || !this.selectedScene || !this.canCreateToken) return;
+    const centerX = Number.isFinite(Number(payload.x))
+      ? Number(payload.x)
+      : Number(this.sceneViewCenter?.x ?? this.selectedScene.width / 2);
+    const centerY = Number.isFinite(Number(payload.y))
+      ? Number(payload.y)
+      : Number(this.sceneViewCenter?.y ?? this.selectedScene.height / 2);
+    this.tokenTemplateBusyId = template.id;
+    this.$store.commit?.("vtt/SET_TOKEN_PHASE", "saving");
+    try {
+      const token = await tokenTemplateApiClient.instantiate(
+        this.currentCampaignId,
+        this.selectedScene.id,
+        template.id,
+        centerX,
+        centerY,
+      );
+      if (token) {
+        this.$store.commit("vtt/UPSERT_TOKEN", token);
+        this.$store.commit("vtt/SELECT_TOKEN", token.id);
+      }
+      this.$store.commit?.("vtt/SET_TOKEN_PHASE", "ready");
+      return token;
+    } catch (error) {
+      this.$store.commit?.("vtt/TOKEN_FAILED", {
+        code: String(error?.code || "token_template_write_failed"),
+        status: Number(error?.status) || 0,
+        details: error?.payload?.errors || null,
+      });
+      return null;
+    } finally {
+      this.tokenTemplateBusyId = null;
+    }
   },
   async moveToken({ token, x, y, waypoints = [] }) {
     let sent = false;
@@ -143,37 +218,22 @@ export const tableTokenMethods = {
       decision,
     });
   },
-  async updateToken({ token, changes }) {
-    if (isRealtimeTokenChange(changes)) {
-      try {
-        const sent = await this.$store.dispatch("realtime/changeToken", {
-          token,
-          changes,
-        });
-        if (sent) {
-          this.$store.commit?.("vtt/PATCH_TOKEN", {
-            id: token.id,
-            sceneId: token.sceneId,
-            ...changes,
-          });
-          return token;
-        }
-      } catch (_error) {
-        // Preserve the existing REST path when realtime is unavailable.
-      }
-    }
+  async updateToken({ token, changes, onSuccess, onError }) {
+    this.$store.commit?.("vtt/SET_TOKEN_PHASE", "saving");
     try {
-      const updated = await this.$store.dispatch("vtt/updateToken", {
-        token,
-        changes,
-      });
+      const updated = isRealtimeTokenChange(changes)
+        ? await realtimeTokenUpdate(this, token, changes)
+        : await this.$store.dispatch("vtt/updateToken", { token, changes });
+      this.$store.commit?.("vtt/SET_TOKEN_PHASE", "ready");
+      onSuccess?.(updated);
       return updated;
     } catch (error) {
-      if (error?.status === 409) {
-        this.$store
-          .dispatch("vtt/loadTokens", { silent: true })
-          .catch(() => {});
-      }
+      this.$store.commit?.("vtt/TOKEN_FAILED", {
+        code: String(error?.code || "token_write_failed"),
+        status: Number(error?.status) || 0,
+        details: error?.details || error?.payload?.errors || null,
+      });
+      onError?.(error);
       return null;
     }
   },
@@ -185,5 +245,74 @@ export const tableTokenMethods = {
   openActor(characterId) {
     this.focusedCharacterId = Number(characterId) || null;
     this.openUtilityWindow("characters");
+  },
+  openTokenCharacterAssignment(token) {
+    if (!token?.capabilities?.canManage) return;
+    this.tokenCharacterAssignmentToken = token;
+    this.tokenCharacterAssignmentError = "";
+    this.tokenCharacterAssignmentCreatedId = null;
+  },
+  closeTokenCharacterAssignment() {
+    if (this.tokenCharacterAssignmentBusy) return;
+    this.tokenCharacterAssignmentToken = null;
+    this.tokenCharacterAssignmentError = "";
+    this.tokenCharacterAssignmentCreatedId = null;
+  },
+  async assignTokenCharacter(characterId) {
+    const token = this.tokenCharacterAssignmentToken;
+    if (!token || this.tokenCharacterAssignmentBusy) return null;
+    this.tokenCharacterAssignmentBusy = true;
+    this.tokenCharacterAssignmentError = "";
+    const updated = await this.updateToken({
+      token,
+      changes: { characterId: characterId ? Number(characterId) : null },
+    });
+    this.tokenCharacterAssignmentBusy = false;
+    if (!updated) {
+      this.tokenCharacterAssignmentError = this.$t(
+        "vtt.token.assignment.linkError",
+      );
+      return null;
+    }
+    this.tokenCharacterAssignmentToken = null;
+    this.tokenCharacterAssignmentCreatedId = null;
+    await this.$store.dispatch("vtt/loadTokenSync").catch(() => {});
+    return updated;
+  },
+  async createAndAssignTokenCharacter(name) {
+    const token = this.tokenCharacterAssignmentToken;
+    if (!token || this.tokenCharacterAssignmentBusy) return null;
+    const systemId = Number(this.campaign?.systemId) || null;
+    const universeId = Number(this.campaign?.universeId) || null;
+    if (!systemId || !universeId) {
+      this.tokenCharacterAssignmentError = this.$t(
+        "characters.errors.campaign_game",
+      );
+      return null;
+    }
+    this.tokenCharacterAssignmentBusy = true;
+    this.tokenCharacterAssignmentError = "";
+    try {
+      const character = await characterApiClient.create(
+        this.currentCampaignId,
+        {
+          systemId,
+          universeId,
+          name: String(name || token.name).trim(),
+          data: {},
+          avatarUrl: token.imageUrl || "",
+        },
+      );
+      this.tokenCharacterAssignmentCreatedId = character.id;
+      await this.$store.dispatch("campaignContext/refresh").catch(() => {});
+      this.tokenCharacterAssignmentBusy = false;
+      return this.assignTokenCharacter(character.id);
+    } catch (_error) {
+      this.tokenCharacterAssignmentError = this.$t(
+        "vtt.token.assignment.createError",
+      );
+      this.tokenCharacterAssignmentBusy = false;
+      return null;
+    }
   },
 };

@@ -55,7 +55,9 @@
         class="presence-dot"
         :class="{ online: realtimeStatus === 'ready' }"
       ></span>
-      <span>{{ $t(`campaignLobby.connection.${realtimeStatus}`) }}</span>
+      <span>{{
+        $t(`vtt.table.notifications.connectionStates.${knownRealtimeStatus}`)
+      }}</span>
       <span class="table-workspace-header__members">
         {{ $t("vtt.table.header.online", { count: onlineMembers.length }) }}
       </span>
@@ -71,6 +73,19 @@
       ‖
       <span>{{ $t("vtt.table.header.pause") }}</span>
     </button>
+
+    <button
+      v-if="calendarDate"
+      class="table-workspace-header__calendar"
+      type="button"
+      :title="$t('vtt.table.header.openCalendar')"
+      @click="$emit('open-calendar')"
+    >
+      <small>{{ $t("vtt.table.header.worldDate") }}</small>
+      <strong>
+        {{ calendarDate }}<span v-if="calendarTime"> · {{ calendarTime }}</span>
+      </strong>
+    </button>
   </header>
 </template>
 
@@ -85,11 +100,32 @@ export default {
     activeId: { type: [Number, String], default: null },
     onlineMembers: { type: Array, default: () => [] },
     realtimeStatus: { type: String, default: "disconnected" },
+    calendarDate: { type: String, default: "" },
+    calendarTime: { type: String, default: "" },
     canManage: { type: Boolean, default: false },
     busy: { type: Boolean, default: false },
   },
-  emits: ["select-scene", "previous-scene", "next-scene", "activate"],
+  emits: [
+    "select-scene",
+    "previous-scene",
+    "next-scene",
+    "activate",
+    "open-calendar",
+  ],
   computed: {
+    knownRealtimeStatus() {
+      return [
+        "ready",
+        "syncing",
+        "reconnecting",
+        "auth_failed",
+        "forbidden",
+        "exhausted",
+        "disconnected",
+      ].includes(this.realtimeStatus)
+        ? this.realtimeStatus
+        : "connecting";
+    },
     activeSuffix() {
       return ` · ${this.$t("vtt.scene.status.active")}`;
     },

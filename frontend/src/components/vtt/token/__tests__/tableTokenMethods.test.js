@@ -1,4 +1,18 @@
 import { describe, expect, it, vi } from "vitest";
+
+const clients = vi.hoisted(() => ({
+  instantiate: vi.fn(),
+  createCharacter: vi.fn(),
+}));
+
+vi.mock("@/lib/vtt/tokenTemplateApiClient", () => ({
+  tokenTemplateApiClient: { instantiate: clients.instantiate },
+}));
+
+vi.mock("@/lib/character/characterApiClient", () => ({
+  characterApiClient: { create: clients.createCharacter },
+}));
+
 import { tableTokenMethods } from "../tableTokenMethods";
 
 describe("tableTokenMethods resources", () => {
@@ -48,7 +62,10 @@ describe("tableTokenMethods resources", () => {
 
     const result = await tableTokenMethods.updateToken.call(vm, payload);
 
-    expect(result).toBe(payload.token);
+    expect(result).toEqual({
+      ...payload.token,
+      resources: payload.changes.resources,
+    });
     expect(dispatch).toHaveBeenCalledWith("realtime/changeToken", payload);
     expect(dispatch).not.toHaveBeenCalledWith("vtt/updateToken", payload);
     expect(dispatch).not.toHaveBeenCalledWith("campaignContext/refresh");
@@ -73,7 +90,7 @@ describe("tableTokenMethods resources", () => {
       changes: { resources: {} },
     });
 
-    expect(dispatch).toHaveBeenLastCalledWith("vtt/loadTokens", {
+    expect(dispatch).toHaveBeenCalledWith("vtt/loadTokens", {
       silent: true,
     });
   });
@@ -172,5 +189,103 @@ describe("tableTokenMethods resources", () => {
       network: false,
       details: { names: "Jürgen, Bruder" },
     });
+  });
+
+  it("places a template at the current view center and selects the instance", async () => {
+    const token = { id: 81, sceneId: 4, revision: 1 };
+    clients.instantiate.mockResolvedValueOnce(token);
+    const commit = vi.fn();
+    const vm = {
+      currentCampaignId: 7,
+      selectedScene: { id: 4, width: 1200, height: 800 },
+      sceneViewCenter: { x: 360, y: 270 },
+      canCreateToken: true,
+      tokenTemplateBusyId: null,
+      $store: { commit },
+    };
+
+    const created = await tableTokenMethods.placeTokenTemplate.call(vm, {
+      id: 19,
+    });
+
+    expect(clients.instantiate).toHaveBeenCalledWith(7, 4, 19, 360, 270);
+    expect(commit).toHaveBeenCalledWith("vtt/UPSERT_TOKEN", token);
+    expect(commit).toHaveBeenCalledWith("vtt/SELECT_TOKEN", 81);
+    expect(created).toBe(token);
+  });
+
+  it("assigns and detaches characters through the token update channel", async () => {
+    const token = { id: 81, sceneId: 4, revision: 1 };
+    const updateToken = vi
+      .fn()
+      .mockResolvedValue({ ...token, characterId: 51 });
+    const dispatch = vi.fn().mockResolvedValue({});
+    const vm = {
+      tokenCharacterAssignmentToken: token,
+      tokenCharacterAssignmentBusy: false,
+      tokenCharacterAssignmentError: "",
+      tokenCharacterAssignmentCreatedId: null,
+      updateToken,
+      $store: { dispatch },
+      $t: (key) => key,
+    };
+
+    await tableTokenMethods.assignTokenCharacter.call(vm, 51);
+    expect(updateToken).toHaveBeenCalledWith({
+      token,
+      changes: { characterId: 51 },
+    });
+    expect(dispatch).toHaveBeenCalledWith("vtt/loadTokenSync");
+
+    vm.tokenCharacterAssignmentToken = token;
+    updateToken.mockResolvedValueOnce({ ...token, characterId: null });
+    await tableTokenMethods.assignTokenCharacter.call(vm, null);
+    expect(updateToken).toHaveBeenLastCalledWith({
+      token,
+      changes: { characterId: null },
+    });
+  });
+
+  it("keeps a newly created character available when token linking fails", async () => {
+    clients.createCharacter.mockResolvedValueOnce({ id: 51, name: "Ogre" });
+    const token = {
+      id: 81,
+      sceneId: 4,
+      revision: 1,
+      name: "Ogre",
+      imageUrl: "/api/campaigns/7/token-template-assets/4/file",
+    };
+    const updateToken = vi.fn().mockResolvedValue(null);
+    const dispatch = vi.fn().mockResolvedValue({});
+    const vm = {
+      currentCampaignId: 7,
+      campaign: { systemId: 2, universeId: 3 },
+      tokenCharacterAssignmentToken: token,
+      tokenCharacterAssignmentBusy: false,
+      tokenCharacterAssignmentError: "",
+      tokenCharacterAssignmentCreatedId: null,
+      updateToken,
+      $store: { dispatch },
+      $t: (key) => key,
+    };
+    vm.assignTokenCharacter = (id) =>
+      tableTokenMethods.assignTokenCharacter.call(vm, id);
+
+    expect(
+      await tableTokenMethods.createAndAssignTokenCharacter.call(vm, "Ogre"),
+    ).toBeNull();
+    expect(clients.createCharacter).toHaveBeenCalledWith(7, {
+      systemId: 2,
+      universeId: 3,
+      name: "Ogre",
+      data: {},
+      avatarUrl: "/api/campaigns/7/token-template-assets/4/file",
+    });
+    expect(dispatch).toHaveBeenCalledWith("campaignContext/refresh");
+    expect(vm.tokenCharacterAssignmentCreatedId).toBe(51);
+    expect(vm.tokenCharacterAssignmentToken).toBe(token);
+    expect(vm.tokenCharacterAssignmentError).toBe(
+      "vtt.token.assignment.linkError",
+    );
   });
 });

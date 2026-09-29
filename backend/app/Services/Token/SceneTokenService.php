@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Services\Token;
+
+use App\Services\Bestiary\CharacterBestiaryEncounterRecorder;
 use App\Models\SceneTokenModel;
 use App\Services\Scene\SceneResourceAccessService;
 use App\Services\Scene\SceneException;
@@ -16,8 +18,10 @@ final class SceneTokenService
         'resource_bar_position',
     ];
     private const MANAGER_FIELDS = [
+        'character_id',
         'visible_to_json', 'controlled_by_json',
         'editable_by_json', 'observer_by_json', 'rotation_handle_enabled', 'facing_handle_enabled',
+        'rotation_follows_facing',
         'movement_range', 'movement_spent', 'movement_reset_mode',
         'show_info_unselected', 'vision_json',
     ];
@@ -30,6 +34,8 @@ final class SceneTokenService
     private $collisions;
     private $grid;
     private $visibility;
+    private $sync;
+    private $bestiary;
 
     public function __construct(
         ?BaseConnection $db = null,
@@ -40,7 +46,9 @@ final class SceneTokenService
         ?TokenPayloadValidator $validator = null,
         ?WallCollisionService $collisions = null,
         ?TokenGridPositionService $grid = null,
-        ?SceneVisibilityService $visibility = null
+        ?SceneVisibilityService $visibility = null,
+        ?TokenSyncService $sync = null,
+        ?CharacterBestiaryEncounterRecorder $bestiary = null
     ) {
         $this->db = $db ?: \Config\Database::connect();
         $this->tokens = $tokens ?: new SceneTokenModel($this->db);
@@ -51,6 +59,9 @@ final class SceneTokenService
         $this->collisions = $collisions ?: new WallCollisionService($this->db);
         $this->grid = $grid ?: new TokenGridPositionService();
         $this->visibility = $visibility ?: new SceneVisibilityService($this->db);
+        $this->sync = $sync ?: new TokenSyncService($this->db);
+        $this->bestiary = $bestiary
+            ?: new CharacterBestiaryEncounterRecorder($this->db);
     }
 
     public function list(int $campaignId, int $sceneId, array $auth): array
@@ -69,6 +80,21 @@ final class SceneTokenService
         if (!$canManage) {
             $visible = $this->visibility->filter($auth, $campaignId, $scene, $visible);
         }
+        try {
+            $this->bestiary->recordVisibleTokens(
+                $campaignId,
+                $sceneId,
+                $auth,
+                $visible,
+                $canManage
+            );
+        } catch (\Throwable $exception) {
+            log_message(
+                'error',
+                'Bestiary encounter recording failed: {message}',
+                ['message' => $exception->getMessage()]
+            );
+        }
         return [
             'items' => array_map(
                 fn (array $row): array => $this->presentRow(
@@ -81,7 +107,13 @@ final class SceneTokenService
         ];
     }
 
-    public function create(int $campaignId, int $sceneId, array $auth, array $payload): array
+    public function create(
+        int $campaignId,
+        int $sceneId,
+        array $auth,
+        array $payload,
+        array $serverData = []
+    ): array
     {
         [$scene, $capabilities] = $this->sceneContext($campaignId, $sceneId, $auth);
         $this->assertManager($auth, $campaignId, $sceneId, $capabilities);
@@ -89,7 +121,10 @@ final class SceneTokenService
         $this->assertValid($validated);
         $this->access->assertCharacterInCampaign($campaignId, $validated['data']['character_id'] ?? null);
         $this->access->assertPermissionUsersInCampaign($campaignId, $validated['data']);
-        $data = $this->snapCreateData($scene, $validated['data']) + [
+        $provenance = array_intersect_key($serverData, array_flip([
+            'token_template_id', 'token_template_asset_id',
+        ]));
+        $data = $this->snapCreateData($scene, $validated['data']) + $provenance + [
             'campaign_id' => $campaignId,
             'scene_id' => $sceneId,
             'revision' => 1,
@@ -106,7 +141,8 @@ final class SceneTokenService
         int $tokenId,
         array $auth,
         array $payload,
-        array $movementRoute = []
+        array $movementRoute = [],
+        bool $includeSynchronized = false
     ): array {
         [$scene, $capabilities] = $this->sceneContext($campaignId, $sceneId, $auth);
         $row = $this->find($campaignId, $sceneId, $tokenId);
@@ -139,8 +175,7 @@ final class SceneTokenService
             $this->access->assertPermissionUsersInCampaign($campaignId, $validated['data']);
         }
         $resources = new TokenResourceMovementService($this->db);
-        $transactional = $resources->touches($validated['data']);
-        if ($transactional) $this->db->transBegin();
+        $this->db->transBegin();
         try {
             $validated['data'] = $resources->prepare(
                 $campaignId, $row, $validated['data'], $canManage
@@ -152,6 +187,7 @@ final class SceneTokenService
             $validated['data'] = $resources->finish(
                 $campaignId, $row, array_merge($validated['data'], $movement)
             );
+            $syncChanges = $this->changedValues($row, $validated['data']);
             $this->writeRevision(
                 $campaignId,
                 $sceneId,
@@ -159,18 +195,36 @@ final class SceneTokenService
                 $validated['revision'],
                 $validated['data']
             );
-            if ($transactional) $this->db->transCommit();
+            if (array_key_exists('character_id', $syncChanges)) {
+                $this->sync->deleteTokenLinks($campaignId, $tokenId);
+            }
+            $synchronized = $this->sync->afterTokenUpdate(
+                $campaignId,
+                $tokenId,
+                $syncChanges,
+                $auth
+            );
+            if ($this->db->transStatus() === false) {
+                throw new TokenException(
+                    'token_write_failed', 'Token changes could not be saved.', 500
+                );
+            }
+            $this->db->transCommit();
         } catch (\Throwable $exception) {
-            if ($transactional) $this->db->transRollback();
+            $this->db->transRollback();
             throw $exception;
         }
         $token = $this->present($campaignId, $sceneId, $tokenId, $auth);
-        return [
+        $result = [
             'token' => $token,
             'visibility' => [
                 'publishToPlayers' => !empty($scene['is_visible']) && empty($token['hidden']),
             ],
         ];
+        if ($includeSynchronized && $synchronized) {
+            $result['synchronizedTokens'] = $synchronized;
+        }
+        return $result;
     }
 
     public function delete(int $campaignId, int $sceneId, int $tokenId, array $auth, array $payload): array
@@ -180,9 +234,20 @@ final class SceneTokenService
         $validated = $this->validator->deletion($payload);
         $this->assertValid($validated);
         $this->find($campaignId, $sceneId, $tokenId);
-        $this->writeRevision($campaignId, $sceneId, $tokenId, $validated['revision'], [
-            'deleted_at' => date('Y-m-d H:i:s'),
-        ]);
+        $this->db->transBegin();
+        try {
+            $this->writeRevision($campaignId, $sceneId, $tokenId, $validated['revision'], [
+                'deleted_at' => date('Y-m-d H:i:s'),
+            ]);
+            $this->sync->deleteTokenLinks($campaignId, $tokenId);
+            if ($this->db->transStatus() === false) {
+                throw new TokenException('token_write_failed', 'Token could not be deleted.', 500);
+            }
+            $this->db->transCommit();
+        } catch (\Throwable $exception) {
+            $this->db->transRollback();
+            throw $exception;
+        }
         return ['deleted' => true, 'id' => $tokenId];
     }
 
@@ -204,6 +269,30 @@ final class SceneTokenService
     private function canManage(array $auth, int $campaignId, int $sceneId, array $caps): bool
     {
         return $this->sceneAccess->canManage($auth, $campaignId, $sceneId, $caps);
+    }
+
+    private function changedValues(array $current, array $next): array
+    {
+        return array_filter(
+            $next,
+            static function ($value, string $field) use ($current): bool {
+                if (!array_key_exists($field, $current)) return true;
+                $normalize = static function ($candidate): string {
+                    if (is_array($candidate)) {
+                        $copy = $candidate;
+                        if ($copy && array_keys($copy) !== range(0, count($copy) - 1)) {
+                            ksort($copy);
+                        }
+                        return (string) json_encode($copy, JSON_UNESCAPED_UNICODE);
+                    }
+                    if (is_bool($candidate)) return $candidate ? '1' : '0';
+                    if (is_numeric($candidate)) return (string) (float) $candidate;
+                    return (string) $candidate;
+                };
+                return $normalize($current[$field]) !== $normalize($value);
+            },
+            ARRAY_FILTER_USE_BOTH
+        );
     }
 
     private function assertManager(array $auth, int $campaignId, int $sceneId, array $caps): void

@@ -46,4 +46,17 @@ final class TilePayloadValidatorTest extends CIUnitTestCase
         $this->assertFalse($result['valid']);
         $this->assertArrayHasKey('revision', $result['errors']);
     }
+
+    public function testTileServiceKeepsTheLegacyUrlWhileLinkingCentralMedia(): void
+    {
+        $service = file_get_contents(APPPATH . 'Services/Tile/SceneTileService.php');
+        $presenter = file_get_contents(APPPATH . 'Services/Tile/TilePresenter.php');
+
+        $this->assertStringContainsString('registerExternalUrl', $service);
+        $this->assertStringContainsString('scene_media_assets', $service);
+        $this->assertStringContainsString('map_assets', $service);
+        $this->assertStringContainsString("'media_asset_id'", $service);
+        $this->assertStringContainsString("'assetUrl' => (string) \$row['asset_url']", $presenter);
+        $this->assertStringContainsString("'mediaAssetId'", $presenter);
+    }
 }
