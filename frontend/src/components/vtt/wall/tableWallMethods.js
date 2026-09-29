@@ -1,3 +1,5 @@
+import { playDoorSound } from "@/lib/vtt/doorAudio";
+
 const queues = new Map();
 let activeWrites = 0;
 
@@ -37,12 +39,15 @@ const reportError = (component, error) => {
   });
 };
 
-const perform = async (component, key, operation) => {
+const perform = async (component, key, operation, callbacks = {}) => {
   beginWrite(component);
   try {
-    return await enqueue(key, operation);
+    const result = await enqueue(key, operation);
+    callbacks.onSuccess?.(result);
+    return result;
   } catch (error) {
     reportError(component, error);
+    callbacks.onError?.(error);
     return false;
   } finally {
     endWrite(component);
@@ -118,28 +123,86 @@ export const tableWallMethods = {
       return true;
     });
   },
-  updateWall({ wall, changes }) {
+  updateWall({ wall, changes, onSuccess, onError }) {
     if (!wall || !this.canManageWalls) return false;
-    return perform(this, `${wall.sceneId}:${wall.id}`, () =>
-      realtimeUpdate(this, wall, changes),
+    return perform(
+      this,
+      `${wall.sceneId}:${wall.id}`,
+      () => realtimeUpdate(this, wall, changes),
+      { onSuccess, onError },
     );
   },
-  updateWalls(updates) {
+  updateWalls(payload) {
+    const updates = Array.isArray(payload) ? payload : payload?.updates;
+    const callbacks = Array.isArray(payload) ? {} : payload || {};
     if (!Array.isArray(updates) || !updates.length || !this.canManageWalls) {
       return false;
     }
     const sceneId = updates[0].wall?.sceneId || this.selectedScene?.id;
-    return perform(this, `${sceneId}:bulk`, async () => {
-      for (const { wall, changes } of updates) {
-        await enqueue(`${wall.sceneId}:${wall.id}`, () =>
-          realtimeUpdate(this, wall, changes),
-        );
+    return perform(
+      this,
+      `${sceneId}:bulk`,
+      async () => {
+        for (const { wall, changes } of updates) {
+          await enqueue(`${wall.sceneId}:${wall.id}`, () =>
+            realtimeUpdate(this, wall, changes),
+          );
+        }
+        return true;
+      },
+      callbacks,
+    );
+  },
+  interactWall({ wall, doorState, actingTokenIds = [], silent = false }) {
+    if (!wall || !["open", "closed", "locked"].includes(doorState)) {
+      return false;
+    }
+    return perform(this, `${wall.sceneId}:${wall.id}:door`, async () => {
+      const current = latestWall(this, wall);
+      const sent = await this.$store.dispatch("realtime/changeWall", {
+        operation: "interact",
+        wall: current,
+        changes: {
+          doorState,
+          actingTokenIds,
+          ...(silent === true ? { silent: true } : {}),
+        },
+      });
+      if (!sent) {
+        try {
+          const updated = await this.$store.dispatch("vtt/interactWall", {
+            wall: current,
+            doorState,
+            actingTokenIds,
+            silent,
+          });
+          if (updated && !silent) {
+            const cue =
+              doorState === "open"
+                ? "open"
+                : doorState === "locked"
+                  ? "lock"
+                  : "close";
+            playDoorSound(updated, cue);
+          }
+          return Boolean(updated);
+        } catch (error) {
+          if (error?.code === "door_locked") {
+            playDoorSound(current, "lockedAttempt");
+          }
+          throw error;
+        }
       }
       return true;
     });
   },
-  deleteWall(wall) {
-    if (!window.confirm(this.$t("vtt.wall.deleteConfirm"))) return false;
+  deleteWall(payload) {
+    const wall = payload?.wall || payload;
+    if (
+      !payload?.confirmed &&
+      !window.confirm(this.$t("vtt.wall.deleteConfirm"))
+    )
+      return false;
     return perform(this, `${wall.sceneId}:${wall.id}`, async () => {
       const current = latestWall(this, wall);
       const sent = await this.$store.dispatch("realtime/changeWall", {

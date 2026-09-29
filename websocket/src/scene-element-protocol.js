@@ -28,7 +28,17 @@ const wallChanges = (value, operation) => {
     "blocksMovement",
     "blocksSight",
     "blocksLight",
+    "blocksSound",
+    "wallType",
+    "doorType",
+    "restrictionType",
+    "proximityThreshold",
+    "playerOperable",
+    "soundConfig",
+    "animationConfig",
     "doorState",
+    "actingTokenIds",
+    "silent",
     "color",
     "enabled",
     "hidden",
@@ -42,12 +52,40 @@ const wallChanges = (value, operation) => {
     "blocksMovement",
     "blocksSight",
     "blocksLight",
+    "blocksSound",
+    "playerOperable",
     "enabled",
     "hidden",
   ]) {
     if (value[field] === undefined) continue;
     if (typeof value[field] !== "boolean")
       throw new ProtocolError(`wall_${field}_invalid`);
+    changes[field] = value[field];
+  }
+  for (const [field, values] of [
+    ["wallType", ["solid", "terrain", "invisible", "ethereal", "custom"]],
+    ["doorType", ["none", "door", "secret", "window"]],
+    ["restrictionType", ["normal", "limited", "proximity"]],
+  ]) {
+    if (value[field] === undefined) continue;
+    if (!values.includes(value[field])) {
+      throw new ProtocolError(`wall_${field}_invalid`);
+    }
+    changes[field] = value[field];
+  }
+  if (value.proximityThreshold !== undefined) {
+    changes.proximityThreshold = number(
+      value.proximityThreshold,
+      "wall_proximity_threshold_invalid",
+      0,
+      100000,
+    );
+  }
+  for (const field of ["soundConfig", "animationConfig"]) {
+    if (value[field] === undefined) continue;
+    if (!plainObject(value[field]) || JSON.stringify(value[field]).length > 16384) {
+      throw new ProtocolError(`wall_${field}_invalid`);
+    }
     changes[field] = value[field];
   }
   if (value.name !== undefined) {
@@ -63,7 +101,17 @@ const wallChanges = (value, operation) => {
     else changes.color = String(value.color).toUpperCase();
   }
   if (value.type !== undefined) {
-    if (!["wall", "door", "window", "secret"].includes(value.type))
+    if (
+      ![
+        "wall",
+        "door",
+        "window",
+        "secret",
+        "terrain",
+        "invisible",
+        "ethereal",
+      ].includes(value.type)
+    )
       throw new ProtocolError("wall_type_invalid");
     changes.type = value.type;
   }
@@ -73,11 +121,102 @@ const wallChanges = (value, operation) => {
     }
     changes.doorState = value.doorState;
   }
+  if (value.actingTokenIds !== undefined) {
+    if (operation !== "interact" || !Array.isArray(value.actingTokenIds)) {
+      throw new ProtocolError("wall_acting_token_ids_invalid");
+    }
+    const ids = value.actingTokenIds.map((id) =>
+      positiveId(id, "wall_acting_token_ids_invalid"),
+    );
+    if (ids.length > 50 || ids.some((id) => id === null)) {
+      throw new ProtocolError("wall_acting_token_ids_invalid");
+    }
+    changes.actingTokenIds = [...new Set(ids)];
+  }
+  if (value.silent !== undefined) {
+    if (operation !== "interact" || typeof value.silent !== "boolean") {
+      throw new ProtocolError("wall_silent_invalid");
+    }
+    changes.silent = value.silent;
+  }
   if (
     operation === "create" &&
     !["x1", "y1", "x2", "y2"].every((key) => key in changes)
   ) {
     throw new ProtocolError("wall_geometry_required");
+  }
+  return changes;
+};
+
+const regionChanges = (value, operation) => {
+  if (!plainObject(value)) throw new ProtocolError("region_changes_invalid");
+  exactKeys(value, [
+    "name",
+    "polygons",
+    "darknessMode",
+    "darknessValue",
+    "disableGlobalIllumination",
+    "color",
+    "enabled",
+    "hidden",
+  ]);
+  const changes = {};
+  if (value.name !== undefined) {
+    const name = String(value.name).trim();
+    if (!name || Array.from(name).length > 150)
+      throw new ProtocolError("region_name_invalid");
+    changes.name = name;
+  }
+  if (value.polygons !== undefined) {
+    if (!Array.isArray(value.polygons) || !value.polygons.length || value.polygons.length > 32) {
+      throw new ProtocolError("region_polygons_invalid");
+    }
+    let count = 0;
+    changes.polygons = value.polygons.map((polygon) => {
+      if (!Array.isArray(polygon) || polygon.length < 3 || polygon.length > 1000) {
+        throw new ProtocolError("region_polygon_invalid");
+      }
+      count += polygon.length;
+      if (count > 5000) throw new ProtocolError("region_polygons_invalid");
+      return polygon.map((point) => {
+        if (!plainObject(point)) throw new ProtocolError("region_point_invalid");
+        exactKeys(point, ["x", "y"]);
+        return {
+          x: number(point.x, "region_x_invalid"),
+          y: number(point.y, "region_y_invalid"),
+        };
+      });
+    });
+  }
+  if (value.darknessMode !== undefined) {
+    if (!["add", "subtract", "override"].includes(value.darknessMode)) {
+      throw new ProtocolError("region_darkness_mode_invalid");
+    }
+    changes.darknessMode = value.darknessMode;
+  }
+  if (value.darknessValue !== undefined) {
+    changes.darknessValue = number(
+      value.darknessValue,
+      "region_darkness_value_invalid",
+      0,
+      1,
+    );
+  }
+  for (const field of ["disableGlobalIllumination", "enabled", "hidden"]) {
+    if (value[field] === undefined) continue;
+    if (typeof value[field] !== "boolean") {
+      throw new ProtocolError(`region_${field}_invalid`);
+    }
+    changes[field] = value[field];
+  }
+  if (value.color !== undefined) {
+    if (!/^#[0-9a-f]{6}([0-9a-f]{2})?$/iu.test(value.color)) {
+      throw new ProtocolError("region_color_invalid");
+    }
+    changes.color = String(value.color).toUpperCase();
+  }
+  if (operation === "create" && !changes.polygons) {
+    throw new ProtocolError("region_polygons_required");
   }
   return changes;
 };
@@ -164,6 +303,7 @@ const definitions = {
   wall: { changes: wallChanges, id: "wallId" },
   light: { changes: lightChanges, id: "lightId" },
   tile: { changes: tileChanges, id: "tileId" },
+  region: { changes: regionChanges, id: "regionId" },
 };
 
 export const parseSceneElementMessage = (message) => {
@@ -182,7 +322,10 @@ export const parseSceneElementMessage = (message) => {
       sceneId,
     };
   }
-  if (!["create", "update", "delete"].includes(operation)) {
+  const operations = resource === "wall"
+    ? ["create", "update", "delete", "interact"]
+    : ["create", "update", "delete"];
+  if (!operations.includes(operation)) {
     throw new ProtocolError(`${resource}_operation_invalid`);
   }
   const allowed = ["v", "type", "requestId", "operation", "sceneId"];
@@ -202,7 +345,7 @@ export const parseSceneElementMessage = (message) => {
     operation === "delete"
       ? null
       : definition.changes(message.changes, operation);
-  if (operation === "update" && Object.keys(changes).length === 0) {
+  if (["update", "interact"].includes(operation) && Object.keys(changes).length === 0) {
     throw new ProtocolError(`${resource}_changes_required`);
   }
   return {
