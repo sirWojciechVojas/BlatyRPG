@@ -20,13 +20,16 @@
     "home": {
       "eyebrow": "Panel kampanii",
       "title": "Witaj, {name}",
-      "description": "Wybierz kampanię i przejdź do scen, postaci, czatu albo sklepu."
+      "description": "Niech dobre sesje zawsze prowadzą do kolejnych historii."
     },
     "campaign": {
       "eyebrow": "Twoje światy",
-      "title": "Kampanie",
+      "title": "Twoje kampanie",
       "active": "Aktywna",
       "inactive": "Nieaktywna",
+      "launch": "Uruchom grę",
+      "menuLabel": "Opcje kampanii: {name}",
+      "unknownSystem": "Nieznany system",
       "noDescription": "Brak opisu kampanii.",
       "openScenes": "Otwórz sceny",
       "openCharacters": "Postacie i NPC",
@@ -43,6 +46,8 @@
     "create": {
       "eyebrow": "Nowy świat",
       "title": "Utwórz kampanię",
+      "open": "Nowa kampania",
+      "close": "Zamknij tworzenie kampanii",
       "name": "Nazwa kampanii",
       "system": "System RPG",
       "world": "Świat / setting",
@@ -52,6 +57,15 @@
       "description": "Opis",
       "submit": "Utwórz kampanię",
       "submitting": "Tworzenie…"
+    },
+    "carousel": {
+      "label": "Karuzela kampanii",
+      "previous": "Poprzednie kampanie",
+      "next": "Następne kampanie",
+      "pages": "Strony kampanii",
+      "page": "Przejdź do strony {page}",
+      "range": "{start}–{end} z {total}",
+      "headingCount": "{visible} z {total} blatów"
     },
     "empty": {
       "title": "Brak kampanii",

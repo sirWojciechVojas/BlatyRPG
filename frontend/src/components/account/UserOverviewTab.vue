@@ -42,7 +42,7 @@
           v-for="campaign in recentCampaigns"
           :key="campaign.id"
           class="user-panel-campaign"
-          :to="{ name: 'campaign-lobby', params: { campaignId: campaign.id } }"
+          :to="{ name: 'scene-workspace', params: { campaignId: campaign.id } }"
         >
           <span
             ><strong>{{ campaign.name }}</strong
