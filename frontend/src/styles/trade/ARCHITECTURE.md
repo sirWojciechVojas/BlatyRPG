@@ -1,8 +1,8 @@
 ﻿# Trade Modal Styles Architecture
 
 ## Files
-- `index.css`: single entrypoint imported by `TradeModalShell.vue`.
-- `base.css`: shell layout, global modal frame, wallet, common controls.
+- `index.css`: single entrypoint imported by `ShopTradeModal.vue`.
+- `base.css`: trade workspace layout, wallet and common controls.
 - `forms-and-detail.css`: forms and item detail panel styles.
 - `assortment.css`: assortment mode layout and cards.
 - `dialogs.css`: image/owner dialogs and related UI blocks.
