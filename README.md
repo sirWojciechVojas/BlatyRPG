@@ -13,7 +13,7 @@ Projekt jest zbudowany jako **Monorepo** z podziałem na dwa niezależne serwisy
 
 Aby uruchomić projekt, Twoje środowisko musi spełniać następujące wymagania:
 
-* **PHP:** Wersja **7.4.18** (Najnowsza z rodziny PHP 7).
+* **PHP:** Wersja **8.5**.
 * **Composer:** Menedżer pakietów PHP.
 * **Node.js & NPM:** Do obsługi frontendu.
 * **Baza danych:** MySQL lub MariaDB.
@@ -35,7 +35,7 @@ cd BlatyRPG
 2. Zainstaluj zależności PHP:
    composer install
 
-   *Uwaga: Composer automatycznie dobierze wersję bibliotek kompatybilną z Twoim PHP 7.4.*
+   *Uwaga: backend wymaga PHP 8.5 i CodeIgniter 4.7.0.*
 3. Skonfiguruj środowisko:
    * Skopiuj plik env zmieniając jego nazwę na .env (kropka na początku jest ważna\!).
    * Otwórz plik .env w edytorze.
@@ -45,6 +45,20 @@ cd BlatyRPG
    php spark serve
 
    *Backend będzie dostępny pod adresem: http://localhost:8080*
+
+#### Logowanie Google, Facebook i Discord
+
+Uzupełnij zmienne `*_OAUTH_CLIENT_ID` i `*_OAUTH_CLIENT_SECRET` opisane w
+`.env.example`. W panelu każdego dostawcy zarejestruj dokładny callback backendu:
+
+- `/api/auth/oauth/google/callback`
+- `/api/auth/oauth/facebook/callback`
+- `/api/auth/oauth/discord/callback`
+
+Pełny publiczny adres bazowy ustawia `OAUTH_CALLBACK_BASE_URL`, a powrót do SPA
+`OAUTH_FRONTEND_CALLBACK_URL`. Po zmianie konfiguracji uruchom migracje przez
+`php spark migrate`. Konta z nowym, zweryfikowanym adresem e-mail są tworzone
+automatycznie; istniejący użytkownik łączy dostawcę w panelu Bezpieczeństwo.
 
 ### **3\. Konfiguracja Frontend (Vue 3 \+ Webpack)**
 
