@@ -46,4 +46,13 @@ describe("HandoutWorkspace", () => {
     );
     expect(template).not.toContain("vtt.table.handouts.libraryItems");
   });
+
+  it("creates a local preview URL for an uploaded image", () => {
+    const source = readFileSync(componentPath, "utf8");
+    const { descriptor } = parse(source, { filename: componentPath });
+
+    expect(descriptor.script.content).toContain(
+      "{ ...asset, previewUrl: URL.createObjectURL(file) }",
+    );
+  });
 });

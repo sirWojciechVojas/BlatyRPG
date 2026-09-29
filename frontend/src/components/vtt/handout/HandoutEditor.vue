@@ -182,6 +182,22 @@ const cloneDocument = (document) => {
   return JSON.parse(JSON.stringify(document));
 };
 
+const addPreviewSources = (document, previewUrls) => {
+  const cloned = cloneDocument(document);
+  const visit = (node) => {
+    if (!node || typeof node !== "object") return;
+    if (node.type === "image") {
+      const assetId = Number(node.attrs?.assetId);
+      if (previewUrls[assetId]) {
+        node.attrs = { ...(node.attrs || {}), src: previewUrls[assetId] };
+      }
+    }
+    if (Array.isArray(node.content)) node.content.forEach(visit);
+  };
+  visit(cloned);
+  return cloned;
+};
+
 export default {
   name: "HandoutEditor",
   components: { EditorContent },
@@ -191,14 +207,23 @@ export default {
     allowMentions: { type: Boolean, default: false },
   },
   emits: ["update:modelValue", "upload-image", "error"],
-  data: () => ({ editor: null, selectedMention: "", uploading: false }),
+  data: () => ({
+    editor: null,
+    selectedMention: "",
+    uploading: false,
+    previewUrls: {},
+  }),
   watch: {
     modelValue(value) {
       if (!this.editor) return;
       const current = JSON.stringify(this.editor.getJSON());
-      const incoming = JSON.stringify(value || EMPTY_DOCUMENT);
+      const document = addPreviewSources(
+        value || EMPTY_DOCUMENT,
+        this.previewUrls,
+      );
+      const incoming = JSON.stringify(document);
       if (current !== incoming)
-        this.editor.commands.setContent(cloneDocument(value), {
+        this.editor.commands.setContent(document, {
           emitUpdate: false,
         });
     },
@@ -224,6 +249,7 @@ export default {
   },
   beforeUnmount() {
     this.editor?.destroy();
+    Object.values(this.previewUrls).forEach((url) => URL.revokeObjectURL(url));
   },
   methods: {
     command(name) {
@@ -278,10 +304,20 @@ export default {
     },
     insertAssetImage(asset) {
       if (!asset?.id || !this.editor) return;
+      if (asset.previewUrl) {
+        this.previewUrls = {
+          ...this.previewUrls,
+          [Number(asset.id)]: asset.previewUrl,
+        };
+      }
       this.editor
         .chain()
         .focus()
-        .setImage({ assetId: Number(asset.id), alt: asset.name || "" })
+        .setImage({
+          assetId: Number(asset.id),
+          alt: asset.name || "",
+          src: asset.previewUrl || "",
+        })
         .run();
     },
     insertAttachment(asset) {
