@@ -46,6 +46,7 @@ class WarhammerDefinitionsSeeder extends WfrpBaseSeeder
                     'name'        => $name,
                     'description' => isset($row[4]) ? $row[4] : '',
                     'metadata'    => json_encode([
+                        'legacy_id' => $row[0] ?? null,
                         'typ'       => $row[2] ?? 'Podstawowa',
                         'cecha'     => $row[3] ?? '',
                         'powiazane' => $row[5] ?? '',
@@ -84,6 +85,7 @@ class WarhammerDefinitionsSeeder extends WfrpBaseSeeder
                     'name'        => $name,
                     'description' => $row[2] ?? '',
                     'metadata'    => json_encode([
+                        'legacy_id'   => $row[0] ?? null,
                         'efekt'       => $row[3] ?? '',
                         'modyfikator' => $row[4] ?? '',
                         'talent'      => $row[5] ?? '',

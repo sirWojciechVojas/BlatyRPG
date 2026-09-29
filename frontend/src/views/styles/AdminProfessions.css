@@ -1,0 +1,770 @@
+.admin-professions {
+  display: grid;
+  grid-template-columns: minmax(17rem, 20rem) minmax(0, 1fr);
+  height: 100%;
+  min-height: 0;
+  color: var(--ui-color-text);
+  background: var(--ui-color-surface);
+  font-family: var(--ui-font-sans);
+}
+
+.admin-professions *,
+.admin-professions *::before,
+.admin-professions *::after {
+  box-sizing: border-box;
+}
+
+.admin-professions button,
+.admin-professions input,
+.admin-professions select,
+.admin-professions textarea {
+  font: inherit;
+}
+
+.admin-professions__catalog {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+  border-right: var(--ui-border);
+  background: var(--ui-color-surface-subtle);
+}
+
+.admin-professions__catalog > header,
+.admin-profession-editor > header {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-3);
+  padding: var(--ui-space-4);
+  border-bottom: var(--ui-border);
+}
+
+.admin-professions__catalog > header div,
+.admin-profession-editor > header div {
+  min-width: 0;
+}
+
+.admin-professions__catalog p,
+.admin-professions__catalog h2,
+.admin-profession-editor > header h2,
+.admin-profession-editor > header small {
+  margin: 0;
+}
+
+.admin-professions__catalog > header p {
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+  text-transform: uppercase;
+}
+
+.admin-professions__catalog h2,
+.admin-profession-editor > header h2 {
+  margin-top: 0.1rem;
+  overflow: hidden;
+  font-size: var(--ui-font-size-lg);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-professions__filters {
+  display: grid;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-3);
+  border-bottom: var(--ui-border);
+}
+
+.admin-professions__filters > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--ui-space-2);
+}
+
+.admin-professions__filters input,
+.admin-professions__filters select,
+.admin-profession-editor input[type="text"],
+.admin-profession-editor select,
+.admin-profession-editor textarea {
+  width: 100%;
+  min-width: 0;
+  color: var(--ui-color-text);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface);
+}
+
+.admin-professions__filters input,
+.admin-professions__filters select,
+.admin-profession-editor input[type="text"],
+.admin-profession-editor select {
+  height: var(--ui-control-height);
+  padding: 0 var(--ui-space-3);
+}
+
+.admin-professions__filters small,
+.admin-profession-editor label > small,
+.admin-profession-editor > header small {
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+}
+
+.admin-professions__list {
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  list-style: none;
+}
+
+.admin-professions__list li + li {
+  border-top: var(--ui-border);
+}
+
+.admin-professions__list button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  width: 100%;
+  min-height: 2.65rem;
+  align-items: center;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-2) var(--ui-space-3);
+  color: var(--ui-color-text);
+  text-align: left;
+  border: 0;
+  border-left: 2px solid transparent;
+  background: transparent;
+  cursor: pointer;
+}
+
+.admin-professions__list button:hover,
+.admin-professions__list button.active {
+  background: var(--ui-color-accent-soft);
+}
+
+.admin-professions__list button.active {
+  border-left-color: var(--ui-color-accent);
+}
+
+.admin-professions__list button > span {
+  display: grid;
+  min-width: 0;
+}
+
+.admin-professions__list strong,
+.admin-professions__list small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-professions__list strong {
+  font-size: var(--ui-font-size-sm);
+}
+
+.admin-professions__list small {
+  color: var(--ui-color-text-faint);
+  font-size: 0.625rem;
+}
+
+.admin-professions__list em {
+  color: var(--ui-color-text-faint);
+  font-size: 0.6rem;
+  font-style: normal;
+  font-weight: 650;
+  letter-spacing: 0.04em;
+}
+
+.admin-professions__list em.advanced {
+  color: var(--ui-color-accent);
+}
+
+.admin-professions__state,
+.admin-professions__welcome {
+  align-self: center;
+  padding: var(--ui-space-5);
+  color: var(--ui-color-text-muted);
+  text-align: center;
+}
+
+.admin-professions__welcome {
+  justify-self: center;
+  max-width: 28rem;
+}
+
+.admin-professions__welcome h2,
+.admin-professions__welcome p {
+  margin: 0 0 var(--ui-space-3);
+}
+
+.admin-profession-editor {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+  background: var(--ui-color-surface);
+}
+
+.admin-profession-editor > header {
+  background: var(--ui-color-surface-subtle);
+}
+
+.admin-profession-editor > .admin-alert {
+  grid-row: 2;
+  margin: var(--ui-space-3) var(--ui-space-4) 0;
+}
+
+.admin-alert.success {
+  color: var(--ui-color-success);
+  border-color: color-mix(in srgb, var(--ui-color-success) 48%, transparent);
+  background: color-mix(in srgb, var(--ui-color-success) 10%, transparent);
+}
+
+.admin-profession-editor > form {
+  display: grid;
+  grid-row: 3;
+  grid-template-rows: minmax(0, 1fr) auto;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.admin-profession-editor__workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(20rem, 25rem);
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.admin-profession-editor__article,
+.admin-profession-editor__inspector {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.admin-profession-editor__article {
+  padding: clamp(var(--ui-space-4), 2vw, var(--ui-space-6));
+}
+
+.admin-profession-editor__article > header {
+  display: grid;
+  gap: var(--ui-space-4);
+  padding-bottom: var(--ui-space-4);
+  border-bottom: var(--ui-border);
+}
+
+.admin-profession-editor__article > header > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ui-space-3);
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+  text-transform: uppercase;
+}
+
+.admin-profession-editor__title {
+  gap: var(--ui-space-1) !important;
+}
+
+.admin-profession-editor__title > span {
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+  text-transform: uppercase;
+}
+
+.admin-profession-editor__title input[type="text"] {
+  height: auto;
+  padding: var(--ui-space-2) 0;
+  border: 0;
+  border-bottom: 2px solid var(--ui-color-border-strong);
+  border-radius: 0;
+  background: transparent;
+  font-size: clamp(1.45rem, 2.6vw, 2.25rem);
+  font-weight: 700;
+  line-height: 1.15;
+}
+
+.admin-profession-editor__title input[type="text"]:focus {
+  border-bottom-color: var(--ui-color-accent-strong);
+  outline: 0;
+}
+
+.admin-profession-editor__inspector {
+  display: grid;
+  align-content: start;
+  gap: var(--ui-space-3);
+  padding: var(--ui-space-3);
+  border-left: var(--ui-border);
+  background: var(--ui-color-surface-subtle);
+}
+
+.admin-profession-editor__metadata {
+  display: grid;
+  gap: var(--ui-space-3);
+  padding: var(--ui-space-3);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface);
+}
+
+.admin-profession-editor__metadata > header {
+  padding-bottom: var(--ui-space-2);
+  border-bottom: var(--ui-border);
+}
+
+.admin-profession-editor__texts {
+  display: grid;
+  gap: var(--ui-space-4);
+  padding-top: var(--ui-space-4);
+}
+
+.admin-profession-editor label {
+  display: grid;
+  min-width: 0;
+  gap: var(--ui-space-2);
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-sm);
+}
+
+.admin-profession-editor input:focus,
+.admin-profession-editor select:focus,
+.admin-profession-editor textarea:focus,
+.admin-professions__filters input:focus,
+.admin-professions__filters select:focus {
+  border-color: var(--ui-color-accent-strong);
+  outline: 2px solid var(--ui-color-accent-soft);
+}
+
+.admin-profession-editor [aria-invalid="true"] {
+  border-color: var(--ui-color-danger);
+}
+
+.admin-profession-editor .field-error {
+  color: var(--ui-color-danger);
+}
+
+.admin-profession-editor select:disabled {
+  color: var(--ui-color-text-faint);
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.admin-profession-editor__flags {
+  display: grid;
+  gap: var(--ui-space-2);
+  margin: 0;
+  padding: var(--ui-space-3);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+}
+
+.admin-profession-editor__flags legend {
+  padding: 0 var(--ui-space-1);
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+}
+
+.admin-profession-editor__flags label {
+  display: flex;
+  min-width: 0;
+  grid-template-columns: none;
+  align-items: flex-start;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-2);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-subtle);
+  cursor: pointer;
+}
+
+.admin-profession-editor__flags input {
+  margin-top: 0.15rem;
+  accent-color: var(--ui-color-accent-strong);
+}
+
+.admin-profession-editor__flags label > span {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.admin-profession-editor__flags strong {
+  color: var(--ui-color-text);
+}
+
+.admin-profession-editor__texts textarea {
+  min-height: 12rem;
+  padding: var(--ui-space-3);
+  resize: vertical;
+  line-height: 1.5;
+}
+
+.admin-profession-editor__mechanics,
+.admin-profession-editor__images {
+  display: grid;
+  gap: var(--ui-space-3);
+  padding: var(--ui-space-3);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-subtle);
+}
+
+.admin-profession-editor__mechanics > header,
+.admin-profession-editor__images > header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-3);
+}
+
+.admin-profession-editor__mechanics > header > div,
+.admin-profession-editor__images > header {
+  min-width: 0;
+}
+
+.admin-profession-editor__mechanics header strong,
+.admin-profession-editor__mechanics header small,
+.admin-profession-editor__images header strong,
+.admin-profession-editor__images header small {
+  display: block;
+}
+
+.admin-profession-editor__mechanics header small,
+.admin-profession-editor__images header small {
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+}
+
+.admin-profession-editor__mechanics > div,
+.admin-profession-editor__images > div {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--ui-space-3);
+}
+
+.admin-requirement-picker {
+  display: grid;
+  gap: var(--ui-space-2);
+  min-width: 0;
+  padding-top: var(--ui-space-2);
+  border-top: var(--ui-border);
+}
+
+.admin-requirement-picker > header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ui-space-2);
+}
+
+.admin-requirement-picker > header small,
+.admin-requirement-picker__hint {
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+}
+
+.admin-requirement-picker__selected,
+.admin-requirement-picker__suggestions {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.admin-requirement-picker__selected {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-1);
+}
+
+.admin-requirement-picker__selected li {
+  display: inline-flex;
+  min-width: 0;
+  align-items: center;
+  gap: var(--ui-space-1);
+  padding-left: var(--ui-space-2);
+  overflow: hidden;
+  color: var(--ui-color-text);
+  border: var(--ui-border);
+  border-radius: 999px;
+  background: var(--ui-color-surface);
+  font-size: var(--ui-font-size-xs);
+}
+
+.admin-requirement-picker__selected span {
+  display: grid;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-requirement-picker__selected small {
+  color: var(--ui-color-text-faint);
+  font-size: 0.6rem;
+}
+
+.admin-requirement-picker__selected button {
+  width: 1.65rem;
+  height: 1.65rem;
+  padding: 0;
+  color: var(--ui-color-text-faint);
+  border: 0;
+  border-left: var(--ui-border);
+  background: transparent;
+  cursor: pointer;
+}
+
+.admin-requirement-picker__selected button:hover {
+  color: var(--ui-color-danger);
+  background: color-mix(in srgb, var(--ui-color-danger) 9%, transparent);
+}
+
+.admin-requirement-picker__search {
+  position: relative;
+}
+
+.admin-requirement-picker__search input {
+  width: 100%;
+  height: var(--ui-control-height);
+  padding: 0 var(--ui-space-3);
+  color: var(--ui-color-text);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface);
+}
+
+.admin-requirement-picker__suggestions {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 2px);
+  right: 0;
+  left: 0;
+  max-height: 15rem;
+  overflow: auto;
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-elevated, var(--ui-color-surface));
+  box-shadow: var(--ui-shadow-lg, 0 0.5rem 1.5rem rgb(0 0 0 / 24%));
+  scrollbar-width: thin;
+}
+
+.admin-requirement-picker__suggestions button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  width: 100%;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-2) var(--ui-space-3);
+  color: var(--ui-color-text);
+  text-align: left;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.admin-requirement-picker__suggestions li + li {
+  border-top: var(--ui-border);
+}
+
+.admin-requirement-picker__suggestions button:hover,
+.admin-requirement-picker__suggestions button.active {
+  background: var(--ui-color-accent-soft);
+}
+
+.admin-requirement-picker__suggestions span {
+  overflow: hidden;
+  font-size: var(--ui-font-size-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-requirement-picker__suggestions small {
+  color: var(--ui-color-text-faint);
+  font-family: var(--ui-font-mono, monospace);
+  font-size: 0.625rem;
+}
+
+.admin-requirement-picker__empty {
+  padding: var(--ui-space-3);
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+  text-align: center;
+}
+
+.admin-profession-editor__images article {
+  display: grid;
+  grid-template-columns: minmax(6rem, 7.5rem) minmax(0, 1fr);
+  min-width: 0;
+  min-height: 10rem;
+  overflow: hidden;
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface);
+}
+
+.admin-profession-editor__image-preview {
+  display: grid;
+  min-height: 10rem;
+  place-items: center;
+  overflow: hidden;
+  border-right: var(--ui-border);
+  background:
+    linear-gradient(45deg, var(--ui-color-surface-subtle) 25%, transparent 25%),
+    linear-gradient(
+      -45deg,
+      var(--ui-color-surface-subtle) 25%,
+      transparent 25%
+    ),
+    var(--ui-color-surface);
+  background-position:
+    0 0,
+    0.35rem 0.35rem;
+  background-size: 0.7rem 0.7rem;
+}
+
+.admin-profession-editor__image-preview img {
+  width: 100%;
+  height: 100%;
+  max-height: 16rem;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+.admin-profession-editor__image-preview > span {
+  color: var(--ui-color-text-faint);
+  font-size: 2rem;
+  font-weight: 200;
+}
+
+.admin-profession-editor__images article > div:last-child {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-3);
+}
+
+.admin-profession-editor__images article small {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-profession-editor__file {
+  display: inline-flex !important;
+  margin-top: auto;
+  padding: var(--ui-space-2) var(--ui-space-3);
+  color: var(--ui-color-text) !important;
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-subtle);
+  cursor: pointer;
+}
+
+.admin-profession-editor__file input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+
+.admin-profession-editor__remove-image {
+  padding: 0;
+  color: var(--ui-color-danger);
+  border: 0;
+  background: transparent;
+  font-size: var(--ui-font-size-xs);
+  cursor: pointer;
+}
+
+.admin-profession-editor__usage {
+  display: grid;
+  gap: var(--ui-space-1);
+  padding: var(--ui-space-3);
+  color: var(--ui-color-text-faint);
+  border-left: 2px solid var(--ui-color-border-strong);
+  background: var(--ui-color-surface-subtle);
+  font-size: var(--ui-font-size-xs);
+}
+
+.admin-profession-editor form > footer {
+  display: flex;
+  min-height: 3rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-3);
+  margin: 0;
+  padding: var(--ui-space-3) var(--ui-space-4);
+  color: var(--ui-color-warning);
+  border-top: var(--ui-border);
+  background: var(--ui-color-surface-subtle);
+  font-size: var(--ui-font-size-xs);
+}
+
+.admin-profession-editor form > footer > div {
+  display: flex;
+  gap: var(--ui-space-2);
+  margin-left: auto;
+}
+
+.admin-profession-editor button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+@media (max-width: 1050px) {
+  .admin-professions {
+    grid-template-columns: minmax(15rem, 17rem) minmax(0, 1fr);
+  }
+
+  .admin-profession-editor__workspace {
+    grid-template-columns: 1fr;
+    overflow: auto;
+    scrollbar-width: thin;
+  }
+
+  .admin-profession-editor__article,
+  .admin-profession-editor__inspector {
+    overflow: visible;
+  }
+
+  .admin-profession-editor__inspector {
+    border-top: var(--ui-border);
+    border-left: 0;
+  }
+
+  .admin-profession-editor__images > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 780px) {
+  .admin-professions {
+    display: block;
+    height: auto;
+    overflow: auto;
+  }
+
+  .admin-professions__catalog {
+    max-height: 24rem;
+    border-right: 0;
+    border-bottom: var(--ui-border);
+  }
+
+  .admin-profession-editor > form {
+    overflow: visible;
+  }
+
+  .admin-profession-editor__workspace {
+    overflow: visible;
+  }
+
+  .admin-profession-editor__images > div {
+    grid-template-columns: 1fr;
+  }
+}
