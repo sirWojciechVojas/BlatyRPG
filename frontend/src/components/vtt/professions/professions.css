@@ -1,0 +1,1464 @@
+.professions-content {
+  --profession-row-hover: color-mix(
+    in srgb,
+    var(--ui-color-accent) 8%,
+    transparent
+  );
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  color: var(--ui-color-text);
+  background: var(--ui-color-surface);
+  font-family: var(--ui-font-sans);
+  font-size: var(--ui-font-size-sm);
+  line-height: var(--ui-line-height);
+  container-name: professions-content;
+  container-type: inline-size;
+}
+
+.professions-content *,
+.professions-content *::before,
+.professions-content *::after {
+  box-sizing: border-box;
+}
+
+.professions-content button,
+.profession-list input {
+  font: inherit;
+}
+
+.professions-content button:focus-visible,
+.profession-list input:focus-visible {
+  outline: 1px solid var(--ui-color-accent);
+  outline-offset: -1px;
+}
+
+.professions-content__toolbar {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  min-width: 0;
+  min-height: 2.1rem;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: var(--ui-space-2);
+  padding: 0 var(--ui-space-2);
+  border-bottom: var(--ui-border);
+  background: var(--ui-color-surface-subtle);
+}
+
+.professions-content__context {
+  display: flex;
+  min-width: 0;
+  align-items: stretch;
+}
+
+.professions-content__context button,
+.profession-details__tabs button {
+  position: relative;
+  min-width: 0;
+  padding: 0 var(--ui-space-3);
+  overflow: hidden;
+  color: var(--ui-color-text-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.professions-content__context button::after,
+.profession-details__tabs button::after {
+  position: absolute;
+  right: var(--ui-space-3);
+  bottom: 0;
+  left: var(--ui-space-3);
+  height: 2px;
+  content: "";
+  background: transparent;
+}
+
+.professions-content__context button:hover,
+.professions-content__context button.is-active,
+.profession-details__tabs button:hover,
+.profession-details__tabs button.is-active {
+  color: var(--ui-color-text);
+  background: var(--ui-color-accent-soft);
+}
+
+.professions-content__context button.is-active::after,
+.profession-details__tabs button.is-active::after {
+  background: var(--ui-color-accent);
+}
+
+.professions-content__workspace {
+  display: grid;
+  grid-template-columns: minmax(13.75rem, 31%) minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+}
+
+.professions-content__list {
+  min-width: 0;
+  border-right: var(--ui-border);
+}
+
+.profession-list {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--ui-color-surface);
+}
+
+.profession-list__controls {
+  display: grid;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-2);
+  border-bottom: var(--ui-border);
+  background: var(--ui-color-surface);
+}
+
+.profession-list__search {
+  min-width: 0;
+}
+
+.profession-list__search input {
+  width: 100%;
+  height: var(--ui-control-height);
+  min-width: 0;
+  padding: 0 var(--ui-space-3);
+  color: var(--ui-color-text);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-subtle);
+}
+
+.profession-list__search input::placeholder {
+  color: var(--ui-color-text-faint);
+}
+
+.profession-list__search input:focus {
+  border-color: var(--ui-color-accent-strong);
+}
+
+.profession-list__filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+}
+
+.profession-list__filters button {
+  display: flex;
+  min-width: 0;
+  min-height: var(--ui-control-height-sm);
+  align-items: center;
+  justify-content: center;
+  gap: var(--ui-space-1);
+  padding: 0 var(--ui-space-1);
+  color: var(--ui-color-text-faint);
+  border: 0;
+  background: var(--ui-color-surface-subtle);
+  cursor: pointer;
+}
+
+.profession-list__filters button + button {
+  border-left: var(--ui-border);
+}
+
+.profession-list__filters button:hover,
+.profession-list__filters button.is-active {
+  color: var(--ui-color-text);
+  background: var(--ui-color-accent-soft);
+}
+
+.profession-list__filters button.is-active {
+  box-shadow: inset 0 -2px var(--ui-color-accent);
+}
+
+.profession-list__filters span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profession-list__filters b {
+  flex: 0 0 auto;
+  color: var(--ui-color-text-faint);
+  font-size: 0.625rem;
+  font-weight: 500;
+}
+
+.profession-list__items {
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  list-style: none;
+}
+
+.profession-list__items li + li {
+  border-top: 1px solid
+    color-mix(in srgb, var(--ui-color-border) 65%, transparent);
+}
+
+.profession-list__items button {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  width: 100%;
+  min-width: 0;
+  min-height: 2.25rem;
+  align-items: center;
+  gap: var(--ui-space-2);
+  padding: 0.25rem var(--ui-space-3);
+  color: var(--ui-color-text);
+  text-align: left;
+  border: 0;
+  border-left: 2px solid transparent;
+  background: transparent;
+  cursor: pointer;
+}
+
+.profession-list__items button:hover,
+.profession-list__items button.is-selected {
+  background: var(--profession-row-hover);
+}
+
+.profession-list__items button.is-selected {
+  border-left-color: var(--ui-color-accent);
+}
+
+.profession-list__items button > span {
+  min-width: 0;
+}
+
+.profession-list__items strong,
+.profession-list__items small {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profession-list__items strong {
+  font-size: var(--ui-font-size-sm);
+  font-weight: 600;
+}
+
+.profession-list__items small {
+  color: var(--ui-color-text-faint);
+  font-size: 0.625rem;
+}
+
+.profession-list__items em,
+.profession-details__header p span:last-child {
+  flex: 0 0 auto;
+  color: var(--ui-color-text-faint);
+  font-size: 0.6rem;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.profession-list__items em.is-advanced,
+.profession-details__header p span:last-child.is-advanced {
+  color: var(--ui-color-accent);
+}
+
+.profession-list__pagination {
+  display: flex;
+  min-height: 2rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-1) var(--ui-space-3);
+  color: var(--ui-color-text-faint);
+  border-top: var(--ui-border);
+  background: var(--ui-color-surface-subtle);
+  font-size: var(--ui-font-size-xs);
+}
+
+.profession-list__pagination > div {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-1);
+}
+
+.profession-list__pagination b {
+  min-width: 2.7rem;
+  color: var(--ui-color-text-muted);
+  text-align: center;
+  font-weight: 500;
+}
+
+.profession-list__pagination button,
+.profession-state button {
+  min-width: var(--ui-control-height-sm);
+  height: var(--ui-control-height-sm);
+  padding: 0 var(--ui-space-2);
+  color: var(--ui-color-text-muted);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-raised);
+  cursor: pointer;
+}
+
+.profession-list__pagination button:hover:not(:disabled),
+.profession-state button:hover {
+  color: var(--ui-color-text);
+  border-color: var(--ui-color-border-strong);
+}
+
+.profession-list__pagination button:disabled {
+  cursor: default;
+  opacity: 0.35;
+}
+
+.profession-state,
+.professions-content__welcome {
+  display: flex;
+  min-height: 8rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-5);
+  color: var(--ui-color-text-muted);
+  text-align: center;
+}
+
+.profession-state--error strong {
+  color: var(--ui-color-danger);
+}
+
+.professions-content__welcome > span {
+  color: var(--ui-color-text-faint);
+  font-family: var(--ui-font-mono);
+  font-size: 1.25rem;
+}
+
+.professions-content__welcome h3,
+.professions-content__welcome p {
+  margin: 0;
+}
+
+.professions-content__welcome h3 {
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-md);
+}
+
+.professions-content__welcome p {
+  max-width: 24rem;
+  color: var(--ui-color-text-faint);
+}
+
+.profession-details {
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  background: var(--ui-color-surface);
+}
+
+.profession-details__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  min-width: 0;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-4);
+  border-bottom: var(--ui-border);
+  background: var(--ui-color-surface-subtle);
+}
+
+.profession-details__header > div {
+  min-width: 0;
+}
+
+.profession-details__header h3,
+.profession-details__header p {
+  margin: 0;
+}
+
+.profession-details__header h3 {
+  overflow-wrap: anywhere;
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-lg);
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.profession-details__header p {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ui-space-2);
+  margin-top: 0.2rem;
+  color: var(--ui-color-text-faint);
+  font-family: var(--ui-font-sans);
+  font-size: 0.625rem;
+}
+
+.profession-details__header p span + span::before {
+  margin-right: var(--ui-space-2);
+  color: var(--ui-color-border-strong);
+  content: "•";
+}
+
+.profession-details__gm-action {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: 0.15rem var(--ui-space-2);
+  padding-top: var(--ui-space-2);
+  border-top: var(--ui-border);
+}
+
+.profession-details__gm-action button {
+  grid-row: 1 / span 2;
+  min-height: var(--ui-control-height-sm);
+  padding: 0 var(--ui-space-3);
+  color: var(--ui-color-accent);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-raised);
+  cursor: pointer;
+}
+
+.profession-details__gm-action button:disabled {
+  color: var(--ui-color-text-faint);
+  cursor: default;
+  opacity: 0.65;
+}
+
+.profession-details__gm-action small,
+.profession-details__gm-action span {
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+}
+
+.profession-details__gm-action span.is-success {
+  color: var(--ui-color-success);
+}
+
+.profession-details__gm-action span.is-error {
+  color: var(--ui-color-danger);
+}
+
+.profession-details__back {
+  display: inline-flex;
+  width: max-content;
+  min-height: var(--ui-control-height-sm);
+  align-items: center;
+  gap: var(--ui-space-1);
+  padding: 0 var(--ui-space-2);
+  color: var(--ui-color-text-muted);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-raised);
+  cursor: pointer;
+}
+
+.profession-details__back:hover {
+  color: var(--ui-color-text);
+  border-color: var(--ui-color-border-strong);
+}
+
+.profession-details__back b {
+  color: var(--ui-color-accent);
+  font-weight: 500;
+}
+
+.profession-details__figures {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-3) var(--ui-space-4);
+  border-bottom: var(--ui-border);
+  background: var(--ui-color-surface-subtle);
+}
+
+.profession-details__figures figure {
+  position: relative;
+  display: grid;
+  min-width: 0;
+  height: clamp(16rem, 42vh, 30rem);
+  margin: 0;
+  place-items: end center;
+  overflow: hidden;
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--ui-color-accent) 3%, transparent),
+    var(--ui-color-surface)
+  );
+}
+
+.profession-details__figures img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center bottom;
+}
+
+.profession-details__figures figcaption {
+  position: absolute;
+  right: var(--ui-space-2);
+  bottom: var(--ui-space-2);
+  padding: 0.15rem var(--ui-space-2);
+  color: var(--ui-color-text-muted);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: color-mix(in srgb, var(--ui-color-surface) 90%, transparent);
+  font-size: 0.625rem;
+}
+
+.profession-details__figures.is-compact {
+  position: relative;
+  display: block;
+  padding: var(--ui-space-2) var(--ui-space-3);
+}
+
+.profession-details__figures.is-compact figure {
+  height: clamp(13rem, 40vh, 22rem);
+}
+
+.profession-details__figures nav {
+  position: absolute;
+  right: var(--ui-space-4);
+  bottom: var(--ui-space-3);
+  display: flex;
+  overflow: hidden;
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface);
+}
+
+.profession-details__figures nav button {
+  min-width: 1.8rem;
+  height: 1.55rem;
+  padding: 0 var(--ui-space-2);
+  color: var(--ui-color-text-faint);
+  border: 0;
+  background: transparent;
+  font-size: 0.625rem;
+  cursor: pointer;
+}
+
+.profession-details__figures nav button + button {
+  border-left: var(--ui-border);
+}
+
+.profession-details__figures nav button:hover,
+.profession-details__figures nav button.is-active {
+  color: var(--ui-color-text);
+  background: var(--ui-color-accent-soft);
+}
+
+.profession-details__figures.is-compact figcaption {
+  right: auto;
+  left: var(--ui-space-2);
+}
+
+.profession-details__notice {
+  display: flex;
+  gap: var(--ui-space-2);
+  margin: var(--ui-space-3) var(--ui-space-4) 0;
+  padding: var(--ui-space-2) var(--ui-space-3);
+  color: var(--ui-color-text-muted);
+  border-left: 2px solid var(--ui-color-warning);
+  background: var(--ui-color-accent-soft);
+  font-size: var(--ui-font-size-xs);
+}
+
+.profession-details__notice span {
+  color: var(--ui-color-warning);
+  font-weight: 700;
+}
+
+.profession-details__notice p {
+  margin: 0;
+}
+
+.profession-details__tabs {
+  display: flex;
+  min-height: 2rem;
+  align-items: stretch;
+  gap: var(--ui-space-1);
+  margin-top: var(--ui-space-2);
+  padding: 0 var(--ui-space-4);
+  border-bottom: var(--ui-border);
+}
+
+.profession-details__tabs button {
+  min-height: 2rem;
+}
+
+.profession-details__document,
+.profession-development {
+  padding: var(--ui-space-4);
+}
+
+.profession-details__document + .profession-development {
+  padding-top: 0;
+}
+
+.profession-details__document > p,
+.profession-development section > p,
+.profession-development__status span {
+  white-space: pre-wrap;
+}
+
+.profession-details__document > p {
+  margin: 0;
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-md);
+  line-height: 1.52;
+}
+
+.profession-details__document > small {
+  display: block;
+  margin-top: var(--ui-space-4);
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+}
+
+.profession-details__empty {
+  color: var(--ui-color-text-faint);
+  font-style: italic;
+}
+
+.profession-development {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ui-space-4);
+}
+
+.profession-development__status {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 0.1rem;
+  padding: var(--ui-space-2) var(--ui-space-3);
+  color: var(--ui-color-warning);
+  border-left: 2px solid var(--ui-color-warning);
+  background: var(--ui-color-accent-soft);
+  font-size: var(--ui-font-size-xs);
+}
+
+.profession-development__status span {
+  color: var(--ui-color-text-muted);
+}
+
+.profession-development section {
+  min-width: 0;
+}
+
+.profession-development__scheme-section {
+  grid-column: 1 / -1;
+}
+
+.profession-development h4,
+.character-professions h4 {
+  margin: 0 0 var(--ui-space-2);
+  padding-bottom: var(--ui-space-1);
+  color: var(--ui-color-text-muted);
+  border-bottom: var(--ui-border);
+  font-size: var(--ui-font-size-xs);
+  font-weight: 650;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.profession-development section > p {
+  margin: 0;
+  color: var(--ui-color-text-muted);
+  line-height: 1.45;
+}
+
+.profession-development__scheme {
+  width: min(100%, 33.4375rem);
+  overflow: hidden;
+  border: 1px solid #000;
+  background: #000;
+}
+
+.profession-development__scheme-frame {
+  width: 100%;
+  aspect-ratio: 535 / 240;
+  container-name: profession-scheme;
+  container-type: inline-size;
+}
+
+.profession-development__scheme table {
+  width: 100%;
+  height: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  color: #080808;
+  background: #f8f8f5;
+  font-family: var(--ui-font-serif, serif);
+  text-align: center;
+}
+
+.profession-development__scheme caption {
+  caption-side: top;
+  height: 18.5%;
+  padding: 0.16em var(--ui-space-2) 0.2em;
+  color: #fff;
+  background: #000;
+  font-size: clamp(0.85rem, 4.3cqi, 1.45rem);
+  font-style: italic;
+  font-weight: 500;
+  line-height: 1.25;
+  text-align: center;
+}
+
+.profession-development__scheme th,
+.profession-development__scheme td {
+  padding: 0 clamp(0.05rem, 1cqi, 0.18rem);
+  border: 2px solid #000;
+  background: #f8f8f5;
+  line-height: 1;
+}
+
+.profession-development__scheme-group th {
+  height: 14%;
+  padding: 0.12em 0.45rem;
+  color: #fff;
+  background: #000;
+  font-size: clamp(0.65rem, 2.7cqi, 0.9rem);
+  font-weight: 600;
+  letter-spacing: 0;
+  text-align: left;
+  text-transform: none;
+}
+
+.profession-development__scheme-labels th {
+  height: 13.375%;
+  color: #080808;
+  font-size: clamp(0.66rem, 2.6cqi, 0.86rem);
+  font-weight: 700;
+}
+
+.profession-development__scheme-values td {
+  height: 13.375%;
+  color: #080808;
+  font-size: clamp(0.65rem, 2.5cqi, 0.82rem);
+  font-weight: 600;
+}
+
+.profession-development__paths {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--ui-space-4);
+}
+
+.profession-development__path-column {
+  min-width: 0;
+}
+
+.profession-development__paths ul {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.profession-development__paths button,
+.profession-development__path-unlinked {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  width: 100%;
+  min-height: var(--ui-control-height-sm);
+  align-items: center;
+  gap: var(--ui-space-2);
+  padding: 0.2rem var(--ui-space-2);
+  overflow: hidden;
+  text-align: left;
+}
+
+.profession-development__paths button {
+  color: var(--ui-color-accent);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-subtle);
+  cursor: pointer;
+}
+
+.profession-development__paths button span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profession-development__paths button b {
+  color: var(--ui-color-text-faint);
+  font-weight: 500;
+}
+
+.profession-development__paths button:hover {
+  color: var(--ui-color-text);
+  border-color: var(--ui-color-border-strong);
+  background: var(--ui-color-accent-soft);
+}
+
+.profession-development__path-unlinked {
+  color: var(--ui-color-text-faint);
+  border-left: 2px solid var(--ui-color-border-strong);
+  background: var(--ui-color-surface-subtle);
+}
+
+.character-professions {
+  min-height: 0;
+  padding: var(--ui-space-4);
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.character-professions > header p,
+.character-professions > header h3 {
+  margin: 0;
+}
+
+.character-professions > header p {
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+  text-transform: uppercase;
+}
+
+.character-professions > header h3 {
+  margin-top: 0.1rem;
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-lg);
+}
+
+.character-professions__current,
+.character-professions__manager,
+.character-professions__history {
+  margin-top: var(--ui-space-4);
+}
+
+.character-professions__current > button,
+.character-professions__unlinked {
+  display: flex;
+  width: 100%;
+  min-height: 2.4rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-3);
+  padding: var(--ui-space-2) var(--ui-space-3);
+  color: var(--ui-color-text);
+  text-align: left;
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-subtle);
+}
+
+.character-professions__current > button {
+  cursor: pointer;
+}
+
+.character-professions__current > button:hover {
+  border-color: var(--ui-color-border-strong);
+  background: var(--profession-row-hover);
+}
+
+.character-professions__current > button span,
+.character-professions__unlinked span {
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+}
+
+.character-professions__current > p,
+.character-professions__history > p {
+  margin: 0;
+  color: var(--ui-color-text-muted);
+}
+
+.character-professions__manager {
+  padding: var(--ui-space-3);
+  border: var(--ui-border);
+  border-left: 2px solid var(--ui-color-accent-strong);
+  background: var(--ui-color-surface-subtle);
+}
+
+.character-professions__manager > header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--ui-space-2);
+}
+
+.character-professions__manager > header h4 {
+  flex: 1;
+}
+
+.character-professions__manager > header b {
+  color: var(--ui-color-success);
+  font-family: var(--ui-font-mono);
+  font-size: var(--ui-font-size-xs);
+}
+
+.character-professions__manager form {
+  display: grid;
+  gap: var(--ui-space-1);
+}
+
+.character-professions__manager label,
+.character-professions__manager small {
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+}
+
+.character-professions__manager form > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--ui-space-2);
+}
+
+.character-professions__manager input,
+.character-professions__manager button,
+.character-professions__history-save button {
+  min-height: var(--ui-control-height);
+  color: var(--ui-color-text);
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-raised);
+  font: inherit;
+}
+
+.character-professions__manager input {
+  width: 100%;
+  min-width: 0;
+  padding: 0 var(--ui-space-2);
+}
+
+.profession-picker {
+  position: relative;
+  min-width: 0;
+}
+
+.profession-picker__input {
+  position: relative;
+}
+
+.profession-picker__input input {
+  padding-right: 2rem;
+}
+
+.character-professions__manager .profession-picker__clear {
+  position: absolute;
+  top: 50%;
+  right: 0.2rem;
+  min-width: 1.65rem;
+  min-height: 1.65rem;
+  padding: 0;
+  color: var(--ui-color-text-faint);
+  border: 0;
+  background: transparent;
+  transform: translateY(-50%);
+}
+
+.profession-picker__dropdown {
+  position: absolute;
+  z-index: 12;
+  top: calc(100% + 0.2rem);
+  right: 0;
+  left: 0;
+  overflow: hidden;
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+  background: var(--ui-color-surface-raised);
+  box-shadow: var(--ui-shadow-lg);
+}
+
+.profession-picker__options {
+  max-height: 16rem;
+  margin: 0;
+  padding: var(--ui-space-1);
+  overflow: auto;
+  list-style: none;
+  scrollbar-width: thin;
+}
+
+.profession-picker__options li + li {
+  border-top: var(--ui-border);
+}
+
+.character-professions__manager .profession-picker__options button {
+  display: flex;
+  width: 100%;
+  min-height: 2.8rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-1) var(--ui-space-2);
+  color: var(--ui-color-text);
+  text-align: left;
+  border: 0;
+  background: transparent;
+}
+
+.character-professions__manager .profession-picker__options button:hover,
+.character-professions__manager .profession-picker__options button.is-active {
+  background: var(--ui-color-accent-soft);
+}
+
+.profession-picker__options button > span {
+  display: grid;
+  min-width: 0;
+}
+
+.profession-picker__options strong,
+.profession-picker__options small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.profession-picker__options strong {
+  color: var(--ui-color-text);
+  font-weight: 650;
+}
+
+.profession-picker__options small {
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+}
+
+.profession-picker__options button > b {
+  display: grid;
+  width: 1.25rem;
+  height: 1.25rem;
+  flex: 0 0 auto;
+  place-items: center;
+  color: var(--ui-color-accent);
+  font-family: var(--ui-font-mono);
+  font-size: var(--ui-font-size-xs);
+  border: var(--ui-border);
+  border-radius: 50%;
+}
+
+.profession-picker__empty {
+  margin: 0;
+  padding: var(--ui-space-3);
+  color: var(--ui-color-text-muted);
+  font-size: var(--ui-font-size-xs);
+}
+
+.profession-picker-tooltip {
+  position: fixed;
+  z-index: 2600;
+  display: grid;
+  max-height: min(26rem, calc(100vh - 1rem));
+  gap: var(--ui-space-3);
+  padding: var(--ui-space-4);
+  overflow: auto;
+  color: var(--ui-color-text);
+  border: 1px solid var(--ui-color-border-strong);
+  border-radius: var(--ui-radius-md);
+  background: var(--ui-color-surface-raised);
+  box-shadow: var(--ui-shadow-lg);
+  font-family: var(--ui-font-sans);
+  font-size: var(--ui-font-size-sm);
+  line-height: var(--ui-line-height);
+  pointer-events: none;
+}
+
+.profession-picker-tooltip.is-interactive {
+  pointer-events: auto;
+}
+
+.profession-picker-tooltip::before {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 2px;
+  content: "";
+  background: var(--ui-color-accent);
+}
+
+.profession-picker-tooltip header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: var(--ui-space-3);
+}
+
+.profession-picker-tooltip header > div {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.profession-picker-tooltip header span,
+.profession-picker-tooltip header small,
+.profession-picker-tooltip dt {
+  color: var(--ui-color-text-faint);
+  font-size: var(--ui-font-size-xs);
+}
+
+.profession-picker-tooltip header span,
+.profession-picker-tooltip dt {
+  text-transform: uppercase;
+  letter-spacing: 0.045em;
+}
+
+.profession-picker-tooltip header strong {
+  color: var(--ui-color-text);
+  font-size: var(--ui-font-size-lg);
+  line-height: 1.12;
+}
+
+.profession-picker-tooltip__bridge {
+  display: flex;
+  min-height: 1.5rem;
+  align-items: center;
+  gap: var(--ui-space-2);
+  color: var(--ui-color-text-faint);
+}
+
+.profession-picker-tooltip__bridge svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  flex: 0 0 auto;
+  overflow: visible;
+  transform: rotate(-90deg);
+}
+
+.profession-picker-tooltip__bridge circle {
+  fill: none;
+  stroke-width: 2.5;
+}
+
+.profession-picker-tooltip__bridge .track {
+  stroke: var(--ui-color-border-strong);
+}
+
+.profession-picker-tooltip__bridge .progress {
+  stroke: var(--ui-color-accent);
+  stroke-linecap: round;
+  stroke-dasharray: 56.55;
+  stroke-dashoffset: 56.55;
+  animation: profession-tooltip-bridge 2s linear forwards;
+}
+
+.profession-picker-tooltip.is-interactive
+  .profession-picker-tooltip__bridge
+  .progress {
+  stroke-dashoffset: 0;
+  animation: none;
+}
+
+@keyframes profession-tooltip-bridge {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.profession-picker-tooltip p,
+.profession-picker-tooltip dl,
+.profession-picker-tooltip dd {
+  margin: 0;
+}
+
+.profession-picker-tooltip p {
+  color: var(--ui-color-text-muted);
+}
+
+.profession-picker-tooltip dl {
+  display: grid;
+  gap: var(--ui-space-2);
+  padding-top: var(--ui-space-3);
+  border-top: var(--ui-border);
+}
+
+.profession-picker-tooltip dl > div {
+  display: grid;
+  grid-template-columns: 7.5rem minmax(0, 1fr);
+  gap: var(--ui-space-3);
+}
+
+.profession-picker-tooltip dd {
+  overflow-wrap: anywhere;
+}
+
+.character-professions__manager button,
+.character-professions__history-save button {
+  padding: 0 var(--ui-space-3);
+  color: var(--ui-color-accent);
+  cursor: pointer;
+}
+
+.character-professions__manager button:disabled,
+.character-professions__history-save button:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.character-professions__manager > small {
+  display: block;
+  margin-top: var(--ui-space-2);
+}
+
+.character-professions__manager > p,
+.character-professions__history-save span {
+  margin: var(--ui-space-2) 0 0;
+  font-size: var(--ui-font-size-xs);
+}
+
+.character-professions__manager .is-success,
+.character-professions__history-save .is-success {
+  color: var(--ui-color-success);
+}
+
+.character-professions__manager .is-error,
+.character-professions__history-save .is-error {
+  color: var(--ui-color-danger);
+}
+
+.character-professions__history ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.character-professions__history li {
+  display: flex;
+  min-height: 2rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-2);
+  padding: var(--ui-space-1) 0;
+  border-bottom: var(--ui-border);
+}
+
+.character-professions__history-entry {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--ui-space-2);
+}
+
+.character-professions__history-link {
+  min-width: 0;
+  padding: var(--ui-space-1) 0;
+  overflow: hidden;
+  color: var(--ui-color-accent);
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.character-professions__history em {
+  flex: 0 0 auto;
+  color: var(--ui-color-text-faint);
+  font-size: 0.625rem;
+  font-style: normal;
+}
+
+.character-professions__history em.is-finished {
+  color: var(--ui-color-success);
+}
+
+.character-professions__history li > nav {
+  display: flex;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border: var(--ui-border);
+  border-radius: var(--ui-radius-sm);
+}
+
+.character-professions__history li > nav button {
+  width: 1.7rem;
+  height: 1.55rem;
+  padding: 0;
+  color: var(--ui-color-text-muted);
+  border: 0;
+  background: var(--ui-color-surface-raised);
+  cursor: pointer;
+}
+
+.character-professions__history li > nav button + button {
+  border-left: var(--ui-border);
+}
+
+.character-professions__history li > nav button:hover:not(:disabled) {
+  color: var(--ui-color-text);
+  background: var(--ui-color-accent-soft);
+}
+
+.character-professions__history li > nav button.is-activate {
+  color: var(--ui-color-success);
+}
+
+.character-professions__history li > nav button.is-danger {
+  color: var(--ui-color-danger);
+}
+
+.character-professions__history li > nav button:disabled {
+  cursor: default;
+  opacity: 0.3;
+}
+
+.character-professions__history-save {
+  display: flex;
+  align-items: center;
+  gap: var(--ui-space-3);
+  margin-top: var(--ui-space-2);
+}
+
+.character-professions__history-save span {
+  margin: 0;
+}
+
+.character-professions > aside {
+  margin-top: var(--ui-space-4);
+  padding: var(--ui-space-2) var(--ui-space-3);
+  color: var(--ui-color-text-muted);
+  border-left: 2px solid var(--ui-color-accent-strong);
+  background: var(--ui-color-accent-soft);
+  font-size: var(--ui-font-size-xs);
+}
+
+.profession-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.professions-content--compact {
+  height: auto;
+  min-height: 100%;
+  overflow: visible;
+}
+
+.professions-content--compact .professions-content__toolbar {
+  position: sticky;
+  top: 0;
+}
+
+.professions-content--compact .professions-content__context {
+  flex: 1;
+}
+
+.professions-content--compact .professions-content__context button {
+  flex: 1;
+}
+
+.professions-content--compact .profession-list__controls {
+  position: sticky;
+  z-index: 2;
+  top: 2.1rem;
+}
+
+.professions-content--compact .professions-content__workspace {
+  display: block;
+}
+
+.professions-content--compact .profession-list,
+.professions-content--compact .profession-details {
+  height: auto;
+  overflow: visible;
+}
+
+.professions-content--compact .profession-list__items {
+  max-height: none;
+  overflow: visible;
+}
+
+.professions-content--compact .profession-details__header {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  padding: var(--ui-space-3);
+}
+
+.professions-content--compact .profession-details__back span {
+  display: none;
+}
+
+.professions-content--compact .profession-details__back {
+  width: var(--ui-control-height-sm);
+  justify-content: center;
+  padding: 0;
+}
+
+.professions-content--compact .profession-details__notice {
+  margin-right: var(--ui-space-3);
+  margin-left: var(--ui-space-3);
+}
+
+.professions-content--compact .profession-details__tabs {
+  padding: 0 var(--ui-space-2);
+}
+
+.professions-content--compact .profession-details__tabs button {
+  flex: 1;
+  padding-right: var(--ui-space-1);
+  padding-left: var(--ui-space-1);
+}
+
+.professions-content--compact .profession-details__document,
+.professions-content--compact .profession-development,
+.professions-content--compact .character-professions {
+  padding: var(--ui-space-3);
+}
+
+@container professions-content (max-width: 36rem) {
+  .profession-development {
+    grid-template-columns: 1fr;
+  }
+
+  .profession-development__paths,
+  .profession-development__status {
+    grid-column: 1;
+  }
+
+  .profession-development__paths {
+    grid-template-columns: 1fr;
+    gap: var(--ui-space-3);
+  }
+
+  .character-professions__manager form > div {
+    grid-template-columns: 1fr;
+  }
+}
+
+@container professions-content (max-width: 19rem) {
+  .profession-list__filters button {
+    font-size: var(--ui-font-size-xs);
+  }
+}
+
+@media (pointer: coarse) {
+  .professions-content__toolbar,
+  .profession-details__tabs {
+    min-height: 2.25rem;
+  }
+
+  .profession-list__items button {
+    min-height: 2.5rem;
+  }
+}
