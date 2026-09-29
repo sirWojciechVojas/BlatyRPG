@@ -18,6 +18,7 @@ const buildRouter = () =>
         component: View,
         meta: { redirectAuthenticated: true },
       },
+      { path: "/oauth/callback", name: "oauth-callback", component: View },
       {
         path: "/tables",
         name: "tables",
@@ -153,6 +154,7 @@ describe("authentication route guard", () => {
     );
     expect(safeRedirectTarget(router, "/")).toBeNull();
     expect(safeRedirectTarget(router, "/login")).toBeNull();
+    expect(safeRedirectTarget(router, "/oauth/callback")).toBeNull();
     expect(safeRedirectTarget(router, "https://evil.test")).toBeNull();
     expect(safeRedirectTarget(router, "//evil.test")).toBeNull();
     expect(safeRedirectTarget(router, "/missing")).toBeNull();

@@ -3,8 +3,12 @@ import { authApiClient } from "@/lib/auth/authApiClient";
 import { authErrorKey } from "@/lib/auth/authErrors";
 import { postAuthenticationTarget } from "@/lib/auth/authNavigation";
 import { authSession } from "@/lib/auth/authSession";
+import {
+  preloadAuthenticatedView,
+  preloadDefaultAuthenticatedView,
+} from "@/lib/auth/authRouteComponents";
 import logo from "@/assets/app-ui/img/BlatyRPG-logo.png";
-import background from "@/assets/app-ui/img/bg2.jpg";
+import background from "@/assets/app-ui/img/niceBg.webp";
 
 export default {
   name: "LoginView",
@@ -13,11 +17,20 @@ export default {
     logo,
     busy: false,
     error: "",
+    oauthProviders: [],
+    oauthBusy: false,
   }),
   computed: {
     styleVars() {
       return { "--dashboard-background": `url("${background}")` };
     },
+  },
+  mounted() {
+    preloadDefaultAuthenticatedView().catch(() => {});
+    this.loadOAuthProviders();
+    if (this.$route?.query?.oauthError) {
+      this.error = this.$t(`auth.oauth.errors.${this.$route.query.oauthError}`);
+    }
   },
   methods: {
     message(error, sessionSaved) {
@@ -37,6 +50,7 @@ export default {
         if (!result.token || !result.user) {
           throw new TypeError("invalid_login_response");
         }
+        await preloadAuthenticatedView({ user: result.user }).catch(() => {});
         const session = authSession.save(result);
         sessionSaved = true;
         await this.$router.replace(
@@ -51,6 +65,25 @@ export default {
         this.error = this.message(error, sessionSaved);
       } finally {
         this.busy = false;
+      }
+    },
+    async loadOAuthProviders() {
+      try {
+        this.oauthProviders = await authApiClient.oauthProviders();
+      } catch (_error) {
+        this.oauthProviders = [];
+      }
+    },
+    async startOAuth(provider) {
+      if (this.busy || this.oauthBusy) return;
+      this.oauthBusy = true;
+      this.error = "";
+      try {
+        const authorizationUrl = await authApiClient.startOAuth(provider);
+        window.location.assign(authorizationUrl);
+      } catch (error) {
+        this.error = this.message(error, false);
+        this.oauthBusy = false;
       }
     },
   },

@@ -5,7 +5,10 @@
         :busy="busy"
         :error="error"
         :logo="logo"
+        :oauth-providers="oauthProviders"
+        :oauth-busy="oauthBusy"
         @submit="login"
+        @oauth="startOAuth"
       />
     </main>
   </div>

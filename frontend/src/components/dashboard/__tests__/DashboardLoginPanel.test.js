@@ -25,6 +25,7 @@ function loadComponent() {
 
 async function mount(props = {}) {
   const onSubmit = vi.fn();
+  const onOAuth = vi.fn();
   host = document.createElement("div");
   document.body.append(host);
   app = createApp(loadComponent(), {
@@ -32,6 +33,7 @@ async function mount(props = {}) {
     error: "",
     logo: "/logo.png",
     onSubmit,
+    onOauth: onOAuth,
     ...props,
   });
   app.config.globalProperties.$t = (key) => key;
@@ -41,7 +43,7 @@ async function mount(props = {}) {
   });
   const vm = app.mount(host);
   await nextTick();
-  return { onSubmit, vm };
+  return { onSubmit, onOAuth, vm };
 }
 
 function inputValue(input, value) {
@@ -118,5 +120,21 @@ describe("DashboardLoginPanel", () => {
     );
     expect(host.querySelectorAll("input:disabled")).toHaveLength(2);
     expect(host.querySelector(".login-submit__spinner")).not.toBeNull();
+  });
+
+  it("offers configured social providers and emits the selected provider", async () => {
+    const { onOAuth } = await mount({
+      oauthProviders: [
+        { provider: "google", label: "Google", enabled: true },
+        { provider: "discord", label: "Discord", enabled: false },
+      ],
+    });
+
+    const buttons = host.querySelectorAll(".oauth-provider-button");
+    expect(buttons).toHaveLength(2);
+    expect(buttons[1].disabled).toBe(true);
+    buttons[0].click();
+    await nextTick();
+    expect(onOAuth).toHaveBeenCalledWith("google");
   });
 });
