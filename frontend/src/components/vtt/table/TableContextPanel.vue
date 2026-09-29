@@ -14,32 +14,13 @@
           :draggable="canManage"
           @dragstart="startAssetDrag($event, asset)"
         >
-          <img :src="asset.url" :alt="asset.label" loading="lazy" />
+          <SceneBackgroundImage :src="asset.url" :alt="asset.label" />
           <figcaption>{{ asset.label }}</figcaption>
         </figure>
       </div>
       <p v-else class="table-context-panel__empty">
         {{ $t("vtt.table.graphics.empty") }}
       </p>
-    </template>
-
-    <template v-else-if="panelId === 'characters'">
-      <ul v-if="characters.length" class="table-context-panel__list">
-        <li v-for="character in characters" :key="character.id">
-          <img v-if="character.avatarUrl" :src="character.avatarUrl" alt="" />
-          <span>{{ character.name }}</span>
-          <small>{{ character.visibility }}</small>
-        </li>
-      </ul>
-      <p v-else class="table-context-panel__empty">
-        {{ $t("vtt.table.characters.empty") }}
-      </p>
-      <router-link
-        class="scene-button"
-        :to="campaignRoute('character-workspace')"
-      >
-        {{ $t("vtt.table.characters.open") }}
-      </router-link>
     </template>
 
     <template v-else-if="panelId === 'handouts'">
@@ -87,62 +68,16 @@
         {{ $t("vtt.table.shop.unavailable") }}
       </p>
     </template>
-
-    <template v-else-if="panelId === 'jukebox'">
-      <p class="table-context-panel__intro">
-        {{ $t("vtt.table.jukebox.description") }}
-      </p>
-      <p class="table-context-panel__empty">
-        {{ $t("vtt.table.jukebox.empty") }}
-      </p>
-    </template>
-
-    <template v-else-if="panelId === 'notifications'">
-      <dl class="table-context-panel__facts">
-        <div>
-          <dt>{{ $t("vtt.table.notifications.connection") }}</dt>
-          <dd>{{ realtimeStatus }}</dd>
-        </div>
-        <div>
-          <dt>{{ $t("vtt.table.notifications.online") }}</dt>
-          <dd>{{ onlineMembers.length }}/{{ members.length }}</dd>
-        </div>
-        <div v-if="canManage">
-          <dt>{{ $t("vtt.table.notifications.invites") }}</dt>
-          <dd>{{ invitations.length }}</dd>
-        </div>
-      </dl>
-      <ul class="table-context-panel__list">
-        <li v-for="member in onlineMembers" :key="member.userId">
-          <span class="presence-dot online"></span
-          ><span>{{ member.username || member.email }}</span>
-        </li>
-      </ul>
-    </template>
-
-    <template v-else-if="panelId === 'settings'">
-      <p class="table-context-panel__intro">
-        {{ $t("vtt.table.settings.description") }}
-      </p>
-      <div class="table-context-panel__actions">
-        <router-link
-          class="scene-button"
-          :to="campaignRoute('campaign-lobby')"
-          >{{ $t("vtt.table.settings.table") }}</router-link
-        >
-        <router-link class="scene-button" :to="{ name: 'profile' }">{{
-          $t("vtt.table.settings.profile")
-        }}</router-link>
-      </div>
-    </template>
   </div>
 </template>
 
 <script>
+import SceneBackgroundImage from "@/components/vtt/scene/SceneBackgroundImage.vue";
 import { writeTileAssetDrag } from "@/lib/vtt/tileDrop";
 
 export default {
   name: "TableContextPanel",
+  components: { SceneBackgroundImage },
   props: {
     panelId: { type: String, required: true },
     campaign: { type: Object, default: () => ({}) },
@@ -172,9 +107,6 @@ export default {
           });
       }
       return items;
-    },
-    onlineMembers() {
-      return this.members.filter((member) => member.isOnline);
     },
   },
   methods: {

@@ -24,18 +24,23 @@ export const normalizeCapabilities = (value = {}) => ({
 export const normalizeScene = (source) => {
   if (!source || typeof source !== "object") return null;
   const gridType = String(read(source, "grid_type", "gridType") || "square");
-  const legacyDarkness = numberOr(
-    read(source, "darkness_level", "darknessLevel"),
-    0.2,
-  );
+  const rawDarkness = read(source, "darkness_level", "darknessLevel");
+  const rawGlobalLight = read(source, "global_light_level", "globalLightLevel");
   const legacyGlobal =
     read(source, "global_illumination", "globalIllumination") === true ||
     read(source, "global_illumination", "globalIllumination") === 1 ||
     read(source, "global_illumination", "globalIllumination") === "1";
-  const globalLightLevel = numberOr(
-    read(source, "global_light_level", "globalLightLevel"),
-    1 - legacyDarkness * (legacyGlobal ? 0.18 : 1),
-  );
+  const storedDarkness = numberOr(rawDarkness, 0.2);
+  const hasExplicitGlobalLight =
+    rawGlobalLight !== undefined &&
+    rawGlobalLight !== null &&
+    rawGlobalLight !== "";
+  const globalLightLevel = hasExplicitGlobalLight
+    ? numberOr(rawGlobalLight, 0.8)
+    : 1 - storedDarkness * (legacyGlobal ? 0.18 : 1);
+  const legacyDarkness = hasExplicitGlobalLight
+    ? numberOr(rawDarkness, 1 - globalLightLevel)
+    : 1 - globalLightLevel;
   return {
     id: idOrNull(source.id),
     campaignId: idOrNull(read(source, "campaign_id", "campaignId")),
@@ -59,8 +64,16 @@ export const normalizeScene = (source) => {
       read(source, "background_color", "backgroundColor") || "#20242b",
     ),
     globalLightLevel: Math.min(1, Math.max(0, globalLightLevel)),
-    darknessLevel: 1 - Math.min(1, Math.max(0, globalLightLevel)),
+    darknessLevel: Math.min(1, Math.max(0, legacyDarkness)),
     globalIllumination: legacyGlobal,
+    globalIlluminationThreshold: numberOr(
+      read(
+        source,
+        "global_illumination_threshold",
+        "globalIlluminationThreshold",
+      ),
+      1,
+    ),
     fogExploration:
       read(source, "fog_exploration", "fogExploration") !== false &&
       read(source, "fog_exploration", "fogExploration") !== 0 &&
@@ -80,6 +93,42 @@ export const normalizeScene = (source) => {
     fogUnexploredColor: String(
       read(source, "fog_unexplored_color", "fogUnexploredColor") || "#05070B",
     ),
+    fogExploredColor: String(
+      read(source, "fog_explored_color", "fogExploredColor") || "#202733",
+    ),
+    fogExplorationImage: String(
+      read(source, "fog_exploration_image", "fogExplorationImage") || "",
+    ),
+    fogExplorationMode: String(
+      read(source, "fog_exploration_mode", "fogExplorationMode") ||
+        (read(source, "exploration_memory", "explorationMemory") === false
+          ? "none"
+          : "individual"),
+    ),
+    darknessTransition: {
+      from: numberOr(
+        read(source, "darkness_transition_from", "darknessTransitionFrom"),
+        legacyDarkness,
+      ),
+      to: numberOr(
+        read(source, "darkness_transition_to", "darknessTransitionTo"),
+        legacyDarkness,
+      ),
+      startedAt:
+        read(
+          source,
+          "darkness_transition_started_at",
+          "darknessTransitionStartedAt",
+        ) || null,
+      duration: numberOr(
+        read(
+          source,
+          "darkness_transition_duration",
+          "darknessTransitionDuration",
+        ),
+        0,
+      ),
+    },
     fogUnexploredOpacity: numberOr(
       read(source, "fog_unexplored_opacity", "fogUnexploredOpacity"),
       1,
@@ -93,13 +142,16 @@ export const normalizeScene = (source) => {
         read(source, "fog_edge_softness", "fogEdgeSoftness"),
         32,
       );
-      return softness <= 0 ? 0 : Math.min(50, Math.max(20, softness));
+      return Math.min(200, Math.max(0, softness));
     })(),
     fogUpdateDuringDrag:
       read(source, "fog_update_during_drag", "fogUpdateDuringDrag") !== false &&
       read(source, "fog_update_during_drag", "fogUpdateDuringDrag") !== 0 &&
       read(source, "fog_update_during_drag", "fogUpdateDuringDrag") !== "0",
-    isVisible: read(source, "is_visible", "isVisible") !== false,
+    isVisible:
+      read(source, "is_visible", "isVisible") !== false &&
+      read(source, "is_visible", "isVisible") !== 0 &&
+      read(source, "is_visible", "isVisible") !== "0",
     sortOrder: numberOr(read(source, "sort_order", "sortOrder"), 0),
     revision: numberOr(source.revision, 0),
     createdAt: read(source, "created_at", "createdAt") || null,
@@ -132,11 +184,17 @@ const WRITE_FIELDS = [
   ["gridOpacity", "grid_opacity"],
   ["backgroundColor", "background_color"],
   ["globalLightLevel", "global_light_level"],
+  ["darknessLevel", "darkness_level"],
+  ["globalIllumination", "global_illumination"],
+  ["globalIlluminationThreshold", "global_illumination_threshold"],
   ["fogExploration", "fog_exploration"],
   ["fogEnabled", "fog_enabled"],
   ["dynamicVision", "dynamic_vision"],
   ["explorationMemory", "exploration_memory"],
   ["fogUnexploredColor", "fog_unexplored_color"],
+  ["fogExploredColor", "fog_explored_color"],
+  ["fogExplorationImage", "fog_exploration_image"],
+  ["fogExplorationMode", "fog_exploration_mode"],
   ["fogUnexploredOpacity", "fog_unexplored_opacity"],
   ["fogExploredOpacity", "fog_explored_opacity"],
   ["fogEdgeSoftness", "fog_edge_softness"],
@@ -144,18 +202,6 @@ const WRITE_FIELDS = [
   ["isVisible", "is_visible"],
   ["sortOrder", "sort_order"],
 ];
-
-export const cloneSceneDraft = (source = {}, name = "") => {
-  const draft = {};
-  for (const [field] of WRITE_FIELDS) {
-    if (Object.prototype.hasOwnProperty.call(source, field)) {
-      draft[field] = source[field];
-    }
-  }
-  draft.name = String(name || source.name || "").trim();
-  draft.sortOrder = numberOr(source.sortOrder, 0) + 1;
-  return draft;
-};
 
 export const toSceneWritePayload = (source = {}, includeRevision = false) => {
   const payload = {};

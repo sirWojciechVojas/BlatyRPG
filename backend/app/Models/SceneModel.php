@@ -16,6 +16,10 @@ class SceneModel extends Model
         'fog_exploration', 'fog_enabled', 'dynamic_vision', 'exploration_memory',
         'fog_unexplored_color', 'fog_unexplored_opacity', 'fog_explored_opacity',
         'fog_edge_softness', 'fog_update_during_drag',
+        'global_illumination_threshold', 'fog_exploration_mode',
+        'fog_explored_color', 'fog_exploration_image',
+        'darkness_transition_from', 'darkness_transition_to',
+        'darkness_transition_started_at', 'darkness_transition_duration',
         'grid_type', 'grid_size', 'grid_distance', 'grid_unit',
         'grid_offset_x', 'grid_offset_y', 'grid_color', 'grid_opacity', 'is_visible',
         'sort_order', 'revision',
@@ -43,7 +47,9 @@ class SceneModel extends Model
             }
             foreach (['darkness_level', 'global_light_level', 'grid_distance',
                 'grid_offset_x', 'grid_offset_y', 'grid_opacity', 'fog_unexplored_opacity',
-                'fog_explored_opacity', 'fog_edge_softness'] as $field) {
+                'fog_explored_opacity', 'fog_edge_softness',
+                'global_illumination_threshold', 'darkness_transition_from',
+                'darkness_transition_to'] as $field) {
                 if (isset($row[$field])) {
                     $row[$field] = (float) $row[$field];
                 }

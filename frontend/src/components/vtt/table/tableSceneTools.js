@@ -1,5 +1,11 @@
 export const TABLE_SCENE_TOOLS = Object.freeze([
   { id: "select", icon: "cursor", labelKey: "vtt.table.tools.select" },
+  {
+    id: "map-builder",
+    icon: "palette",
+    labelKey: "vtt.table.tools.mapBuilder",
+    gmOnly: true,
+  },
   { id: "tokens", icon: "token", labelKey: "vtt.table.tools.tokens" },
   { id: "measure", icon: "ruler", labelKey: "vtt.table.tools.measure" },
   { id: "templates", icon: "template", labelKey: "vtt.table.tools.templates" },
@@ -42,12 +48,14 @@ export const TABLE_SCENE_TOOLS = Object.freeze([
 export const implementedSceneTool = (id) =>
   [
     "select",
+    "map-builder",
     "tokens",
     "measure",
     "templates",
     "walls",
     "lights",
     "tiles",
+    "regions",
     "fog",
     "grid",
   ].includes(id);

@@ -1,30 +1,27 @@
 <template>
   <nav class="table-tool-rail" :aria-label="$t('vtt.table.tools.label')">
-    <button
+    <SceneToolIconButton
       v-for="tool in visibleTools"
       :key="tool.id"
-      type="button"
       class="table-tool-rail__button"
-      :class="{ 'table-tool-rail__button--active': tool.id === activeId }"
+      :icon="tool.icon"
+      :label="$t(tool.labelKey)"
+      :description="description(tool)"
+      :active="tool.id === activeId"
       :disabled="!available(tool)"
-      :aria-label="label(tool)"
-      :aria-pressed="available(tool) ? tool.id === activeId : undefined"
-      :title="label(tool)"
+      toggle
       @click="$emit('select', tool.id)"
-    >
-      <TableRailIcon :name="tool.icon" />
-      <span>{{ $t(tool.labelKey) }}</span>
-    </button>
+    />
   </nav>
 </template>
 
 <script>
-import TableRailIcon from "./TableRailIcon.vue";
+import SceneToolIconButton from "./SceneToolIconButton.vue";
 import { implementedSceneTool, TABLE_SCENE_TOOLS } from "./tableSceneTools";
 
 export default {
   name: "TableToolRail",
-  components: { TableRailIcon },
+  components: { SceneToolIconButton },
   props: {
     activeId: { type: String, default: "select" },
     canManage: { type: Boolean, default: false },
@@ -45,6 +42,11 @@ export default {
       return this.available(tool)
         ? value
         : `${value} — ${this.$t("vtt.table.tools.unavailable")}`;
+    },
+    description(tool) {
+      if (!this.available(tool)) return this.$t("vtt.table.tools.unavailable");
+      const key = `vtt.table.tools.descriptions.${tool.id}`;
+      return this.$te(key) ? this.$t(key) : this.label(tool);
     },
   },
 };

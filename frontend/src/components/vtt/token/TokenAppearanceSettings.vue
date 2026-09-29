@@ -89,6 +89,17 @@
           {{ $t("vtt.token.settings.enableFacingHandle") }}
         </small>
       </label>
+      <label
+        v-if="canManage"
+        class="token-settings-panel__wide token-settings-panel__info-toggle"
+      >
+        <input
+          :checked="modelValue.rotationFollowsFacing"
+          type="checkbox"
+          @change="update('rotationFollowsFacing', $event.target.checked)"
+        />
+        <span>{{ $t("vtt.token.settings.rotationFollowsFacing") }}</span>
+      </label>
       <label>
         <span>{{ $t("vtt.token.settings.elevation") }}</span>
         <input

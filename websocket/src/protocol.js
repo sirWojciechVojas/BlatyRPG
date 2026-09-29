@@ -6,6 +6,9 @@ import { parseTokenChangeMessage } from "./token-change-protocol.js";
 import { parseTokenMovementMessage } from "./token-movement-protocol.js";
 import { parseCombatCommandMessage } from "./combat-protocol.js";
 import { parseFogMessage } from "./fog-protocol.js";
+import { parseJukeboxMessage } from "./jukebox-protocol.js";
+import { parseSoundEffectMessage } from "./sound-effects-protocol.js";
+import { parseTokenSyncMessage } from "./token-sync-protocol.js";
 
 export { ProtocolError } from "./protocol-error.js";
 
@@ -162,12 +165,70 @@ export const parseAuthMessage = (message) => {
 };
 
 export const parseAuthenticatedMessage = (message) => {
+  if (message.type === "map.publish.notify") {
+    exactKeys(message, [
+      "v",
+      "type",
+      "requestId",
+      "mapId",
+      "mapRevision",
+      "sceneId",
+      "sceneRevision",
+    ]);
+    const parsed = {
+      type: message.type,
+      requestId: requiredRequestId(message.requestId),
+      mapId: positiveRevision(message.mapId, "map_id_invalid"),
+      mapRevision: positiveRevision(
+        message.mapRevision,
+        "map_revision_invalid",
+      ),
+      sceneId: positiveRevision(message.sceneId, "scene_id_invalid"),
+      sceneRevision: positiveRevision(
+        message.sceneRevision,
+        "scene_revision_invalid",
+      ),
+    };
+    if (
+      !parsed.mapId ||
+      !parsed.mapRevision ||
+      !parsed.sceneId ||
+      !parsed.sceneRevision
+    ) {
+      throw new ProtocolError("map_publication_invalid");
+    }
+    return parsed;
+  }
+  if (message.type === "wall.audio.sync") {
+    exactKeys(message, [
+      "v",
+      "type",
+      "requestId",
+      "sceneId",
+      "selectedTokenId",
+    ]);
+    return {
+      type: message.type,
+      requestId: requiredRequestId(message.requestId),
+      sceneId: positiveRevision(message.sceneId, "scene_id_invalid"),
+      selectedTokenId: positiveRevision(
+        message.selectedTokenId,
+        "token_id_invalid",
+      ),
+    };
+  }
+  const soundEffect = parseSoundEffectMessage(message);
+  if (soundEffect) return soundEffect;
+  const jukebox = parseJukeboxMessage(message);
+  if (jukebox) return jukebox;
   const fog = parseFogMessage(message);
   if (fog) return fog;
   const combatCommand = parseCombatCommandMessage(message);
   if (combatCommand) return combatCommand;
   const tokenChange = parseTokenChangeMessage(message);
   if (tokenChange) return tokenChange;
+  const tokenSync = parseTokenSyncMessage(message);
+  if (tokenSync) return tokenSync;
   const tokenMovement = parseTokenMovementMessage(message);
   if (tokenMovement) return tokenMovement;
   const sceneElement = parseSceneElementMessage(message);

@@ -21,14 +21,28 @@ export const tokenLayerWatchers = {
     },
   },
   effectiveSelectedIds(ids) {
-    if (this.hudTokenId && (ids.length > 1 || !ids.includes(this.hudTokenId))) {
+    const includes = (tokenId) =>
+      ids.some((id) => String(id) === String(tokenId));
+    if (this.hudTokenId && (ids.length > 1 || !includes(this.hudTokenId))) {
       this.hudTokenId = null;
     }
     if (
       this.settingsTokenId &&
-      (ids.length > 1 || !ids.includes(this.settingsTokenId))
+      (ids.length > 1 || !includes(this.settingsTokenId))
     ) {
       this.settingsTokenId = null;
+    }
+    if (
+      this.expandedTokenId !== null &&
+      (ids.length !== 1 || !includes(this.expandedTokenId))
+    ) {
+      this.expandedTokenId = null;
+    }
+    if (
+      this.presentationClickTokenId !== null &&
+      (ids.length !== 1 || !includes(this.presentationClickTokenId))
+    ) {
+      this.clearPresentationClick();
     }
   },
 };

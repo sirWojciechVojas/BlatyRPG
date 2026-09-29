@@ -8,6 +8,10 @@ import {
   syncRequestMessage,
   fogSyncMessage,
   handoutNotifyMessage,
+  mapPublishedMessage,
+  jukeboxCommandMessage,
+  soundEffectCommandMessage,
+  wallAudioSyncMessage,
 } from "./realtimeProtocol";
 import { createRealtimeEventRouter } from "./realtimeEventRouter";
 import { sceneElementTransport } from "./realtimeSceneElementTransport";
@@ -298,6 +302,14 @@ export const createRealtimeSession = (options = {}) => {
     syncChat: chat.sync,
     notifyHandout: (payload) =>
       authenticated && send(handoutNotifyMessage(payload)),
+    notifyMapPublished: (payload) =>
+      authenticated && send(mapPublishedMessage(payload)),
+    sendJukebox: (payload) =>
+      authenticated && send(jukeboxCommandMessage(payload)),
+    sendSoundEffect: (payload) =>
+      authenticated && send(soundEffectCommandMessage(payload)),
+    syncWallAudio: (payload) =>
+      authenticated && send(wallAudioSyncMessage(payload)),
     snapshot: () => ({
       campaignId,
       status,

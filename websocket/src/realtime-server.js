@@ -24,6 +24,14 @@ import { TicketError, TicketVerifier } from "./ticket-verifier.js";
 import { createTokenHandler } from "./token-handler.js";
 import { createFogHandler } from "./fog-handler.js";
 import { createHandoutHandler } from "./handout-handler.js";
+import { BackendJukeboxClient } from "./backend-jukebox-client.js";
+import { createJukeboxHandler } from "./jukebox-handler.js";
+import { BackendSoundEffectsClient } from "./backend-sound-effects-client.js";
+import { createSoundEffectsHandler } from "./sound-effects-handler.js";
+import { BackendTokenSyncClient } from "./backend-token-sync-client.js";
+import { createTokenSyncHandler } from "./token-sync-handler.js";
+import { createCalendarPublishHandler } from "./calendar-publish-handler.js";
+import { createCharacterAccessPublishHandler } from "./character-access-publish-handler.js";
 
 const closeReason = (value) =>
   String(value || "connection_closed").slice(0, 100);
@@ -64,7 +72,18 @@ export const createRealtimeServer = (config, dependencies = {}) => {
     connections: sessions.size,
   });
 
-  const { httpServer, wss } = createHttpTransport(config, healthResponse);
+  const calendarPublishHandler = createCalendarPublishHandler({ config, rooms });
+  const characterAccessPublishHandler = createCharacterAccessPublishHandler({
+    config,
+    rooms,
+  });
+  const { httpServer, wss } = createHttpTransport(
+    config,
+    healthResponse,
+    (request, response, path) =>
+      calendarPublishHandler(request, response, path) ||
+      characterAccessPublishHandler(request, response, path),
+  );
 
   const sendProtocolError = (session, code, requestId = null) =>
     sendEvent(
@@ -101,6 +120,13 @@ export const createRealtimeServer = (config, dependencies = {}) => {
     onAuthenticationFailure: (session) =>
       closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized"),
   });
+  const tokenSync = createTokenSyncHandler({
+    backend:
+      dependencies.tokenSyncBackend || new BackendTokenSyncClient(config),
+    rooms,
+    onAuthenticationFailure: (session) =>
+      closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized"),
+  });
   const snapshots =
     dependencies.snapshotBackend || new BackendSceneSnapshotClient(config);
   const sceneFeatures = createSceneFeatureHandlers(
@@ -113,6 +139,19 @@ export const createRealtimeServer = (config, dependencies = {}) => {
   const fog = createFogHandler({ rooms });
   const handouts = createHandoutHandler({
     backend: dependencies.handoutBackend || new BackendHandoutClient(config),
+    rooms,
+    onAuthenticationFailure: (session) =>
+      closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized"),
+  });
+  const jukebox = createJukeboxHandler({
+    backend: dependencies.jukeboxBackend || new BackendJukeboxClient(config),
+    rooms,
+    onAuthenticationFailure: (session) =>
+      closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized"),
+  });
+  const soundEffects = createSoundEffectsHandler({
+    backend:
+      dependencies.soundEffectsBackend || new BackendSoundEffectsClient(config),
     rooms,
     onAuthenticationFailure: (session) =>
       closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized"),
@@ -154,16 +193,35 @@ export const createRealtimeServer = (config, dependencies = {}) => {
   ) => {
     let snapshot = null;
     let snapshotError = null;
+    let jukeboxError = null;
+    let soundEffectsError = null;
     if (sceneId !== null) {
       try {
         snapshot = await snapshots.get(session, sceneId);
       } catch (error) {
         if (Number(error?.status) === 401) {
-          closeSession(session, CLOSE_CODES.AUTH, "auth_failed", "unauthorized");
+          closeSession(
+            session,
+            CLOSE_CODES.AUTH,
+            "auth_failed",
+            "unauthorized",
+          );
           return;
         }
         snapshotError = String(error?.code || "snapshot_unavailable");
       }
+    }
+    let jukeboxSnapshot = null;
+    try {
+      jukeboxSnapshot = await jukebox.snapshot(session);
+    } catch (_error) {
+      jukeboxError = "jukebox_unavailable";
+    }
+    let soundEffectsSnapshot = null;
+    try {
+      soundEffectsSnapshot = await soundEffects.state(session);
+    } catch (_error) {
+      soundEffectsError = "sound_effects_unavailable";
     }
     const latestSequence = rooms.currentSequence(session.campaignId);
     sendEvent(
@@ -174,8 +232,12 @@ export const createRealtimeServer = (config, dependencies = {}) => {
         latestSequence,
         resyncRequired: lastSequence !== latestSequence,
         users: presence.snapshot(session.campaignId),
+        ...(jukeboxSnapshot ? { jukebox: jukeboxSnapshot } : {}),
+        ...(soundEffectsSnapshot ? { soundEffects: soundEffectsSnapshot } : {}),
         ...(snapshot ? { snapshot } : {}),
         ...(snapshotError ? { snapshotError } : {}),
+        ...(jukeboxError ? { jukeboxError } : {}),
+        ...(soundEffectsError ? { soundEffectsError } : {}),
       }),
     );
   };
@@ -235,6 +297,8 @@ export const createRealtimeServer = (config, dependencies = {}) => {
     );
     broadcastPresence(change);
     sendPresenceSnapshot(session, auth.lastSequence, auth.requestId);
+    void jukebox.sendState(session);
+    void soundEffects.sendState(session);
 
     if (replaced) {
       sendEvent(replaced.ws, sessionEvent(replaced, "session.replaced", {}));
@@ -248,9 +312,41 @@ export const createRealtimeServer = (config, dependencies = {}) => {
 
   const handleAuthenticatedMessage = (session, message) => {
     const parsed = parseAuthenticatedMessage(message);
+    if (parsed.type === "map.publish.notify") {
+      if (session.capabilities?.canManage !== true) {
+        sendProtocolError(session, "forbidden", parsed.requestId);
+        return;
+      }
+      const event = createServerEvent({
+        type: "map.published",
+        campaignId: session.campaignId,
+        sequence: rooms.nextSequence(session.campaignId),
+        actorUserId: session.userId,
+        payload: {
+          requestId: parsed.requestId,
+          mapId: parsed.mapId,
+          mapRevision: parsed.mapRevision,
+          sceneId: parsed.sceneId,
+          sceneRevision: parsed.sceneRevision,
+        },
+      });
+      for (const recipient of rooms.sessions(session.campaignId)) {
+        sendEvent(recipient.ws, event);
+      }
+      return;
+    }
     if (
       routeRealtimeFeature(
-        { chat, tokens, fog, handouts, ...sceneFeatures },
+        {
+          chat,
+          tokens,
+          tokenSync,
+          fog,
+          handouts,
+          jukebox,
+          soundEffects,
+          ...sceneFeatures,
+        },
         session,
         parsed,
       )

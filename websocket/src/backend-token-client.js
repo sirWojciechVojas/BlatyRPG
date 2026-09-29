@@ -97,6 +97,19 @@ export const normalizeMovementRequest = (value) => {
   };
 };
 
+const normalizeTokenResult = (value) => ({
+  token: normalizeBackendToken(value?.token),
+  publishToPlayers: value?.publishToPlayers === true,
+  changedFields: Array.isArray(value?.changedFields)
+    ? value.changedFields.map(String).slice(0, 64)
+    : [],
+});
+
+const synchronizedTokens = (result) =>
+  Array.isArray(result?.synchronizedTokens)
+    ? result.synchronizedTokens.map(normalizeTokenResult)
+    : [];
+
 export class BackendTokenClient {
   constructor(config, options = {}) {
     this.baseUrl = config.backendInternalUrl;
@@ -116,6 +129,7 @@ export class BackendTokenClient {
     return {
       token: normalizeBackendToken(result?.token),
       publishToPlayers: result?.visibility?.publishToPlayers === true,
+      synchronizedTokens: synchronizedTokens(result),
     };
   }
 
@@ -145,6 +159,7 @@ export class BackendTokenClient {
     return {
       token: normalizeBackendToken(result?.token),
       publishToPlayers: result?.visibility?.publishToPlayers === true,
+      synchronizedTokens: synchronizedTokens(result),
     };
   }
 

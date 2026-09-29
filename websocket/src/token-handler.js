@@ -58,19 +58,13 @@ export const createTokenHandler = ({
     );
   };
 
-  const publish = (session, request, result) => {
+  const publishToken = (
+    session,
+    result,
+    affectsVisibility,
+    includeActorAsPrivileged = true,
+  ) => {
     const sequence = rooms.nextSequence(session.campaignId);
-    const affectsVisibility =
-      request.type === "token.move" ||
-      [
-        "width",
-        "height",
-        "rotation",
-        "facing",
-        "hidden",
-        "visibleTo",
-        "vision",
-      ].some((field) => Object.hasOwn(request.changes || {}, field));
     const event = eventFor(
       session,
       "token.updated",
@@ -92,7 +86,7 @@ export const createTokenHandler = ({
     );
     for (const recipient of rooms.sessions(session.campaignId)) {
       if (
-        recipient.id === session.id ||
+        (includeActorAsPrivileged && recipient.id === session.id) ||
         recipient.capabilities?.canManage === true
       ) {
         sendEvent(recipient.ws, event);
@@ -107,12 +101,64 @@ export const createTokenHandler = ({
         sendEvent(recipient.ws, marker);
       }
     }
+  };
+
+  const publishSyncMetadata = (session, synchronized) => {
+    if (!synchronized.length) return;
+    const sequence = rooms.nextSequence(session.campaignId);
+    const event = eventFor(
+      session,
+      "token.sync.changed",
+      { tokenIds: synchronized.map(({ token }) => token.id) },
+      sequence,
+    );
+    const marker = createServerEvent({
+      type: "sync.marker",
+      campaignId: session.campaignId,
+      sequence,
+      actorUserId: null,
+      payload: {},
+    });
+    for (const recipient of rooms.sessions(session.campaignId)) {
+      sendEvent(
+        recipient.ws,
+        recipient.capabilities?.canManageTokenSync === true ? event : marker,
+      );
+    }
+  };
+
+  const publish = (session, request, result) => {
+    const affectsVisibility =
+      request.type === "token.move" ||
+      [
+        "width",
+        "height",
+        "rotation",
+        "facing",
+        "hidden",
+        "visibleTo",
+        "vision",
+      ].some((field) => Object.hasOwn(request.changes || {}, field));
+    publishToken(session, result, affectsVisibility);
+    const synchronized = result.synchronizedTokens || [];
+    synchronized.forEach((item) =>
+      publishToken(
+        session,
+        item,
+        ["hidden", "visibleTo", "vision"].some((field) =>
+          item.changedFields?.includes(field),
+        ),
+        false,
+      ),
+    );
+    publishSyncMetadata(session, synchronized);
     sendEvent(
       session.ws,
       eventFor(session, "token.ack", {
         requestId: request.requestId,
         tokenId: result.token.id,
         revision: result.token.revision,
+        synchronizedTokenIds: synchronized.map(({ token }) => token.id),
       }),
     );
   };

@@ -47,6 +47,7 @@ export const tokenSettingsPreview = (draft = {}, token = {}) => {
     facing: finite(draft.facing, draft.rotation),
     rotationHandleEnabled: draft.rotationHandleEnabled === true,
     facingHandleEnabled: draft.facingHandleEnabled === true,
+    rotationFollowsFacing: draft.rotationFollowsFacing === true,
     showInfoUnselected: draft.showInfoUnselected === true,
     resourceBarPosition: normalizeTokenResourceBarPosition(
       draft.resourceBarPosition,

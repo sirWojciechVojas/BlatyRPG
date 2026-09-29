@@ -3,6 +3,7 @@
     <button
       v-for="utility in utilities"
       :key="utility.id"
+      v-show="!utility.gmOnly || available(utility.id)"
       type="button"
       class="table-utility-rail__button"
       :class="{ 'table-utility-rail__button--active': utility.id === activeId }"
@@ -38,7 +39,10 @@ export default {
     badges: { type: Object, default: () => ({}) },
   },
   emits: ["select", "open"],
-  data: () => ({ utilities: TABLE_UTILITIES, clickTimer: null }),
+  data: () => ({
+    utilities: TABLE_UTILITIES.filter((utility) => utility.windowOnly !== true),
+    clickTimer: null,
+  }),
   beforeUnmount() {
     window.clearTimeout(this.clickTimer);
   },

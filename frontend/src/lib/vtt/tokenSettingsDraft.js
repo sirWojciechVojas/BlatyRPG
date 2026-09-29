@@ -44,6 +44,7 @@ export const createTokenSettingsDraft = (token, gridSize) => {
     facing: normalizeTokenAngle(token.facing, token.rotation),
     rotationHandleEnabled: token.rotationHandleEnabled === true,
     facingHandleEnabled: token.facingHandleEnabled === true,
+    rotationFollowsFacing: token.rotationFollowsFacing === true,
     showInfoUnselected: token.showInfoUnselected === true,
     resourceBarPosition: normalizeTokenResourceBarPosition(
       token.resourceBarPosition,
@@ -65,13 +66,24 @@ export const createTokenSettingsDraft = (token, gridSize) => {
     observerBy: scope(token.observerBy, "inherit"),
     vision: {
       enabled: token.vision?.enabled === true,
+      mode: [
+        "basic",
+        "darkvision",
+        "light_amplification",
+        "monochromatic",
+        "tremorsense",
+      ].includes(token.vision?.mode)
+        ? token.vision.mode
+        : token.vision?.darkvision === true
+          ? "darkvision"
+          : "basic",
       range: clamped(
         token.vision?.range ?? token.vision?.dimRadius ?? size * 6,
         0,
         100000,
       ),
       angle: clamped(token.vision?.angle ?? 360, 1, 360),
-      direction: normalizeTokenAngle(token.vision?.direction, token.facing),
+      direction: normalizeTokenAngle(token.facing, token.rotation),
       minimumRadius: clamped(token.vision?.minimumRadius ?? 0, 0, 100000),
       darkvision: token.vision?.darkvision === true,
       darkvisionRange: clamped(token.vision?.darkvisionRange ?? 0, 0, 100000),
@@ -109,10 +121,7 @@ export const tokenSettingsPayload = (draft, gridSize, canManage) => {
     width: clamped(finite(draft.widthCells, 1) * size, 1, 10000),
     height: clamped(finite(draft.heightCells, 1) * size, 1, 10000),
     rotation: normalizeTokenAngle(draft.rotation),
-    facing: normalizeTokenAngle(
-      draft.vision?.angle < 360 ? draft.vision?.direction : draft.facing,
-      draft.rotation,
-    ),
+    facing: normalizeTokenAngle(draft.facing, draft.rotation),
     elevation: finite(draft.elevation),
     disposition: String(draft.disposition || "neutral"),
     resourceBarPosition: normalizeTokenResourceBarPosition(
@@ -131,9 +140,18 @@ export const tokenSettingsPayload = (draft, gridSize, canManage) => {
     observerBy: scope(draft.observerBy, "gm"),
     vision: {
       enabled: draft.vision?.enabled === true,
+      mode: [
+        "basic",
+        "darkvision",
+        "light_amplification",
+        "monochromatic",
+        "tremorsense",
+      ].includes(draft.vision?.mode)
+        ? draft.vision.mode
+        : "basic",
       range: clamped(draft.vision?.range, 0, 100000),
       angle: clamped(draft.vision?.angle, 1, 360),
-      direction: normalizeTokenAngle(draft.vision?.direction, draft.facing),
+      direction: normalizeTokenAngle(draft.facing, draft.rotation),
       minimumRadius: clamped(draft.vision?.minimumRadius, 0, 100000),
       darkvision: draft.vision?.darkvision === true,
       darkvisionRange: clamped(draft.vision?.darkvisionRange, 0, 100000),
@@ -147,6 +165,7 @@ export const tokenSettingsPayload = (draft, gridSize, canManage) => {
     },
     rotationHandleEnabled: draft.rotationHandleEnabled === true,
     facingHandleEnabled: draft.facingHandleEnabled === true,
+    rotationFollowsFacing: draft.rotationFollowsFacing === true,
     showInfoUnselected: draft.showInfoUnselected === true,
     movementRange: clamped(movement.range, 0, 10000),
     movementSpent: clamped(movement.spent, 0, 10000),

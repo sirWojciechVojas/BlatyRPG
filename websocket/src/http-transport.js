@@ -18,9 +18,10 @@ const rejectUpgrade = (socket, status, message) => {
   socket.destroy();
 };
 
-export const createHttpTransport = (config, healthResponse) => {
+export const createHttpTransport = (config, healthResponse, internalHandler = null) => {
   const httpServer = http.createServer((request, response) => {
-    if (["GET", "HEAD"].includes(request.method) && requestPath(request) === config.healthPath) {
+    const path = requestPath(request);
+    if (["GET", "HEAD"].includes(request.method) && path === config.healthPath) {
       const body = JSON.stringify(healthResponse());
       response.writeHead(200, {
         "Content-Type": "application/json; charset=utf-8",
@@ -30,6 +31,7 @@ export const createHttpTransport = (config, healthResponse) => {
       response.end(request.method === "HEAD" ? undefined : body);
       return;
     }
+    if (internalHandler?.(request, response, path) === true) return;
     response.writeHead(404, { "Content-Type": "text/plain; charset=utf-8" });
     response.end("Not found\n");
   });

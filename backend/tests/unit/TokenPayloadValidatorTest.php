@@ -20,6 +20,7 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
             'facing' => -15,
             'rotationHandleEnabled' => true,
             'facingHandleEnabled' => false,
+            'rotationFollowsFacing' => true,
             'movementRange' => 8.5,
             'movementSpent' => 2,
             'movementResetMode' => 'round',
@@ -45,6 +46,7 @@ final class TokenPayloadValidatorTest extends CIUnitTestCase
         $this->assertSame(345.0, $result['data']['facing']);
         $this->assertSame(1, $result['data']['rotation_handle_enabled']);
         $this->assertSame(0, $result['data']['facing_handle_enabled']);
+        $this->assertSame(1, $result['data']['rotation_follows_facing']);
         $this->assertSame(8.5, $result['data']['movement_range']);
         $this->assertSame(2.0, $result['data']['movement_spent']);
         $this->assertSame('round', $result['data']['movement_reset_mode']);

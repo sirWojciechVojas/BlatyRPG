@@ -11,9 +11,10 @@ class SceneTokenModel extends Model
     protected $returnType = 'array';
     protected $useSoftDeletes = true;
     protected $allowedFields = [
-        'campaign_id', 'scene_id', 'character_id', 'name', 'image_url',
+        'campaign_id', 'scene_id', 'character_id', 'token_template_id',
+        'token_template_asset_id', 'name', 'image_url',
         'x', 'y', 'width', 'height', 'rotation', 'facing', 'elevation', 'disposition',
-        'rotation_handle_enabled', 'facing_handle_enabled',
+        'rotation_handle_enabled', 'facing_handle_enabled', 'rotation_follows_facing',
         'movement_range', 'movement_spent', 'movement_reset_mode',
         'show_info_unselected', 'resource_bar_position',
         'hidden', 'locked', 'visible_to_json', 'controlled_by_json',
@@ -34,7 +35,8 @@ class SceneTokenModel extends Model
         if (!isset($event['data'])) return $event;
         $normalize = static function (&$row): void {
             if (!is_array($row)) return;
-            foreach (['id', 'campaign_id', 'scene_id', 'character_id', 'sort_order', 'revision'] as $field) {
+            foreach (['id', 'campaign_id', 'scene_id', 'character_id', 'token_template_id',
+                'token_template_asset_id', 'sort_order', 'revision'] as $field) {
                 if (isset($row[$field])) $row[$field] = (int) $row[$field];
             }
             foreach (['x', 'y', 'width', 'height', 'rotation', 'facing', 'elevation',
@@ -42,6 +44,7 @@ class SceneTokenModel extends Model
                 if (isset($row[$field])) $row[$field] = (float) $row[$field];
             }
             foreach (['hidden', 'locked', 'rotation_handle_enabled', 'facing_handle_enabled',
+                'rotation_follows_facing',
                 'show_info_unselected'] as $field) {
                 if (isset($row[$field])) $row[$field] = (bool) $row[$field];
             }

@@ -15,6 +15,7 @@ class SceneService
     private $access;
     private $resourceAccess;
     private $validator;
+    private $contentDuplicator;
 
     public function __construct(
         ?BaseConnection $db = null,
@@ -22,7 +23,8 @@ class SceneService
         ?CampaignSceneStateModel $state = null,
         ?CampaignAccessService $access = null,
         ?ScenePayloadValidator $validator = null,
-        ?SceneResourceAccessService $resourceAccess = null
+        ?SceneResourceAccessService $resourceAccess = null,
+        ?SceneContentDuplicator $contentDuplicator = null
     ) {
         $this->db = $db ?: \Config\Database::connect();
         $this->scenes = $scenes ?: new SceneModel();
@@ -30,6 +32,7 @@ class SceneService
         $this->access = $access ?: new CampaignAccessService();
         $this->validator = $validator ?: new ScenePayloadValidator();
         $this->resourceAccess = $resourceAccess ?: new SceneResourceAccessService();
+        $this->contentDuplicator = $contentDuplicator ?: new SceneContentDuplicator($this->db);
     }
 
     public function listScenes(int $campaignId, array $auth): array
@@ -90,6 +93,60 @@ class SceneService
         return ['scene' => $scene, 'capabilities' => $capabilities];
     }
 
+    public function duplicateScene(
+        int $campaignId,
+        int $sceneId,
+        array $auth,
+        array $payload
+    ): array {
+        $capabilities = $this->authorize($campaignId, $auth, false);
+        $this->assertSceneManager($campaignId, $sceneId, $auth, $capabilities);
+        $validated = $this->validator->validateDuplicate($payload);
+        $this->assertValid($validated);
+
+        $this->db->transBegin();
+        try {
+            $source = $this->db->table('scenes')
+                ->where('campaign_id', $campaignId)
+                ->where('id', $sceneId)
+                ->where('deleted_at', null)
+                ->get()->getRowArray();
+            if (!$source) {
+                throw new SceneException('scene_not_found', 'Scene was not found.', 404);
+            }
+
+            $data = $source;
+            foreach (['id', 'created_at', 'updated_at', 'deleted_at'] as $field) {
+                unset($data[$field]);
+            }
+            $now = date('Y-m-d H:i:s');
+            $data['name'] = $validated['data']['name'];
+            $data['sort_order'] = (int) ($source['sort_order'] ?? 0) + 1;
+            $data['revision'] = 1;
+            $data['created_at'] = $now;
+            $data['updated_at'] = $now;
+
+            if (!$this->db->table('scenes')->insert($data)) {
+                throw new SceneException(
+                    'scene_write_failed',
+                    'Scene could not be duplicated.',
+                    500
+                );
+            }
+            $targetSceneId = (int) $this->db->insertID();
+            $this->contentDuplicator->duplicate($campaignId, $sceneId, $targetSceneId);
+            $this->finishTransaction();
+        } catch (\Throwable $exception) {
+            $this->db->transRollback();
+            throw $exception;
+        }
+
+        return [
+            'scene' => $this->findScene($campaignId, $targetSceneId),
+            'capabilities' => $capabilities,
+        ];
+    }
+
     public function updateScene(int $campaignId, int $sceneId, array $auth, array $payload): array
     {
         $capabilities = $this->authorize($campaignId, $auth, false);
@@ -122,6 +179,55 @@ class SceneService
         return ['scene' => $this->findScene($campaignId, $sceneId), 'capabilities' => $capabilities];
     }
 
+    public function transitionDarkness(
+        int $campaignId,
+        int $sceneId,
+        array $auth,
+        array $payload
+    ): array {
+        $capabilities = $this->authorize($campaignId, $auth, false);
+        $this->assertSceneManager($campaignId, $sceneId, $auth, $capabilities);
+        $scene = $this->findScene($campaignId, $sceneId);
+        $target = filter_var($payload['target'] ?? null, FILTER_VALIDATE_FLOAT);
+        $duration = filter_var($payload['duration'] ?? 1500, FILTER_VALIDATE_INT);
+        $revision = filter_var($payload['revision'] ?? null, FILTER_VALIDATE_INT, [
+            'options' => ['min_range' => 1],
+        ]);
+        if ($target === false || !is_finite((float) $target)
+            || $target < 0 || $target > 1
+            || $duration === false || $duration < 100 || $duration > 3600000
+            || $revision === false) {
+            throw new SceneException(
+                'validation_failed',
+                'Darkness transition payload is invalid.',
+                422
+            );
+        }
+        $now = new \DateTimeImmutable('now', new \DateTimeZone('UTC'));
+        $from = $this->currentDarkness($scene, $now);
+        $data = [
+            'darkness_level' => (float) $target,
+            'global_light_level' => 1 - (float) $target,
+            'darkness_transition_from' => $from,
+            'darkness_transition_to' => (float) $target,
+            'darkness_transition_started_at' => $now->format('Y-m-d H:i:s.v'),
+            'darkness_transition_duration' => (int) $duration,
+            'updated_at' => $now->format('Y-m-d H:i:s'),
+        ];
+        $this->db->table('scenes')->set($data)->set('revision', 'revision + 1', false)
+            ->where('id', $sceneId)->where('campaign_id', $campaignId)
+            ->where('revision', (int) $revision)->where('deleted_at', null)
+            ->update();
+        if ($this->db->affectedRows() !== 1) {
+            $this->throwMissingOrConflict($campaignId, $sceneId);
+        }
+        return [
+            'scene' => $this->findScene($campaignId, $sceneId),
+            'capabilities' => $capabilities,
+            'serverTime' => $now->format(DATE_ATOM),
+        ];
+    }
+
     public function deleteScene(int $campaignId, int $sceneId, array $auth, array $payload): array
     {
         $capabilities = $this->authorize($campaignId, $auth, false);
@@ -142,6 +248,12 @@ class SceneService
                 ->set('updated_by', (int) ($auth['user_id'] ?? 0) ?: null)
                 ->set('updated_at', $now)->set('revision', 'revision + 1', false)
                 ->where('campaign_id', $campaignId)->where('active_scene_id', $sceneId)->update();
+            if ($this->db->tableExists('scene_token_sync_links')) {
+                $this->db->table('scene_token_sync_links')
+                    ->where('campaign_id', $campaignId)
+                    ->groupStart()->where('source_scene_id', $sceneId)
+                    ->orWhere('target_scene_id', $sceneId)->groupEnd()->delete();
+            }
             $this->finishTransaction();
         } catch (\Throwable $exception) {
             $this->db->transRollback();
@@ -279,6 +391,24 @@ class SceneService
             409,
             ['currentRevision' => $revision]
         );
+    }
+
+    private function currentDarkness(array $scene, \DateTimeImmutable $now): float
+    {
+        $fallback = max(0.0, min(1.0, (float) ($scene['darkness_level'] ?? 0)));
+        $started = $scene['darkness_transition_started_at'] ?? null;
+        $duration = (int) ($scene['darkness_transition_duration'] ?? 0);
+        if (!$started || $duration < 1) return $fallback;
+        try {
+            $start = new \DateTimeImmutable((string) $started, new \DateTimeZone('UTC'));
+        } catch (\Throwable $exception) {
+            return $fallback;
+        }
+        $elapsed = max(0, ((float) $now->format('U.u') - (float) $start->format('U.u')) * 1000);
+        $progress = min(1.0, $elapsed / $duration);
+        $from = (float) ($scene['darkness_transition_from'] ?? $fallback);
+        $to = (float) ($scene['darkness_transition_to'] ?? $fallback);
+        return max(0.0, min(1.0, $from + ($to - $from) * $progress));
     }
 
     private function finishTransaction(): void

@@ -39,12 +39,11 @@
     </p>
     <div v-else class="scene-canvas__map" :style="mapStyle">
       <div class="scene-canvas__content" :style="contentStyle">
-        <img
+        <SceneBackgroundImage
           v-if="scene.backgroundUrl && !backgroundFailed"
           class="scene-canvas__background"
           :src="scene.backgroundUrl"
           :alt="scene.name"
-          draggable="false"
           @error="backgroundFailed = true"
         />
         <svg
@@ -95,6 +94,7 @@
           :scene="scene"
           :lights="lights"
           :walls="walls"
+          :regions="regions"
           :active-tool="activeTool"
           :selected-id="selectedLightId"
           :can-manage="canManageLights"
@@ -104,9 +104,24 @@
           @update="$emit('light-update', $event)"
           @delete="$emit('light-delete', $event)"
         />
+        <SceneRegionLayer
+          :scene="scene"
+          :regions="regions"
+          :scale="camera.scale"
+          :active-tool="activeTool"
+          :selected-id="selectedRegionId"
+          :can-manage="canManageRegions"
+          :busy="regionBusy"
+          @select="$emit('region-select', $event)"
+          @create="$emit('region-create', $event)"
+          @update="$emit('region-update', $event)"
+          @delete="$emit('region-delete', $event)"
+        />
         <SceneWallLayer
+          ref="wallLayer"
           :scene="scene"
           :walls="walls"
+          :scale="camera.scale"
           :active-tool="activeTool"
           :selected-id="selectedWallId"
           :can-manage="canManageWalls"
@@ -119,6 +134,27 @@
           @update="$emit('wall-update', $event)"
           @update-many="$emit('wall-update-many', $event)"
           @delete="$emit('wall-delete', $event)"
+          @create-region="$emit('region-create', $event)"
+        />
+        <SceneDoorLayer
+          :scene="scene"
+          :walls="walls"
+          :scale="camera.scale"
+          :can-manage="canManageWalls"
+          :busy="wallBusy"
+          :selected-tokens="doorInteractionTokens"
+          :characters="characters"
+          :current-user-id="currentUserId"
+          @interact="$emit('wall-interact', $event)"
+          @edit="$emit('wall-edit', $event)"
+        />
+        <WallSpatialAudioController
+          :scene="scene"
+          :walls="walls"
+          :tokens="fogTokens"
+          :selected-token-id="selectedTokenId"
+          :selected-token-ids="selectedTokenIds"
+          :can-manage="canManageScene"
         />
         <TokenVisionOverlay
           :scene="scene"
@@ -137,6 +173,7 @@
           :tokens="fogTokens"
           :walls="walls"
           :lights="lights"
+          :regions="regions"
           :members="members"
           :characters="characters"
           :fog-state="fogState"
@@ -145,7 +182,7 @@
           :scene-padding="mapDimensions.padding"
           :active-tool="activeTool"
           :can-manage="canManageScene"
-          :preview="fogPreview"
+          :preview="effectiveFogPreview"
           :busy="fogBusy"
           @patch="$emit('fog-patch', $event)"
           @preview-change="$emit('fog-preview-change', $event)"
@@ -163,7 +200,9 @@
           :characters="characters"
           :scale="camera.scale"
           :busy="tokenBusy"
+          :foreground="tokenUiAboveFog"
           :movement-mode-token-id="activeMovementTokenId"
+          :token-sync-links="tokenSyncLinks"
           @select="$emit('token-select', $event)"
           @move="$emit('token-move', $event)"
           @move-group="$emit('token-move-group', $event)"
@@ -173,6 +212,7 @@
           @target="$emit('token-target', $event)"
           @delete="$emit('token-delete', $event)"
           @open-actor="$emit('open-actor', $event)"
+          @assign-character="$emit('assign-character', $event)"
           @vision-preview="applyTokenVisionPreview"
           @vision-angle-preview="applyTokenVisionAnglePreview"
           @movement-mode="toggleMovementMode"
@@ -199,10 +239,14 @@ import SceneTokenLayer from "@/components/vtt/token/SceneTokenLayer.vue";
 import TokenAreaSelectionOverlay from "@/components/vtt/token/TokenAreaSelectionOverlay.vue";
 import TokenAreaSelectionToolbar from "@/components/vtt/token/TokenAreaSelectionToolbar.vue";
 import SceneWallLayer from "@/components/vtt/wall/SceneWallLayer.vue";
+import SceneDoorLayer from "@/components/vtt/wall/SceneDoorLayer.vue";
+import WallSpatialAudioController from "@/components/vtt/wall/WallSpatialAudioController.vue";
 import SceneLightLayer from "@/components/vtt/light/SceneLightLayer.vue";
 import SceneTileLayer from "@/components/vtt/tile/SceneTileLayer.vue";
 import SceneFogLayer from "@/components/vtt/fog/SceneFogLayer.vue";
+import SceneRegionLayer from "@/components/vtt/region/SceneRegionLayer.vue";
 import SceneMeasurementOverlay from "./SceneMeasurementOverlay.vue";
+import SceneBackgroundImage from "./SceneBackgroundImage.vue";
 import TokenDropPreview from "@/components/vtt/token/TokenDropPreview.vue";
 import TokenMovementRange from "@/components/vtt/token/TokenMovementRange.vue";
 import TokenVisionOverlay from "@/components/vtt/token/TokenVisionOverlay.vue";
@@ -214,9 +258,11 @@ import { tokenAreaSelectionMethods } from "@/components/vtt/token/tokenAreaSelec
 export default {
   name: "SceneCanvas",
   components: {
+    SceneBackgroundImage,
     SceneLightLayer,
     SceneFogLayer,
     SceneMeasurementOverlay,
+    SceneRegionLayer,
     SceneTokenLayer,
     TokenAreaSelectionOverlay,
     TokenAreaSelectionToolbar,
@@ -225,6 +271,8 @@ export default {
     TokenVisionOverlay,
     SceneTileLayer,
     SceneWallLayer,
+    SceneDoorLayer,
+    WallSpatialAudioController,
   },
   props: {
     scene: { type: Object, default: null },
@@ -237,6 +285,7 @@ export default {
     waitingTurnIds: { type: Array, default: () => [] },
     members: { type: Array, default: () => [] },
     characters: { type: Array, default: () => [] },
+    currentUserId: { type: [Number, String], default: null },
     tokenBusy: { type: Boolean, default: false },
     canCreateToken: { type: Boolean, default: false },
     walls: { type: Array, default: () => [] },
@@ -248,6 +297,10 @@ export default {
     selectedLightId: { type: [Number, String], default: null },
     canManageLights: { type: Boolean, default: false },
     lightBusy: { type: Boolean, default: false },
+    regions: { type: Array, default: () => [] },
+    selectedRegionId: { type: [Number, String], default: null },
+    canManageRegions: { type: Boolean, default: false },
+    regionBusy: { type: Boolean, default: false },
     tiles: { type: Array, default: () => [] },
     selectedTileId: { type: [Number, String], default: null },
     canManageTiles: { type: Boolean, default: false },
@@ -259,6 +312,7 @@ export default {
       default: () => ({ mode: "gm", id: null }),
     },
     fogBusy: { type: Boolean, default: false },
+    tokenSyncLinks: { type: Array, default: () => [] },
   },
   emits: [
     "camera-change",
@@ -271,7 +325,9 @@ export default {
     "token-target",
     "token-delete",
     "token-create",
+    "token-template-create",
     "open-actor",
+    "assign-character",
     "wall-select",
     "wall-create",
     "wall-create-many",
@@ -279,10 +335,16 @@ export default {
     "wall-update",
     "wall-update-many",
     "wall-delete",
+    "wall-interact",
+    "wall-edit",
     "light-select",
     "light-create",
     "light-update",
     "light-delete",
+    "region-select",
+    "region-create",
+    "region-update",
+    "region-delete",
     "tile-select",
     "tile-create",
     "tile-update",
@@ -349,6 +411,9 @@ export default {
     this.resizeObserver?.disconnect();
   },
   methods: {
+    openWallProperties(wallId) {
+      this.$refs.wallLayer?.editWall?.(wallId);
+    },
     ...sceneCanvasCameraMethods,
     ...sceneCanvasDropMethods,
     ...tokenAreaSelectionMethods,

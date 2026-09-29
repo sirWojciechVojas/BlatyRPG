@@ -35,6 +35,21 @@ final class ScenePayloadValidatorTest extends CIUnitTestCase
         $this->assertArrayHasKey('revision', $result['errors']);
     }
 
+    public function testDuplicateAcceptsOnlyTheNewName(): void
+    {
+        $validator = new ScenePayloadValidator();
+        $valid = $validator->validateDuplicate(['name' => '  Ruins copy  ']);
+        $invalid = $validator->validateDuplicate([
+            'name' => 'Ruins copy',
+            'background_url' => 'https://example.test/replacement.webp',
+        ]);
+
+        $this->assertTrue($valid['valid']);
+        $this->assertSame('Ruins copy', $valid['data']['name']);
+        $this->assertFalse($invalid['valid']);
+        $this->assertArrayHasKey('background_url', $invalid['errors']);
+    }
+
     public function testGlobalLightLevelReplacesAndMirrorsLegacyDarkness(): void
     {
         $result = (new ScenePayloadValidator())->validateUpdate([

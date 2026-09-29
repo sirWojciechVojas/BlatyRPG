@@ -12,15 +12,16 @@
       <i class="token-drop-preview__orbit token-drop-preview__orbit--outer" />
       <i class="token-drop-preview__orbit token-drop-preview__orbit--inner" />
       <div class="token-drop-preview__portrait">
-        <img
-          v-if="preview.actor.imageUrl"
-          :src="preview.actor.imageUrl"
+        <AuthenticatedImage
+          v-if="source.imageUrl"
+          :src="source.imageUrl"
           alt=""
+          draggable="false"
         />
         <span v-else>{{ initials }}</span>
       </div>
       <strong :style="labelStyle">
-        {{ $t("vtt.token.dropActor", { name: preview.actor.name }) }}
+        {{ $t(labelKey, { name: source.name }) }}
       </strong>
     </div>
   </div>
@@ -28,47 +29,63 @@
 
 <script>
 import { snapTokenPosition } from "@/lib/vtt/grid";
+import AuthenticatedImage from "@/components/ui/AuthenticatedImage.vue";
 
 export default {
   name: "TokenDropPreview",
+  components: { AuthenticatedImage },
   props: {
     scene: { type: Object, required: true },
     preview: { type: Object, default: null },
     scale: { type: Number, default: 1 },
   },
   computed: {
+    source() {
+      return this.preview?.template || this.preview?.actor || {};
+    },
+    labelKey() {
+      return this.preview?.template
+        ? "vtt.tokenTemplates.drop"
+        : "vtt.token.dropActor";
+    },
     size() {
       return Math.max(1, Number(this.scene.gridSize) || 100);
+    },
+    width() {
+      return this.size * Math.max(0.25, Number(this.source.widthCells) || 1);
+    },
+    height() {
+      return this.size * Math.max(0.25, Number(this.source.heightCells) || 1);
     },
     snappedPosition() {
       return snapTokenPosition(
         this.scene,
         {
-          x: this.preview.x - this.size / 2,
-          y: this.preview.y - this.size / 2,
+          x: this.preview.x - this.width / 2,
+          y: this.preview.y - this.height / 2,
         },
-        { width: this.size, height: this.size },
+        { width: this.width, height: this.height },
       );
     },
     targetCenter() {
       return {
-        x: this.snappedPosition.x + this.size / 2,
-        y: this.snappedPosition.y + this.size / 2,
+        x: this.snappedPosition.x + this.width / 2,
+        y: this.snappedPosition.y + this.height / 2,
       };
     },
     targetStyle() {
       return {
         left: `${this.snappedPosition.x}px`,
         top: `${this.snappedPosition.y}px`,
-        width: `${this.size}px`,
-        height: `${this.size}px`,
+        width: `${this.width}px`,
+        height: `${this.height}px`,
       };
     },
     labelStyle() {
       return { transform: `translateX(-50%) scale(${1 / this.scale})` };
     },
     initials() {
-      return String(this.preview?.actor?.name || "?")
+      return String(this.source.name || "?")
         .split(/\s+/u)
         .slice(0, 2)
         .map((part) => part[0])

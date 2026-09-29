@@ -11,9 +11,10 @@ class SceneTileModel extends Model
     protected $returnType = 'array';
     protected $useSoftDeletes = true;
     protected $allowedFields = [
-        'campaign_id', 'scene_id', 'name', 'asset_url', 'media_type', 'layer',
+        'campaign_id', 'scene_id', 'name', 'asset_url', 'media_asset_id', 'media_type', 'layer',
         'x', 'y', 'width', 'height', 'rotation', 'opacity', 'sort_order',
         'hidden', 'locked', 'autoplay', 'loop', 'muted', 'revision',
+        'source_map_id', 'source_map_revision', 'source_map_object_id',
     ];
     protected $useTimestamps = true;
     protected $afterFind = ['normalizeRows'];
@@ -23,7 +24,7 @@ class SceneTileModel extends Model
         if (!isset($event['data'])) return $event;
         $normalize = static function (&$row): void {
             if (!is_array($row)) return;
-            foreach (['id', 'campaign_id', 'scene_id', 'sort_order', 'revision'] as $field) {
+            foreach (['id', 'campaign_id', 'scene_id', 'media_asset_id', 'sort_order', 'revision', 'source_map_id', 'source_map_revision'] as $field) {
                 if (isset($row[$field])) $row[$field] = (int) $row[$field];
             }
             foreach (['x', 'y', 'width', 'height', 'rotation', 'opacity'] as $field) {

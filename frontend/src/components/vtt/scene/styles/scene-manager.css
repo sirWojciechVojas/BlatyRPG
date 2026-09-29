@@ -17,6 +17,11 @@
   border-bottom: 1px solid var(--ui-color-border, #2c3747);
 }
 
+.scene-manager-panel__actions .scene-button--token-sync {
+  color: #d8bd86;
+  border-color: rgb(174 136 72 / 68%);
+}
+
 .scene-manager-panel .scene-navigation {
   min-height: 5rem;
 }
