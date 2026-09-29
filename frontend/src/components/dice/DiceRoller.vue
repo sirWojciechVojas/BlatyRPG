@@ -1,5 +1,12 @@
 ﻿<template>
-  <div class="dice-roller-root" :class="{ 'chat-disabled': !chatEnabled }">
+  <div
+    ref="root"
+    class="dice-roller-root"
+    :class="{
+      'chat-disabled': !chatEnabled,
+      'dice-roller-root--embedded': embedded,
+    }"
+  >
     <input type="hidden" id="parent_notation" value="" />
     <input type="hidden" id="parent_roll" value="0" />
     <button id="turnOnRoom" title="Roll for Myself" style="display: none">
@@ -54,6 +61,7 @@
               <span class="button-label">Reset</span>
             </button>
             <button
+              v-if="showAdvancedControls"
               id="save"
               class="selector-button"
               title="Save Favorite"
@@ -71,6 +79,7 @@
               <span class="button-label">Save</span>
             </button>
             <button
+              v-if="showAdvancedControls"
               id="rage"
               class="selector-button"
               title="Add Rage"
@@ -105,6 +114,7 @@
               <span class="button-label">Throw</span>
             </button>
             <button
+              v-if="showAdvancedControls"
               id="cp_showsettings"
               class="selector-button"
               title="Dice settings"

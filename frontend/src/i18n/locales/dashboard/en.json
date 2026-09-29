@@ -20,13 +20,16 @@
     "home": {
       "eyebrow": "Campaign dashboard",
       "title": "Welcome, {name}",
-      "description": "Choose a campaign and open its scenes, characters, chat, or shop."
+      "description": "May every great session lead to another story."
     },
     "campaign": {
       "eyebrow": "Your worlds",
-      "title": "Campaigns",
+      "title": "Your campaigns",
       "active": "Active",
       "inactive": "Inactive",
+      "launch": "Launch game",
+      "menuLabel": "Campaign options: {name}",
+      "unknownSystem": "Unknown system",
       "noDescription": "No campaign description.",
       "openScenes": "Open scenes",
       "openCharacters": "Characters and NPCs",
@@ -43,6 +46,8 @@
     "create": {
       "eyebrow": "New world",
       "title": "Create a campaign",
+      "open": "New campaign",
+      "close": "Close campaign creation",
       "name": "Campaign name",
       "system": "RPG system",
       "world": "World / setting",
@@ -52,6 +57,15 @@
       "description": "Description",
       "submit": "Create campaign",
       "submitting": "Creating…"
+    },
+    "carousel": {
+      "label": "Campaign carousel",
+      "previous": "Previous campaigns",
+      "next": "Next campaigns",
+      "pages": "Campaign pages",
+      "page": "Go to page {page}",
+      "range": "{start}–{end} of {total}",
+      "headingCount": "{visible} of {total} tables"
     },
     "empty": {
       "title": "No campaigns",

@@ -45,6 +45,18 @@ export default {
       },
     },
   },
+  mounted() {
+    window.addEventListener(
+      "blatyrpg:character-access-changed",
+      this.handleCharacterAccessChanged,
+    );
+  },
+  beforeUnmount() {
+    window.removeEventListener(
+      "blatyrpg:character-access-changed",
+      this.handleCharacterAccessChanged,
+    );
+  },
   methods: {
     resetForCampaign() {
       this.listRequestSequence += 1;
@@ -65,7 +77,7 @@ export default {
       this.saveError = "";
       this.notice = "";
     },
-    async loadCharacters() {
+    async loadCharacters({ preserveSelection = false } = {}) {
       const campaignId = this.campaignId;
       if (!campaignId) return;
       const sequence = ++this.listRequestSequence;
@@ -78,7 +90,17 @@ export default {
         this.characters = result.characters;
         this.canCreate = result.capabilities.canCreate;
         if (this.canCreate) await this.loadGames(sequence, campaignId);
-        const nextId = this.characters[0]?.id || null;
+        const selectedStillAvailable = this.characters.some(
+          (character) => Number(character.id) === Number(this.selectedId),
+        );
+        const nextId =
+          selectedStillAvailable && preserveSelection
+            ? null
+            : this.characters[0]?.id || null;
+        if (!selectedStillAvailable) {
+          this.selectedId = null;
+          this.selectedCharacter = null;
+        }
         if (nextId) await this.selectCharacter(nextId);
       } catch (error) {
         if (this.isCurrentList(sequence, campaignId)) {
@@ -121,6 +143,11 @@ export default {
           this.loadingSheet = false;
         }
       }
+    },
+    handleCharacterAccessChanged(event) {
+      const campaignId = Number(event?.detail?.campaignId);
+      if (campaignId !== this.campaignId) return;
+      this.loadCharacters({ preserveSelection: true });
     },
     async saveCharacter(draft) {
       const campaignId = this.campaignId;

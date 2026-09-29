@@ -11,7 +11,7 @@ class HandoutAssetModel extends Model
     protected $returnType = 'array';
     protected $allowedFields = [
         'owner_user_id', 'storage_key', 'original_name', 'mime_type', 'byte_size',
-        'sha256', 'deleted_at',
+        'sha256', 'media_asset_id', 'deleted_at',
     ];
     protected $useTimestamps = true;
     protected $dateFormat = 'datetime';

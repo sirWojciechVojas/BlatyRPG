@@ -150,6 +150,15 @@
   box-shadow: none !important;
 }
 
+.token-hud__sync-badge {
+  display: inline-grid;
+  place-items: center;
+  cursor: default;
+  color: #8ce1d9;
+  border: 1px solid #2f8f88;
+  border-radius: 2px;
+}
+
 .token-hud__resources {
   display: grid;
   gap: 2px;

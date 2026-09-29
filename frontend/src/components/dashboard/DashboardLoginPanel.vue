@@ -95,6 +95,32 @@
         </span>
       </button>
     </form>
+    <div v-if="oauthProviders.length" class="login-oauth">
+      <span class="login-oauth__divider">{{ $t("auth.oauth.or") }}</span>
+      <div
+        class="oauth-provider-list"
+        :aria-label="$t('auth.oauth.providersLabel')"
+      >
+        <button
+          v-for="provider in oauthProviders"
+          :key="provider.provider"
+          class="oauth-provider-button"
+          :class="`oauth-provider-button--${provider.provider}`"
+          type="button"
+          :disabled="busy || oauthBusy || !provider.enabled"
+          :aria-label="
+            $t('auth.oauth.continueWith', { provider: provider.label })
+          "
+          @click="$emit('oauth', provider.provider)"
+        >
+          <span class="oauth-provider-mark" aria-hidden="true" />
+          <span class="oauth-provider-label">{{ provider.label }}</span>
+          <small v-if="!provider.enabled">{{
+            $t("auth.oauth.unavailable")
+          }}</small>
+        </button>
+      </div>
+    </div>
     <nav class="login-links" :aria-label="$t('auth.actions.account')">
       <router-link :to="{ name: 'register' }">
         {{ $t("auth.actions.register") }}
@@ -113,8 +139,10 @@ export default {
     busy: { type: Boolean, default: false },
     error: { type: String, default: "" },
     logo: { type: String, default: "" },
+    oauthProviders: { type: Array, default: () => [] },
+    oauthBusy: { type: Boolean, default: false },
   },
-  emits: ["submit"],
+  emits: ["submit", "oauth"],
   data: () => ({
     login: "",
     password: "",

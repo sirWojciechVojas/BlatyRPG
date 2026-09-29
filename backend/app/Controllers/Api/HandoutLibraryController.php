@@ -100,6 +100,11 @@ class HandoutLibraryController extends CampaignApiController
         try {
             $result = $this->handouts->assetForDownload($this->auth(), $this->positiveId($assetId, 'handout_asset_not_found'));
             $asset = $result['asset'];
+            if (!empty($result['url'])) {
+                return $this->response->setStatusCode(302)
+                    ->setHeader('Location', (string) $result['url'])
+                    ->setHeader('Cache-Control', 'private, no-store');
+            }
             return $this->response->setHeader('Content-Type', (string) $asset['mime_type'])
                 ->setHeader('Content-Length', (string) filesize($result['path']))
                 ->setHeader('Content-Disposition', 'inline; filename="' . addcslashes((string) $asset['original_name'], "\\\"") . '"')

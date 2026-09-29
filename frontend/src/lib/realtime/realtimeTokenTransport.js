@@ -4,6 +4,7 @@ import {
   tokenMoveMessage,
   tokenMovementRequestMessage,
   tokenMovementResolveMessage,
+  tokenSyncCommandMessage,
 } from "./realtimeProtocol";
 
 export const createRealtimeTokenTransport = (authenticated, send) => ({
@@ -16,4 +17,6 @@ export const createRealtimeTokenTransport = (authenticated, send) => ({
     authenticated() && send(tokenMovementRequestMessage(payload)),
   resolveTokenMovement: (payload) =>
     authenticated() && send(tokenMovementResolveMessage(payload)),
+  commandTokenSync: (payload) =>
+    authenticated() && send(tokenSyncCommandMessage(payload)),
 });

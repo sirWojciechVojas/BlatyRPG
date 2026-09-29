@@ -21,6 +21,7 @@ const angle = (value, field) => {
 const CHANGE_FIELDS = Object.freeze([
   "characterId", "name", "imageUrl", "width", "height", "rotation",
   "facing", "rotationHandleEnabled", "facingHandleEnabled",
+  "rotationFollowsFacing",
   "showInfoUnselected", "resourceBarPosition", "movementRange",
   "movementSpent", "movementResetMode", "elevation", "disposition",
   "hidden", "locked", "visibleTo", "controlledBy", "editableBy",

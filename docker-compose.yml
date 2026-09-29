@@ -29,16 +29,30 @@ services:
   php:
     build:
       context: ./docker/php
+      args:
+        APP_ENV_GID: ${HOST_APP_GROUP_ID:-82}
     container_name: blatyrpg_php
     restart: unless-stopped
+    group_add:
+      - "${HOST_APP_GROUP_ID:-82}"
     volumes:
       - ./backend:/var/www/html
+      - ./docs:/var/www/compendium:ro
       - handout_storage:/var/www/html/writable/uploads/handouts
+      - audio_storage:/var/www/html/writable/uploads/audio
     environment:
       CI_ENVIRONMENT: ${CI_ENVIRONMENT:-development}
       SHOP_ALLOW_ANONYMOUS_SHOP_ACCESS: ${SHOP_ALLOW_ANONYMOUS_SHOP_ACCESS:-false}
       JWT_SECRET: ${JWT_SECRET:?JWT_SECRET is required}
       JWT_TIME_TO_LIVE: ${JWT_TIME_TO_LIVE:-3600}
+      OAUTH_CALLBACK_BASE_URL: ${OAUTH_CALLBACK_BASE_URL:-https://localhost:8443/api/auth/oauth}
+      OAUTH_FRONTEND_CALLBACK_URL: ${OAUTH_FRONTEND_CALLBACK_URL:-https://localhost:8443/#/oauth/callback}
+      GOOGLE_OAUTH_CLIENT_ID: ${GOOGLE_OAUTH_CLIENT_ID:-}
+      GOOGLE_OAUTH_CLIENT_SECRET: ${GOOGLE_OAUTH_CLIENT_SECRET:-}
+      FACEBOOK_OAUTH_CLIENT_ID: ${FACEBOOK_OAUTH_CLIENT_ID:-}
+      FACEBOOK_OAUTH_CLIENT_SECRET: ${FACEBOOK_OAUTH_CLIENT_SECRET:-}
+      DISCORD_OAUTH_CLIENT_ID: ${DISCORD_OAUTH_CLIENT_ID:-}
+      DISCORD_OAUTH_CLIENT_SECRET: ${DISCORD_OAUTH_CLIENT_SECRET:-}
       PASSWORD_RESET_URL: ${PASSWORD_RESET_URL:-https://localhost:8443/#/password-reset/confirm}
       PASSWORD_RESET_TIME_TO_LIVE: ${PASSWORD_RESET_TIME_TO_LIVE:-1800}
       email.fromEmail: ${MAIL_FROM_ADDRESS:-no-reply@blatyrpg.local}
@@ -52,6 +66,32 @@ services:
       REALTIME_TICKET_SECRET: ${REALTIME_TICKET_SECRET:?REALTIME_TICKET_SECRET is required}
       REALTIME_TICKET_ISSUER: ${REALTIME_TICKET_ISSUER:-BlatyRPG}
       REALTIME_TICKET_AUDIENCE: ${REALTIME_TICKET_AUDIENCE:-blatyrpg-realtime}
+      REALTIME_CALENDAR_PUBLISH_URL: ${REALTIME_CALENDAR_PUBLISH_URL:-http://websocket:8081/internal/calendar}
+      REALTIME_CHARACTER_ACCESS_PUBLISH_URL: ${REALTIME_CHARACTER_ACCESS_PUBLISH_URL:-http://websocket:8081/internal/character-access}
+      LIVEKIT_URL: ${LIVEKIT_URL:-}
+      LIVEKIT_API_KEY: ${LIVEKIT_API_KEY:-}
+      LIVEKIT_API_SECRET: ${LIVEKIT_API_SECRET:-}
+      LIVEKIT_TOKEN_TTL: ${LIVEKIT_TOKEN_TTL:-300}
+      AUDIO_UPLOAD_MAX_BYTES: ${AUDIO_UPLOAD_MAX_BYTES:-52428800}
+      MEDIA_UPLOAD_MAX_BYTES: ${MEDIA_UPLOAD_MAX_BYTES:-5368709120}
+      CLOUDINARY_CLOUD_NAME: ${CLOUDINARY_CLOUD_NAME:-dajzxmjyc}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY:-}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET:-}
+      R2_ACCOUNT_ID: ${R2_ACCOUNT_ID:-}
+      R2_ENDPOINT: ${R2_ENDPOINT:-}
+      R2_PUBLIC_BUCKET: ${R2_PUBLIC_BUCKET:-blatyrpg-media-public}
+      R2_PRIVATE_BUCKET: ${R2_PRIVATE_BUCKET:-blatyrpg-media-private}
+      R2_BUCKET: ${R2_BUCKET:-}
+      R2_ACCESS_KEY_ID: ${R2_ACCESS_KEY_ID:-}
+      R2_SECRET_ACCESS_KEY: ${R2_SECRET_ACCESS_KEY:-}
+      R2_PUBLIC_BASE_URL: ${R2_PUBLIC_BASE_URL:-}
+      MAP_AI_PROVIDER: ${MAP_AI_PROVIDER:-openai}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_API_BASE: ${OPENAI_API_BASE:-https://api.openai.com/v1}
+      MAP_AI_TEXT_MODEL: ${MAP_AI_TEXT_MODEL:-gpt-5.4-mini}
+      MAP_AI_IMAGE_MODEL: ${MAP_AI_IMAGE_MODEL:-gpt-image-2}
+      MAP_AI_TIMEOUT_SECONDS: ${MAP_AI_TIMEOUT_SECONDS:-120}
+      MAP_AI_DAILY_COST_UNITS: ${MAP_AI_DAILY_COST_UNITS:-50}
       database.default.hostname: mysql
       database.default.database: ${MYSQL_DATABASE:-blatyrpg}
       database.default.username: ${MYSQL_APP_USER:?MYSQL_APP_USER is required}
@@ -68,11 +108,47 @@ services:
       retries: 3
       start_period: 10s
 
+  # Durable queue consumer for editable map layouts and generated assets.
+  map-ai-worker:
+    build:
+      context: ./docker/php
+      args:
+        APP_ENV_GID: ${HOST_APP_GROUP_ID:-82}
+    restart: unless-stopped
+    group_add:
+      - "${HOST_APP_GROUP_ID:-82}"
+    working_dir: /var/www/html
+    command: php spark maps:ai-worker
+    volumes:
+      - ./backend:/var/www/html
+    environment:
+      CI_ENVIRONMENT: ${CI_ENVIRONMENT:-development}
+      MAP_AI_PROVIDER: ${MAP_AI_PROVIDER:-openai}
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_API_BASE: ${OPENAI_API_BASE:-https://api.openai.com/v1}
+      MAP_AI_TEXT_MODEL: ${MAP_AI_TEXT_MODEL:-gpt-5.4-mini}
+      MAP_AI_IMAGE_MODEL: ${MAP_AI_IMAGE_MODEL:-gpt-image-2}
+      MAP_AI_TIMEOUT_SECONDS: ${MAP_AI_TIMEOUT_SECONDS:-120}
+      MAP_AI_DAILY_COST_UNITS: ${MAP_AI_DAILY_COST_UNITS:-50}
+      database.default.hostname: mysql
+      database.default.database: ${MYSQL_DATABASE:-blatyrpg}
+      database.default.username: ${MYSQL_APP_USER:?MYSQL_APP_USER is required}
+      database.default.password: ${MYSQL_APP_PASSWORD:?MYSQL_APP_PASSWORD is required}
+      database.default.DBDriver: MySQLi
+      database.default.port: "3306"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
   # Private asset retention is deliberately handled outside web requests.
   handout-purge:
     build:
       context: ./docker/php
+      args:
+        APP_ENV_GID: ${HOST_APP_GROUP_ID:-82}
     restart: unless-stopped
+    group_add:
+      - "${HOST_APP_GROUP_ID:-82}"
     working_dir: /var/www/html
     command: sh -c "while true; do php spark handouts:purge-deleted || true; sleep 86400; done"
     volumes:
@@ -92,8 +168,10 @@ services:
 
   # 3. MySQL database
   mysql:
-    image: mysql:8.0
+    image: mysql:8.4
     container_name: blatyrpg_mysql
+    ports:
+      - "3307:3306"
     restart: always
     environment:
       MYSQL_DATABASE: ${MYSQL_DATABASE:-blatyrpg}
@@ -172,6 +250,8 @@ services:
       WS_BACKEND_INTERNAL_URL: ${REALTIME_INTERNAL_URL:-http://nginx:8083/api/internal/realtime}
       WS_BACKEND_TIMEOUT_MS: ${REALTIME_INTERNAL_TIMEOUT_MS:-5000}
       WS_CHAT_PAGE_LIMIT: ${REALTIME_CHAT_PAGE_LIMIT:-20}
+      WS_CALENDAR_PUBLISH_PATH: /internal/calendar
+      WS_CHARACTER_ACCESS_PUBLISH_PATH: /internal/character-access
     depends_on:
       php:
         condition: service_healthy
@@ -184,11 +264,32 @@ services:
       retries: 6
       start_period: 30s
 
+  # Optional local SFU. For LiveKit Cloud leave this profile disabled and set
+  # LIVEKIT_URL/API credentials to the Cloud project values.
+  livekit:
+    image: livekit/livekit-server:v1.13.6
+    profiles: ["self-hosted-livekit"]
+    restart: unless-stopped
+    command: ["--dev", "--bind", "0.0.0.0", "--node-ip", "${LIVEKIT_NODE_IP:-127.0.0.1}"]
+    environment:
+      LIVEKIT_KEYS: "${LIVEKIT_API_KEY:-}: ${LIVEKIT_API_SECRET:-}"
+    ports:
+      - "7880:7880"
+      - "7881:7881"
+      - "7882:7882/udp"
+    healthcheck:
+      test: ["CMD", "/livekit-server", "ports"]
+      interval: 15s
+      timeout: 5s
+      retries: 8
+      start_period: 20s
+
 volumes:
   mysql_data:
   frontend_node_modules:
   websocket_node_modules:
   handout_storage:
+  audio_storage:
 
 networks:
   default:

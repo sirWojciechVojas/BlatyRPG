@@ -3,7 +3,9 @@
     <dl class="movement-requests__facts">
       <div>
         <dt>{{ $t("vtt.table.notifications.connection") }}</dt>
-        <dd>{{ realtimeStatus }}</dd>
+        <dd>
+          {{ $t(`vtt.table.notifications.connectionStates.${knownStatus}`) }}
+        </dd>
       </div>
       <div>
         <dt>{{ $t("vtt.table.notifications.online") }}</dt>
@@ -11,9 +13,44 @@
       </div>
       <div v-if="canManage">
         <dt>{{ $t("vtt.table.notifications.invites") }}</dt>
-        <dd>{{ invitations.length }}</dd>
+        <dd>{{ pendingInvitations.length }}</dd>
       </div>
     </dl>
+
+    <section class="movement-requests__presence">
+      <header>
+        <div>
+          <small>{{ $t("vtt.table.notifications.presence.kicker") }}</small>
+          <h3>{{ $t("vtt.table.notifications.presence.title") }}</h3>
+        </div>
+        <button
+          v-if="manualRetryAvailable"
+          type="button"
+          class="scene-button"
+          @click="$emit('retry')"
+        >
+          {{ $t("vtt.table.notifications.presence.retry") }}
+        </button>
+      </header>
+      <ul v-if="members.length" class="movement-requests__members">
+        <li v-for="member in members" :key="member.userId">
+          <span class="presence-dot" :class="{ online: member.isOnline }" />
+          <span>{{ member.username || member.email }}</span>
+          <small>
+            {{
+              $t(
+                member.isOnline
+                  ? "vtt.table.notifications.presence.online"
+                  : "vtt.table.notifications.presence.offline",
+              )
+            }}
+          </small>
+        </li>
+      </ul>
+      <p v-else class="movement-requests__empty">
+        {{ $t("vtt.table.notifications.presence.empty") }}
+      </p>
+    </section>
 
     <header>
       <div>
@@ -91,17 +128,36 @@ export default {
     members: { type: Array, default: () => [] },
     invitations: { type: Array, default: () => [] },
     realtimeStatus: { type: String, default: "disconnected" },
+    manualRetryAvailable: { type: Boolean, default: false },
     canManage: { type: Boolean, default: false },
     canResolve: { type: Boolean, default: false },
     busy: { type: Boolean, default: false },
   },
-  emits: ["resolve"],
+  emits: ["resolve", "retry"],
   computed: {
     pending() {
       return this.requests.filter((request) => request.status === "pending");
     },
     onlineCount() {
       return this.members.filter((member) => member.isOnline).length;
+    },
+    pendingInvitations() {
+      return this.invitations.filter(
+        (invitation) => invitation.status === "pending",
+      );
+    },
+    knownStatus() {
+      return [
+        "ready",
+        "syncing",
+        "reconnecting",
+        "auth_failed",
+        "forbidden",
+        "exhausted",
+        "disconnected",
+      ].includes(this.realtimeStatus)
+        ? this.realtimeStatus
+        : "connecting";
     },
   },
   methods: {
@@ -189,6 +245,36 @@ header b {
   display: grid;
   gap: 6px;
   overflow: auto;
+}
+.movement-requests__presence {
+  display: grid;
+  gap: 6px;
+}
+.movement-requests__members {
+  display: grid;
+  gap: 1px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.movement-requests__members li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+  padding: 6px;
+  color: #f0dbb6;
+  background: #17110d;
+  border: 1px solid #3f3024;
+}
+.movement-requests__members li > span:not(.presence-dot) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.movement-requests__members small {
+  color: #a89577;
+  font-size: 9px;
 }
 article {
   display: grid;

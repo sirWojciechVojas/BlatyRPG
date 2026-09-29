@@ -4,6 +4,7 @@ namespace App\Database\Seeds;
 
 use App\Database\Seeds\Base\WfrpBaseSeeder;
 use App\Database\Seeds\Data\WfrpData;
+use App\Services\Profession\ProfessionPathResolver;
 
 class ProfessionsLegacySeeder extends WfrpBaseSeeder
 {
@@ -81,14 +82,16 @@ class ProfessionsLegacySeeder extends WfrpBaseSeeder
         $rows = WfrpData::getProfessions();
         $now = date('Y-m-d H:i:s');
 
-        $nameMap = [];
+        $catalogById = [];
         foreach ($rows as $row) {
             $id = (int)($row[0] ?? 0);
             $name = $row[1] ?? '';
             if ($id && $name) {
-                $nameMap[$this->normalizeName($name)] = $id;
+                $catalogById[$id] = $name;
             }
         }
+        $pathResolver = new ProfessionPathResolver();
+        $nameIndex = $pathResolver->nameIndex($catalogById);
 
         $primaryAttributes = [
             'weapon_skill' => 4,
@@ -191,12 +194,24 @@ class ProfessionsLegacySeeder extends WfrpBaseSeeder
 
             $entryRaw = trim((string)($row[23] ?? ''));
             if ($entryRaw !== '') {
-                $paths = array_merge($paths, $this->buildPaths($id, $entryRaw, $nameMap, 'entry'));
+                $paths = array_merge($paths, $this->buildPaths(
+                    $id,
+                    $entryRaw,
+                    $nameIndex,
+                    'entry',
+                    $pathResolver
+                ));
             }
 
             $exitRaw = trim((string)($row[24] ?? ''));
             if ($exitRaw !== '') {
-                $paths = array_merge($paths, $this->buildPaths($id, $exitRaw, $nameMap, 'exit'));
+                $paths = array_merge($paths, $this->buildPaths(
+                    $id,
+                    $exitRaw,
+                    $nameIndex,
+                    'exit',
+                    $pathResolver
+                ));
             }
         }
 
@@ -223,36 +238,20 @@ class ProfessionsLegacySeeder extends WfrpBaseSeeder
         return $value ? 1 : 0;
     }
 
-    private function normalizeName(string $name): string
+    private function buildPaths(
+        int $professionId,
+        string $raw,
+        array $nameIndex,
+        string $relationType,
+        ProfessionPathResolver $resolver
+    ): array
     {
-        $name = trim($name);
-        if (function_exists('mb_strtolower')) {
-            return mb_strtolower($name);
-        }
-
-        return strtolower($name);
-    }
-
-    private function buildPaths(int $professionId, string $raw, array $nameMap, string $relationType): array
-    {
-        $normalized = str_replace(';', ',', $raw);
-        $parts = array_filter(array_map('trim', explode(',', $normalized)));
-        if (empty($parts)) {
-            return [];
-        }
-
         $paths = [];
-        foreach ($parts as $name) {
-            if ($name === '') {
+        foreach ($resolver->resolveList($raw, $nameIndex) as $item) {
+            $relatedId = (int) ($item['professionId'] ?? 0);
+            if ($relatedId < 1) {
                 continue;
             }
-
-            $key = $this->normalizeName($name);
-            $relatedId = $nameMap[$key] ?? null;
-            if (!$relatedId) {
-                continue;
-            }
-
             $paths[] = [
                 'profession_id' => $professionId,
                 'related_profession_id' => $relatedId,

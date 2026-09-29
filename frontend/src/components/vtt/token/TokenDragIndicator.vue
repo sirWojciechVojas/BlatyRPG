@@ -54,7 +54,12 @@
       </g>
     </svg>
     <div class="token-drag-indicator__ghost" :style="ghostStyle">
-      <img v-if="indicator.imageUrl" :src="indicator.imageUrl" alt="" />
+      <AuthenticatedImage
+        v-if="indicator.imageUrl"
+        :src="indicator.imageUrl"
+        alt=""
+        draggable="false"
+      />
       <span v-else>{{ indicator.initials }}</span>
     </div>
     <output :style="labelStyle">
@@ -72,10 +77,12 @@
 
 <script>
 import { getCurrentInstance } from "vue";
+import AuthenticatedImage from "@/components/ui/AuthenticatedImage.vue";
 import { tokenGhostStyle } from "./tokenDragIndicator";
 
 export default {
   name: "TokenDragIndicator",
+  components: { AuthenticatedImage },
   props: {
     scene: { type: Object, required: true },
     indicator: { type: Object, default: null },

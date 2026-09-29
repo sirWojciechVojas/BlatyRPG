@@ -108,6 +108,23 @@ describe("realtime chat store", () => {
     expect(ctx.state.chat.sending).toBe(false);
   });
 
+  it("queues a message before chat capabilities finish synchronizing", () => {
+    const ctx = context();
+    const session = {
+      sendChat: vi.fn(() => false),
+      syncChat: vi.fn(() => true),
+    };
+    const actions = createRealtimeChatActions(() => session);
+
+    const queued = actions.sendChatMessage(ctx, "Wynik czaru");
+
+    expect(queued).toMatch(/^[0-9a-f-]{36}$/);
+    expect(ctx.state.chat.pending).toMatchObject({
+      body: "Wynik czaru",
+      nonce: queued,
+    });
+  });
+
   it("rejects malformed authoritative messages", () => {
     expect(
       normalizeRealtimeChatMessage({

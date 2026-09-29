@@ -6,6 +6,7 @@ use App\Models\CampaignMemberModel;
 use App\Models\ResourcePermissionModel;
 use App\Services\Campaign\CampaignException;
 use App\Services\Campaign\CampaignGuardService;
+use App\Services\Realtime\CharacterAccessRealtimePublisher;
 use CodeIgniter\Database\BaseConnection;
 
 /** Stores and evaluates explicit access to campaign-scoped VTT resources. */
@@ -20,6 +21,7 @@ class ResourcePermissionService
     private $writer;
     private $ownerAssigner;
     private $revoker;
+    private $characterAccessPublisher;
 
     public function __construct(
         ?BaseConnection $db = null,
@@ -30,7 +32,8 @@ class ResourcePermissionService
         ?ResourceAccessPolicy $access = null,
         ?ResourcePermissionWriter $writer = null,
         ?CharacterOwnerAssigner $ownerAssigner = null,
-        ?ResourcePermissionRevoker $revoker = null
+        ?ResourcePermissionRevoker $revoker = null,
+        ?CharacterAccessRealtimePublisher $characterAccessPublisher = null
     ) {
         $this->db = $db ?: \Config\Database::connect();
         $this->permissions = $permissions ?: new ResourcePermissionModel($this->db);
@@ -45,6 +48,8 @@ class ResourcePermissionService
         $this->revoker = $revoker ?: new ResourcePermissionRevoker(
             $this->db, $this->permissions
         );
+        $this->characterAccessPublisher = $characterAccessPublisher
+            ?: new CharacterAccessRealtimePublisher();
     }
 
     public function levelFor(
@@ -136,7 +141,7 @@ class ResourcePermissionService
         if ($this->isPrimaryCharacterOwner($type, $resource, $userId)) {
             $normalized = AccessLevel::OWNER;
         }
-        return $this->writer->store(
+        $result = $this->writer->store(
             $campaignId,
             $type,
             $resourceId,
@@ -144,6 +149,13 @@ class ResourcePermissionService
             $normalized,
             (int) $context['auth']['user_id']
         );
+        $this->publishCharacterAccessChange(
+            $type,
+            $campaignId,
+            $resourceId,
+            (int) $context['auth']['user_id']
+        );
+        return $result;
     }
 
     public function revoke(
@@ -163,12 +175,19 @@ class ResourcePermissionService
                 409
             );
         }
-        return $this->revoker->revoke(
+        $result = $this->revoker->revoke(
             $campaignId,
             $type,
             $resourceId,
             $userId
         );
+        $this->publishCharacterAccessChange(
+            $type,
+            $campaignId,
+            $resourceId,
+            (int) $auth['user_id']
+        );
+        return $result;
     }
 
     public function setCharacterVisibility(
@@ -209,6 +228,12 @@ class ResourcePermissionService
                 500
             );
         }
+        $this->publishCharacterAccessChange(
+            ResourceType::CHARACTER,
+            $campaignId,
+            $characterId,
+            (int) $auth['user_id']
+        );
         return ['characterId' => $characterId, 'visibility' => $visibility];
     }
 
@@ -223,13 +248,20 @@ class ResourcePermissionService
         $context = $this->managementContext($auth, $campaignId, $type);
         $this->scope->resolve($type, $characterId, $campaignId);
         $this->assertActiveMember($campaignId, $userId);
-        return $this->ownerAssigner->assign(
+        $result = $this->ownerAssigner->assign(
             $campaignId,
             $characterId,
             $userId,
             $primary,
             (int) $context['auth']['user_id']
         );
+        $this->publishCharacterAccessChange(
+            $type,
+            $campaignId,
+            $characterId,
+            (int) $context['auth']['user_id']
+        );
+        return $result;
     }
 
     private function managementContext(
@@ -283,5 +315,21 @@ class ResourcePermissionService
             );
         }
         return $type;
+    }
+
+    private function publishCharacterAccessChange(
+        string $resourceType,
+        int $campaignId,
+        int $characterId,
+        int $actorUserId
+    ): void {
+        if ($resourceType !== ResourceType::CHARACTER) {
+            return;
+        }
+        $this->characterAccessPublisher->publish(
+            $campaignId,
+            $characterId,
+            $actorUserId
+        );
     }
 }

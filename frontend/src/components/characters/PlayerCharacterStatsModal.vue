@@ -1,81 +1,51 @@
 <template>
-  <div
-    id="characterModal"
-    class="modal fade player-character-stats-modal"
-    tabindex="-1"
-    role="dialog"
-    :aria-labelledby="titleId"
-    aria-hidden="true"
+  <section
+    id="characterStats"
+    class="player-character-stats-content"
+    :aria-busy="loading ? 'true' : 'false'"
   >
     <div
-      class="modal-dialog modal-dialog-centered modal-dialog-scrollable"
-      role="document"
+      v-if="loading && !model"
+      class="player-character-stats-modal__state"
+      role="status"
     >
-      <div
-        id="characterStats"
-        class="modal-content player-character-stats-modal__content"
-      >
-        <header class="modal-header player-character-stats-modal__header">
-          <h2 :id="titleId" class="modal-title">
-            {{ character?.name || $t("vtt.table.characterStats.title") }}
-          </h2>
-          <button
-            type="button"
-            class="player-character-stats-modal__close"
-            data-bs-dismiss="modal"
-            :title="$t('vtt.table.characterStats.close')"
-            :aria-label="$t('vtt.table.characterStats.close')"
-          >
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </header>
-
-        <div class="modal-body player-character-stats-modal__body">
-          <div
-            v-if="loading && !model"
-            class="player-character-stats-modal__state"
-            role="status"
-          >
-            <span class="spinner-border" aria-hidden="true"></span>
-            <span>{{ $t("vtt.table.characterStats.loading") }}</span>
-          </div>
-
-          <div
-            v-else-if="loadError && !model"
-            class="player-character-stats-modal__state player-character-stats-modal__state--error"
-            role="alert"
-          >
-            <span>{{ loadError }}</span>
-            <button type="button" @click="loadCharacter">
-              {{ $t("vtt.table.characterStats.retry") }}
-            </button>
-          </div>
-
-          <div v-else-if="model" class="character-stats-layout cStatsBody">
-            <CharacterStatsEquipmentPanel
-              :model="model"
-              :avatar="avatar"
-              :inventory-items="inventoryItems"
-              :template-items="templateItems"
-              :can-edit-inventory="canEditInventory"
-              :moving="inventorySaving"
-              :inventory-error="inventoryError"
-              :active-weapon-set="activeWeaponSet"
-              :weapon-set-saving="weaponSetSaving"
-              :avatar-alt="
-                $t('vtt.table.characterStats.avatarAlt', { name: model.name })
-              "
-              @move-items="moveInventoryItems"
-              @consume-item="consumeInventoryItem"
-              @activate-weapon-set="activateWeaponSet"
-            />
-            <CharacterStatsTraitsPanel :model="model" />
-            <CharacterStatsDetailsPanel :model="model" />
-          </div>
-        </div>
-      </div>
+      <span class="spinner-border" aria-hidden="true"></span>
+      <span>{{ $t("vtt.table.characterStats.loading") }}</span>
     </div>
-  </div>
+
+    <div
+      v-else-if="loadError && !model"
+      class="player-character-stats-modal__state player-character-stats-modal__state--error"
+      role="alert"
+    >
+      <span>{{ loadError }}</span>
+      <button type="button" @click="loadCharacter">
+        {{ $t("vtt.table.characterStats.retry") }}
+      </button>
+    </div>
+
+    <div v-else-if="model" class="character-stats-layout cStatsBody">
+      <CharacterStatsEquipmentPanel
+        :model="model"
+        :avatar="avatar"
+        :inventory-items="inventoryItems"
+        :template-items="templateItems"
+        :can-edit-inventory="canEditInventory"
+        :moving="inventorySaving"
+        :inventory-error="inventoryError"
+        :active-weapon-set="activeWeaponSet"
+        :weapon-set-saving="weaponSetSaving"
+        :avatar-alt="
+          $t('vtt.table.characterStats.avatarAlt', { name: model.name })
+        "
+        @move-items="moveInventoryItems"
+        @consume-item="consumeInventoryItem"
+        @activate-weapon-set="activateWeaponSet"
+      />
+      <CharacterStatsTraitsPanel :model="model" />
+      <CharacterStatsDetailsPanel :model="model" />
+    </div>
+  </section>
 </template>
 
 <script>
@@ -90,7 +60,7 @@ import { shopApiClient } from "@/lib/trade/shop-api-client";
 import { shopOwnerCodeForCharacter } from "@/components/vtt/table/playerCharacterHudModel";
 
 export default {
-  name: "PlayerCharacterStatsModal",
+  name: "PlayerCharacterStatsContent",
   components: {
     CharacterStatsDetailsPanel,
     CharacterStatsEquipmentPanel,
@@ -115,9 +85,6 @@ export default {
     loadedCampaignId: null,
   }),
   computed: {
-    titleId() {
-      return `player-character-stats-title-${Number(this.characterId) || "none"}`;
-    },
     model() {
       return this.character
         ? createPlayerCharacterStatsModel(this.character)
@@ -147,6 +114,9 @@ export default {
     characterId() {
       this.loadCharacter();
     },
+  },
+  mounted() {
+    this.loadCharacter();
   },
   beforeUnmount() {
     this.requestSequence += 1;

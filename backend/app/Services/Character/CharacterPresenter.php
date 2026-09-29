@@ -21,7 +21,12 @@ final class CharacterPresenter
             'universeId' => !empty($row['universe_id']) ? (int) $row['universe_id'] : null,
             'name' => (string) ($row['name'] ?? ''),
             'data' => !$limited && is_array($row['data'] ?? null) ? $row['data'] : [],
-            'avatarUrl' => (string) ($row['avatar_url'] ?? $row['avatar'] ?? ''),
+            'avatarUrl' => (string) (
+                $row['assets']['avatar']['url']
+                ?? $row['avatar_url']
+                ?? $row['avatar']
+                ?? ''
+            ),
             'assets' => $limited ? [] : (array) ($row['assets'] ?? []),
             'assetSetId' => $limited || empty($row['asset_set_id'])
                 ? null : (int) $row['asset_set_id'],

@@ -3,6 +3,7 @@ import {
   fogBackingMetrics,
   fogViewportRect,
   normalizeFogFeather,
+  normalizeFogMask,
 } from "@/lib/vtt/fogRenderMetrics";
 
 describe("Fog of War render metrics", () => {
@@ -41,5 +42,12 @@ describe("Fog of War render metrics", () => {
     expect(normalizeFogFeather(12)).toBe(20);
     expect(normalizeFogFeather(32)).toBe(32);
     expect(normalizeFogFeather(120)).toBe(50);
+  });
+
+  it("rejects missing and stale masks during an asynchronous scene change", () => {
+    const current = new Uint8Array(4);
+    expect(normalizeFogMask(current, 4)).toBe(current);
+    expect(normalizeFogMask(null, 4)).toBeNull();
+    expect(normalizeFogMask(new Uint8Array(3), 4)).toBeNull();
   });
 });

@@ -9,6 +9,7 @@ final class TokenVisionValidator
         if (!is_array($value)) return ['valid' => false, 'error' => 'Vision must be an object.'];
         $allowed = [
             'enabled', 'range', 'angle', 'direction', 'minimumRadius',
+            'mode',
             'darkvision', 'darkvisionRange', 'limitByLight', 'constrainedByWalls',
             'showShape', 'shapeBorderColor', 'shapeBorderOpacity',
             'shapeFillColor', 'shapeFillOpacity',
@@ -17,6 +18,16 @@ final class TokenVisionValidator
             return ['valid' => false, 'error' => 'Vision contains unsupported fields.'];
         }
         $data = [];
+        if (array_key_exists('mode', $value)) {
+            $mode = strtolower(trim((string) $value['mode']));
+            if (!in_array($mode, [
+                'basic', 'darkvision', 'light_amplification',
+                'monochromatic', 'tremorsense',
+            ], true)) {
+                return ['valid' => false, 'error' => 'Vision mode is unsupported.'];
+            }
+            $data['mode'] = $mode;
+        }
         foreach (['enabled', 'darkvision', 'limitByLight', 'constrainedByWalls', 'showShape'] as $field) {
             if (!array_key_exists($field, $value)) continue;
             $boolean = filter_var($value[$field], FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
@@ -63,6 +74,7 @@ final class TokenVisionValidator
         }
         $data += [
             'enabled' => false, 'range' => 600.0, 'angle' => 360.0,
+            'mode' => !empty($data['darkvision']) ? 'darkvision' : 'basic',
             'minimumRadius' => 0.0, 'darkvision' => false,
             'darkvisionRange' => 0.0, 'limitByLight' => true,
             'constrainedByWalls' => true,

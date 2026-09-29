@@ -1,4 +1,5 @@
 import { buildGridPattern } from "@/lib/vtt/grid";
+import { selectedDoorTokens } from "@/lib/vtt/doorInteraction";
 
 export const sceneCanvasComputed = {
   pattern() {
@@ -34,15 +35,45 @@ export const sceneCanvasComputed = {
     return this.activeTool === "tokens" && this.tokenSelectionMode !== "point";
   },
   displayTokens() {
+    const selectedIds = new Set(
+      (this.selectedTokenIds.length
+        ? this.selectedTokenIds
+        : this.selectedTokenId === null
+          ? []
+          : [this.selectedTokenId]
+      ).map(String),
+    );
+    const staysVisible = (token) =>
+      selectedIds.has(String(token.id)) ||
+      (!this.canManageScene && token.capabilities?.canControl);
     if (!this.fogVisibility.constrained) {
       if (this.scene?.fogEnabled === true && !this.canManageScene) {
-        return this.tokens.filter((token) => token.capabilities?.canControl);
+        return this.tokens.filter(staysVisible);
       }
       return this.tokens;
     }
-    const visible = new Set(this.fogVisibility.visibleTokenIds);
+    const visible = new Set(this.fogVisibility.visibleTokenIds.map(String));
     return this.tokens.filter(
-      (token) => visible.has(token.id) || token.capabilities?.canControl,
+      (token) => visible.has(String(token.id)) || staysVisible(token),
+    );
+  },
+  tokenUiAboveFog() {
+    const selectedCount = this.selectedTokenIds.length
+      ? this.selectedTokenIds.length
+      : this.selectedTokenId === null
+        ? 0
+        : 1;
+    return (
+      this.fogVisibility.constrained &&
+      selectedCount === 1 &&
+      this.activeTool !== "fog"
+    );
+  },
+  doorInteractionTokens() {
+    return selectedDoorTokens(
+      this.tokens,
+      this.selectedTokenId,
+      this.selectedTokenIds,
     );
   },
   fogTokens() {
@@ -52,8 +83,29 @@ export const sceneCanvasComputed = {
       ...(this.tokenVisionAnglePreviews[token.id] || {}),
     }));
   },
+  selectedVisionToken() {
+    if (!this.canManageScene || this.fogPreview?.mode !== "gm") return null;
+    const selectedIds = this.selectedTokenIds.length
+      ? this.selectedTokenIds
+      : this.selectedTokenId === null
+        ? []
+        : [this.selectedTokenId];
+    if (selectedIds.length !== 1) return null;
+    const selectedId = String(selectedIds[0]);
+    return (
+      this.fogTokens.find(
+        (token) =>
+          String(token.id) === selectedId && token.vision?.enabled === true,
+      ) || null
+    );
+  },
+  effectiveFogPreview() {
+    return this.selectedVisionToken
+      ? { mode: "token", id: this.selectedVisionToken.id }
+      : this.fogPreview;
+  },
   visionShapeTokens() {
-    if (this.canManageScene && this.fogPreview?.mode === "gm")
+    if (this.canManageScene && this.effectiveFogPreview?.mode === "gm")
       return this.fogTokens;
     const ids = new Set(
       this.fogVisibility.visionTokenIds?.length

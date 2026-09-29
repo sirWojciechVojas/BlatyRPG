@@ -1,10 +1,6 @@
 export const createCoreRootPart1 = (runtime) => {
   return {
     name: "ShopTradeModal",
-    components: {
-      TradeModalShell: runtime.TradeModalShell,
-      TradeModalContent: runtime.TradeModalContent,
-    },
     data() {
       return {
         tempFieldNames: [

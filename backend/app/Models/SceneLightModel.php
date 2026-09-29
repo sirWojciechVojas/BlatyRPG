@@ -18,6 +18,9 @@ class SceneLightModel extends Model
         'constrained_by_walls', 'animation', 'animation_speed',
         'animation_intensity', 'elevation', 'enabled', 'hidden', 'revision',
         'name', 'lumens', 'direction', 'angle', 'area_width', 'area_height',
+        'animation_reverse', 'brightness', 'saturation', 'contrast',
+        'edge_softness', 'transition_ratio', 'asset_url',
+        'source_map_id', 'source_map_revision', 'source_map_object_id',
     ];
     protected $useTimestamps = true;
     protected $afterFind = ['normalizeRows'];
@@ -27,19 +30,20 @@ class SceneLightModel extends Model
         if (!isset($event['data'])) return $event;
         $normalize = static function (&$row): void {
             if (!is_array($row)) return;
-            foreach (['id', 'campaign_id', 'scene_id', 'revision'] as $field) {
+            foreach (['id', 'campaign_id', 'scene_id', 'revision', 'source_map_id', 'source_map_revision'] as $field) {
                 if (isset($row[$field])) $row[$field] = (int) $row[$field];
             }
             foreach (['x', 'y', 'bright_radius', 'dim_radius', 'intensity', 'opacity',
                 'softness', 'clarity', 'darkness_min', 'darkness_max',
                 'animation_speed',
                 'animation_intensity', 'elevation', 'direction', 'angle',
-                'area_width', 'area_height'] as $field) {
+                'area_width', 'area_height', 'brightness', 'saturation',
+                'contrast', 'edge_softness', 'transition_ratio'] as $field) {
                 if (isset($row[$field])) $row[$field] = (float) $row[$field];
             }
             if (isset($row['lumens'])) $row['lumens'] = (int) $row['lumens'];
             foreach (['gradual_illumination', 'provides_vision', 'constrained_by_walls',
-                'enabled', 'hidden'] as $field) {
+                'animation_reverse', 'enabled', 'hidden'] as $field) {
                 if (isset($row[$field])) $row[$field] = (bool) $row[$field];
             }
         };

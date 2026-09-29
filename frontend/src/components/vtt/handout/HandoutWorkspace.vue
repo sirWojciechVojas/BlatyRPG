@@ -1177,7 +1177,12 @@ export default {
     async uploadImage({ file, resolve, reject }) {
       try {
         const result = await handoutApiClient.uploadAsset(file);
-        resolve(result.asset);
+        const asset = result.asset;
+        resolve(
+          String(asset?.mimeType || "").startsWith("image/")
+            ? { ...asset, previewUrl: URL.createObjectURL(file) }
+            : asset,
+        );
       } catch (error) {
         reject(error);
       }

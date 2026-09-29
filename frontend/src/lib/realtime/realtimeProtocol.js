@@ -10,6 +10,7 @@ const TOKEN_CHANGE_FIELDS = Object.freeze([
   "facing",
   "rotationHandleEnabled",
   "facingHandleEnabled",
+  "rotationFollowsFacing",
   "showInfoUnselected",
   "resourceBarPosition",
   "movementRange",
@@ -109,6 +110,14 @@ export const tokenChangeMessage = (payload) => ({
   ),
 });
 
+export const tokenSyncCommandMessage = (payload) => ({
+  v: REALTIME_VERSION,
+  type: "token.sync.command",
+  requestId: String(payload.requestId),
+  action: String(payload.action),
+  data: { ...(payload.data || {}) },
+});
+
 export const tokenMovementRequestMessage = (payload) => ({
   ...tokenMoveMessage(payload),
   type: "token.movement.request",
@@ -148,6 +157,16 @@ export const sceneElementChangeMessage = (resource, payload) => ({
 export const wallChangeMessage = (payload) =>
   sceneElementChangeMessage("wall", payload);
 
+export const wallAudioSyncMessage = (payload) => ({
+  v: REALTIME_VERSION,
+  type: "wall.audio.sync",
+  requestId: String(payload.requestId),
+  sceneId: Number(payload.sceneId),
+  ...(Number(payload.selectedTokenId) > 0
+    ? { selectedTokenId: Number(payload.selectedTokenId) }
+    : {}),
+});
+
 export const fogSyncMessage = (payload) => ({
   v: REALTIME_VERSION,
   type: "fog.sync",
@@ -155,6 +174,7 @@ export const fogSyncMessage = (payload) => ({
   sceneId: Number(payload.sceneId),
   userId: Number(payload.userId),
   revision: Number(payload.revision),
+  ...(payload.shared === true ? { shared: true } : {}),
 });
 
 export const chatSendMessage = ({ requestId, clientNonce, body }) => ({
@@ -188,6 +208,54 @@ export const handoutNotifyMessage = ({ requestId, batchId }) => ({
   type: "handout.notify",
   requestId: String(requestId),
   batchId: String(batchId),
+});
+
+export const mapPublishedMessage = (payload) => ({
+  v: REALTIME_VERSION,
+  type: "map.publish.notify",
+  requestId: String(payload.requestId),
+  mapId: Number(payload.mapId),
+  mapRevision: Number(payload.mapRevision),
+  sceneId: Number(payload.sceneId),
+  sceneRevision: Number(payload.sceneRevision),
+});
+
+export const jukeboxCommandMessage = (payload) => ({
+  v: REALTIME_VERSION,
+  type: String(payload.type),
+  requestId: String(payload.requestId),
+  ...(payload.channelId ? { channelId: String(payload.channelId) } : {}),
+  ...Object.fromEntries(
+    [
+      "executeAt",
+      "trackId",
+      "position",
+      "duration",
+      "loop",
+      "volume",
+      "muted",
+      "sourceType",
+      "playlistId",
+      "sourceLabel",
+      "deviceLabel",
+      "deviceSlot",
+      "fadeMs",
+      "clientSentAt",
+    ]
+      .filter((key) => payload[key] !== undefined && payload[key] !== null)
+      .map((key) => [key, payload[key]]),
+  ),
+});
+
+export const soundEffectCommandMessage = (payload) => ({
+  v: REALTIME_VERSION,
+  type: String(payload.type),
+  requestId: String(payload.requestId),
+  ...Object.fromEntries(
+    ["playbackId", "slotId", "executeAt", "fadeOutMs", "revision"]
+      .filter((key) => payload[key] !== undefined && payload[key] !== null)
+      .map((key) => [key, payload[key]]),
+  ),
 });
 
 export const parseServerEvent = (raw) => {

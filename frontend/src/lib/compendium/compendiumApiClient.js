@@ -14,7 +14,12 @@ const segment = (value, name) => {
 const queryPath = (path, query = {}) => {
   const params = new URLSearchParams();
   Object.entries(query).forEach(([key, value]) => {
-    if (value !== null && value !== undefined && value !== "") {
+    if (
+      value !== null &&
+      value !== undefined &&
+      value !== "" &&
+      value !== false
+    ) {
       params.set(key, String(value));
     }
   });
@@ -25,11 +30,71 @@ const queryPath = (path, query = {}) => {
 const apiUrl = (path, baseUrl) =>
   `${String(baseUrl || process.env.VUE_APP_API_BASE || "/api").replace(/\/+$/u, "")}/${String(path).replace(/^\/+/u, "")}`;
 
+export const COMPENDIUM_PAGE_SIZE = 25;
+
 export const createCompendiumApiClient = (options = {}) => {
   const client = options.client || jsonApiClient;
+  const readCache = new Map();
+  const configuredReadCacheTtlMs = Number(options.readCacheTtlMs ?? 60000);
+  const readCacheTtlMs = Number.isFinite(configuredReadCacheTtlMs)
+    ? Math.max(0, configuredReadCacheTtlMs)
+    : 60000;
+  const maxReadCacheEntries = 120;
+  let cacheGeneration = 0;
+
+  const clearCache = () => {
+    cacheGeneration += 1;
+    readCache.clear();
+  };
+
+  const cacheRead = (key, value) => {
+    readCache.delete(key);
+    readCache.set(key, value);
+    while (readCache.size > maxReadCacheEntries) {
+      readCache.delete(readCache.keys().next().value);
+    }
+  };
+
   const request = (path, requestOptions = {}) => {
-    const { query, ...rest } = requestOptions;
-    return client.request(queryPath(path, query), rest);
+    const { query, invalidateCache = true, ...rest } = requestOptions;
+    const target = queryPath(path, query);
+    const method = String(rest.method || "GET").toUpperCase();
+    if (method !== "GET" || readCacheTtlMs === 0) {
+      if (method === "GET") return client.request(target, rest);
+      if (invalidateCache) clearCache();
+      const write = Promise.resolve(client.request(target, rest));
+      return invalidateCache ? write.finally(clearCache) : write;
+    }
+
+    const token = String((options.tokenResolver || resolveAccessToken)() || "");
+    const key = `${token}\n${target}`;
+    const cached = readCache.get(key);
+    if (cached?.promise) return cached.promise;
+    if (cached && cached.expiresAt > Date.now()) {
+      return Promise.resolve(cached.value);
+    }
+    if (cached) readCache.delete(key);
+
+    const generation = cacheGeneration;
+    const promise = Promise.resolve()
+      .then(() => client.request(target, rest))
+      .then(
+        (value) => {
+          if (generation === cacheGeneration) {
+            cacheRead(key, {
+              value,
+              expiresAt: Date.now() + readCacheTtlMs,
+            });
+          }
+          return value;
+        },
+        (error) => {
+          if (readCache.get(key)?.promise === promise) readCache.delete(key);
+          throw error;
+        },
+      );
+    cacheRead(key, { promise, expiresAt: 0 });
+    return promise;
   };
   const campaignBase = (campaignId) =>
     `/campaigns/${segment(campaignId, "campaign_id")}/compendium`;
@@ -72,6 +137,19 @@ export const createCompendiumApiClient = (options = {}) => {
   };
 
   return {
+    clearCache,
+    preloadCampaign(campaignId) {
+      return Promise.allSettled([
+        request(campaignBase(campaignId)),
+        request(`${campaignBase(campaignId)}/entries`, {
+          query: {
+            status: "active",
+            page: 1,
+            limit: COMPENDIUM_PAGE_SIZE,
+          },
+        }),
+      ]);
+    },
     campaignOverview(campaignId) {
       return request(campaignBase(campaignId));
     },
@@ -84,6 +162,42 @@ export const createCompendiumApiClient = (options = {}) => {
     campaignEntry(campaignId, entryId) {
       return request(
         `${campaignBase(campaignId)}/entries/${segment(entryId, "entry_id")}`,
+      );
+    },
+    recordRead(campaignId, entryId) {
+      return request(
+        `${campaignBase(campaignId)}/entries/${segment(entryId, "entry_id")}/read`,
+        { method: "POST", body: {}, invalidateCache: false },
+      );
+    },
+    favorite(campaignId, entryId, favorite) {
+      return request(
+        `${campaignBase(campaignId)}/entries/${segment(entryId, "entry_id")}/favorite`,
+        { method: "PUT", body: { favorite: Boolean(favorite) } },
+      );
+    },
+    reveal(campaignId, entryId, sectionKeys = null, userId = null) {
+      return request(
+        `${campaignBase(campaignId)}/entries/${segment(entryId, "entry_id")}/reveal`,
+        { method: "POST", body: { sectionKeys, userId } },
+      );
+    },
+    revokeReveal(campaignId, entryId) {
+      return request(
+        `${campaignBase(campaignId)}/entries/${segment(entryId, "entry_id")}/reveal`,
+        { method: "DELETE" },
+      );
+    },
+    pin(campaignId, entryId) {
+      return request(
+        `${campaignBase(campaignId)}/entries/${segment(entryId, "entry_id")}/pin`,
+        { method: "POST", body: {} },
+      );
+    },
+    addNote(campaignId, entryId, body, visibility = "gm") {
+      return request(
+        `${campaignBase(campaignId)}/entries/${segment(entryId, "entry_id")}/notes`,
+        { method: "POST", body: { body, visibility } },
       );
     },
     materialize(campaignId, entryId, payload) {
@@ -214,6 +328,7 @@ export const createCompendiumApiClient = (options = {}) => {
     async uploadAsset(universeId, file) {
       if (!(file instanceof Blob))
         throw new TypeError("compendium_file_required");
+      clearCache();
       const formData = new FormData();
       formData.append("file", file, file.name || "compendium-asset");
       const response = await authorizedFetch(
@@ -223,7 +338,23 @@ export const createCompendiumApiClient = (options = {}) => {
           body: formData,
         },
       );
-      return response.json();
+      const result = await response.json();
+      clearCache();
+      return result;
+    },
+    async uploadCorpusAsset(universeId, assetId, file) {
+      if (!(file instanceof Blob))
+        throw new TypeError("compendium_file_required");
+      clearCache();
+      const formData = new FormData();
+      formData.append("file", file, file.name || "compendium-source-asset");
+      const response = await authorizedFetch(
+        `${worldBase(universeId)}/corpus-assets/${segment(assetId, "asset_id")}/file`,
+        { method: "POST", body: formData },
+      );
+      const result = await response.json();
+      clearCache();
+      return result;
     },
     listAssets(universeId) {
       return request(`${worldBase(universeId)}/assets`);
@@ -240,6 +371,17 @@ export const createCompendiumApiClient = (options = {}) => {
         {
           campaignId,
         },
+      );
+      const response = await authorizedFetch(path);
+      return response.blob();
+    },
+    async fetchCorpusAssetBlob(
+      assetId,
+      { campaignId = null, characterId = null, universeId = null } = {},
+    ) {
+      const path = queryPath(
+        `/compendium-corpus-assets/${segment(assetId, "asset_id")}/file`,
+        { campaignId, characterId, universeId },
       );
       const response = await authorizedFetch(path);
       return response.blob();

@@ -4,12 +4,26 @@
 .scene-light-layer__visual { overflow: hidden; pointer-events: none; }
 .scene-lighting__ambient { transition: fill-opacity 600ms ease; }
 .scene-lighting__fog { transition: fill-opacity 300ms ease; }
-.scene-lighting--flicker { animation: scene-light-flicker var(--light-animation-duration) steps(5, end) infinite; }
-.scene-lighting--pulse { animation: scene-light-pulse var(--light-animation-duration) ease-in-out infinite; }
-.scene-lighting--vortex { animation: scene-light-vortex var(--light-animation-duration) linear infinite; }
+.scene-lighting--torch { animation: scene-light-torch var(--light-animation-duration) ease-in-out infinite var(--light-animation-direction); }
+.scene-lighting--flicker { animation: scene-light-flicker var(--light-animation-duration) steps(5, end) infinite var(--light-animation-direction); }
+.scene-lighting--pulse { animation: scene-light-pulse var(--light-animation-duration) ease-in-out infinite var(--light-animation-direction); }
+.scene-lighting--wave { animation: scene-light-wave var(--light-animation-duration) ease-in-out infinite var(--light-animation-direction); }
+.scene-lighting--vortex { animation: scene-light-vortex var(--light-animation-duration) linear infinite var(--light-animation-direction); }
+.scene-lighting--fog { animation: scene-light-fog calc(var(--light-animation-duration) * 2) ease-in-out infinite var(--light-animation-direction); }
+.scene-lighting--magical { animation: scene-light-magical var(--light-animation-duration) ease-in-out infinite var(--light-animation-direction); }
+@keyframes scene-light-torch { 30% { opacity: .82; transform: scale(.985); } 65% { opacity: var(--light-animation-opacity); transform: scale(1.015); } }
 @keyframes scene-light-flicker { 0%, 100% { opacity: 1; } 35% { opacity: var(--light-animation-opacity); } 70% { opacity: .9; } }
 @keyframes scene-light-pulse { 50% { opacity: var(--light-animation-opacity); transform: scale(var(--light-animation-scale)); } }
+@keyframes scene-light-wave { 50% { opacity: .82; transform: scaleX(.96) scaleY(1.04); } }
 @keyframes scene-light-vortex { 50% { opacity: .9; transform: rotate(180deg) scale(var(--light-animation-scale)); } to { transform: rotate(360deg); } }
+@keyframes scene-light-fog { 50% { opacity: var(--light-animation-opacity); transform: translateX(1.5%) scale(1.02); } }
+@keyframes scene-light-magical { 25% { opacity: .72; transform: rotate(2deg) scale(1.025); } 75% { filter: hue-rotate(35deg); transform: rotate(-2deg) scale(.985); } }
+.scene-vision-effect { pointer-events: none; }
+.scene-vision-effect--darkvision,
+.scene-vision-effect--monochromatic { fill: #8d9299; opacity: .18; mix-blend-mode: saturation; }
+.scene-vision-effect--light_amplification { fill: #45ff82; opacity: .13; mix-blend-mode: color; }
+.scene-vision-effect--tremorsense { fill: none; stroke: #d6b87a; stroke-width: 5; opacity: .34; vector-effect: non-scaling-stroke; animation: scene-tremorsense 1.8s ease-out infinite; }
+@keyframes scene-tremorsense { 50% { stroke-width: 10; opacity: .12; } }
 .scene-light-layer__editor { z-index: 1; overflow: visible; pointer-events: auto; cursor: crosshair; }
 .scene-light__dim { fill: rgb(255 210 122 / 8%); stroke: #e7b64e; stroke-width: 2; stroke-dasharray: 8 5; vector-effect: non-scaling-stroke; }
 .scene-light__bright { fill: none; stroke: #fff0a6; stroke-width: 1; stroke-dasharray: 4 3; vector-effect: non-scaling-stroke; }
@@ -17,6 +31,7 @@
 .scene-light__direction { stroke: #fff0a6; stroke-width: 2; stroke-dasharray: 5 3; vector-effect: non-scaling-stroke; pointer-events: none; }
 .scene-light__hit { fill: transparent; stroke: none; pointer-events: all; cursor: move; }
 .scene-light--selected .scene-light__source { stroke: #fff; filter: drop-shadow(0 0 4px #ffdb7b); }
+.scene-light-selection-box { fill: rgb(211 154 76 / 12%); stroke: #d39a4c; stroke-width: 1.5; stroke-dasharray: 7 4; vector-effect: non-scaling-stroke; pointer-events: none; }
 .scene-light--disabled { opacity: 0.38; }
 .light-hud { position: absolute; z-index: 2; display: flex; align-items: center; gap: 2px; padding: 3px; background: rgb(18 13 10 / 96%); border: 1px solid #80613d; border-radius: 4px; box-shadow: 0 4px 14px rgb(0 0 0 / 65%); transform: translate(-50%, calc(-100% - 14px)); pointer-events: auto; }
 .light-hud button,
@@ -27,6 +42,7 @@
 .light-hud__danger { color: #ff9e9e !important; }
 .scene-light--draft { opacity: 0.8; }
 .light-properties { position: absolute; z-index: 4; top: 12px; right: 12px; width: min(410px, calc(100% - 24px)); padding: 8px; color: #d8cbb9; background: rgb(18 13 10 / 97%); border: 1px solid #80613d; border-radius: 5px; box-shadow: 0 8px 30px rgb(0 0 0 / 70%); pointer-events: auto; }
+.light-properties--embedded { position: static; width: 100%; min-height: 100%; padding: 10px; background: transparent; border: 0; box-shadow: none; }
 .light-properties header,
 .light-properties footer { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
 .light-properties header { margin-bottom: 7px; }
@@ -50,17 +66,8 @@
 .light-properties__status--saving { color: #d8c38f; }
 .light-properties__status--saved { color: #9ed7a4; }
 .light-properties__status--error { color: #ff9e9e; }
-.light-tool-toolbar { position: absolute; z-index: 3; top: 8px; left: 50%; display: flex; align-items: center; gap: 3px; max-width: calc(100% - 24px); padding: 4px; overflow-x: auto; color: #d8cbb9; background: rgb(18 13 10 / 96%); border: 1px solid #80613d; border-radius: 5px; box-shadow: 0 4px 16px rgb(0 0 0 / 60%); transform: translateX(-50%); pointer-events: auto; }
-.light-tool-toolbar button,
-.light-tool-toolbar select,
-.light-tool-toolbar input { flex: 0 0 auto; min-height: 27px; color: #d8cbb9; background: #2b2119; border: 1px solid #604b38; border-radius: 3px; }
-.light-tool-toolbar button { padding: 3px 7px; }
-.light-tool-toolbar input[type="color"] { width: 30px; padding: 2px; }
-.light-tool-toolbar__lumens { display: flex; align-items: center; gap: 3px; font-size: 10px; }
-.light-tool-toolbar__lumens input { width: 76px; }
-.light-tool-toolbar__global { display: flex; align-items: center; gap: 2px; font-size: 10px; }
-.light-tool-toolbar__global input { width: 48px; }
-.light-tool-toolbar button.active { color: #ffe29b; border-color: #d39a4c; }
+.light-tool-toolbar { position: fixed; z-index: 350; top: 6.45rem; left: 3.25rem; display: grid; gap: 0.18rem; width: 2.65rem; max-height: calc(100vh - 7rem); padding: 0.28rem; overflow-x: hidden; overflow-y: auto; color: #d8cbb9; background: rgb(18 13 10 / 96%); border: 1px solid #80613d; border-radius: 5px; box-shadow: 0 4px 16px rgb(0 0 0 / 60%); pointer-events: auto; }
+.light-tool-toolbar > * { justify-self: center; }
 .light-tool-toolbar__danger,
 .light-management__danger { color: #ff9e9e !important; }
 .light-management { position: absolute; z-index: 3; top: 48px; right: 8px; width: min(680px, calc(100% - 16px)); max-height: min(52%, 430px); padding: 6px; overflow: auto; color: #d8cbb9; background: rgb(18 13 10 / 96%); border: 1px solid #80613d; border-radius: 5px; pointer-events: auto; }

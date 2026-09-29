@@ -42,4 +42,23 @@ final class TokenResourceBindingTest extends CIUnitTestCase
         $this->assertTrue($result['changed']);
         $this->assertSame(4.0, $result['resources']['bubbles'][0]['value']);
     }
+
+    public function testAssignmentKeepsExistingActorValuesAndSeedsMissingOnes(): void
+    {
+        $resources = TokenResourceValidator::stored([]);
+        $resources['bars'][0]['value'] = 7;
+        $resources['bars'][0]['attributePath'] = 'attributes.hp';
+        $resources['bars'][0]['max'] = 12;
+        $resources['bars'][0]['maxAttributePath'] = 'attributes.maxHp';
+
+        $result = TokenResourceBinding::tokenToActor(
+            [],
+            $resources,
+            ['attributes' => ['hp' => 9]]
+        );
+
+        $this->assertSame(9.0, $result['resources']['bars'][0]['value']);
+        $this->assertSame(12.0, $result['characterData']['attributes']['maxHp']);
+        $this->assertTrue($result['characterChanged']);
+    }
 }

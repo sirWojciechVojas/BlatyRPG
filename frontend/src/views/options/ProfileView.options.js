@@ -25,6 +25,8 @@ export default {
     campaigns: [],
     invitations: [],
     sessions: [],
+    oauthProviders: [],
+    oauthIdentities: [],
     locales: availableLocales,
     loading: true,
     busy: "",
@@ -100,17 +102,37 @@ export default {
       this.loading = true;
       this.clearFeedback();
       try {
-        const [user, directory, invitations, sessions] = await Promise.all([
+        const [
+          user,
+          directory,
+          invitations,
+          sessions,
+          oauthProviders,
+          oauthIdentities,
+        ] = await Promise.all([
           authApiClient.me(),
           campaignApiClient.list(),
           campaignApiClient.listMyInvitations(),
           authApiClient.sessions(),
+          authApiClient.oauthProviders(),
+          authApiClient.oauthIdentities(),
         ]);
         this.user = user;
         authSession.updateUser(user);
         this.campaigns = directory.campaigns;
         this.invitations = invitations;
         this.sessions = sessions;
+        this.oauthProviders = oauthProviders;
+        this.oauthIdentities = oauthIdentities;
+        if (this.$route.query.oauth === "linked") {
+          this.notice = this.$t("auth.oauth.linked", {
+            provider: this.$route.query.provider || "",
+          });
+        } else if (this.$route.query.oauthError) {
+          this.error = this.$t(
+            `auth.oauth.errors.${this.$route.query.oauthError}`,
+          );
+        }
       } catch (error) {
         this.error = this.message(error);
       } finally {
@@ -154,6 +176,18 @@ export default {
         await authApiClient.revokeOtherSessions();
         this.sessions = this.sessions.filter((item) => item.isCurrent);
       });
+    },
+    async linkOAuth(provider) {
+      if (this.busy) return;
+      this.busy = `oauth-${provider}`;
+      this.clearFeedback();
+      try {
+        const authorizationUrl = await authApiClient.linkOAuth(provider);
+        window.location.assign(authorizationUrl);
+      } catch (error) {
+        this.error = this.message(error);
+        this.busy = "";
+      }
     },
     async changeLocale(locale) {
       await setLocale(locale);

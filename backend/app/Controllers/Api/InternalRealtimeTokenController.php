@@ -18,7 +18,8 @@ class InternalRealtimeTokenController extends BaseController
 
     private const CHANGE_FIELDS = [
         'characterId', 'name', 'imageUrl', 'width', 'height', 'rotation', 'facing',
-        'rotationHandleEnabled', 'facingHandleEnabled', 'showInfoUnselected',
+        'rotationHandleEnabled', 'facingHandleEnabled', 'rotationFollowsFacing',
+        'showInfoUnselected',
         'resourceBarPosition', 'movementRange', 'movementSpent', 'movementResetMode',
         'elevation', 'disposition', 'hidden', 'locked', 'visibleTo', 'controlledBy',
         'editableBy', 'observerBy', 'statuses', 'resources', 'vision',
@@ -94,7 +95,8 @@ class InternalRealtimeTokenController extends BaseController
                     'x' => $payload['x'] ?? null,
                     'y' => $payload['y'] ?? null,
                 ],
-                $payload['waypoints'] ?? []
+                $payload['waypoints'] ?? [],
+                true
             ));
         } catch (CampaignException $exception) {
             return $this->failure($exception);
@@ -138,7 +140,9 @@ class InternalRealtimeTokenController extends BaseController
                 $this->positiveId($payload['sceneId'] ?? null),
                 $this->positiveId($payload['tokenId'] ?? null),
                 $this->principal($id),
-                ['revision' => $payload['revision'] ?? null] + $changes
+                ['revision' => $payload['revision'] ?? null] + $changes,
+                [],
+                true
             ));
         } catch (CampaignException $exception) {
             return $this->failure($exception);

@@ -1,7 +1,7 @@
 <template>
   <span class="combat-token-identity" :title="token.name">
     <span class="combat-token-identity__avatar" aria-hidden="true">
-      <img
+      <AuthenticatedImage
         v-if="token.imageUrl && !imageFailed"
         :src="token.imageUrl"
         alt=""
@@ -16,9 +16,11 @@
 
 <script>
 import { tokenInitials } from "@/lib/vtt/combatPresentation";
+import AuthenticatedImage from "@/components/ui/AuthenticatedImage.vue";
 
 export default {
   name: "CombatTokenIdentity",
+  components: { AuthenticatedImage },
   props: {
     token: { type: Object, required: true },
   },

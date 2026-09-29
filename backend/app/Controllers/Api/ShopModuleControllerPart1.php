@@ -159,7 +159,7 @@ trait ShopModuleControllerPart1
         foreach ($characters as $character) {
             $claim = $claimsByCharacterId[(int) $character['id']] ?? null;
             $avatarAsset = (array) ($character['assets']['avatar'] ?? []);
-            $avatar = (string) ($avatarAsset['publicId'] ?? $character['avatar'] ?? $character['avatar_url'] ?? '');
+            $avatar = (string) ($avatarAsset['url'] ?? $character['avatar'] ?? $character['avatar_url'] ?? '');
             $option = [
                 'characterId' => (int) $character['id'],
                 'ownerCode' => strtoupper((string) ($claim['owner_code'] ?? ('CHAR_' . $character['id']))),

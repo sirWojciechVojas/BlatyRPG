@@ -7,6 +7,7 @@ const booleans = [
   "gradualIllumination",
   "providesVision",
   "constrainedByWalls",
+  "animationReverse",
 ];
 
 const ranges = {
@@ -25,6 +26,11 @@ const ranges = {
   darknessMax: [0, 1],
   animationSpeed: [0.1, 10],
   animationIntensity: [0, 1],
+  brightness: [0, 2],
+  saturation: [0, 2],
+  contrast: [0, 2],
+  edgeSoftness: [0, 1],
+  transitionRatio: [0, 1],
 };
 
 const enumeration = (value, field, allowed, changes) => {
@@ -45,6 +51,7 @@ export const lightChanges = (value, operation) => {
     "sourceType",
     "animation",
     "elevation",
+    "assetUrl",
     ...Object.keys(ranges),
     ...booleans,
   ];
@@ -78,7 +85,12 @@ export const lightChanges = (value, operation) => {
     ["light", "omni", "directional", "cone", "area", "darkness"],
     changes,
   );
-  enumeration(value, "animation", ["none", "flicker", "pulse", "vortex"], changes);
+  enumeration(
+    value,
+    "animation",
+    ["none", "torch", "flicker", "pulse", "wave", "vortex", "fog", "magical"],
+    changes,
+  );
   if (value.color !== undefined) {
     const color = String(value.color).toUpperCase();
     if (!/^#[0-9A-F]{6}(?:[0-9A-F]{2})?$/.test(color)) {
@@ -90,6 +102,16 @@ export const lightChanges = (value, operation) => {
     const name = String(value.name).trim();
     if (!name || name.length > 100) throw new ProtocolError("light_name_invalid");
     changes.name = name;
+  }
+  if (value.assetUrl !== undefined) {
+    const assetUrl = String(value.assetUrl || "").trim();
+    if (
+      assetUrl.length > 2048 ||
+      (assetUrl && !/^\/(?!\/)/u.test(assetUrl) && !/^https?:\/\//iu.test(assetUrl))
+    ) {
+      throw new ProtocolError("light_asset_url_invalid");
+    }
+    changes.assetUrl = assetUrl;
   }
   if (operation === "create" && !["x", "y"].every((key) => key in changes)) {
     throw new ProtocolError("light_geometry_required");

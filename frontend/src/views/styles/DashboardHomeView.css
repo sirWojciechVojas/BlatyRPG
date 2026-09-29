@@ -1,134 +1,1274 @@
 @import url("https://fonts.googleapis.com/css2?family=EB+Garamond:wght@400;500;600;700&display=swap");
 
-* { box-sizing: border-box; }
-body { margin: 0; background: #090705; }
+.dashboard-page,
+.dashboard-page *,
+.dashboard-page *::before,
+.dashboard-page *::after {
+  box-sizing: border-box;
+}
+
+body:has(.dashboard-page) {
+  overflow-x: hidden;
+  background: #120a08;
+}
 
 .dashboard-page {
-  --ink: #f6efe2;
-  --muted: #c7b8a1;
-  --gold: #d8b778;
-  --panel: rgba(18, 12, 9, 0.9);
-  --border: rgba(216, 183, 120, 0.32);
-  min-height: 100vh;
-  color: var(--ink);
-  font-family: "EB Garamond", Garamond, serif;
+  --brpg-text: #fff1ce;
+  --brpg-muted: #e8dfcd;
+  --brpg-gold: #cfa64b;
+  --brpg-focus: #f0cc63;
+  position: relative;
+  min-height: calc(100vh - 64px);
+  overflow: hidden;
+  color: var(--brpg-text);
+  background: #171219
+    url("../../assets/app-ui/img/niceBg.webp") center / cover
+    fixed no-repeat;
+  font-family: "EB Garamond", Garamond, "Times New Roman", serif;
+  font-size: 20px;
+  line-height: 1.15;
   text-align: left;
+}
+
+.dashboard-page::before {
+  position: fixed;
+  z-index: 0;
+  inset: 0;
   background:
-    linear-gradient(rgba(7, 5, 4, 0.84), rgba(18, 11, 7, 0.94)),
-    var(--dashboard-background) center/cover fixed;
+    linear-gradient(
+      90deg,
+      rgba(5, 4, 5, 0.34),
+      transparent 24%,
+      transparent 76%,
+      rgba(5, 4, 5, 0.32)
+    ),
+    linear-gradient(180deg, rgba(8, 5, 7, 0.12), rgba(6, 4, 5, 0.22));
+  content: "";
+  pointer-events: none;
+}
+
+.dashboard-page button,
+.dashboard-page input,
+.dashboard-page select,
+.dashboard-page textarea {
+  font: inherit;
+}
+
+.dashboard-page button {
+  color: inherit;
+}
+
+.dashboard-page
+  :is(button, a, input, select, textarea, [tabindex]):focus-visible {
+  border-radius: 2px;
+  outline: 2px solid var(--brpg-focus);
+  outline-offset: 3px;
 }
 
 .dashboard-main {
-  width: min(1180px, calc(100% - 36px));
-  min-height: calc(100vh - 132px);
+  position: relative;
+  z-index: 1;
+  width: 86%;
   margin: 0 auto;
-  padding: clamp(42px, 7vw, 92px) 0;
+  padding: 34px 0 30px;
 }
 
 .dashboard-intro {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  align-items: end;
-  gap: 24px;
-  margin-bottom: 42px;
+  gap: 32px;
+  margin-bottom: 14px;
 }
-.dashboard-intro h1 { margin: 4px 0 10px; font-size: clamp(2rem, 5vw, 3.5rem); }
-.dashboard-intro p { margin: 0; color: var(--muted); font-size: 1.1rem; }
-.eyebrow { color: var(--gold) !important; letter-spacing: 0.18em; text-transform: uppercase; font-size: 0.72rem !important; }
 
-.dashboard-panel,
-.campaign-card {
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  background: var(--panel);
-  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.32);
+.dashboard-intro > div {
+  min-width: 0;
 }
-.dashboard-panel { padding: clamp(22px, 4vw, 38px); }
-.login-panel { width: min(520px, 100%); margin: 5vh auto; }
-.login-panel h1, .section-heading h2 { margin: 4px 0 8px; }
-.panel-copy { color: var(--muted); line-height: 1.6; }
 
-.dashboard-form { display: grid; gap: 18px; margin-top: 28px; }
-.dashboard-form label { display: grid; gap: 7px; color: var(--muted); font-weight: 600; }
-.dashboard-form input,
-.dashboard-form textarea {
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  padding: 11px 13px;
-  color: var(--ink);
-  background: rgba(4, 3, 3, 0.72);
+.dashboard-intro h1 {
+  margin: 0 0 2px;
+  color: #fff5dc;
+  font-size: clamp(38px, 2.6vw, 66px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  overflow-wrap: anywhere;
+  text-shadow:
+    2px 3px 3px #000,
+    0 0 12px rgba(0, 0, 0, 0.4);
 }
-.dashboard-form input:focus, .dashboard-form textarea:focus { outline: 2px solid var(--gold); outline-offset: 2px; }
-.create-form { grid-template-columns: 1fr 1fr; }
-.wide-field { grid-column: 1 / -1; }
 
-.primary-action,
-.secondary-action,
-.text-action {
+.dashboard-intro p {
+  max-width: min(850px, 62vw);
+  margin: 0;
+  color: #f1e9df;
+  font-size: clamp(20px, 1.46vw, 36px);
+  line-height: 1.12;
+  text-shadow: 1px 2px 3px #000;
+}
+
+.campaign-section {
+  min-width: 0;
+}
+
+.section-heading {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.section-heading h2 {
+  flex: 0 0 auto;
+  margin: 0;
+  color: #fff5dc;
+  font-size: clamp(32px, 2.34vw, 60px);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1;
+  text-shadow: 2px 3px 3px #000;
+}
+
+.campaign-heading-ornament {
+  width: clamp(105px, 8vw, 180px);
+  height: clamp(24px, 2vw, 38px);
+  flex: 0 1 auto;
+  background: url("/blaty-rpg-gui/ornaments/gold_flourish_small.png") center /
+    contain no-repeat;
+}
+
+.campaign-count {
+  flex: 0 0 auto;
+  color: #f4ead7;
+  font-size: clamp(18px, 1.25vw, 28px);
+  text-shadow: 1px 2px 3px #000;
+}
+
+.brpg-icon {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  background: currentColor;
+  mask: var(--brpg-icon) center / contain no-repeat;
+  -webkit-mask: var(--brpg-icon) center / contain no-repeat;
+}
+
+.brpg-icon--play {
+  --brpg-icon: url("/blaty-rpg-gui/icons/play.svg");
+}
+.brpg-icon--more {
+  --brpg-icon: url("/blaty-rpg-gui/icons/more.svg");
+}
+.brpg-icon--book {
+  --brpg-icon: url("/blaty-rpg-gui/icons/book.svg");
+}
+.brpg-icon--plus {
+  --brpg-icon: url("/blaty-rpg-gui/icons/plus.svg");
+}
+.brpg-icon--left {
+  --brpg-icon: url("/blaty-rpg-gui/icons/chevron_left.svg");
+}
+.brpg-icon--right {
+  --brpg-icon: url("/blaty-rpg-gui/icons/chevron_right.svg");
+}
+
+.brpg-primary,
+.brpg-square,
+.brpg-arrow {
+  position: relative;
+  isolation: isolate;
   display: inline-flex;
+  min-height: 54px;
   align-items: center;
   justify-content: center;
-  border-radius: 999px;
-  padding: 10px 17px;
-  font: inherit;
-  font-weight: 700;
+  gap: 10px;
+  padding: 8px 16px;
+  border: 0;
+  background: transparent;
+  color: #fff4dc;
   cursor: pointer;
+  line-height: 1;
+  text-shadow: 1px 2px 2px #000;
+}
+
+.brpg-primary::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border: 12px solid transparent;
+  border-image: url("/blaty-rpg-gui/buttons/primary/button_primary_normal.png")
+    24 40 fill / 12px 20px / 0 stretch;
+  content: "";
+}
+
+.brpg-primary:hover:not(:disabled)::before {
+  border-image-source: url("/blaty-rpg-gui/buttons/primary/button_primary_hover.png");
+}
+
+.brpg-primary:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.brpg-primary:active:not(:disabled)::before {
+  border-image-source: url("/blaty-rpg-gui/buttons/primary/button_primary_pressed.png");
+}
+
+.brpg-primary:focus-visible::before {
+  border-image-source: url("/blaty-rpg-gui/buttons/primary/button_primary_focus.png");
+}
+
+.brpg-primary:disabled::before {
+  border-image-source: url("/blaty-rpg-gui/buttons/primary/button_primary_disabled.png");
+}
+
+.brpg-primary:disabled,
+.brpg-square:disabled,
+.brpg-arrow:disabled {
+  color: #9d998c;
+  cursor: not-allowed;
+}
+
+.dashboard-new-campaign {
+  min-width: clamp(255px, 15.7vw, 360px);
+  min-height: clamp(58px, 3.55vw, 76px);
+  flex: 0 0 auto;
+  font-size: clamp(24px, 1.45vw, 34px);
+}
+
+.brpg-carousel {
+  position: relative;
+  min-width: 0;
+}
+
+.brpg-track {
+  display: grid;
+  min-width: 0;
+  grid-auto-columns: calc((100% - 72px) / 5);
+  grid-auto-flow: column;
+  gap: 18px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 0 8px;
+  overscroll-behavior-inline: contain;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.brpg-track--centered {
+  justify-content: safe center;
+}
+
+.brpg-track::-webkit-scrollbar {
+  display: none;
+}
+
+.brpg-card {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  width: 100%;
+  max-height: 748px;
+  aspect-ratio: 0.55;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  min-width: 0;
+  padding: 10px;
+  overflow: visible;
+  background: #080a09;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.82);
+  scroll-snap-align: start;
+}
+
+.brpg-card::after {
+  position: absolute;
+  z-index: 8;
+  inset: 0;
+  border: 32px solid transparent;
+  border-image: url("/blaty-rpg-gui/cards/campaign_frame_9slice.png") 64 /
+    32px / 0 stretch;
+  content: "";
+  pointer-events: none;
+  transition: filter 150ms ease;
+}
+
+.brpg-card:hover::after,
+.brpg-card:focus-within::after {
+  filter: brightness(1.1) saturate(1.03);
+}
+
+.brpg-card--inactive .brpg-card-art img {
+  filter: saturate(0.62) brightness(0.78);
+}
+
+.brpg-card-art {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 50% 35%,
+      rgba(147, 86, 37, 0.42),
+      transparent 45%
+    ),
+    linear-gradient(145deg, #251712, #070909 72%);
+}
+
+.brpg-card-art img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: var(--art-position, 50% 40%);
+}
+
+.brpg-card-art::after {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 54%, rgba(0, 0, 0, 0.58));
+  content: "";
+  pointer-events: none;
+}
+
+.brpg-card-art.is-placeholder::before {
+  position: absolute;
+  inset: 22%;
+  background: url("/blaty-rpg-gui/ornaments/gold_flourish_small.png") center /
+    contain no-repeat;
+  content: "";
+  opacity: 0.28;
+}
+
+.brpg-ribbon {
+  --brpg-ribbon: url("/blaty-rpg-gui/cards/ribbons/ribbon_red.png");
+  position: relative;
+  z-index: 9;
+  display: grid;
+  min-height: 82px;
+  align-content: center;
+  margin: -12px -2px 0;
+  padding: 15px 42px 17px;
+}
+
+.brpg-ribbon::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-width: 13px 52px;
+  border-style: solid;
+  border-color: transparent;
+  border-image: var(--brpg-ribbon) 26 104 fill / 13px 52px / 0 stretch;
+  content: "";
+  pointer-events: none;
+}
+
+.brpg-ribbon--blue {
+  --brpg-ribbon: url("/blaty-rpg-gui/cards/ribbons/ribbon_blue.png");
+}
+.brpg-ribbon--green {
+  --brpg-ribbon: url("/blaty-rpg-gui/cards/ribbons/ribbon_green.png");
+}
+.brpg-ribbon--neutral {
+  --brpg-ribbon: url("/blaty-rpg-gui/cards/ribbons/ribbon_neutral.png");
+}
+
+.brpg-ribbon h3 {
+  margin: 0;
+  color: #fff6dc;
+  font-size: clamp(23px, 1.45vw, 36px);
+  font-weight: 700;
+  letter-spacing: -0.018em;
+  line-height: 0.96;
+  overflow-wrap: anywhere;
+  text-align: center;
+  text-shadow:
+    0 2px 2px #000,
+    1px 0 1px #000;
+  text-wrap: balance;
+}
+
+.brpg-card-footer {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  padding: 2px 10px 12px;
+  background: #080a09 url("/blaty-rpg-gui/cards/campaign_card_footer.webp")
+    repeat;
+  background-size: 128px 128px;
+}
+
+.brpg-system {
+  display: flex;
+  min-width: 0;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  gap: 11px;
+  color: #f5eee1;
+  font-size: clamp(15px, 1vw, 23px);
+  line-height: 1;
+  text-align: center;
+}
+
+.brpg-system .brpg-icon {
+  width: 28px;
+  height: 28px;
+  flex-basis: 28px;
+}
+
+.brpg-system > span:last-child {
+  display: -webkit-box;
+  min-width: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow-wrap: anywhere;
+}
+
+.brpg-status {
+  display: flex;
+  min-height: 24px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: #f3eedf;
+  font-size: clamp(17px, 1.03vw, 23px);
+}
+
+.brpg-status::before {
+  width: 12px;
+  height: 12px;
+  flex: 0 0 12px;
+  border-radius: 50%;
+  background: #31bc3b;
+  box-shadow:
+    inset 1px 1px 2px rgba(255, 255, 255, 0.35),
+    0 0 5px rgba(49, 188, 59, 0.55);
+  content: "";
+}
+
+.brpg-status--inactive::before {
+  background: #a99567;
+  box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.2);
+}
+
+.brpg-actions {
+  display: flex;
+  align-items: stretch;
+  gap: 9px;
+}
+
+.brpg-actions .brpg-primary {
+  min-width: 0;
+  flex: 1;
+  font-size: clamp(18px, 1.08vw, 26px);
+  white-space: nowrap;
+}
+
+.brpg-square {
+  width: 54px;
+  min-width: 54px;
+  flex: 0 0 54px;
+  padding: 8px;
+}
+
+.brpg-square::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: url("/blaty-rpg-gui/buttons/square/square_normal.png") center /
+    100% 100% no-repeat;
+  content: "";
+}
+
+.brpg-square:hover:not(:disabled)::before {
+  background-image: url("/blaty-rpg-gui/buttons/square/square_hover.png");
+}
+
+.brpg-square:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.brpg-square:active:not(:disabled)::before {
+  background-image: url("/blaty-rpg-gui/buttons/square/square_pressed.png");
+}
+
+.brpg-square:disabled::before {
+  background-image: url("/blaty-rpg-gui/buttons/square/square_disabled.png");
+}
+
+.brpg-dropdown {
+  position: absolute;
+  z-index: 12;
+  right: 10px;
+  bottom: 72px;
+  display: grid;
+  width: min(250px, calc(100% - 20px));
+  min-width: 180px;
+  padding: 12px;
+  border: 9px solid transparent;
+  border-image: url("/blaty-rpg-gui/dropdown/dropdown_bg_9slice.png") 18 fill /
+    9px / 0 stretch;
+  color: var(--brpg-text);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.78);
+}
+
+.brpg-dropdown a {
+  display: block;
+  padding: 9px 12px;
+  border-bottom: 1px solid rgba(190, 145, 70, 0.22);
+  color: var(--brpg-text);
+  font-size: 17px;
+  line-height: 1.1;
+  text-align: left;
   text-decoration: none;
 }
-.primary-action { border: 0; color: #1b1008; background: linear-gradient(135deg, #f0d49b, #b45b32); }
-.secondary-action { border: 1px solid var(--border); color: var(--ink); background: rgba(22, 14, 10, 0.68); }
-.text-action { border: 0; color: var(--gold); background: transparent; }
-button:disabled { opacity: 0.55; cursor: wait; }
 
-.login-links {
+.brpg-dropdown a:last-child {
+  border-bottom: 0;
+}
+
+.brpg-dropdown a:hover,
+.brpg-dropdown a:focus-visible {
+  background: rgba(85, 65, 44, 0.4)
+    url("/blaty-rpg-gui/dropdown/dropdown_item_hover.webp") repeat;
+  background-size: 128px 128px;
+}
+
+.brpg-arrow {
+  position: absolute;
+  z-index: 10;
+  top: 42%;
+  width: 56px;
+  height: 76px;
+  padding: 10px;
+  transform: translateY(-50%);
+}
+
+.brpg-arrow::before {
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  background: center / 100% 100% no-repeat;
+  content: "";
+}
+
+.brpg-arrow--left {
+  left: -72px;
+}
+.brpg-arrow--right {
+  right: -72px;
+}
+.brpg-arrow--left::before {
+  background-image: url("/blaty-rpg-gui/carousel/arrow_button_left_normal.png");
+}
+.brpg-arrow--right::before {
+  background-image: url("/blaty-rpg-gui/carousel/arrow_button_right_normal.png");
+}
+.brpg-arrow--left:hover:not(:disabled)::before {
+  background-image: url("/blaty-rpg-gui/carousel/arrow_button_left_hover.png");
+}
+.brpg-arrow--right:hover:not(:disabled)::before {
+  background-image: url("/blaty-rpg-gui/carousel/arrow_button_right_hover.png");
+}
+.brpg-arrow--left:active:not(:disabled)::before {
+  background-image: url("/blaty-rpg-gui/carousel/arrow_button_left_pressed.png");
+}
+.brpg-arrow--right:active:not(:disabled)::before {
+  background-image: url("/blaty-rpg-gui/carousel/arrow_button_right_pressed.png");
+}
+.brpg-arrow:disabled {
+  opacity: 0.42;
+}
+
+.brpg-scrollbar {
+  position: relative;
+  width: 80%;
+  height: 16px;
+  margin: 7px auto 6px;
+  border: 5px solid transparent;
+  border-image: url("/blaty-rpg-gui/carousel/scrollbar/scrollbar_track_9slice.png")
+    10 24 fill / 5px 12px / 0 stretch;
+  cursor: pointer;
+  touch-action: none;
+}
+
+.brpg-scrollbar-thumb {
+  position: absolute;
+  top: -3px;
+  bottom: -3px;
+  min-width: 24px;
+  border: 5px solid transparent;
+  border-image: url("/blaty-rpg-gui/carousel/scrollbar/scrollbar_thumb_9slice.png")
+    10 24 fill / 5px 12px / 0 stretch;
+  cursor: grab;
+  touch-action: none;
+}
+
+.brpg-scrollbar-thumb.is-dragging {
+  cursor: grabbing;
+}
+
+.brpg-pagination {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px 18px;
-  margin-top: 14px;
+  max-width: 100%;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  overflow-x: auto;
 }
 
-.login-links a {
-  color: var(--gold);
-  text-underline-offset: 3px;
+.brpg-page-dot {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  flex: 0 0 24px;
+  place-items: center;
+  padding: 4px;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
 }
 
-.login-links a:hover {
-  color: var(--ink);
+.brpg-page-dot::before {
+  width: 16px;
+  height: 16px;
+  background: url("/blaty-rpg-gui/carousel/pagination_dot.png") center / contain
+    no-repeat;
+  content: "";
 }
 
-.login-links a:focus-visible {
+.brpg-page-dot:hover::before {
+  background-image: url("/blaty-rpg-gui/carousel/pagination_dot_hover.png");
+}
+
+.brpg-page-dot[aria-current="page"]::before {
+  background-image: url("/blaty-rpg-gui/carousel/pagination_dot_active.png");
+  filter: drop-shadow(0 0 4px #e9bd55);
+}
+
+.brpg-counter {
+  margin: -1px 0 0;
+  color: #fff0d0;
+  font-size: 18px;
+  text-align: center;
+  text-shadow: 1px 2px 2px #000;
+}
+
+.dashboard-panel {
+  border: 1px solid rgba(207, 166, 75, 0.42);
+  background: rgba(10, 9, 8, 0.88);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.48);
+}
+
+.campaign-loading-panel,
+.empty-panel {
+  min-height: 300px;
+  padding: 64px 28px;
+  color: var(--brpg-muted);
+  text-align: center;
+}
+
+.empty-panel h3 {
+  margin: 0 0 8px;
+  color: var(--brpg-text);
+  font-size: 34px;
+}
+
+.empty-panel p {
+  margin: 0 0 22px;
+}
+
+.empty-create-action {
+  min-width: 240px;
+  font-size: 22px;
+}
+
+.dashboard-spinner {
+  display: inline-block;
+  width: 34px;
+  height: 34px;
+  border: 3px solid rgba(207, 166, 75, 0.34);
+  border-top-color: var(--brpg-gold);
+  border-radius: 50%;
+  animation: dashboard-spin 0.8s linear infinite;
+}
+
+.dashboard-alert {
+  position: relative;
+  z-index: 3;
+  padding: 11px 14px;
+  border: 1px solid #a75b4c;
+  color: #ffd8ce;
+  background: rgba(71, 20, 16, 0.82);
+}
+
+.dashboard-error {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin: 0 0 16px;
+}
+
+.dashboard-error button {
+  border: 0;
+  background: none;
+  color: var(--brpg-gold);
+  text-decoration: underline;
+}
+
+.campaign-create-backdrop {
+  position: fixed;
+  z-index: 1200;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  overflow-y: auto;
+  background: rgba(4, 3, 3, 0.78);
+  backdrop-filter: blur(5px);
+}
+
+.campaign-create-dialog {
+  position: relative;
+  width: min(720px, 100%);
+  color: var(--brpg-text);
+  font-family: "EB Garamond", Garamond, "Times New Roman", serif;
+  text-align: left;
+}
+
+.campaign-create-close {
+  position: absolute;
+  z-index: 3;
+  top: 14px;
+  right: 16px;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(207, 166, 75, 0.52);
+  background: rgba(18, 11, 8, 0.8);
+  color: var(--brpg-text);
+  cursor: pointer;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.create-panel {
+  padding: 28px;
+  border: 18px solid transparent;
+  border-image: url("/blaty-rpg-gui/dropdown/dropdown_bg_9slice.png") 18 fill /
+    9px / 0 stretch;
+}
+
+.create-panel .section-heading {
+  padding-right: 48px;
+  margin-bottom: 20px;
+}
+
+.create-panel .eyebrow {
+  margin: 0 0 3px;
+  color: var(--brpg-gold);
+  font-size: 13px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.create-panel h2 {
+  margin: 0;
+  font-size: 34px;
+}
+
+.dashboard-form {
+  display: grid;
+  gap: 16px;
+}
+
+.create-form {
+  grid-template-columns: 1fr 1fr;
+}
+
+.dashboard-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--brpg-muted);
+  font-weight: 600;
+}
+
+.dashboard-form input,
+.dashboard-form select,
+.dashboard-form textarea {
+  width: 100%;
+  min-height: 44px;
+  padding: 9px 11px;
+  border: 1px solid rgba(207, 166, 75, 0.44);
   border-radius: 3px;
-  outline: 2px solid var(--gold);
-  outline-offset: 4px;
+  background: rgba(4, 3, 3, 0.78);
+  color: var(--brpg-text);
 }
 
-.section-heading { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
-.campaign-count { min-width: 38px; padding: 6px 12px; text-align: center; border: 1px solid var(--border); border-radius: 999px; }
-.campaign-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 18px; }
-.campaign-card { padding: 24px; display: flex; min-height: 250px; flex-direction: column; }
-.campaign-card.inactive { opacity: 0.72; }
-.campaign-card header { display: flex; justify-content: space-between; gap: 14px; }
-.campaign-card h3 { margin: 4px 0 0; font-size: 1.5rem; }
-.campaign-role, .campaign-status { color: var(--gold); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; }
-.campaign-system { color: var(--gold); font-family: monospace; }
-.campaign-description { color: var(--muted); line-height: 1.5; flex: 1; }
-.campaign-actions { display: flex; gap: 10px; flex-wrap: wrap; }
-.create-panel { margin-top: 38px; }
+.dashboard-form option {
+  background: #17100d;
+}
 
-.dashboard-alert { border: 1px solid #a75b4c; border-radius: 10px; padding: 11px 14px; color: #ffd8ce; background: rgba(111, 35, 26, 0.35); }
-.dashboard-error { display: flex; justify-content: space-between; gap: 18px; }
-.dashboard-error button { border: 0; color: var(--gold); background: none; text-decoration: underline; }
-.loading-panel, .empty-panel { text-align: center; color: var(--muted); }
-.dashboard-spinner { display: inline-block; width: 28px; height: 28px; border: 3px solid var(--border); border-top-color: var(--gold); border-radius: 50%; animation: dashboard-spin 0.8s linear infinite; }
-.dashboard-footer { padding: 20px; color: var(--muted); text-align: center; border-top: 1px solid var(--border); }
-@keyframes dashboard-spin { to { transform: rotate(360deg); } }
+.wide-field {
+  grid-column: 1 / -1;
+}
 
-@media (max-width: 720px) {
-  .dashboard-intro { align-items: flex-start; flex-direction: column; }
-  .create-form { grid-template-columns: 1fr; }
-  .wide-field { grid-column: auto; }
-  .login-links {
+.create-form > .primary-action {
+  display: inline-flex;
+  min-height: 50px;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 18px;
+  border: 1px solid #b4833e;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #6e4929, #2d1a10);
+  color: var(--brpg-text);
+  cursor: pointer;
+  font-weight: 700;
+}
+
+@keyframes dashboard-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+#app.ui-system-active .app-navigation.app-navigation--campaigns {
+  position: sticky;
+  z-index: 100;
+  top: 0;
+  width: 92%;
+  min-height: 64px;
+  margin: 0 auto;
+  padding: 8px 24px;
+  border: 0;
+  background: #090b0b url("/blaty-rpg-gui/navbar/navbar_inner_texture.webp")
+    repeat;
+  background-size: 128px 128px;
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.72);
+  font-family: "EB Garamond", Garamond, "Times New Roman", serif;
+}
+
+#app.ui-system-active .app-navigation.app-navigation--campaigns::before {
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  border: 20px solid transparent;
+  border-image: url("/blaty-rpg-gui/navbar/navbar_9slice.png") 40 / 20px / 0
+    round stretch;
+  content: "";
+  pointer-events: none;
+}
+
+#app.ui-system-active .app-navigation.app-navigation--campaigns > * {
+  position: relative;
+  z-index: 1;
+}
+
+#app.ui-system-active .app-navigation--campaigns .app-nav-brand img {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+}
+
+#app.ui-system-active .app-navigation--campaigns .app-nav-brand strong {
+  font-size: 21px;
+  line-height: 1;
+}
+
+#app.ui-system-active .app-navigation--campaigns .app-nav-brand small {
+  margin-top: 2px;
+  font-size: 12px;
+}
+
+#app.ui-system-active .app-navigation--campaigns .app-nav-links {
+  gap: clamp(18px, 3vw, 52px);
+}
+
+#app.ui-system-active .app-navigation--campaigns .app-nav-links > a,
+#app.ui-system-active .app-navigation--campaigns .app-nav-action-link {
+  background: transparent;
+  color: #e8dfcd;
+  font-size: 17px;
+  font-weight: 500;
+  text-shadow: 1px 2px 2px #000;
+}
+
+#app.ui-system-active .app-navigation--campaigns .app-nav-links > a:hover,
+#app.ui-system-active
+  .app-navigation--campaigns
+  .app-nav-links
+  > a.router-link-exact-active,
+#app.ui-system-active .app-navigation--campaigns .app-nav-action-link:hover {
+  background: rgba(207, 166, 75, 0.07);
+  color: #f0cc63;
+}
+
+#app.ui-system-active .app-navigation--campaigns .locale-switch {
+  color: #e8dfcd;
+  font-size: 14px;
+}
+
+#app.ui-system-active .app-navigation--campaigns .locale-switch select {
+  border-color: rgba(207, 166, 75, 0.35);
+  background: rgba(8, 8, 7, 0.72);
+  color: #fff1ce;
+}
+
+#app.ui-system-active .app-navigation--campaigns .account-menu__trigger {
+  border: 0;
+  background: transparent;
+  font-family: "EB Garamond", Garamond, "Times New Roman", serif;
+}
+
+#app.ui-system-active .app-navigation--campaigns .account-menu__avatar {
+  position: relative;
+  width: 42px;
+  height: 42px;
+  overflow: visible;
+  border: 0;
+  background: #503319;
+}
+
+#app.ui-system-active .app-navigation--campaigns .account-menu__avatar img,
+#app.ui-system-active .app-navigation--campaigns .account-menu__avatar > span {
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+#app.ui-system-active .app-navigation--campaigns .account-menu__avatar::after {
+  position: absolute;
+  inset: -6px;
+  background: url("/blaty-rpg-gui/profile/avatar_frame.png") center / contain
+    no-repeat;
+  content: "";
+  pointer-events: none;
+}
+
+#app.ui-system-active
+  .app-navigation--campaigns
+  .account-menu__trigger:hover
+  .account-menu__avatar::after {
+  background-image: url("/blaty-rpg-gui/profile/avatar_frame_hover.png");
+}
+
+#app.ui-system-active
+  .app-navigation--campaigns
+  .account-menu__identity
+  strong {
+  max-width: 150px;
+  color: #fff1ce;
+  font-size: 15px;
+}
+
+#app.ui-system-active .app-navigation--campaigns .account-menu__identity small {
+  color: #c9bda8;
+  font-size: 11px;
+}
+
+/* The shared dashboard compatibility layer is intentionally conservative.
+   These route-local selectors opt the campaign picker into its full canvas. */
+body.ui-system-active .dashboard-page {
+  min-height: calc(100vh - 64px);
+  color: var(--brpg-text);
+  background: #171219
+    url("../../assets/app-ui/img/niceBg.webp") center / cover
+    fixed no-repeat;
+}
+
+body.ui-system-active .dashboard-main {
+  width: 86%;
+  min-height: 0;
+  padding: 34px 0 30px;
+}
+
+body.ui-system-active .dashboard-intro {
+  gap: 32px;
+  margin-bottom: 14px;
+}
+
+body.ui-system-active .dashboard-intro h1 {
+  margin: 0 0 2px;
+  font-size: clamp(38px, 2.6vw, 66px);
+  line-height: 1;
+}
+
+body.ui-system-active .dashboard-intro p {
+  font-size: clamp(20px, 1.46vw, 36px);
+}
+
+body.ui-system-active .section-heading {
+  margin-bottom: 10px;
+}
+
+body.ui-system-active .campaign-count {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+}
+
+body.ui-system-active .campaign-loading-panel,
+body.ui-system-active .empty-panel {
+  padding: 64px 28px;
+}
+
+body.ui-system-active .dashboard-alert {
+  padding: 11px 14px;
+  border-color: #a75b4c;
+  border-radius: 0;
+  background: rgba(71, 20, 16, 0.82);
+  color: #ffd8ce;
+}
+
+body.ui-system-active .create-panel {
+  margin-top: 0;
+  padding: 28px;
+  border-radius: 0;
+  background: transparent;
+}
+
+body.ui-system-active .dashboard-form {
+  gap: 16px;
+  margin-top: 0;
+}
+
+body.ui-system-active .dashboard-page .dashboard-form input,
+body.ui-system-active .dashboard-page .dashboard-form select,
+body.ui-system-active .dashboard-page .dashboard-form textarea {
+  min-height: 44px;
+  padding: 9px 11px;
+  border-radius: 3px;
+  color: var(--brpg-text);
+}
+
+body.ui-system-active .dashboard-page .create-form > .primary-action {
+  min-height: 50px;
+  padding: 9px 18px;
+  border: 1px solid #b4833e;
+  border-radius: 2px;
+  background: linear-gradient(180deg, #6e4929, #2d1a10);
+  color: var(--brpg-text);
+  font-family: inherit;
+}
+
+@media (min-width: 1921px), (min-resolution: 1.5dppx) {
+  body.ui-system-active .dashboard-page {
+    background-image: url("../../assets/app-ui/img/niceBg.webp");
+  }
+}
+
+@media (min-width: 2200px) {
+  .dashboard-page {
+    min-height: calc(100vh - 82px);
+  }
+  body.ui-system-active .dashboard-main {
+    padding-top: 48px;
+  }
+  body.ui-system-active .dashboard-intro {
+    margin-bottom: 17px;
+  }
+  body.ui-system-active .section-heading {
+    margin-bottom: 12px;
+  }
+  .brpg-ribbon {
+    min-height: 100px;
+  }
+  .brpg-card-footer {
+    gap: 11px;
+    padding-bottom: 16px;
+  }
+  .brpg-primary,
+  .brpg-square {
+    min-height: 62px;
+  }
+  .brpg-square {
+    width: 62px;
+    min-width: 62px;
+    flex-basis: 62px;
+  }
+  #app.ui-system-active .app-navigation.app-navigation--campaigns {
+    min-height: 82px;
+  }
+}
+
+@media (max-width: 1500px) {
+  body.ui-system-active .dashboard-main {
+    padding-top: 24px;
+  }
+  body.ui-system-active .dashboard-intro {
+    margin-bottom: 10px;
+  }
+  .brpg-track {
+    grid-auto-columns: calc((100% - 48px) / 4);
+    gap: 16px;
+  }
+  .brpg-card {
+    height: 430px;
+    aspect-ratio: auto;
+  }
+  .brpg-card-art img {
+    object-position: var(--art-position-compact, 50% 23%);
+  }
+  .brpg-ribbon {
+    min-height: 72px;
+    padding: 12px 36px 14px;
+  }
+  .brpg-ribbon h3 {
+    font-size: clamp(21px, 1.75vw, 27px);
+  }
+  .brpg-card-footer {
+    gap: 5px;
+    padding: 0 7px 9px;
+  }
+  .brpg-system {
+    min-height: 34px;
+    font-size: 15px;
+  }
+  .brpg-system .brpg-icon {
+    width: 23px;
+    height: 23px;
+    flex-basis: 23px;
+  }
+  .brpg-status {
+    min-height: 20px;
+    font-size: 17px;
+  }
+  .brpg-primary,
+  .brpg-square {
+    min-height: 48px;
+  }
+  .brpg-square {
+    width: 48px;
+    min-width: 48px;
+    flex-basis: 48px;
+  }
+  .brpg-actions .brpg-primary {
+    font-size: 18px;
+  }
+  .brpg-arrow--left {
+    left: -64px;
+  }
+  .brpg-arrow--right {
+    right: -64px;
+  }
+  .brpg-scrollbar {
+    margin-top: 4px;
+    margin-bottom: 2px;
+  }
+  .brpg-counter {
+    font-size: 17px;
+  }
+  #app.ui-system-active .app-navigation.app-navigation--campaigns {
+    min-height: 56px;
+    padding-block: 5px;
+  }
+  #app.ui-system-active .app-navigation--campaigns .app-nav-brand img {
+    width: 40px;
+    height: 40px;
+  }
+}
+
+@media (max-width: 1180px) {
+  body.ui-system-active .dashboard-main {
+    width: 84%;
+  }
+  .brpg-track {
+    grid-auto-columns: calc((100% - 32px) / 3);
+  }
+  #app.ui-system-active .app-navigation--campaigns .app-nav-links {
+    gap: 7px;
+  }
+}
+
+@media (max-width: 800px) {
+  .dashboard-page {
+    min-height: calc(100vh - 100px);
+  }
+  body.ui-system-active .dashboard-main {
+    width: calc(100% - 72px);
+    padding-top: 24px;
+  }
+  .dashboard-intro {
     align-items: flex-start;
     flex-direction: column;
+    gap: 18px;
+  }
+  .dashboard-intro p {
+    max-width: 100%;
+  }
+  .dashboard-new-campaign {
+    min-width: 230px;
+  }
+  .section-heading {
+    flex-wrap: wrap;
+  }
+  .campaign-heading-ornament {
+    display: none;
+  }
+  .campaign-count {
+    width: 100%;
+  }
+  .brpg-track {
+    grid-auto-columns: min(78vw, 340px);
+  }
+  .brpg-card {
+    height: min(540px, 68vh);
+    min-height: 430px;
+  }
+  .brpg-arrow {
+    display: none;
+  }
+  .brpg-scrollbar {
+    width: 100%;
+  }
+  .create-form {
+    grid-template-columns: 1fr;
+  }
+  .wide-field {
+    grid-column: auto;
+  }
+}
+
+@media (max-width: 520px) {
+  body.ui-system-active .dashboard-main {
+    width: calc(100% - 32px);
+  }
+  .dashboard-intro h1 {
+    font-size: 34px;
+  }
+  .dashboard-intro p {
+    font-size: 18px;
+  }
+  .section-heading h2 {
+    font-size: 30px;
+  }
+  .brpg-track {
+    grid-auto-columns: min(85vw, 320px);
+  }
+  .brpg-card {
+    min-height: 420px;
+  }
+  .brpg-ribbon {
+    padding-inline: 34px;
+  }
+  .campaign-create-backdrop {
+    padding: 10px;
+  }
+  .create-panel {
+    padding: 22px 18px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dashboard-page *,
+  .dashboard-page *::before,
+  .dashboard-page *::after {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+  .dashboard-spinner {
+    animation-duration: 1.8s;
   }
 }

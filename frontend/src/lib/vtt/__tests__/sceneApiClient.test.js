@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { createSceneApiClient } from "@/lib/vtt/sceneApiClient";
-import { cloneSceneDraft } from "@/lib/vtt/sceneNormalizer";
+import { normalizeScene, toSceneWritePayload } from "@/lib/vtt/sceneNormalizer";
 
 const apiScene = {
   id: 4,
@@ -18,29 +18,6 @@ const apiScene = {
 };
 
 describe("sceneApiClient", () => {
-  it("clones only writable scene data", () => {
-    expect(
-      cloneSceneDraft(
-        {
-          ...apiScene,
-          backgroundUrl: apiScene.background_url,
-          sortOrder: 4,
-          revision: 9,
-        },
-        "Ruins — copy",
-      ),
-    ).toMatchObject({
-      name: "Ruins — copy",
-      backgroundUrl: apiScene.background_url,
-      width: 1600,
-      height: 900,
-      sortOrder: 5,
-    });
-    expect(
-      cloneSceneDraft({ ...apiScene, revision: 9 }, "Copy"),
-    ).not.toHaveProperty("revision");
-  });
-
   it("uses campaign routes and normalizes scene snapshots", async () => {
     const request = vi.fn().mockResolvedValue({
       scene: apiScene,
@@ -85,6 +62,22 @@ describe("sceneApiClient", () => {
     });
   });
 
+  it("uses the dedicated endpoint for full scene duplication", async () => {
+    const request = vi.fn().mockResolvedValue({
+      scene: { ...apiScene, id: 5, name: "Ruins — copy" },
+      capabilities: {},
+    });
+    const client = createSceneApiClient({ request });
+
+    const result = await client.duplicate(7, 4, " Ruins — copy ");
+
+    expect(request).toHaveBeenCalledWith("/campaigns/7/scenes/4/duplicate", {
+      method: "POST",
+      body: { name: "Ruins — copy" },
+    });
+    expect(result.scene).toMatchObject({ id: 5, name: "Ruins — copy" });
+  });
+
   it("sends revisions when activating and deleting", async () => {
     const request = vi
       .fn()
@@ -111,5 +104,50 @@ describe("sceneApiClient", () => {
       body: { revision: 3 },
     });
     expect(deletion).toEqual({ activeSceneId: 8 });
+  });
+
+  it("round-trips every scene settings field through the API contract", () => {
+    const draft = {
+      name: "Flooded vault",
+      description: "Lower level",
+      backgroundUrl:
+        "/api/campaigns/7/scene-assets/0123456789abcdef0123456789abcdef.webp/file",
+      width: 2400,
+      height: 1600,
+      padding: 64,
+      backgroundColor: "#15202AFF",
+      gridType: "hex_flat",
+      gridSize: 84,
+      gridDistance: 2.5,
+      gridUnit: "m",
+      gridOffsetX: 11.5,
+      gridOffsetY: -7,
+      gridColor: "#C4A45AFF",
+      gridOpacity: 0.47,
+      globalLightLevel: 0.35,
+      fogExploration: true,
+      fogEnabled: true,
+      dynamicVision: false,
+      explorationMemory: true,
+      fogUnexploredColor: "#05070BFF",
+      fogUnexploredOpacity: 0.91,
+      fogExploredOpacity: 0.38,
+      fogEdgeSoftness: 140,
+      fogUpdateDuringDrag: false,
+      isVisible: false,
+      sortOrder: -4,
+    };
+    const payload = toSceneWritePayload(draft);
+    const reloaded = normalizeScene({
+      id: 4,
+      campaign_id: 7,
+      revision: 9,
+      ...payload,
+      is_visible: 0,
+    });
+
+    expect(Object.keys(payload)).toHaveLength(27);
+    expect(reloaded).toMatchObject(draft);
+    expect(reloaded.fogEdgeSoftness).toBe(140);
   });
 });

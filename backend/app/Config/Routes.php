@@ -33,19 +33,29 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
     $routes->get('/', 'StatusController::index');
     $routes->get('health', 'StatusController::health');
     $routes->get('public/subscription-plans', 'SubscriptionPlanController::index');
+    // Public assets need no session; the controller still enforces campaign/private access.
+    $routes->get('media/(:num)', 'MediaController::show/$1');
     $routes->post('internal/realtime/campaigns/(:num)/chat/sync', 'InternalRealtimeChatController::sync/$1');
     $routes->post('internal/realtime/campaigns/(:num)/chat/send', 'InternalRealtimeChatController::send/$1');
     $routes->post('internal/realtime/campaigns/(:num)/handouts/delivery', 'InternalRealtimeHandoutController::delivery/$1');
     $routes->post('internal/realtime/campaigns/(:num)/tokens/move', 'InternalRealtimeTokenController::move/$1');
     $routes->post('internal/realtime/campaigns/(:num)/tokens/move-group', 'InternalRealtimeTokenController::moveGroup/$1');
     $routes->post('internal/realtime/campaigns/(:num)/tokens/change', 'InternalRealtimeTokenController::change/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/token-sync/command', 'InternalRealtimeTokenSyncController::command/$1');
     $routes->post('internal/realtime/campaigns/(:num)/tokens/movement-requests', 'InternalRealtimeTokenController::requestMovement/$1');
     $routes->post('internal/realtime/campaigns/(:num)/tokens/movement-requests/(:num)/resolve', 'InternalRealtimeTokenController::resolveMovement/$1/$2');
     $routes->post('internal/realtime/campaigns/(:num)/scenes/(:num)/snapshot', 'InternalRealtimeSceneSnapshotController::show/$1/$2');
     $routes->post('internal/realtime/campaigns/(:num)/combat/commands', 'InternalRealtimeCombatController::command/$1');
     $routes->post('internal/realtime/campaigns/(:num)/walls/change', 'InternalRealtimeWallController::change/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/walls/audio-state', 'InternalRealtimeWallAudioController::state/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/walls/audio-cue', 'InternalRealtimeWallAudioController::cue/$1');
     $routes->post('internal/realtime/campaigns/(:num)/lights/change', 'InternalRealtimeLightController::change/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/regions/change', 'InternalRealtimeRegionController::change/$1');
     $routes->post('internal/realtime/campaigns/(:num)/tiles/change', 'InternalRealtimeTileController::change/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/jukebox/state', 'InternalRealtimeJukeboxController::state/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/jukebox/save', 'InternalRealtimeJukeboxController::save/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/sound-effects/state', 'InternalRealtimeSoundEffectController::state/$1');
+    $routes->post('internal/realtime/campaigns/(:num)/sound-effects/command', 'InternalRealtimeSoundEffectController::command/$1');
 
     // ----------------------------------------
     // AUTH (PUBLIC)
@@ -57,6 +67,10 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->post('register', 'AuthController::register');
         $routes->post('password-reset/request', 'AuthController::requestPasswordReset');
         $routes->post('password-reset/confirm', 'AuthController::resetPassword');
+        $routes->get('oauth/providers', 'OAuthController::providers');
+        $routes->post('oauth/(:segment)/start', 'OAuthController::start/$1');
+        $routes->get('oauth/(:segment)/callback', 'OAuthController::callback/$1');
+        $routes->post('oauth/exchange', 'OAuthController::exchange');
     });
 
     // $routes->post('login', 'AuthController::login');
@@ -72,11 +86,19 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->get('auth/me', 'AuthSessionController::me');
         $routes->post('auth/logout', 'AuthSessionController::logout');
         $routes->patch('auth/profile', 'AuthSessionController::updateProfile');
+        $routes->get('auth/audio-device-settings', 'AuthSessionController::audioDeviceSettings');
+        $routes->put('auth/audio-device-settings', 'AuthSessionController::updateAudioDeviceSettings');
         $routes->post('auth/change-password', 'AuthSessionController::changePassword');
         $routes->get('auth/sessions', 'AuthSessionController::sessions');
         $routes->delete('auth/sessions/(:num)', 'AuthSessionController::revokeSession/$1');
         $routes->post('auth/sessions/revoke-others', 'AuthSessionController::revokeOtherSessions');
+        $routes->get('auth/oauth/identities', 'OAuthController::identities');
+        $routes->post('auth/oauth/(:segment)/link', 'OAuthController::link/$1');
         $routes->get('me', 'AuthSessionController::me');
+
+        // Central media registry and provider-neutral direct uploads.
+        $routes->post('media/uploads', 'MediaController::createUpload');
+        $routes->post('media/uploads/(:num)/complete', 'MediaController::completeUpload/$1');
 
         // ----------------------------------------
         // CAMPAIGNS
@@ -96,9 +118,46 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->post('campaign-invitations/(:num)/accept', 'CampaignInvitationController::accept/$1');
         $routes->post('campaign-invitations/(:num)/reject', 'CampaignInvitationController::reject/$1');
         $routes->post('campaigns/(:num)/realtime-ticket', 'RealtimeTicketController::create/$1');
+        $routes->post('campaigns/(:num)/voice/token', 'LiveKitController::token/$1');
+        $routes->get('campaigns/(:num)/audio/tracks', 'CampaignAudioController::index/$1');
+        $routes->post('campaigns/(:num)/audio/tracks/upload', 'CampaignAudioController::upload/$1');
+        $routes->post('campaigns/(:num)/audio/tracks/external', 'CampaignAudioController::external/$1');
+        $routes->put('campaigns/(:num)/audio/tracks/(:num)', 'CampaignAudioController::attach/$1/$2');
+        $routes->delete('campaigns/(:num)/audio/tracks/(:num)', 'CampaignAudioController::remove/$1/$2');
+        $routes->patch('campaigns/(:num)/audio/library/tracks/(:num)', 'CampaignAudioController::updatePersonal/$1/$2');
+        $routes->delete('campaigns/(:num)/audio/library/tracks/(:num)', 'CampaignAudioController::deletePersonal/$1/$2');
+        $routes->post('campaigns/(:num)/audio/playlists', 'CampaignAudioController::createPlaylist/$1');
+        $routes->patch('campaigns/(:num)/audio/playlists/(:num)', 'CampaignAudioController::renamePlaylist/$1/$2');
+        $routes->delete('campaigns/(:num)/audio/playlists/(:num)', 'CampaignAudioController::deletePlaylist/$1/$2');
+        $routes->post('campaigns/(:num)/audio/playlists/(:num)/items', 'CampaignAudioController::addPlaylistItem/$1/$2');
+        $routes->patch('campaigns/(:num)/audio/playlists/(:num)/items/(:num)', 'CampaignAudioController::movePlaylistItem/$1/$2/$3');
+        $routes->delete('campaigns/(:num)/audio/playlists/(:num)/items/(:num)', 'CampaignAudioController::removePlaylistItem/$1/$2/$3');
+        $routes->post('campaigns/(:num)/audio/queues/(:segment)/tracks', 'CampaignAudioController::addQueueTrack/$1/$2');
+        $routes->post('campaigns/(:num)/audio/queues/(:segment)/playlists/(:num)', 'CampaignAudioController::addQueuePlaylist/$1/$2/$3');
+        $routes->post('campaigns/(:num)/audio/queues/(:segment)/playlists/(:num)/start', 'CampaignAudioController::startPlaylist/$1/$2/$3');
+        $routes->patch('campaigns/(:num)/audio/queues/(:segment)/items/(:num)', 'CampaignAudioController::moveQueueItem/$1/$2/$3');
+        $routes->delete('campaigns/(:num)/audio/queues/(:segment)/items/(:num)', 'CampaignAudioController::removeQueueItem/$1/$2/$3');
+        $routes->delete('campaigns/(:num)/audio/queues/(:segment)', 'CampaignAudioController::clearQueue/$1/$2');
+        $routes->get('campaigns/(:num)/audio/tracks/(:num)/file', 'CampaignAudioController::file/$1/$2');
+        $routes->get('campaigns/(:num)/jukebox', 'CampaignAudioController::jukeboxState/$1');
+        $routes->get('campaigns/(:num)/sound-effects', 'CampaignSoundEffectController::index/$1');
+        $routes->post('campaigns/(:num)/sound-effects/screens', 'CampaignSoundEffectController::createScreen/$1');
+        $routes->patch('campaigns/(:num)/sound-effects/screens/(:num)', 'CampaignSoundEffectController::updateScreen/$1/$2');
+        $routes->post('campaigns/(:num)/sound-effects/screens/(:num)/duplicate', 'CampaignSoundEffectController::duplicateScreen/$1/$2');
+        $routes->delete('campaigns/(:num)/sound-effects/screens/(:num)', 'CampaignSoundEffectController::deleteScreen/$1/$2');
+        $routes->put('campaigns/(:num)/sound-effects/screens/(:num)/slots/(:num)', 'CampaignSoundEffectController::saveSlot/$1/$2/$3');
+        $routes->delete('campaigns/(:num)/sound-effects/screens/(:num)/slots/(:num)', 'CampaignSoundEffectController::deleteSlot/$1/$2/$3');
         $routes->get('campaigns/(:num)/token-movement-requests', 'TokenMovementRequestController::index/$1');
         $routes->get('campaigns/(:num)/chat/messages', 'CampaignChatController::index/$1');
         $routes->post('campaigns/(:num)/chat/messages', 'CampaignChatController::create/$1');
+        $routes->get('campaigns/(:num)/calendar', 'CampaignCalendarController::show/$1');
+        $routes->put('campaigns/(:num)/calendar/state', 'CampaignCalendarController::setState/$1');
+        $routes->post('campaigns/(:num)/calendar/advance', 'CampaignCalendarController::advance/$1');
+        $routes->get('campaigns/(:num)/calendar/events', 'CampaignCalendarController::events/$1');
+        $routes->post('campaigns/(:num)/calendar/events', 'CampaignCalendarController::createEvent/$1');
+        $routes->patch('campaigns/(:num)/calendar/events/(:num)', 'CampaignCalendarController::updateEvent/$1/$2');
+        $routes->delete('campaigns/(:num)/calendar/events/(:num)', 'CampaignCalendarController::deleteEvent/$1/$2');
+        $routes->put('campaigns/(:num)/calendar/morrslieb', 'CampaignCalendarController::setMorrslieb/$1');
 
         // ----------------------------------------
         // HANDOUT LIBRARY AND CAMPAIGN HANDOUTS
@@ -128,6 +187,43 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->patch('campaigns/(:num)/handout-notifications/(:num)', 'CampaignHandoutController::readNotification/$1/$2');
 
         // ----------------------------------------
+        // PLAYER CHARACTER JOURNAL
+        // ----------------------------------------
+        $routes->get('campaigns/(:num)/journal', 'HeroJournalController::index/$1');
+        $routes->post('campaigns/(:num)/journal', 'HeroJournalController::create/$1');
+        $routes->get('campaigns/(:num)/journal/(:num)', 'HeroJournalController::show/$1/$2');
+        $routes->patch('campaigns/(:num)/journal/(:num)', 'HeroJournalController::update/$1/$2');
+        $routes->delete('campaigns/(:num)/journal/(:num)', 'HeroJournalController::delete/$1/$2');
+        $routes->patch('campaigns/(:num)/journal/(:num)/archive', 'HeroJournalController::archive/$1/$2');
+        $routes->post('campaigns/(:num)/journal/(:num)/checklist', 'HeroJournalController::addChecklistItem/$1/$2');
+        $routes->patch('campaigns/(:num)/journal/(:num)/checklist/(:num)', 'HeroJournalController::updateChecklistItem/$1/$2/$3');
+        $routes->delete('campaigns/(:num)/journal/(:num)/checklist/(:num)', 'HeroJournalController::deleteChecklistItem/$1/$2/$3');
+        $routes->post('campaigns/(:num)/journal/(:num)/relations', 'HeroJournalController::addRelation/$1/$2');
+        $routes->delete('campaigns/(:num)/journal/(:num)/relations/(:num)', 'HeroJournalController::deleteRelation/$1/$2/$3');
+        $routes->get('campaigns/(:num)/characters/(:num)/bestiary', 'CharacterBestiaryController::index/$1/$2');
+        $routes->get('campaigns/(:num)/characters/(:num)/bestiary/(:num)', 'CharacterBestiaryController::show/$1/$2/$3');
+        $routes->get('campaigns/(:num)/bestiary/entries/(:num)/assignments', 'CharacterBestiaryController::assignments/$1/$2');
+        $routes->put('campaigns/(:num)/bestiary/entries/(:num)/assignments', 'CharacterBestiaryController::setAssignments/$1/$2');
+        $routes->put('campaigns/(:num)/bestiary/entries/(:num)/characters/(:num)', 'CharacterBestiaryController::setAssignment/$1/$2/$3');
+
+        // ----------------------------------------
+        // WFRP 2E PLAYER CHARACTER SPELLBOOK
+        // ----------------------------------------
+        $routes->get('campaigns/(:num)/characters/(:num)/magic', 'HeroMagicController::show/$1/$2');
+        $routes->patch('campaigns/(:num)/characters/(:num)/magic/preferences', 'HeroMagicController::preferences/$1/$2');
+        $routes->patch('campaigns/(:num)/characters/(:num)/magic/profile', 'HeroMagicController::profile/$1/$2');
+        $routes->put('campaigns/(:num)/characters/(:num)/magic/catalog/(:num)/reveal', 'HeroMagicController::reveal/$1/$2/$3');
+        $routes->post('campaigns/(:num)/characters/(:num)/magic/learning', 'HeroMagicController::learn/$1/$2');
+        $routes->post('campaigns/(:num)/magic/learning/(:num)/decision', 'HeroMagicController::decideLearning/$1/$2');
+        $routes->post('campaigns/(:num)/characters/(:num)/magic/casts', 'HeroMagicController::createCast/$1/$2');
+        $routes->post('campaigns/(:num)/magic/casts/(:num)/channel', 'HeroMagicController::channel/$1/$2');
+        $routes->post('campaigns/(:num)/magic/casts/(:num)/advance', 'HeroMagicController::advanceCast/$1/$2');
+        $routes->post('campaigns/(:num)/magic/casts/(:num)/resolve', 'HeroMagicController::resolveCast/$1/$2');
+        $routes->post('campaigns/(:num)/magic/casts/(:num)/cancel', 'HeroMagicController::cancelCast/$1/$2');
+        $routes->post('campaigns/(:num)/characters/(:num)/magic/rituals', 'HeroMagicController::ritual/$1/$2');
+        $routes->get('campaigns/(:num)/characters/(:num)/magic/history', 'HeroMagicController::history/$1/$2');
+
+        // ----------------------------------------
         // WORLD COMPENDIUM
         // ----------------------------------------
         $routes->get('compendiums/mine', 'CompendiumController::mine');
@@ -135,6 +231,12 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->get('campaigns/(:num)/compendium/entries', 'CampaignCompendiumController::index/$1');
         $routes->get('campaigns/(:num)/compendium/timeline', 'CampaignCompendiumController::timeline/$1');
         $routes->get('campaigns/(:num)/compendium/entries/(:num)', 'CampaignCompendiumController::show/$1/$2');
+        $routes->post('campaigns/(:num)/compendium/entries/(:num)/read', 'CampaignCompendiumController::recordRead/$1/$2');
+        $routes->put('campaigns/(:num)/compendium/entries/(:num)/favorite', 'CampaignCompendiumController::favorite/$1/$2');
+        $routes->post('campaigns/(:num)/compendium/entries/(:num)/reveal', 'CampaignCompendiumController::reveal/$1/$2');
+        $routes->delete('campaigns/(:num)/compendium/entries/(:num)/reveal', 'CampaignCompendiumController::revokeReveal/$1/$2');
+        $routes->post('campaigns/(:num)/compendium/entries/(:num)/pin', 'CampaignCompendiumController::pin/$1/$2');
+        $routes->post('campaigns/(:num)/compendium/entries/(:num)/notes', 'CampaignCompendiumController::note/$1/$2');
         $routes->post('campaigns/(:num)/compendium/entries/(:num)/materialize', 'CampaignCompendiumController::materialize/$1/$2');
         $routes->get('universes/(:num)/compendium', 'CompendiumController::overview/$1');
         $routes->get('universes/(:num)/compendium/entries', 'CompendiumController::index/$1');
@@ -157,12 +259,62 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->post('universes/(:num)/compendium/assets', 'CompendiumController::uploadAsset/$1');
         $routes->get('universes/(:num)/compendium/assets', 'CompendiumController::assets/$1');
         $routes->delete('universes/(:num)/compendium/assets/(:num)', 'CompendiumController::deleteAsset/$1/$2');
+        $routes->post('universes/(:num)/compendium/corpus-assets/(:num)/file', 'CompendiumController::uploadCorpusAsset/$1/$2');
         $routes->get('compendium-assets/(:num)/file', 'CompendiumController::assetFile/$1');
+        $routes->get('compendium-corpus-assets/(:num)/file', 'CompendiumController::corpusAssetFile/$1');
 
         // ----------------------------------------
         // ADMINISTRATION
         // ----------------------------------------
+        $routes->get('admin/media-assets', 'AdminMediaController::index');
+        $routes->get('admin/media-audio-libraries', 'AdminMediaController::audioLibraries');
+        $routes->post('admin/media-assets/upload', 'AdminMediaController::upload');
+        $routes->post('admin/media-assets/external', 'AdminMediaController::registerExternal');
+        $routes->post('admin/media-assets/audio-tracks/(:num)/publish', 'AdminMediaController::publishPersonalAudioTrack/$1');
+        $routes->patch('admin/media-assets/bulk', 'AdminMediaController::bulk');
+        $routes->post('admin/media-assets/character-sets', 'AdminMediaController::createCharacterSet');
+        $routes->get('admin/media-assets/(:num)', 'AdminMediaController::show/$1');
+        $routes->patch('admin/media-assets/(:num)', 'AdminMediaController::update/$1');
+        $routes->delete('admin/media-assets/(:num)', 'AdminMediaController::delete/$1');
+        $routes->post('admin/media-assets/(:num)/replacement', 'AdminMediaController::initiateReplacement/$1');
+        $routes->post('admin/media-assets/(:num)/replacement/(:num)/complete', 'AdminMediaController::completeReplacement/$1/$2');
+        $routes->post('admin/media-assets/(:num)/retry-purge', 'AdminMediaController::retryPurge/$1');
+        $routes->get('admin/media-collections', 'AdminMediaController::collections');
+        $routes->post('admin/media-collections', 'AdminMediaController::createCollection');
+        $routes->patch('admin/media-collections/(:num)', 'AdminMediaController::updateCollection/$1');
+        $routes->delete('admin/media-collections/(:num)', 'AdminMediaController::deleteCollection/$1');
+        $routes->post('admin/media-collections/(:num)/assets', 'AdminMediaController::addCollectionAssets/$1');
+        $routes->delete('admin/media-collections/(:num)/assets', 'AdminMediaController::removeCollectionAssets/$1');
         $routes->get('admin/overview', 'AdminController::overview');
+        $routes->get('admin/audio', 'AdminController::audioOverview');
+        $routes->post('admin/audio/libraries', 'AdminController::createAudioLibrary');
+        $routes->patch('admin/audio/libraries/(:num)', 'AdminController::updateAudioLibrary/$1');
+        $routes->delete('admin/audio/libraries/(:num)', 'AdminController::deleteAudioLibrary/$1');
+        $routes->post('admin/audio/libraries/(:num)/tracks/upload', 'AdminController::uploadAudioTrack/$1');
+        $routes->post('admin/audio/libraries/(:num)/tracks/external', 'AdminController::createExternalAudioTrack/$1');
+        $routes->patch('admin/audio/tracks/(:num)', 'AdminController::updateAudioTrack/$1');
+        $routes->delete('admin/audio/tracks/(:num)', 'AdminController::deleteAudioTrack/$1');
+        $routes->get('admin/token-templates', 'AdminController::tokenTemplates');
+        $routes->post('admin/token-templates', 'AdminController::createTokenTemplate');
+        $routes->patch('admin/token-templates/(:num)', 'AdminController::updateTokenTemplate/$1');
+        $routes->delete('admin/token-templates/(:num)', 'AdminController::deleteTokenTemplate/$1');
+        $routes->get('admin/token-template-assets/(:num)/file', 'AdminController::tokenTemplateAssetFile/$1');
+        $routes->get('admin/compendium', 'AdminController::compendiumOverview');
+        $routes->get('admin/professions', 'AdminController::professions');
+        $routes->post('admin/professions/decode', 'AdminController::decodeProfessionRequirements');
+        $routes->post('admin/professions', 'AdminController::createProfession');
+        $routes->patch('admin/professions/(:num)', 'AdminController::updateProfession/$1');
+        $routes->delete('admin/professions/(:num)', 'AdminController::deleteProfession/$1');
+        $routes->post('admin/professions/(:num)/images/(:segment)', 'AdminController::uploadProfessionImage/$1/$2');
+        $routes->delete('admin/professions/(:num)/images/(:segment)', 'AdminController::deleteProfessionImage/$1/$2');
+        $routes->get('profession-assets/(:num)/file', 'ProfessionController::assetFile/$1');
+        $routes->post('admin/compendium/worlds', 'AdminController::createCompendiumWorld');
+        $routes->patch('admin/compendium/worlds/(:num)', 'AdminController::updateCompendiumWorld/$1');
+        $routes->patch('admin/compendium/worlds/(:num)/entries/(:num)/policy', 'AdminController::updateCompendiumEntryPolicy/$1/$2');
+        $routes->patch('admin/compendium/worlds/(:num)/profiles/(:num)', 'AdminController::updateCompendiumProfile/$1/$2');
+        $routes->patch('admin/compendium/sources/(:num)', 'AdminController::updateCompendiumSource/$1');
+        $routes->post('admin/compendium/worlds/(:num)/imports/(:num)/rollback', 'AdminController::rollbackCompendiumImport/$1/$2');
+        $routes->post('admin/compendium/worlds/(:num)/sync-wfrp2', 'AdminController::syncCompendiumWfrp2/$1');
         $routes->post('admin/users', 'AdminController::createUser');
         $routes->patch('admin/users/(:num)/role', 'AdminController::changeUserRole/$1');
         $routes->put('admin/characters/(:num)/campaigns/(:num)', 'AdminController::attachCharacterCampaign/$1/$2');
@@ -176,6 +328,14 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         $routes->get('character-asset-sets/available', 'CharacterController::availableAssetSets');
         $routes->post('character-asset-sets', 'CharacterController::createAssetSet');
         $routes->get('campaigns/(:num)/characters', 'CharacterController::index/$1');
+        $routes->get('campaigns/(:num)/professions', 'ProfessionController::campaign/$1');
+        $routes->get('campaigns/(:num)/characters/(:num)/professions', 'ProfessionController::character/$1/$2');
+        $routes->get('campaigns/(:num)/characters/(:num)/wallets', 'CharacterController::wallets/$1/$2');
+        $routes->put('campaigns/(:num)/characters/(:num)/wallets', 'CharacterController::updateWallets/$1/$2');
+        $routes->put('campaigns/(:num)/characters/(:num)/profession', 'ProfessionController::changeCharacterProfession/$1/$2');
+        $routes->put('campaigns/(:num)/characters/(:num)/professions/(:num)/activate', 'ProfessionController::activateCharacterProfession/$1/$2/$3');
+        $routes->put('campaigns/(:num)/characters/(:num)/professions/history-order', 'ProfessionController::reorderCharacterProfessions/$1/$2');
+        $routes->delete('campaigns/(:num)/characters/(:num)/professions/(:num)', 'ProfessionController::deleteCharacterProfession/$1/$2/$3');
         $routes->get('campaigns/(:num)/resources/(:segment)/(:num)/permissions', 'ResourcePermissionController::index/$1/$2/$3');
         $routes->put('campaigns/(:num)/resources/(:segment)/(:num)/permissions/(:num)', 'ResourcePermissionController::update/$1/$2/$3/$4');
         $routes->patch('campaigns/(:num)/resources/(:segment)/(:num)/permissions/(:num)', 'ResourcePermissionController::update/$1/$2/$3/$4');
@@ -206,6 +366,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         // SYSTEMS
         // ----------------------------------------
         $routes->get('systems/(:num)/universes', 'RpgCatalogController::systemUniverses/$1');
+        $routes->get('systems/(:num)/professions', 'ProfessionController::system/$1');
         $routes->get('systems/(:num)/categories', 'GameDataController::getCategories/$1');
         $routes->get('systems/(:num)/data', 'GameDataController::getDefinitions/$1');
         $routes->resource('systems', [
@@ -222,28 +383,67 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], static function (R
         // VTT SCENES
         // /api/campaigns/{campaignId}/scenes
         // ----------------------------------------
+        $routes->get('campaigns/(:num)/maps', 'MapBuilderController::index/$1');
+        $routes->post('campaigns/(:num)/maps', 'MapBuilderController::create/$1');
+        $routes->get('campaigns/(:num)/maps/ai/status', 'MapBuilderController::aiStatus/$1');
+        $routes->get('campaigns/(:num)/maps/assets', 'MapBuilderController::assets/$1');
+        $routes->post('campaigns/(:num)/maps/assets', 'MapBuilderController::uploadAsset/$1');
+        $routes->get('campaigns/(:num)/maps/assets/(:num)/file', 'MapBuilderController::assetFile/$1/$2');
+        $routes->post('campaigns/(:num)/maps/asset-packages', 'MapBuilderController::importPackage/$1');
+        $routes->get('campaigns/(:num)/maps/(:num)', 'MapBuilderController::show/$1/$2');
+        $routes->put('campaigns/(:num)/maps/(:num)', 'MapBuilderController::save/$1/$2');
+        $routes->post('campaigns/(:num)/maps/(:num)/lock', 'MapBuilderController::acquireLock/$1/$2');
+        $routes->delete('campaigns/(:num)/maps/(:num)/lock', 'MapBuilderController::releaseLock/$1/$2');
+        $routes->get('campaigns/(:num)/maps/(:num)/revisions', 'MapBuilderController::revisions/$1/$2');
+        $routes->post('campaigns/(:num)/maps/(:num)/revisions/(:num)/restore', 'MapBuilderController::restore/$1/$2/$3');
+        $routes->post('campaigns/(:num)/maps/(:num)/render', 'MapBuilderController::uploadRender/$1/$2');
+        $routes->post('campaigns/(:num)/maps/(:num)/publish', 'MapBuilderController::publish/$1/$2');
+        $routes->post('campaigns/(:num)/maps/(:num)/ai-jobs', 'MapBuilderController::createAiJob/$1/$2');
+        $routes->get('campaigns/(:num)/maps/(:num)/ai-jobs/(:segment)', 'MapBuilderController::aiJob/$1/$2/$3');
+        $routes->delete('campaigns/(:num)/maps/(:num)/ai-jobs/(:segment)', 'MapBuilderController::cancelAiJob/$1/$2/$3');
+        $routes->get('campaigns/(:num)/scene-assets', 'SceneController::assets/$1');
+        $routes->post('campaigns/(:num)/scene-assets', 'SceneController::uploadAsset/$1');
+        $routes->get('campaigns/(:num)/scene-assets/(:segment)/file', 'SceneController::assetFile/$1/$2');
         $routes->get('campaigns/(:num)/scenes', 'SceneController::index/$1');
         $routes->post('campaigns/(:num)/scenes', 'SceneController::create/$1');
         $routes->get('campaigns/(:num)/scenes/(:num)', 'SceneController::show/$1/$2');
         $routes->patch('campaigns/(:num)/scenes/(:num)', 'SceneController::update/$1/$2');
         $routes->delete('campaigns/(:num)/scenes/(:num)', 'SceneController::delete/$1/$2');
         $routes->post('campaigns/(:num)/scenes/(:num)/activate', 'SceneController::activate/$1/$2');
+        $routes->post('campaigns/(:num)/scenes/(:num)/duplicate', 'SceneController::duplicate/$1/$2');
+        $routes->post('campaigns/(:num)/scenes/(:num)/darkness-transition', 'SceneController::transitionDarkness/$1/$2');
         $routes->get('campaigns/(:num)/scenes/(:num)/fog', 'SceneFogController::show/$1/$2');
         $routes->patch('campaigns/(:num)/scenes/(:num)/fog', 'SceneFogController::patch/$1/$2');
+        $routes->post('campaigns/(:num)/scenes/(:num)/fog/reset', 'SceneFogController::reset/$1/$2');
         $routes->get('campaigns/(:num)/scenes/(:num)/tokens', 'SceneTokenController::index/$1/$2');
         $routes->post('campaigns/(:num)/scenes/(:num)/tokens', 'SceneTokenController::create/$1/$2');
         $routes->patch('campaigns/(:num)/scenes/(:num)/tokens/(:num)', 'SceneTokenController::update/$1/$2/$3');
         $routes->delete('campaigns/(:num)/scenes/(:num)/tokens/(:num)', 'SceneTokenController::delete/$1/$2/$3');
+        $routes->get('campaigns/(:num)/token-templates', 'TokenTemplateController::index/$1');
+        $routes->post('campaigns/(:num)/scenes/(:num)/tokens/from-template', 'TokenTemplateController::instantiate/$1/$2');
+        $routes->get('campaigns/(:num)/token-template-assets/(:num)/file', 'TokenTemplateController::assetFile/$1/$2');
+        $routes->get('campaigns/(:num)/token-sync', 'TokenSyncController::index/$1');
+        $routes->post('campaigns/(:num)/token-sync/preview', 'TokenSyncController::preview/$1');
+        $routes->post('campaigns/(:num)/token-sync/transfer', 'TokenSyncController::transfer/$1');
+        $routes->post('campaigns/(:num)/token-sync/links', 'TokenSyncController::createLinks/$1');
+        $routes->patch('campaigns/(:num)/token-sync/links/(:num)', 'TokenSyncController::updateLink/$1/$2');
+        $routes->post('campaigns/(:num)/token-sync/links/(:num)/apply', 'TokenSyncController::applyLink/$1/$2');
+        $routes->delete('campaigns/(:num)/token-sync/links/(:num)', 'TokenSyncController::deleteLink/$1/$2');
         $routes->get('campaigns/(:num)/scenes/(:num)/combat', 'SceneCombatController::show/$1/$2');
         $routes->post('campaigns/(:num)/scenes/(:num)/combat/commands', 'SceneCombatController::command/$1/$2');
         $routes->get('campaigns/(:num)/scenes/(:num)/walls', 'SceneWallController::index/$1/$2');
         $routes->post('campaigns/(:num)/scenes/(:num)/walls', 'SceneWallController::create/$1/$2');
         $routes->patch('campaigns/(:num)/scenes/(:num)/walls/(:num)', 'SceneWallController::update/$1/$2/$3');
         $routes->delete('campaigns/(:num)/scenes/(:num)/walls/(:num)', 'SceneWallController::delete/$1/$2/$3');
+        $routes->post('campaigns/(:num)/scenes/(:num)/walls/(:num)/interact', 'SceneWallController::interact/$1/$2/$3');
         $routes->get('campaigns/(:num)/scenes/(:num)/lights', 'SceneLightController::index/$1/$2');
         $routes->post('campaigns/(:num)/scenes/(:num)/lights', 'SceneLightController::create/$1/$2');
         $routes->patch('campaigns/(:num)/scenes/(:num)/lights/(:num)', 'SceneLightController::update/$1/$2/$3');
         $routes->delete('campaigns/(:num)/scenes/(:num)/lights/(:num)', 'SceneLightController::delete/$1/$2/$3');
+        $routes->get('campaigns/(:num)/scenes/(:num)/regions', 'SceneRegionController::index/$1/$2');
+        $routes->post('campaigns/(:num)/scenes/(:num)/regions', 'SceneRegionController::create/$1/$2');
+        $routes->patch('campaigns/(:num)/scenes/(:num)/regions/(:num)', 'SceneRegionController::update/$1/$2/$3');
+        $routes->delete('campaigns/(:num)/scenes/(:num)/regions/(:num)', 'SceneRegionController::delete/$1/$2/$3');
         $routes->get('campaigns/(:num)/scenes/(:num)/tiles', 'SceneTileController::index/$1/$2');
         $routes->post('campaigns/(:num)/scenes/(:num)/tiles', 'SceneTileController::create/$1/$2');
         $routes->patch('campaigns/(:num)/scenes/(:num)/tiles/(:num)', 'SceneTileController::update/$1/$2/$3');

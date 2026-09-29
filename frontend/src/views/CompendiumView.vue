@@ -3,6 +3,7 @@
     <CompendiumWorkspace
       :campaign-id="campaignId"
       :universe-id="universeId"
+      :can-see-gm-hint="canSeeGmHint"
       @materialized="handleMaterialized"
     />
   </main>
@@ -20,6 +21,20 @@ export default {
     },
     universeId() {
       return this.$route.params.universeId || null;
+    },
+    canSeeGmHint() {
+      if (this.universeId) return true;
+      const context = this.$store.state.campaignContext || {};
+      if (Number(context.campaignId) !== Number(this.campaignId)) return false;
+      const role = String(
+        context.currentCampaign?.campaignRole || "",
+      ).toLowerCase();
+      return (
+        context.capabilities?.canManage === true ||
+        role === "gm" ||
+        role === "game_master" ||
+        role === "assistant"
+      );
     },
   },
   methods: {

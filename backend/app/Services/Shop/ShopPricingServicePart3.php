@@ -13,9 +13,12 @@ trait ShopPricingServicePart3
         $ctx = $this->buildPricingContext($template, $profile, $item, $mode);
         $config = $ctx['pricingConfig'];
         $current = $ctx['sourceBasePrice'];
+        $sourceBasePriceLabel = is_finite((float) $ctx['sourceBasePrice'])
+            ? (string) $ctx['sourceBasePrice']
+            : 'invalid';
         $breakdown = [];
         $this->appendFactor($current, $breakdown, 'catalogPrice', $this->fixedEffect(
-            (string) $ctx['sourceBasePrice'], $ctx['sourceBasePrice'], 'catalog_price'
+            $sourceBasePriceLabel, $ctx['sourceBasePrice'], 'catalog_price'
         ), ['stage' => 1, 'input' => $ctx['sourceBasePrice']]);
 
         $this->appendFactor($current, $breakdown, 'currencyConversion', $this->multiplierEffect(

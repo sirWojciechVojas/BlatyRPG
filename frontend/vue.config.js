@@ -54,6 +54,17 @@ module.exports = defineConfig({
   chainWebpack: (config) => {
     const runtimeAssets = /character-hud[\\/](?:runtime|v8)[\\/].*\.webp$/iu;
 
+    // Assets copied from the GUI pack live in public/ and intentionally keep
+    // their manifest paths instead of being fingerprinted a second time.
+    config.module.rule("css").oneOfs.store.forEach((oneOf) => {
+      oneOf.use("css-loader").tap((options = {}) => ({
+        ...options,
+        url: {
+          filter: (url) => !url.startsWith("/blaty-rpg-gui/"),
+        },
+      }));
+    });
+
     // Keep the versioned HUD WebP textures independently cacheable.
     // The default `asset` rule inlines small files, which would otherwise place
     // the shared button and frame textures inside the JavaScript chunk.

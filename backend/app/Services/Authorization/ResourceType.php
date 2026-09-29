@@ -9,6 +9,7 @@ final class ResourceType
     public const SCENE = 'scene';
     public const JOURNAL = 'journal';
     public const ITEM = 'item';
+    public const COMPENDIUM_INSTANCE = 'compendium_instance';
     public const SHARED = 'resource';
 
     public static function normalize($type): ?string
@@ -21,7 +22,7 @@ final class ResourceType
     {
         return [
             self::CAMPAIGN, self::CHARACTER, self::SCENE,
-            self::JOURNAL, self::ITEM, self::SHARED,
+            self::JOURNAL, self::ITEM, self::COMPENDIUM_INSTANCE, self::SHARED,
         ];
     }
 
@@ -33,6 +34,7 @@ final class ResourceType
             self::SCENE => 'scenes',
             self::JOURNAL => 'journals',
             self::ITEM => 'shop_item_instances',
+            self::COMPENDIUM_INSTANCE => 'compendium_campaign_instances',
         ];
         return $map[$type] ?? null;
     }

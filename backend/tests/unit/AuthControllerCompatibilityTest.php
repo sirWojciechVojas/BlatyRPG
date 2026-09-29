@@ -2,6 +2,7 @@
 
 use App\Controllers\Api\AuthController;
 use App\Controllers\Api\AuthSessionController;
+use App\Controllers\Api\OAuthController;
 use CodeIgniter\Test\CIUnitTestCase;
 
 final class AuthControllerCompatibilityTest extends CIUnitTestCase
@@ -10,5 +11,6 @@ final class AuthControllerCompatibilityTest extends CIUnitTestCase
     {
         $this->assertTrue(class_exists(AuthController::class));
         $this->assertTrue(class_exists(AuthSessionController::class));
+        $this->assertTrue(class_exists(OAuthController::class));
     }
 }

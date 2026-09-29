@@ -5,6 +5,10 @@ import { ensureShopStoreModuleForRoute } from "../store/modules/loadShopModule";
 import { ensureVttStoreModuleForRoute } from "../store/modules/loadVttModule";
 import { createAuthGuard } from "./authGuard";
 import {
+  loadAdminView,
+  loadDashboardView,
+} from "@/lib/auth/authRouteComponents";
+import {
   createCampaignAuthorization,
   createCampaignSessionGuard,
 } from "./campaignSessionGuard";
@@ -31,9 +35,15 @@ const routes = [
     path: "/tables",
     name: "tables",
     meta: { title: "Tables", requiresAuth: true },
+    component: loadDashboardView,
+  },
+  {
+    path: "/oauth/callback",
+    name: "oauth-callback",
+    meta: { title: "OAuth" },
     component: () =>
       import(
-        /* webpackChunkName: "campaign-dashboard" */ "../views/DashboardHomeView.vue"
+        /* webpackChunkName: "authentication" */ "../views/OAuthCallbackView.vue"
       ),
   },
   {
@@ -87,7 +97,7 @@ const routes = [
     meta: { title: "Invitations", requiresAuth: true },
     component: () =>
       import(
-        /* webpackChunkName: "campaign-lobby" */ "../views/MyInvitationsView.vue"
+        /* webpackChunkName: "campaign-invitations" */ "../views/MyInvitationsView.vue"
       ),
   },
   {
@@ -99,12 +109,10 @@ const routes = [
   },
   {
     path: "/campaigns/:campaignId",
-    name: "campaign-lobby",
-    meta: { title: "Campaign lobby", requiresAuth: true },
-    component: () =>
-      import(
-        /* webpackChunkName: "campaign-lobby" */ "../views/CampaignLobbyView.vue"
-      ),
+    redirect: (to) => ({
+      name: "scene-workspace",
+      params: { campaignId: to.params.campaignId },
+    }),
   },
   {
     path: "/campaigns/:campaignId/shop",
@@ -171,8 +179,7 @@ const routes = [
     path: "/admin",
     name: "admin",
     meta: { title: "Administration", requiresAuth: true, requiresAdmin: true },
-    component: () =>
-      import(/* webpackChunkName: "administration" */ "../views/AdminView.vue"),
+    component: loadAdminView,
   },
   {
     path: "/:pathMatch(.*)*",

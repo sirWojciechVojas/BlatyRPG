@@ -9,11 +9,29 @@ import {
 } from "../playerCharacterHudModel";
 
 describe("playerCharacterHudModel", () => {
-  it("selects only owned characters using focus, state and deterministic id order", () => {
+  it("selects every character with edit access using focus, state and deterministic id order", () => {
     const characters = [
-      { id: 9, campaignId: 4, ownerUserId: 7, name: "Nine" },
-      { id: 1, campaignId: 4, ownerUserId: 99, name: "Foreign" },
-      { id: 3, campaignId: 4, ownerUserId: 7, name: "Three" },
+      {
+        id: 9,
+        campaignId: 4,
+        ownerUserId: 7,
+        name: "Nine",
+        capabilities: { canEdit: true },
+      },
+      {
+        id: 1,
+        campaignId: 4,
+        ownerUserId: 99,
+        name: "Shared",
+        capabilities: { canEdit: true },
+      },
+      {
+        id: 3,
+        campaignId: 4,
+        ownerUserId: 7,
+        name: "Observer",
+        capabilities: { canEdit: false },
+      },
     ];
 
     expect(
@@ -31,8 +49,14 @@ describe("playerCharacterHudModel", () => {
         focusedCharacterId: 1,
         selectedCharacterId: 9,
       })?.id,
-    ).toBe(9);
-    expect(selectPlayerCharacter({ characters, userId: 7 })).toBeNull();
+    ).toBe(1);
+    expect(
+      selectPlayerCharacter({
+        characters,
+        userId: 7,
+        selectedCharacterId: 1,
+      })?.id,
+    ).toBe(1);
     expect(selectPlayerCharacter({ characters, userId: 88 })).toBeNull();
   });
 

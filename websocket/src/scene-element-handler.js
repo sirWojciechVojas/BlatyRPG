@@ -17,6 +17,7 @@ export const createSceneElementHandler = ({
   publicUpdates = false,
   hideHidden = false,
   publicItem = null,
+  afterPublish = null,
 }) => {
   const writes = new Map();
   const idKey = `${resource}Id`;
@@ -49,12 +50,18 @@ export const createSceneElementHandler = ({
     const payload = result.scene
       ? { scene: result.scene }
       : item
-        ? { [resource]: item }
+        ? {
+            [resource]: item,
+            ...(result.sound ? { sound: String(result.sound) } : {}),
+          }
         : { sceneId: result.sceneId, [idKey]: result[idKey] };
     const event = eventFor(session, type, payload, sequence);
     const publicPayload =
       item && typeof publicItem === "function"
-        ? { [resource]: publicItem(item) }
+        ? {
+            [resource]: publicItem(item),
+            ...(result.sound ? { sound: String(result.sound) } : {}),
+          }
         : payload;
     const publicEvent = eventFor(session, type, publicPayload, sequence);
     const marker = createServerEvent({
@@ -75,7 +82,8 @@ export const createSceneElementHandler = ({
     const hiddenScene =
       result.scene &&
       (result.scene.isVisible === false || result.scene.is_visible === false);
-    for (const recipient of rooms.sessions(session.campaignId)) {
+    const recipients = rooms.sessions(session.campaignId);
+    for (const recipient of recipients) {
       const canManage =
         recipient.id === session.id ||
         recipient.capabilities?.canManage === true ||
@@ -98,6 +106,11 @@ export const createSceneElementHandler = ({
         revision: item?.revision ?? result.scene?.revision ?? null,
       }),
     );
+    if (typeof afterPublish === "function") {
+      Promise.resolve(afterPublish({ session, request, result, recipients })).catch(
+        () => {},
+      );
+    }
   };
 
   const handle = (session, request) => {

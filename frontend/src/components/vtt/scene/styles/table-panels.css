@@ -129,6 +129,22 @@
   scrollbar-width: thin;
 }
 
+.table-utility-drawer__body
+  > .campaign-chat--embedded
+  > .campaign-chat__header {
+  display: none;
+}
+
+.table-utility-drawer__body
+  > .campaign-chat--embedded
+  .campaign-chat__message {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin-right: 0;
+  margin-left: 0;
+}
+
 .table-context-panel {
   display: grid;
   gap: var(--ui-space-4, 0.75rem);

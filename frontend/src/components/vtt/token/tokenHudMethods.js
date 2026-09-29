@@ -11,16 +11,11 @@ const anchorRect = (event) => {
 
 export const tokenHudMethods = {
   tokenInfoVisible(token) {
-    if (
-      this.hasMultiSelection === true &&
-      this.tokenStates?.[token.id]?.selected === true
-    ) {
-      return false;
+    const selected = this.tokenStates?.[token.id]?.selected === true;
+    if (selected) {
+      return this.hasMultiSelection !== true && this.isTokenExpanded(token.id);
     }
-    return (
-      token.showInfoUnselected === true ||
-      this.tokenStates?.[token.id]?.selected === true
-    );
+    return token.showInfoUnselected === true;
   },
   resourceEditable(token) {
     if (this.busy) return false;
@@ -60,7 +55,12 @@ export const tokenHudMethods = {
     this.settingsAnchor = anchorRect(event);
   },
   saveTokenSettings(token, changes) {
-    this.$emit("update", { token, changes });
-    this.settingsTokenId = null;
+    this.$emit("update", {
+      token,
+      changes,
+      onSuccess: () => {
+        this.settingsTokenId = null;
+      },
+    });
   },
 };

@@ -57,6 +57,21 @@ class InternalRealtimeWallController extends BaseController
                     array_merge($this->changes($payload), ['revision' => $revision])
                 ));
             }
+            if ($operation === 'interact') {
+                $changes = $this->changes($payload);
+                return $this->respond($this->walls->interact(
+                    $id,
+                    $sceneId,
+                    $wallId,
+                    $auth,
+                    [
+                        'doorState' => $changes['doorState'] ?? null,
+                        'actingTokenIds' => $changes['actingTokenIds'] ?? [],
+                        'silent' => $changes['silent'] ?? false,
+                        'revision' => $revision,
+                    ]
+                ));
+            }
             if ($operation === 'delete') {
                 return $this->respond($this->walls->delete(
                     $id,

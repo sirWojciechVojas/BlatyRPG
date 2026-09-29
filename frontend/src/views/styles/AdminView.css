@@ -79,6 +79,9 @@
   grid-template-columns: 13rem minmax(0, 1fr);
 }
 .admin-tabs {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 0.25rem;
   border-right: var(--ui-border);
   background: rgba(16, 11, 8, 0.64);
@@ -132,6 +135,10 @@
   min-height: 0;
   overflow: auto;
   padding: clamp(0.65rem, 1.3vw, 1rem);
+}
+.admin-main--contained {
+  overflow: hidden;
+  padding: 0 !important;
 }
 .admin-tab-grid {
   display: grid;

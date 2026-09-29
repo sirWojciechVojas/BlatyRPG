@@ -1,0 +1,122 @@
+.scene-dice-overlay {
+  position: absolute;
+  z-index: 20000;
+  inset: 0;
+  isolation: isolate;
+  overflow: hidden;
+  color: #f6efe2;
+  background: transparent;
+  pointer-events: auto;
+  touch-action: none;
+}
+
+.scene-dice-overlay__roller {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+.scene-dice-overlay--quick .scene-dice-overlay__roller {
+  pointer-events: none;
+}
+
+.scene-dice-overlay--quick :deep(#selector_div) {
+  display: none !important;
+}
+
+.scene-dice-overlay :deep(#selector_div) {
+  box-sizing: border-box;
+  padding: 0.45rem 3.6rem 0.5rem;
+  background: linear-gradient(180deg, rgb(12 11 9 / 88%), rgb(12 11 9 / 62%));
+  border-bottom: 1px solid rgb(221 183 112 / 55%);
+  box-shadow: 0 0.6rem 1.4rem rgb(0 0 0 / 28%);
+  backdrop-filter: blur(6px);
+}
+
+.scene-dice-overlay :deep(#selector_div button),
+.scene-dice-overlay :deep(#selector_div input) {
+  color: #f7ead0;
+  background: rgb(25 22 17 / 88%);
+  border: 1px solid rgb(190 146 77 / 58%);
+}
+
+.scene-dice-overlay :deep(#selector_div button:hover),
+.scene-dice-overlay :deep(#selector_div button:focus-visible),
+.scene-dice-overlay :deep(#selector_div input:focus-visible) {
+  border-color: #e3b86f;
+  outline: 1px solid rgb(255 215 148 / 45%);
+}
+
+.scene-dice-overlay :deep(#info_div) {
+  bottom: 7.5rem;
+}
+
+.scene-dice-overlay :deep(#label) {
+  padding: 0.55rem 0.9rem;
+  color: #fff3d8;
+  background: rgb(16 13 9 / 66%);
+  border: 1px solid rgb(227 184 111 / 38%);
+  border-radius: 0.45rem;
+  box-shadow: 0 0.6rem 1.4rem rgb(0 0 0 / 35%);
+  text-shadow: 0 2px 3px #000;
+  backdrop-filter: blur(4px);
+}
+
+.scene-dice-overlay__close {
+  position: absolute;
+  z-index: 30;
+  top: 0.55rem;
+  right: 0.65rem;
+  display: grid;
+  width: 2.25rem;
+  height: 2.25rem;
+  place-items: center;
+  padding: 0;
+  color: #f7e4bc;
+  font:
+    700 1.45rem/1 Georgia,
+    serif;
+  background: rgb(20 17 13 / 88%);
+  border: 1px solid rgb(211 166 91 / 70%);
+  border-radius: 50%;
+  box-shadow: 0 0.35rem 1rem rgb(0 0 0 / 48%);
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+}
+
+.scene-dice-overlay__close:hover,
+.scene-dice-overlay__close:focus-visible {
+  color: #fff6e4;
+  background: rgb(61 43 24 / 94%);
+  border-color: #efc47d;
+  outline: 2px solid rgb(244 203 132 / 35%);
+  outline-offset: 2px;
+}
+
+.scene-dice-overlay__error {
+  position: absolute;
+  z-index: 31;
+  top: 3.35rem;
+  right: 0.65rem;
+  max-width: min(24rem, calc(100% - 1.3rem));
+  margin: 0;
+  padding: 0.55rem 0.75rem;
+  color: #ffe5da;
+  font-size: 0.75rem;
+  background: rgb(75 24 18 / 95%);
+  border: 1px solid rgb(238 132 104 / 72%);
+  border-radius: 0.35rem;
+  box-shadow: 0 0.5rem 1.2rem rgb(0 0 0 / 42%);
+}
+
+@media (max-width: 720px) {
+  .scene-dice-overlay :deep(#selector_div) {
+    padding-right: 3.25rem;
+    padding-left: 0.4rem;
+  }
+
+  .scene-dice-overlay :deep(.selector-button .button-label),
+  .scene-dice-overlay :deep(.dice-toggle-button .toggle-label) {
+    display: none;
+  }
+}

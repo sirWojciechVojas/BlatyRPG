@@ -71,7 +71,7 @@
           :class="`scene-token--${previewToken.disposition}`"
           :style="artworkStyle"
         >
-          <img
+          <AuthenticatedImage
             v-if="previewToken.imageUrl && !imageFailed"
             :src="previewToken.imageUrl"
             alt=""
@@ -99,6 +99,7 @@
 
 <script>
 import TokenInfoStack from "./TokenInfoStack.vue";
+import AuthenticatedImage from "@/components/ui/AuthenticatedImage.vue";
 import TokenResourceOverlay from "./TokenResourceOverlay.vue";
 import { buildGridPattern } from "@/lib/vtt/grid";
 import {
@@ -108,7 +109,7 @@ import {
 
 export default {
   name: "TokenSettingsPreview",
-  components: { TokenInfoStack, TokenResourceOverlay },
+  components: { AuthenticatedImage, TokenInfoStack, TokenResourceOverlay },
   props: {
     draft: { type: Object, required: true },
     token: { type: Object, required: true },

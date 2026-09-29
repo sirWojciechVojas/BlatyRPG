@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\CharacterAssetModel;
 use App\Models\CharacterAssetSetModel;
 use App\Models\CharacterModel;
+use App\Services\Media\MediaService;
 use Config\Database;
 use InvalidArgumentException;
 
@@ -15,14 +16,19 @@ final class CharacterAssetService
     private $assetModel;
     private $characterModel;
     private $cloudinary;
+    private $media;
 
-    public function __construct(?CloudinaryCharacterAssetService $cloudinary = null)
+    public function __construct(
+        ?CloudinaryCharacterAssetService $cloudinary = null,
+        ?MediaService $media = null
+    )
     {
         $this->db = Database::connect();
         $this->assetSetModel = new CharacterAssetSetModel();
         $this->assetModel = new CharacterAssetModel();
         $this->characterModel = new CharacterModel();
         $this->cloudinary = $cloudinary ?? new CloudinaryCharacterAssetService();
+        $this->media = $media ?? new MediaService($this->db);
     }
 
     public function availableSets(): array
@@ -95,7 +101,12 @@ final class CharacterAssetService
         return $characters;
     }
 
-    public function createAvailableSet(string $name = '', array $publicIds = []): array
+    public function createAvailableSet(
+        string $name = '',
+        array $publicIds = [],
+        array $mediaAssetIds = [],
+        ?array $auth = null
+    ): array
     {
         if (!$this->schemaReady()) {
             throw new InvalidArgumentException('Character asset schema is not available.');
@@ -106,7 +117,8 @@ final class CharacterAssetService
             throw new InvalidArgumentException('Asset set name is too long.');
         }
         $unknownTypes = array_diff(array_keys($publicIds), CharacterAssetModel::TYPES);
-        if ($unknownTypes) {
+        $unknownMediaTypes = array_diff(array_keys($mediaAssetIds), CharacterAssetModel::TYPES);
+        if ($unknownTypes || $unknownMediaTypes) {
             throw new InvalidArgumentException('Unsupported character asset type.');
         }
 
@@ -121,16 +133,42 @@ final class CharacterAssetService
             $assetSetId = (int) $this->assetSetModel->getInsertID();
 
             foreach (CharacterAssetModel::TYPES as $type) {
-                $publicId = isset($publicIds[$type])
-                    ? $this->cloudinary->normalizePublicId((string) $publicIds[$type])
-                    : $this->cloudinary->canonicalPublicId($assetSetId, $type);
-                if ($publicId === '') {
-                    throw new InvalidArgumentException('A public ID cannot be empty.');
+                if (isset($mediaAssetIds[$type])) {
+                    if ($auth === null) {
+                        throw new InvalidArgumentException('Authorization is required for existing media assets.');
+                    }
+                    $mediaAssetId = filter_var($mediaAssetIds[$type], FILTER_VALIDATE_INT, [
+                        'options' => ['min_range' => 1],
+                    ]);
+                    if ($mediaAssetId === false) {
+                        throw new InvalidArgumentException('Media asset ID is invalid.');
+                    }
+                    $presented = $this->media->get($auth, (int) $mediaAssetId);
+                    if (($presented['status'] ?? '') !== 'ready'
+                        || ($presented['resourceType'] ?? '') !== 'image') {
+                        throw new InvalidArgumentException('Character assets must reference ready images.');
+                    }
+                    // Character asset sets are global and have no campaign or
+                    // owner scope of their own. Restrict their media to public
+                    // assets so hydration cannot bypass MediaAccessPolicy.
+                    if (($presented['visibility'] ?? '') !== 'public') {
+                        throw new InvalidArgumentException('Character asset sets require public media.');
+                    }
+                    $mediaAsset = ['id' => (int) $mediaAssetId];
+                } else {
+                    $publicId = isset($publicIds[$type])
+                        ? $this->cloudinary->normalizePublicId((string) $publicIds[$type])
+                        : $this->cloudinary->canonicalPublicId($assetSetId, $type);
+                    if ($publicId === '') {
+                        throw new InvalidArgumentException('A public ID cannot be empty.');
+                    }
+                    $mediaAsset = $this->media->importCloudinaryAsset($publicId, $type);
                 }
                 if (!$this->assetModel->insert([
                     'asset_set_id' => $assetSetId,
                     'type' => $type,
-                    'public_id' => $publicId,
+                    'media_asset_id' => (int) $mediaAsset['id'],
+                    'public_id' => null,
                 ])) {
                     throw new InvalidArgumentException('Could not create a character asset.');
                 }
@@ -203,13 +241,13 @@ final class CharacterAssetService
             }
 
             $targetAssets = $this->db->table('character_assets')
-                ->select('type, public_id')
+                ->select('type, media_asset_id')
                 ->where('asset_set_id', $assetSetId)
                 ->get()
                 ->getResultArray();
             $targetAssetsByType = [];
             foreach ($targetAssets as $targetAsset) {
-                $targetAssetsByType[(string) $targetAsset['type']] = (string) $targetAsset['public_id'];
+                $targetAssetsByType[(string) $targetAsset['type']] = (int) $targetAsset['media_asset_id'];
             }
             if (count(array_intersect_key(
                 $targetAssetsByType,
@@ -220,8 +258,10 @@ final class CharacterAssetService
 
             $this->db->table('characters')->where('id', $characterId)->update([
                 'asset_set_id' => $assetSetId,
-                'avatar' => $targetAssetsByType['avatar'],
-                'avatar_url' => $targetAssetsByType['avatar'],
+                // The hydrated asset relation is authoritative. Do not copy a
+                // provider ID or a generated URL into legacy character fields.
+                'avatar' => null,
+                'avatar_url' => null,
                 'updated_at' => date('Y-m-d H:i:s'),
             ]);
             $this->db->table('character_asset_sets')->where('id', $assetSetId)->update([
@@ -299,11 +339,22 @@ final class CharacterAssetService
         $assetsBySet = [];
         foreach ($this->assetModel->whereIn('asset_set_id', $setIds)->orderBy('id', 'ASC')->findAll() as $asset) {
             $type = (string) $asset['type'];
-            $publicId = (string) $asset['public_id'];
+            $mediaAsset = $this->media->findReady((int) ($asset['media_asset_id'] ?? 0));
+            if (!$mediaAsset) {
+                continue;
+            }
+            $variant = [
+                'avatar' => 'avatar-md',
+                'portrait' => 'portrait-card',
+                'token' => 'token',
+                'fullbody' => 'portrait-large',
+            ][$type] ?? 'preview';
+            $presented = $this->media->presentTrusted($mediaAsset, $variant);
             $assetsBySet[(int) $asset['asset_set_id']][$type] = [
                 'type' => $type,
-                'publicId' => $publicId,
-                'url' => $this->cloudinary->url($publicId, $type),
+                'mediaAssetId' => (int) $mediaAsset['id'],
+                'url' => (string) ($presented['url'] ?? ''),
+                'variants' => (array) ($presented['variants'] ?? []),
             ];
         }
         foreach ($sets as &$set) {
@@ -318,6 +369,8 @@ final class CharacterAssetService
     {
         return $this->db->tableExists('character_asset_sets')
             && $this->db->tableExists('character_assets')
+            && $this->db->tableExists('media_assets')
+            && $this->db->fieldExists('media_asset_id', 'character_assets')
             && $this->db->fieldExists('asset_set_id', 'characters');
     }
 

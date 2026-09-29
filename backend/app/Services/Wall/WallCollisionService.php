@@ -34,7 +34,10 @@ final class WallCollisionService
         foreach ($walls as $wall) {
             if (array_key_exists('enabled', $wall) && empty($wall['enabled'])) continue;
             if (empty($wall['blocks_movement'])) continue;
-            if (($wall['type'] ?? 'wall') !== 'wall' && ($wall['door_state'] ?? null) === 'open') {
+            $doorType = (string) ($wall['door_type'] ?? (
+                ($wall['type'] ?? 'wall') !== 'wall' ? $wall['type'] : 'none'
+            ));
+            if ($doorType !== 'none' && ($wall['door_state'] ?? null) === 'open') {
                 continue;
             }
             $a = ['x' => (float) $wall['x1'], 'y' => (float) $wall['y1']];

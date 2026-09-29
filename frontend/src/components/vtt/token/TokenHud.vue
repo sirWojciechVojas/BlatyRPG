@@ -51,6 +51,15 @@
       <header class="token-hud__header">
         <i :class="`token-hud__dot token-hud__dot--${token.disposition}`" />
         <strong>{{ token.name }}</strong>
+        <span
+          v-if="synchronized"
+          class="token-hud__header-action token-hud__sync-badge active"
+          role="status"
+          :aria-label="$t('vtt.tokenSync.listenerBadge')"
+          :title="$t('vtt.tokenSync.listenerBadge')"
+        >
+          🔗
+        </span>
         <button
           v-if="token.capabilities.canManage"
           type="button"
@@ -122,6 +131,15 @@
         ⚙
       </button>
       <button
+        v-if="token.capabilities.canManage"
+        type="button"
+        :disabled="busy"
+        :title="$t('vtt.token.assignment.action')"
+        @click="$emit('assign-character')"
+      >
+        ♟
+      </button>
+      <button
         v-if="
           token.characterId &&
           (token.capabilities.canObserve || token.capabilities.canManage)
@@ -154,6 +172,7 @@ export default {
     busy: { type: Boolean, default: false },
     targeted: { type: Boolean, default: false },
     scale: { type: Number, default: 1 },
+    synchronized: { type: Boolean, default: false },
   },
   emits: [
     "move-start",
@@ -164,6 +183,7 @@ export default {
     "lock",
     "settings",
     "open-actor",
+    "assign-character",
     "delete",
     "close",
   ],

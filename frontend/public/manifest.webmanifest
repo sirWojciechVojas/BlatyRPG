@@ -1,0 +1,19 @@
+{
+  "id": "/",
+  "name": "BlatyRPG",
+  "short_name": "BlatyRPG",
+  "description": "Wirtualny stół do prowadzenia kampanii RPG.",
+  "start_url": "/#/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#120a08",
+  "theme_color": "#120a08",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "32x32",
+      "type": "image/x-icon",
+      "purpose": "any"
+    }
+  ]
+}

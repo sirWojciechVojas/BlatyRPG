@@ -11,6 +11,9 @@ export const normalizeFogFeather = (value) => {
   return configured <= 0 ? 0 : clamp(configured, 20, 50);
 };
 
+export const normalizeFogMask = (mask, expectedLength) =>
+  mask && Number(mask.length) === Number(expectedLength) ? mask : null;
+
 export const fogViewportRect = ({
   scene = {},
   camera = {},

@@ -65,9 +65,12 @@
         v-else-if="activeTab === 'security'"
         :sessions="sessions"
         :busy="busy"
+        :oauth-providers="oauthProviders"
+        :oauth-identities="oauthIdentities"
         @change-password="changePassword"
         @revoke-session="revokeSession"
         @revoke-others="revokeOtherSessions"
+        @link-oauth="linkOAuth"
       />
       <UserPreferencesPanel
         v-else

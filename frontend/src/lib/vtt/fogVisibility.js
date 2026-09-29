@@ -4,6 +4,7 @@ import {
   tokenVisionSource,
 } from "./lightGeometry";
 import { markCircle, markPolygon } from "./fogGrid";
+import { effectiveDarknessAt, globalIlluminationAt } from "./scenePerception";
 
 const INDEX_BUCKET_SIZE = 512;
 const CACHE_LIMIT = 8;
@@ -141,7 +142,21 @@ const lightSignature = (lights) =>
     )
     .join("|");
 
-const illuminationFor = (scene, lights, wallIndex, grid, darkness) => {
+const regionSignature = (regions) =>
+  regions
+    .map((region) =>
+      [
+        region.id,
+        region.revision,
+        region.enabled,
+        region.darknessMode,
+        region.darknessValue,
+        region.disableGlobalIllumination,
+      ].join(":"),
+    )
+    .join("|");
+
+const illuminationFor = (scene, lights, regions, wallIndex, grid) => {
   const key = [
     scene.width,
     scene.height,
@@ -151,18 +166,36 @@ const illuminationFor = (scene, lights, wallIndex, grid, darkness) => {
     grid.rows,
     wallIndex.signature,
     lightSignature(lights),
+    regionSignature(regions),
+    scene.globalIllumination,
+    scene.globalIlluminationThreshold,
+    scene.darknessTransition?.startedAt,
   ].join("#");
   if (illuminationCache.has(key)) return illuminationCache.get(key);
   const illuminated = new Uint8Array(grid.length);
-  const activeLights = lights.filter((light) => lightIsActive(light, darkness));
-  const global = Number(scene.globalLightLevel) > 0.02;
+  const activeLights = lights.filter((light) =>
+    lightIsActive(
+      light,
+      effectiveDarknessAt(scene, regions, { x: light.x, y: light.y }),
+    ),
+  );
+  const global = globalIlluminationAt(scene, regions);
   const lightPolygons = activeLights
     .filter((light) => light.sourceType !== "darkness")
     .map((light) => polygonFor(light, wallIndex, scene, "light"));
   const darknessPolygons = activeLights
     .filter((light) => light.sourceType === "darkness")
     .map((light) => polygonFor(light, wallIndex, scene, "light"));
-  if (global) illuminated.fill(1);
+  if (global && !regions.length) illuminated.fill(1);
+  else if (scene.globalIllumination === true) {
+    for (let index = 0; index < illuminated.length; index += 1) {
+      const point = {
+        x: ((index % grid.columns) + 0.5) * grid.cellSize,
+        y: (Math.floor(index / grid.columns) + 0.5) * grid.cellSize,
+      };
+      if (globalIlluminationAt(scene, regions, point)) illuminated[index] = 1;
+    }
+  }
   lightPolygons.forEach((polygon) => markPolygon(illuminated, grid, polygon));
   const darkMask = new Uint8Array(grid.length);
   darknessPolygons.forEach((polygon) => markPolygon(darkMask, grid, polygon));
@@ -180,19 +213,12 @@ export const computeFogVisibility = ({
   tokens = [],
   walls = [],
   lights = [],
+  regions = [],
   grid,
 }) => {
   const visible = new Uint8Array(grid.length);
-  const darkness =
-    1 - Math.min(1, Math.max(0, Number(scene.globalLightLevel) || 0));
   const wallIndex = createWallSpatialIndex(walls);
-  const illumination = illuminationFor(
-    scene,
-    lights,
-    wallIndex,
-    grid,
-    darkness,
-  );
+  const illumination = illuminationFor(scene, lights, regions, wallIndex, grid);
   const illuminated = illumination.mask;
 
   const sources = [];
@@ -203,10 +229,20 @@ export const computeFogVisibility = ({
     const polygon = polygonFor(source, wallIndex, scene, "sight");
     markPolygon(sourceMask, grid, polygon);
     const vision = token.vision || {};
+    const mode = String(
+      vision.mode || (vision.darkvision === true ? "darkvision" : "basic"),
+    );
     for (let index = 0; index < sourceMask.length; index += 1) {
       if (
         sourceMask[index] &&
-        (vision.limitByLight === false || illuminated[index])
+        (vision.limitByLight === false ||
+          [
+            "darkvision",
+            "light_amplification",
+            "monochromatic",
+            "tremorsense",
+          ].includes(mode) ||
+          illuminated[index])
       )
         visible[index] = 1;
     }
@@ -229,7 +265,10 @@ export const computeFogVisibility = ({
       );
     }
     let darkvisionPolygon = null;
-    if (vision.darkvision === true && Number(vision.darkvisionRange) > 0) {
+    if (
+      (mode === "darkvision" || vision.darkvision === true) &&
+      Number(vision.darkvisionRange) > 0
+    ) {
       const darkSource = {
         ...source,
         dimRadius: Math.min(source.dimRadius, Number(vision.darkvisionRange)),
@@ -241,6 +280,7 @@ export const computeFogVisibility = ({
       tokenId: token.id,
       polygon,
       limitedByLight: vision.limitByLight !== false,
+      mode,
       minimumPolygon,
       darkvisionPolygon,
     });
@@ -250,5 +290,6 @@ export const computeFogVisibility = ({
     illuminated,
     sources,
     illuminationGeometry: illumination.geometry,
+    rasterized: regions.length > 0,
   };
 };

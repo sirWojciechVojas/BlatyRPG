@@ -279,6 +279,21 @@
   border-color: #f1c981;
 }
 
+.token-settings-panel__sync-warning {
+  margin: 0;
+  padding: 6px 8px;
+  border-bottom: 1px solid #7b5e2e;
+  color: #dbc18e;
+  background: #292317;
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.token-settings-panel__sync-warning strong,
+.token-settings-panel__sync-warning span {
+  display: block;
+}
+
 @media (max-width: 560px) {
   .token-settings-panel__grid {
     grid-template-columns: 1fr;

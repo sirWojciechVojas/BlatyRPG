@@ -4,6 +4,7 @@
     :id="`campaign-chat-${instanceId}`"
     :campaign-id="campaignId"
     :can-create-token="canCreateToken"
+    :members="members"
     embedded
   />
 
@@ -14,6 +15,7 @@
     :selected-id="selectedId"
     :active-id="activeId"
     :can-manage="canManage"
+    :can-manage-token-sync="canManageTokenSync"
     :busy="busy"
     @select="$emit('select-scene', $event)"
     @create="$emit('create-scene')"
@@ -21,6 +23,9 @@
     @edit="$emit('edit-scene')"
     @delete="$emit('delete-scene')"
     @activate="$emit('activate-scene')"
+    @token-sync="$emit('token-sync', selectedId)"
+    @create-map="$emit('create-map')"
+    @edit-map="$emit('edit-map', selectedId)"
   />
 
   <TableCombatPanel
@@ -33,18 +38,34 @@
     @command="$emit('combat-command', $event)"
   />
 
+  <TokenSyncPanel
+    v-else-if="panelId === 'token-sync'"
+    :campaign-id="campaignId"
+    :initial-scene-id="initialSceneId"
+  />
+
+  <TokenTemplatePanel
+    v-else-if="panelId === 'token-templates'"
+    :campaign-id="campaignId"
+    :busy-id="tokenTemplateBusyId"
+    @place="$emit('place-token-template', $event)"
+  />
+
   <TableCharacterPanel
     v-else-if="panelId === 'characters'"
     :campaign-id="campaignId"
-    :campaign-data="campaign"
+    :campaign="campaign"
     :compact="instanceId === 'drawer'"
     :can-create-token="canCreateToken"
-    :can-select-for-hud="canManage"
+    :can-select-for-hud="true"
     :can-manage-groups="canManage"
+    :can-manage-access="canManage"
+    :members="members"
     :initial-character-id="characterId"
     :selected-hud-character-id="hudCharacterId"
     @changed="$emit('character-changed', $event)"
     @select-for-hud="$emit('select-character', $event)"
+    @open-window="$emit('open-window', 'characters')"
   />
 
   <TableShopPanel
@@ -89,6 +110,7 @@
   <CompendiumWorkspace
     v-else-if="panelId === 'compendium'"
     :campaign-id="campaignId"
+    :can-see-gm-hint="canSeeCompendiumBestiary"
     :compact="instanceId === 'drawer'"
     :scene-id="selectedId"
     :token-x="tokenX"
@@ -102,10 +124,67 @@
     :members="members"
     :invitations="invitations"
     :realtime-status="realtimeStatus"
+    :manual-retry-available="manualRetryAvailable"
     :can-manage="canManage"
     :can-resolve="canResolveMovement"
     :busy="movementRequestBusy"
     @resolve="$emit('resolve-movement-request', $event)"
+    @retry="$emit('retry-realtime')"
+  />
+
+  <TableSettingsPanel
+    v-else-if="panelId === 'settings'"
+    :campaign="campaign"
+    :members="members"
+    :invitations="invitations"
+    :can-manage="canManage"
+  />
+
+  <VoicePanel
+    v-else-if="panelId === 'voice'"
+    :campaign-id="campaignId"
+    @open-settings="$emit('open-window', 'settings')"
+  />
+
+  <JukeboxPanel
+    v-else-if="panelId === 'jukebox'"
+    :campaign-id="campaignId"
+    @open-settings="$emit('open-window', 'settings')"
+  />
+
+  <SoundEffectsPanel
+    v-else-if="panelId === 'sound-effects'"
+    :campaign-id="campaignId"
+    :members="members"
+    :compact="instanceId === 'drawer'"
+  />
+
+  <JournalContent
+    v-else-if="panelId === 'journal'"
+    :campaign-id="campaignId"
+    :character-id="journalCharacterId || characterId"
+    :characters="characters"
+  />
+
+  <BestiaryContent
+    v-else-if="panelId === 'bestiary'"
+    :campaign-id="campaignId"
+    :character-id="bestiaryCharacterId || characterId"
+    :variant="bestiaryVariant"
+  />
+
+  <ProfessionsContent
+    v-else-if="panelId === 'professions'"
+    :campaign-id="campaignId"
+    :character-id="hudCharacterId || characterId"
+    :compact="instanceId === 'drawer'"
+    @open-window="$emit('open-window', 'professions')"
+  />
+
+  <CampaignCalendar
+    v-else-if="panelId === 'calendar'"
+    :campaign-id="campaignId"
+    :members="members"
   />
 
   <TableContextPanel
@@ -125,9 +204,11 @@
 <script>
 import { defineAsyncComponent } from "vue";
 import CampaignChatPanel from "@/components/chat/CampaignChatPanel.vue";
+import CampaignCalendar from "@/components/calendar/CampaignCalendar.vue";
 import SceneManagerPanel from "@/components/vtt/scene/SceneManagerPanel.vue";
 import TableContextPanel from "./TableContextPanel.vue";
 import TableMovementRequestsPanel from "./TableMovementRequestsPanel.vue";
+import TableSettingsPanel from "./TableSettingsPanel.vue";
 import TableShopPanel from "./TableShopPanel.vue";
 
 const TableCharacterPanel = defineAsyncComponent(
@@ -138,6 +219,18 @@ const TableCharacterPanel = defineAsyncComponent(
 );
 const TableCombatPanel = defineAsyncComponent(
   () => import(/* webpackChunkName: "table-combat" */ "./TableCombatPanel.vue"),
+);
+const TokenSyncPanel = defineAsyncComponent(
+  () =>
+    import(
+      /* webpackChunkName: "table-token-sync" */ "../token/TokenSyncPanel.vue"
+    ),
+);
+const TokenTemplatePanel = defineAsyncComponent(
+  () =>
+    import(
+      /* webpackChunkName: "table-token-templates" */ "../token/TokenTemplatePanel.vue"
+    ),
 );
 const HandoutWorkspace = defineAsyncComponent(
   () =>
@@ -154,7 +247,43 @@ const HandoutWindow = defineAsyncComponent(
 const CompendiumWorkspace = defineAsyncComponent(
   () =>
     import(
-      /* webpackChunkName: "table-compendium" */ "../compendium/CompendiumWorkspace.vue"
+      /* webpackChunkName: "table-compendium", webpackPrefetch: true */ "../compendium/CompendiumWorkspace.vue"
+    ),
+);
+const VoicePanel = defineAsyncComponent(
+  () =>
+    import(
+      /* webpackChunkName: "table-voice" */ "@/components/audio/VoicePanel.vue"
+    ),
+);
+const JukeboxPanel = defineAsyncComponent(
+  () =>
+    import(
+      /* webpackChunkName: "table-jukebox" */ "@/components/audio/JukeboxPanel.vue"
+    ),
+);
+const SoundEffectsPanel = defineAsyncComponent(
+  () =>
+    import(
+      /* webpackChunkName: "table-sound-effects" */ "@/components/audio/SoundEffectsPanel.vue"
+    ),
+);
+const JournalContent = defineAsyncComponent(
+  () =>
+    import(
+      /* webpackChunkName: "table-journal" */ "../journal/JournalContent.vue"
+    ),
+);
+const BestiaryContent = defineAsyncComponent(
+  () =>
+    import(
+      /* webpackChunkName: "table-bestiary" */ "../bestiary/BestiaryContent.vue"
+    ),
+);
+const ProfessionsContent = defineAsyncComponent(
+  () =>
+    import(
+      /* webpackChunkName: "table-professions" */ "../professions/ProfessionsContent.vue"
     ),
 );
 export default {
@@ -164,11 +293,21 @@ export default {
     SceneManagerPanel,
     TableCharacterPanel,
     TableCombatPanel,
+    TokenSyncPanel,
+    TokenTemplatePanel,
     HandoutWorkspace,
     HandoutWindow,
     CompendiumWorkspace,
+    VoicePanel,
+    JukeboxPanel,
+    SoundEffectsPanel,
+    JournalContent,
+    BestiaryContent,
+    ProfessionsContent,
+    CampaignCalendar,
     TableContextPanel,
     TableMovementRequestsPanel,
+    TableSettingsPanel,
     TableShopPanel,
   },
   props: {
@@ -177,6 +316,10 @@ export default {
     campaignId: { type: [Number, String], required: true },
     campaign: { type: Object, default: () => ({}) },
     characterId: { type: [Number, String], default: null },
+    journalCharacterId: { type: [Number, String], default: null },
+    bestiaryCharacterId: { type: [Number, String], default: null },
+    bestiaryVariant: { type: String, default: "parchment" },
+    initialSceneId: { type: [Number, String], default: null },
     handoutScope: { type: String, default: "" },
     handoutId: { type: [Number, String], default: null },
     handoutStartEditing: { type: Boolean, default: false },
@@ -194,9 +337,12 @@ export default {
     combat: { type: Object, default: null },
     combatError: { type: Object, default: null },
     realtimeStatus: { type: String, default: "disconnected" },
+    manualRetryAvailable: { type: Boolean, default: false },
     canManage: { type: Boolean, default: false },
+    canManageTokenSync: { type: Boolean, default: false },
     canOpenShop: { type: Boolean, default: false },
     canCreateToken: { type: Boolean, default: false },
+    tokenTemplateBusyId: { type: [Number, String], default: null },
     canResolveMovement: { type: Boolean, default: false },
     canManageCombat: { type: Boolean, default: false },
     combatBusy: { type: Boolean, default: false },
@@ -210,10 +356,15 @@ export default {
     "edit-scene",
     "delete-scene",
     "activate-scene",
+    "token-sync",
+    "create-map",
+    "edit-map",
+    "place-token-template",
     "character-changed",
     "select-character",
     "open-window",
     "resolve-movement-request",
+    "retry-realtime",
     "combat-command",
     "handout-unread-count",
     "handout-changed",
@@ -224,6 +375,15 @@ export default {
   computed: {
     selectedScene() {
       return this.scenes.find((scene) => scene.id === this.selectedId) || null;
+    },
+    canSeeCompendiumBestiary() {
+      const role = String(this.campaign?.campaignRole || "").toLowerCase();
+      return (
+        this.canManage ||
+        this.canManageTokenSync ||
+        this.campaign?.capabilities?.canManage === true ||
+        ["gm", "game_master", "assistant"].includes(role)
+      );
     },
   },
 };

@@ -28,6 +28,11 @@ export class DiceRoller {
   constructor(options = {}) {
     this.assetBaseUrl = options.assetBaseUrl || "/dice_roller";
     this.themeId = options.themeId || "default";
+    this.embedded = options.embedded === true;
+    this.onRollComplete =
+      typeof options.onRollComplete === "function"
+        ? options.onRollComplete
+        : null;
     const fallbackScale =
       typeof options.diceScale === "number" &&
       Number.isFinite(options.diceScale)
@@ -82,6 +87,12 @@ export class DiceRoller {
     this.assetBaseUrl =
       options.assetBaseUrl || this.assetBaseUrl || "/dice_roller";
     this.themeId = options.themeId || this.themeId || "default";
+    if (typeof options.embedded === "boolean") {
+      this.embedded = options.embedded;
+    }
+    if (typeof options.onRollComplete === "function") {
+      this.onRollComplete = options.onRollComplete;
+    }
     if (typeof options.chatEnabled === "boolean") {
       this.chatEnabled = options.chatEnabled;
     }
@@ -482,12 +493,51 @@ export class DiceRoller {
   destroy() {
     window.removeEventListener("resize", this._boundOnResize);
     window.removeEventListener("beforeunload", this._boundBeforeUnload);
+    this.DiceRoom?.destroy?.();
     if (this.Teal?.socket && this.Teal.socket.readyState <= WebSocket.OPEN) {
       this.Teal.socket.close();
     }
     if (window.DiceRoller === this) {
       window.DiceRoller = null;
     }
+  }
+
+  roll(notation) {
+    const room = this.DiceRoom;
+    const diceBox = room?.DiceBox;
+    const value = String(notation || "").trim();
+    if (!room || !diceBox || !value || diceBox.rolling) return false;
+
+    room.set.value = value;
+    const notationVectors = diceBox.startClickThrow(value);
+    if (!notationVectors || notationVectors.error) return false;
+    room.sendNetworkedRoll(notationVectors);
+    return true;
+  }
+
+  showSelector() {
+    const room = this.DiceRoom;
+    if (!room?.DiceBox || room.DiceBox.rolling) return false;
+    room.show_selector({ diceList: this.diceDisplayList });
+    return true;
+  }
+
+  clear() {
+    const room = this.DiceRoom;
+    const diceBox = room?.DiceBox;
+    if (!diceBox) return false;
+
+    diceBox.running = false;
+    diceBox.rolling = false;
+    diceBox.clearDice();
+    room.deskrolling = false;
+    if (room.info_div) room.info_div.style.display = "none";
+    if (room.selector_div) room.selector_div.style.display = "none";
+    return true;
+  }
+
+  resize() {
+    this.on_window_resize();
   }
 
   populateThemeOptions() {
@@ -693,7 +743,9 @@ export class DiceRoller {
       replacerClassName: "control_bgcolor",
       change: function (color) {
         let DiceRoller = window.DiceRoller;
-        $(document.body).css("background-color", color.toHexString());
+        if (!DiceRoller.embedded) {
+          $(document.body).css("background-color", color.toHexString());
+        }
         DiceRoller.DiceFavorites.settings.bgcolor.value = color.toHexString();
         DiceRoller.DiceFavorites.storeSettings();
       },
@@ -712,7 +764,9 @@ export class DiceRoller {
       replacerClassName: "control_fgcolor",
       change: function (color) {
         let DiceRoller = window.DiceRoller;
-        $(document.body).css("color", color.toHexString());
+        if (!DiceRoller.embedded) {
+          $(document.body).css("color", color.toHexString());
+        }
         DiceRoller.DiceFavorites.settings.fgcolor.value = color.toHexString();
         DiceRoller.DiceFavorites.storeSettings();
       },
@@ -722,14 +776,16 @@ export class DiceRoller {
     if (pageThemeInfo) {
       if (pageThemeInfo.showColorPicker) {
         $(".sp-replacer").show();
-        $(document.body).css(
-          "background-color",
-          this.DiceFavorites.settings.bgcolor.value,
-        );
-        $(document.body).css(
-          "color",
-          this.DiceFavorites.settings.fgcolor.value,
-        );
+        if (!this.embedded) {
+          $(document.body).css(
+            "background-color",
+            this.DiceFavorites.settings.bgcolor.value,
+          );
+          $(document.body).css(
+            "color",
+            this.DiceFavorites.settings.fgcolor.value,
+          );
+        }
       } else {
         $(".sp-replacer").hide();
       }
@@ -778,12 +834,17 @@ export class DiceRoller {
       DiceRoller.desk?.parentElement;
     const rootRect = deskRoot?.getBoundingClientRect();
     const chatEnabled = DiceRoller.chatEnabled !== false;
-    const availableWidth = chatEnabled
+    const embedded = DiceRoller.embedded === true;
+    const availableWidth = embedded
       ? rootRect?.width || window.innerWidth
-      : window.innerWidth;
-    const availableHeight = chatEnabled
-      ? Math.max(0, window.innerHeight - (rootRect?.top || 0))
-      : window.innerHeight;
+      : chatEnabled
+        ? rootRect?.width || window.innerWidth
+        : window.innerWidth;
+    const availableHeight = embedded
+      ? rootRect?.height || window.innerHeight
+      : chatEnabled
+        ? Math.max(0, window.innerHeight - (rootRect?.top || 0))
+        : window.innerHeight;
     let w = availableWidth + "px";
     const chatVisible =
       chatEnabled &&
@@ -890,12 +951,10 @@ export class DiceRoller {
 
     const themeStyleId = "dice-roller-theme-style";
     const existingThemeLink = document.getElementById(themeStyleId);
-    if (existingThemeLink) {
-      existingThemeLink.remove();
-    }
+    if (!DiceRoller.embedded && existingThemeLink) existingThemeLink.remove();
 
     let themeid = DiceRoller.DiceFavorites.settings.theme.value;
-    if (themeid !== "default") {
+    if (!DiceRoller.embedded && themeid !== "default") {
       let headelement = document.getElementsByTagName("head")[0];
       const themeBase = (DiceRoller.assetBaseUrl || "/dice_roller").replace(
         /\/+$/,
@@ -924,11 +983,13 @@ export class DiceRoller {
     if (pageThemeInfo) {
       if (pageThemeInfo.showColorPicker) {
         $(".sp-replacer, #fgbglabel").show();
-        $(document.body).css("color", fgcolor || pageThemeInfo.colors.fg);
-        $(document.body).css(
-          "background-color",
-          bgcolor || pageThemeInfo.colors.bg,
-        );
+        if (!DiceRoller.embedded) {
+          $(document.body).css("color", fgcolor || pageThemeInfo.colors.fg);
+          $(document.body).css(
+            "background-color",
+            bgcolor || pageThemeInfo.colors.bg,
+          );
+        }
         $(".control_fgcolor").spectrum(
           "set",
           fgcolor || pageThemeInfo.colors.fg,
@@ -1132,6 +1193,7 @@ export class DiceRoller {
       // Upewniamy się, że DiceFavorites jest w pełni gotowe
       this.DiceRoom = new DiceRoom("Yourself", -1, this.DiceFavorites, {
         assetBaseUrl: this.assetBaseUrl,
+        embedded: this.embedded,
         chatEnabled: this.chatEnabled,
         rngSeed: this.rngSeed,
         dragThrowEnabled: this.dragThrowEnabled,
@@ -1141,6 +1203,7 @@ export class DiceRoller {
         diceBoxDimensions: this.diceBoxDimensions,
         diceSelectorDimensions: this.diceSelectorDimensions,
         diceDisplayList: this.diceDisplayList,
+        onRollComplete: this.onRollComplete,
       });
 
       this.show_waitform(false);
@@ -1254,6 +1317,7 @@ export class DiceRoller {
               diceBoxDimensions: DiceRoller.diceBoxDimensions,
               diceSelectorDimensions: DiceRoller.diceSelectorDimensions,
               diceDisplayList: DiceRoller.diceDisplayList,
+              onRollComplete: DiceRoller.onRollComplete,
             },
           );
 

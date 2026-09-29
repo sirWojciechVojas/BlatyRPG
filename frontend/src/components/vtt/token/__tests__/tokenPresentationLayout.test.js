@@ -46,10 +46,41 @@ describe("token presentation layout", () => {
   it("keeps multi-selection free of token information and HUD controls", () => {
     const layer = template("SceneTokenLayer");
 
-    expect(layer).toContain(
-      "tokenStates[token.id].selected && !hasMultiSelection",
-    );
+    expect(layer).toContain('v-if="isTokenExpanded(token.id)"');
     expect(layer).toContain("token.id === hudTokenId && !hasMultiSelection");
+  });
+
+  it("reveals token controls separately from initial selection", () => {
+    const layer = template("SceneTokenLayer");
+
+    expect(layer).toContain('@click.stop="selectToken($event, token.id)"');
+    expect(layer).toContain(
+      '@dblclick.stop="openTokenActorFromDoubleClick(token)"',
+    );
+    expect(layer).toContain(
+      '@wheel="rotateTokenFacingWithWheel($event, token)"',
+    );
+    expect(layer).toContain('v-if="isTokenExpanded(token.id)"');
+  });
+
+  it("raises the stable token layer above scene vision for the HUD", () => {
+    const canvas = readFileSync(
+      resolve(process.cwd(), "src/components/vtt/scene/SceneCanvas.vue"),
+      "utf8",
+    );
+    const layer = template("SceneTokenLayer");
+    const styles = readFileSync(
+      resolve(
+        process.cwd(),
+        "src/components/vtt/scene/styles/scene-tokens.css",
+      ),
+      "utf8",
+    );
+
+    expect(canvas).toContain(':foreground="tokenUiAboveFog"');
+    expect(layer).toContain("'scene-token-layer--foreground': foreground");
+    expect(styles).toContain(".scene-token-layer--foreground");
+    expect(layer).not.toContain("hudPortal");
   });
 
   it("shows movement reach without duplicating the movement resource label", () => {
@@ -71,13 +102,13 @@ describe("token presentation layout", () => {
     expect(source).toContain("scene-token-info-stack--${position}");
   });
 
-  it("balances four actions on both HUD rails", () => {
+  it("keeps four left-rail actions and five right-rail actions", () => {
     const source = template("TokenHud");
     const left = source.split("token-hud__rail--left")[1].split("</div>")[0];
     const right = source.split("token-hud__rail--right")[1].split("</div>")[0];
 
     expect(left.match(/<button/g)).toHaveLength(4);
-    expect(right.match(/<button/g)).toHaveLength(4);
+    expect(right.match(/<button/g)).toHaveLength(5);
   });
 
   it("gives each resource bubble a stable color slot", () => {

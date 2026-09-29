@@ -10,6 +10,8 @@ export const testConfig = (overrides = {}) => ({
   port: 0,
   path: "/realtime",
   healthPath: "/health",
+  calendarPublishPath: "/internal/calendar",
+  characterAccessPublishPath: "/internal/character-access",
   allowedOrigins: [TEST_ORIGIN],
   allowMissingOrigin: false,
   backendInternalUrl: "http://backend.internal/api/internal/realtime",

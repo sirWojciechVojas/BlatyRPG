@@ -103,8 +103,13 @@ export const tableLightMethods = {
       }),
     );
   },
-  deleteLight(light) {
-    if (!window.confirm(this.$t("vtt.light.deleteConfirm"))) return false;
+  deleteLight(payload) {
+    const light = payload?.light || payload;
+    if (
+      !payload?.confirmed &&
+      !window.confirm(this.$t("vtt.light.deleteConfirm"))
+    )
+      return false;
     const key = `${light.sceneId}:${light.id}`;
     return perform(this, key, async () => {
       const current = latestLight(this, light);

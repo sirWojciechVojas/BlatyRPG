@@ -1,12 +1,25 @@
 import { normalizeToken } from "@/lib/vtt/tokenNormalizer";
 import { normalizeMovementRequest } from "@/lib/vtt/tokenMovementRequest";
 import { scheduleVisibilityRefresh } from "./visibilityRefresh";
+import {
+  tokenRequestTracker,
+  tokenSyncRequestTracker,
+} from "./sceneElementRequestTracker";
 
 let requestSerial = 0;
 let visibilityReloadTimer = null;
 
 export const routeRealtimeTokenEvent = (context, event) => {
+  if (["token.ack", "token.error"].includes(event.type)) {
+    tokenRequestTracker.settle(event);
+  }
   if (!context.rootState.vtt) return;
+  if (["token.sync.ack", "token.sync.error"].includes(event.type)) {
+    tokenSyncRequestTracker.settle(event);
+  }
+  if (event.type === "token.sync.changed") {
+    context.dispatch("vtt/loadTokenSync", null, { root: true }).catch(() => {});
+  }
   if (event.type === "scene.visibility.changed") {
     if (
       Number(event.payload.sceneId) !==
@@ -82,15 +95,28 @@ export const routeRealtimeTokenEvent = (context, event) => {
 };
 
 export const createRealtimeTokenActions = (ensureSession) => ({
+  commandTokenSync(context, { action, data }) {
+    const requestId = `token-sync-${++requestSerial}`;
+    return tokenSyncRequestTracker.send(requestId, () =>
+      ensureSession(context).commandTokenSync({
+        requestId,
+        action,
+        data,
+      }),
+    );
+  },
   changeToken(context, { token, changes }) {
     if (!token?.id || !token?.sceneId || !token?.revision) return false;
-    return ensureSession(context).changeToken({
-      requestId: `token-change-${++requestSerial}`,
-      sceneId: token.sceneId,
-      tokenId: token.id,
-      revision: token.revision,
-      changes,
-    });
+    const requestId = `token-change-${++requestSerial}`;
+    return tokenRequestTracker.send(requestId, () =>
+      ensureSession(context).changeToken({
+        requestId,
+        sceneId: token.sceneId,
+        tokenId: token.id,
+        revision: token.revision,
+        changes,
+      }),
+    );
   },
   moveToken(context, { token, x, y, waypoints = [] }) {
     if (!token?.id || !token?.sceneId || !token?.revision) return false;

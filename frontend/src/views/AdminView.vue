@@ -48,7 +48,20 @@
 
       <main
         class="admin-main"
-        :class="{ 'ps-0': activeTab === 'users' || activeTab === 'characters' }"
+        :class="{
+          'ps-0':
+            activeTab === 'users' ||
+            activeTab === 'characters' ||
+            activeTab === 'compendium' ||
+            activeTab === 'professions' ||
+            activeTab === 'tokenTemplates' ||
+            activeTab === 'assets',
+          'admin-main--contained':
+            activeTab === 'compendium' ||
+            activeTab === 'professions' ||
+            activeTab === 'tokenTemplates' ||
+            activeTab === 'assets',
+        }"
       >
         <p v-if="error" class="admin-alert error" role="alert">
           {{ error }}
@@ -97,6 +110,26 @@
             @campaign-change="setCharacterCampaign"
             @owner-change="setCharacterOwner"
           />
+          <AdminCompendiumTab
+            v-else-if="activeTab === 'compendium'"
+            @loaded="compendiumCount = $event.entries"
+          />
+          <AdminProfessionsTab
+            v-else-if="activeTab === 'professions'"
+            @loaded="professionCount = $event"
+          />
+          <AdminAudioTab
+            v-else-if="activeTab === 'audio'"
+            @loaded="audioCount = $event.tracks"
+          />
+          <AdminTokenTemplatesTab
+            v-else-if="activeTab === 'tokenTemplates'"
+            @loaded="tokenTemplateCount = $event"
+          />
+          <AdminAssetsTab
+            v-else-if="activeTab === 'assets'"
+            @loaded="assetCount = $event.assets"
+          />
           <AdminActivityTab
             v-else-if="activeTab === 'activity'"
             :activity="activity"
@@ -114,3 +147,8 @@
 <style src="./styles/AdminTables.css"></style>
 <style src="./styles/AdminOperations.css"></style>
 <style src="./styles/AdminCharacters.css"></style>
+<style src="./styles/AdminCompendium.css"></style>
+<style src="./styles/AdminProfessions.css"></style>
+<style src="./styles/AdminAudio.css"></style>
+<style src="./styles/AdminTokenTemplates.css"></style>
+<style src="./styles/AdminAssets.css"></style>

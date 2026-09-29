@@ -79,6 +79,7 @@ test("accepts realtime token changes", () => {
     changes: {
       rotation: 72.5,
       facing: 185,
+      rotationFollowsFacing: true,
       resources: { bars: [], bubbles: [{ enabled: true, value: 7 }] },
     },
   };
@@ -91,6 +92,7 @@ test("accepts realtime token changes", () => {
     changes: {
       rotation: 72.5,
       facing: 185,
+      rotationFollowsFacing: true,
       resources: { bars: [], bubbles: [{ enabled: true, value: 7 }] },
     },
   });
@@ -106,6 +108,85 @@ test("accepts realtime token changes", () => {
     () => parseAuthenticatedMessage({ ...change, changes: { facing: NaN } }),
     (error) => error instanceof ProtocolError && error.code === "token_facing_invalid",
   );
+});
+
+test("validates token synchronization commands and target revisions", () => {
+  const command = {
+    v: 1,
+    type: "token.sync.command",
+    requestId: "token-sync-1",
+    action: "createLinks",
+    data: {
+      sourceTokenId: 9,
+      sourceRevision: 3,
+      targets: [
+        { tokenId: 10, revision: 7 },
+        { tokenId: 11, revision: 4 },
+      ],
+    },
+  };
+  assert.deepEqual(parseAuthenticatedMessage(command), {
+    type: command.type,
+    requestId: command.requestId,
+    action: command.action,
+    data: command.data,
+  });
+  assert.throws(
+    () =>
+      parseAuthenticatedMessage({
+        ...command,
+        data: {
+          ...command.data,
+          targets: [
+            { tokenId: 10, revision: 7 },
+            { tokenId: 10, revision: 8 },
+          ],
+        },
+      }),
+    (error) =>
+      error instanceof ProtocolError &&
+      error.code === "token_sync_targets_invalid",
+  );
+  assert.throws(
+    () =>
+      parseAuthenticatedMessage({
+        ...command,
+        data: { ...command.data, targets: [{ tokenId: 10, revision: 0 }] },
+      }),
+    (error) =>
+      error instanceof ProtocolError &&
+      error.code === "token_revision_invalid",
+  );
+});
+
+test("validates pause, apply and deletion for concrete live links", () => {
+  assert.deepEqual(
+    parseAuthenticatedMessage({
+      v: 1,
+      type: "token.sync.command",
+      requestId: "token-sync-toggle",
+      action: "updateLink",
+      data: { linkId: 31, enabled: false },
+    }),
+    {
+      type: "token.sync.command",
+      requestId: "token-sync-toggle",
+      action: "updateLink",
+      data: { linkId: 31, enabled: false },
+    },
+  );
+  for (const action of ["applyLink", "deleteLink"]) {
+    assert.equal(
+      parseAuthenticatedMessage({
+        v: 1,
+        type: "token.sync.command",
+        requestId: `token-sync-${action}`,
+        action,
+        data: { linkId: 31 },
+      }).action,
+      action,
+    );
+  }
 });
 
 test("validates movement approval requests and GM decisions", () => {

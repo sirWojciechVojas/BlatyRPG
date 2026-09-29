@@ -27,6 +27,11 @@ const normalizeTokenWithMovement = (source, movement) => ({
     (source.characterId ?? source.character_id)
       ? number(source.characterId ?? source.character_id)
       : null,
+  tokenTemplateId:
+    Number(source.tokenTemplateId ?? source.token_template_id) || null,
+  tokenTemplateAssetId:
+    Number(source.tokenTemplateAssetId ?? source.token_template_asset_id) ||
+    null,
   name: String(source.name || ""),
   imageUrl: String(source.imageUrl ?? source.image_url ?? ""),
   x: number(source.x),
@@ -40,6 +45,9 @@ const normalizeTokenWithMovement = (source, movement) => ({
     source.rotation_handle_enabled === 1,
   facingHandleEnabled:
     source.facingHandleEnabled === true || source.facing_handle_enabled === 1,
+  rotationFollowsFacing:
+    source.rotationFollowsFacing === true ||
+    source.rotation_follows_facing === 1,
   showInfoUnselected:
     source.showInfoUnselected === true || source.show_info_unselected === 1,
   resourceBarPosition: normalizeTokenResourceBarPosition(
@@ -106,6 +114,7 @@ export const tokenWritePayload = (changes = {}, includeRevision = false) => {
     "facing",
     "rotationHandleEnabled",
     "facingHandleEnabled",
+    "rotationFollowsFacing",
     "showInfoUnselected",
     "resourceBarPosition",
     "movementRange",

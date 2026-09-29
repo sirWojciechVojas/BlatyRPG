@@ -4,18 +4,21 @@ namespace App\Controllers\Api;
 
 use App\Services\Campaign\CampaignException;
 use App\Services\Compendium\CompendiumAssetService;
+use App\Services\Compendium\CompendiumCorpusAssetService;
 use App\Services\Compendium\CompendiumService;
 
 final class CompendiumController extends CampaignApiController
 {
     private $compendium;
     private $assets;
+    private $corpusAssets;
 
     public function __construct()
     {
         parent::__construct();
         $this->compendium = new CompendiumService();
         $this->assets = new CompendiumAssetService();
+        $this->corpusAssets = new CompendiumCorpusAssetService();
     }
 
     public function mine()
@@ -156,9 +159,53 @@ final class CompendiumController extends CampaignApiController
             $result = $this->assets->download($this->positiveId($assetId), $this->auth(),
                 $campaignId ? $this->positiveId($campaignId) : null);
             $asset = $result['asset'];
+            if (!empty($result['url'])) {
+                return $this->response->setStatusCode(302)->setHeader('Location', (string) $result['url'])
+                    ->setHeader('Cache-Control', 'private, no-store');
+            }
             return $this->response->setHeader('Content-Type', (string) $asset['mime_type'])
                 ->setHeader('Content-Length', (string) filesize($result['path']))
                 ->setHeader('Content-Disposition', 'inline; filename="' . addcslashes((string) $asset['original_name'], "\\\"") . '"')
+                ->setHeader('Cache-Control', 'private, max-age=300')
+                ->setBody((string) file_get_contents($result['path']));
+        } catch (CampaignException $exception) {
+            return $this->response->setStatusCode($exception->status())->setJSON([
+                'code' => $exception->errorCode(), 'message' => $exception->getMessage(),
+            ]);
+        }
+    }
+
+    public function uploadCorpusAsset($universeId = null, $assetId = null)
+    {
+        return $this->execute(fn (): array => $this->corpusAssets->upload(
+            $this->positiveId($universeId), $this->positiveId($assetId, 'compendium_asset_not_found'),
+            $this->auth(), $this->request->getFile('file')
+        ), 201);
+    }
+
+    public function corpusAssetFile($assetId = null)
+    {
+        try {
+            $campaignId = $this->request->getGet('campaignId');
+            $characterId = $this->request->getGet('characterId');
+            $universeId = $this->request->getGet('universeId');
+            $result = $this->corpusAssets->download(
+                $this->positiveId($assetId, 'compendium_asset_not_found'), $this->auth(),
+                $campaignId ? $this->positiveId($campaignId) : null,
+                $universeId ? $this->positiveId($universeId) : null,
+                $characterId
+                    ? $this->positiveId($characterId, 'character_not_found')
+                    : null
+            );
+            $asset = $result['asset'];
+            if (!empty($result['url'])) {
+                return $this->response->setStatusCode(302)->setHeader('Location', (string) $result['url'])
+                    ->setHeader('Cache-Control', 'private, no-store');
+            }
+            $filename = preg_replace('/[\x00-\x1F\x7F"\\\\]/', '_', basename((string) $asset['filename'])) ?: 'compendium-asset';
+            return $this->response->setHeader('Content-Type', (string) $asset['mime_type'])
+                ->setHeader('Content-Length', (string) filesize($result['path']))
+                ->setHeader('Content-Disposition', 'inline; filename="' . $filename . '"')
                 ->setHeader('Cache-Control', 'private, max-age=300')
                 ->setBody((string) file_get_contents($result['path']));
         } catch (CampaignException $exception) {

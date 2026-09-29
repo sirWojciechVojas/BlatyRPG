@@ -1,4 +1,6 @@
 import { effectiveLight } from "./lightPhotometry";
+import { applyWindowTransmission } from "./scenePerception";
+import { tokenFacingToGeometryDirection } from "./tokenFacing";
 
 const TAU = Math.PI * 2;
 const EPSILON = 0.00001;
@@ -20,12 +22,22 @@ const sceneEdges = (scene) => {
 export const wallBlocksLight = (wall) =>
   wall?.enabled !== false &&
   wall?.blocksLight === true &&
-  !(wall.type !== "wall" && wall.doorState === "open");
+  !(
+    (wall.doorType !== "none" || wall.type !== "wall") &&
+    wall.doorState === "open"
+  );
 
 export const wallBlocksSight = (wall) =>
   wall?.enabled !== false &&
   wall?.blocksSight === true &&
-  !(wall.type !== "wall" && wall.doorState === "open");
+  !(
+    (wall.doorType !== "none" || wall.type !== "wall") &&
+    wall.doorState === "open"
+  );
+
+const wallIsOpenDoor = (wall) =>
+  (wall?.doorType !== "none" || wall?.type !== "wall") &&
+  wall?.doorState === "open";
 
 const wallAtElevation = (wall, elevation) => {
   if (wall?.bottomElevation === undefined && wall?.topElevation === undefined)
@@ -38,16 +50,31 @@ const wallAtElevation = (wall, elevation) => {
 };
 
 const segmentsFor = (light, walls, scene, restriction = "light") => [
-  ...sceneEdges(scene),
+  ...sceneEdges(scene).map((segment) => ({ ...segment, hard: true })),
   ...(light?.constrainedByWalls === false
     ? []
-    : walls.filter(
-        (wall) =>
-          (restriction === "sight"
-            ? wallBlocksSight(wall)
-            : wallBlocksLight(wall)) &&
-          wallAtElevation(wall, Number(light?.elevation) || 0),
-      )),
+    : walls
+        .filter(
+          (wall) =>
+            ((restriction === "sight"
+              ? wallBlocksSight(wall)
+              : wallBlocksLight(wall)) ||
+              (wall.restrictionType === "proximity" &&
+                !wallIsOpenDoor(wall))) &&
+            wallAtElevation(wall, Number(light?.elevation) || 0),
+        )
+        .map((wall) => ({
+          ...wall,
+          hard:
+            wall.restrictionType !== "proximity" &&
+            (restriction === "sight"
+              ? wallBlocksSight(wall)
+              : wallBlocksLight(wall)),
+          proximityThresholdPx:
+            (Number(wall.proximityThreshold) || 10) *
+            ((Number(scene.gridSize) || 100) /
+              Math.max(0.001, Number(scene.gridDistance) || 5)),
+        }))),
 ];
 
 const endpointAngles = (origin, segment) =>
@@ -59,6 +86,7 @@ const endpointAngles = (origin, segment) =>
 const rayDistance = (origin, angle, maximum, segments) => {
   const direction = { x: Math.cos(angle), y: Math.sin(angle) };
   let nearest = maximum;
+  let proximityLimit = maximum;
   for (const segment of segments) {
     const start = { x: Number(segment.x1), y: Number(segment.y1) };
     const edge = {
@@ -70,16 +98,22 @@ const rayDistance = (origin, angle, maximum, segments) => {
     const delta = { x: start.x - origin.x, y: start.y - origin.y };
     const distance = cross(delta, edge) / denominator;
     const position = cross(delta, direction) / denominator;
-    if (
-      distance > EPSILON &&
-      distance < nearest &&
-      position >= -EPSILON &&
-      position <= 1 + EPSILON
-    ) {
-      nearest = distance;
+    if (distance > EPSILON && position >= -EPSILON && position <= 1 + EPSILON) {
+      if (segment.hard !== false && distance < nearest) nearest = distance;
+      else if (segment.restrictionType === "proximity" && distance < maximum) {
+        proximityLimit = Math.min(
+          proximityLimit,
+          distance +
+            applyWindowTransmission(
+              distance,
+              segment.proximityThresholdPx,
+              maximum - distance,
+            ),
+        );
+      }
     }
   }
-  return nearest;
+  return Math.min(nearest, proximityLimit);
 };
 
 const rounded = (value) => Math.round(value * 1000) / 1000;
@@ -181,10 +215,18 @@ export const lightTransitionOffsets = (light) => {
       100,
   );
   const softness =
-    light?.gradualIllumination === false ? 0 : Number(light?.softness ?? 0.5);
+    light?.gradualIllumination === false
+      ? 0
+      : Number(light?.edgeSoftness ?? light?.softness ?? 0.5);
+  const transition = Math.min(
+    1,
+    Math.max(0, Number(light?.transitionRatio ?? 0.5)),
+  );
   return {
     bright,
-    fade: bright + (100 - bright) * (1 - Math.min(1, Math.max(0, softness))),
+    fade:
+      bright +
+      (100 - bright) * (1 - Math.min(1, Math.max(0, softness)) * transition),
   };
 };
 
@@ -205,9 +247,10 @@ export const tokenVisionSource = (token, scene = {}) => {
     dimRadius: Math.max(0, radius),
     sourceType: Number(vision.angle ?? 360) < 360 ? "cone" : "omni",
     angle: Math.min(360, Math.max(1, Number(vision.angle) || 360)),
-    direction: Number.isFinite(Number(token.facing))
-      ? Number(token.facing)
-      : Number(vision.direction ?? token.rotation) || 0,
+    direction: tokenFacingToGeometryDirection(
+      token.facing,
+      vision.direction ?? token.rotation,
+    ),
     constrainedByWalls: vision.constrainedByWalls !== false,
     elevation: Number(token.elevation) || 0,
   };

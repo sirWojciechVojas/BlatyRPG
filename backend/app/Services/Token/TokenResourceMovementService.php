@@ -9,6 +9,7 @@ final class TokenResourceMovementService
     private $sync;
     private $active = false;
     private $resourceTouched = false;
+    private $characterTouched = false;
     private $previous = [];
     private $working = [];
 
@@ -20,7 +21,7 @@ final class TokenResourceMovementService
     public function touches(array $data): bool
     {
         return (bool) array_intersect(
-            ['bars_json', 'x', 'y', 'movement_range', 'movement_spent'],
+            ['bars_json', 'character_id', 'x', 'y', 'movement_range', 'movement_spent'],
             array_keys($data)
         );
     }
@@ -34,14 +35,14 @@ final class TokenResourceMovementService
         if (!$this->touches($data)) return $data;
         $this->active = true;
         $this->resourceTouched = array_key_exists('bars_json', $data);
+        $this->characterTouched = array_key_exists('character_id', $data);
         $this->previous = TokenMovementResource::fromMovement(
             TokenResourceValidator::stored($token['bars_json'] ?? []),
             (float) ($token['movement_range'] ?? 6),
             (float) ($token['movement_spent'] ?? 0)
         );
         $this->working = $this->previous;
-        if (!$this->resourceTouched) return $data;
-        if (!$canManage && TokenMovementResource::controlsChanged(
+        if ($this->resourceTouched && !$canManage && TokenMovementResource::controlsChanged(
             $this->previous,
             $data['bars_json'],
             (float) ($token['movement_range'] ?? 6),
@@ -51,16 +52,18 @@ final class TokenResourceMovementService
                 'forbidden', 'Only a game master can change movement resources.', 403
             );
         }
-        $input = TokenMovementResource::applyBubbleInputs(
-            $this->previous,
-            $data['bars_json']
-        );
-        $this->working = $this->sync->fromToken(
-            $campaignId,
-            $this->characterId($token, $data),
-            array_key_exists('character_id', $data) ? [] : $this->previous,
-            $input
-        );
+        $input = $this->resourceTouched
+            ? TokenMovementResource::applyBubbleInputs($this->previous, $data['bars_json'])
+            : $this->previous;
+        $characterId = $this->characterId($token, $data);
+        $this->working = $characterId
+            ? $this->sync->fromToken(
+                $campaignId,
+                $characterId,
+                $this->characterTouched ? [] : $this->previous,
+                $input
+            )
+            : $input;
         $state = TokenMovementResource::fromResources(
             $this->working,
             (float) ($data['movement_range'] ?? $token['movement_range'] ?? 6),
@@ -83,15 +86,16 @@ final class TokenResourceMovementService
             (float) ($data['movement_range'] ?? $token['movement_range'] ?? 6),
             (float) ($data['movement_spent'] ?? $token['movement_spent'] ?? 0)
         );
-        if ($final !== $this->working) {
+        $characterId = $this->characterId($token, $data);
+        if ($final !== $this->working && $characterId) {
             $final = $this->sync->fromToken(
                 $campaignId,
-                $this->characterId($token, $data),
+                $characterId,
                 $this->working,
                 $final
             );
         }
-        if ($this->resourceTouched || $final !== $this->previous) {
+        if ($this->resourceTouched || $this->characterTouched || $final !== $this->previous) {
             $data['bars_json'] = $final;
         }
         return $data;

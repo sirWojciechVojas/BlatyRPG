@@ -57,7 +57,7 @@ describe("realtime wall synchronization", () => {
     );
   });
 
-  it("sends the loaded wall revision through the current session", () => {
+  it("sends the loaded wall revision and waits for the server ack", async () => {
     const changeWall = vi.fn().mockReturnValue(true);
     const actions = createRealtimeWallActions(() => ({ changeWall }));
     const sent = actions.changeWall(
@@ -68,7 +68,6 @@ describe("realtime wall synchronization", () => {
         changes: { doorState: "open" },
       },
     );
-    expect(sent).toBe(true);
     expect(changeWall).toHaveBeenCalledWith(
       expect.objectContaining({
         operation: "update",
@@ -77,5 +76,13 @@ describe("realtime wall synchronization", () => {
         revision: 2,
       }),
     );
+    routeRealtimeWallEvent(
+      { rootState: { vtt: {} }, commit: vi.fn(), dispatch: vi.fn() },
+      {
+        type: "wall.ack",
+        payload: { requestId: changeWall.mock.calls[0][0].requestId },
+      },
+    );
+    await expect(sent).resolves.toBe(true);
   });
 });

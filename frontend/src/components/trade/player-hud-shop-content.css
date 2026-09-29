@@ -1,0 +1,92 @@
+.shop-trade-module {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  font-family: "EB Garamond", Garamond, "Times New Roman", serif;
+}
+
+.shop-trade-module .player-hud-shop-content {
+  position: relative;
+  display: grid;
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+  background: var(--trade-bg) center / cover no-repeat;
+}
+
+.shop-trade-module .player-hud-shop-content__toolbar {
+  position: relative;
+  z-index: 12;
+  display: flex;
+  min-height: 2.4rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--trade-space-3, 0.75rem);
+  padding: 0.3rem var(--trade-space-3, 0.75rem);
+  color: #ead9b5;
+  border-bottom: 1px solid rgb(216 183 120 / 28%);
+  background: rgb(17 10 7 / 90%);
+}
+
+.shop-trade-module .player-hud-shop-content__toolbar button {
+  position: static;
+  display: inline-flex;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  height: auto;
+  min-height: 1.8rem;
+  max-height: none;
+  align-items: center;
+  gap: 0.45rem;
+  transform: none;
+  left: auto;
+  border: 1px solid rgb(216 183 120 / 45%);
+  border-radius: 2px;
+  padding: 0.25rem 0.65rem;
+  color: #f1dfb8;
+  background: linear-gradient(#684124, #321d0f);
+}
+
+.shop-trade-module .player-hud-shop-content__toolbar button:hover,
+.shop-trade-module .player-hud-shop-content__toolbar button.active {
+  border-color: #e0b66c;
+  filter: brightness(1.12);
+}
+
+.shop-trade-module .player-hud-shop-content__status {
+  overflow: hidden;
+  font-size: 0.72rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shop-trade-module .player-hud-shop-content > .trade-modal-content {
+  min-height: 0;
+}
+
+.shop-trade-module .player-hud-shop-content__footer {
+  min-height: 1.5rem;
+  color: #ead9b5;
+  border-top: 1px solid rgb(216 183 120 / 24%);
+  background: rgb(17 10 7 / 90%);
+}
+
+.shop-trade-module .player-hud-shop-content__footer .api-note {
+  display: flex;
+  min-height: 1.5rem;
+  align-items: center;
+  justify-content: center;
+  padding: 0 var(--trade-space-2, 0.5rem);
+  font-size: 0.7rem;
+}
+
+@media (max-width: 720px) {
+  .shop-trade-module .player-hud-shop-content__toolbar button span:last-child,
+  .shop-trade-module .player-hud-shop-content__status {
+    display: none;
+  }
+}

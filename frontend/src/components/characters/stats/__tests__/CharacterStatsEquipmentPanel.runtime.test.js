@@ -64,6 +64,7 @@ const panelScript = withoutImports(panelDescriptor.script.content).replace(
   "return {",
 );
 const Panel = new Function(
+  "AuthenticatedImage",
   "CharacterStatsInventoryCell",
   "CharacterStatsItemDialog",
   "ItemIcon",
@@ -83,6 +84,7 @@ const Panel = new Function(
   "pouchIllustration",
   panelScript,
 )(
+  { template: "<img />" },
   InventoryCell,
   {
     props: [

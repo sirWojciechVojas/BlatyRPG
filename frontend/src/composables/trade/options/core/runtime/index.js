@@ -14,8 +14,6 @@ import inventorySprite from "@/assets/app-ui/img/inventory/invIco42x42.png";
 import inventoryBorderMagic from "@/assets/app-ui/img/inventory/BorderMagicV11.png";
 import inventoryBorderRare from "@/assets/app-ui/img/inventory/BorderRareV11.png";
 import inventoryBorderUnique from "@/assets/app-ui/img/inventory/BorderUniqueV11.png";
-import TradeModalShell from "@/components/trade/TradeModalShell.vue";
-import TradeModalContent from "@/components/trade/TradeModalContent.vue";
 import { createContainerState } from "@/lib/containerModel";
 import {
   normalizeLegacyIconClass as normalizeLegacyIconClassUtil,
@@ -64,8 +62,6 @@ const runtime = {
   inventoryBorderMagic,
   inventoryBorderRare,
   inventoryBorderUnique,
-  TradeModalShell,
-  TradeModalContent,
   createContainerState,
   normalizeLegacyIconClassUtil,
   resolveItemIconToken,
