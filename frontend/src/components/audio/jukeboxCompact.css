@@ -1,0 +1,728 @@
+.jukebox-compact {
+  --jukebox-accent: var(--ui-color-accent, #d2a43a);
+  --jukebox-border: var(--ui-color-border, #584127);
+  --jukebox-surface: rgba(34, 23, 16, 0.55);
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 0.5rem;
+  color: var(--ui-color-text, #fff6e9);
+}
+
+.jukebox-compact__header,
+.jukebox-section-heading,
+.jukebox-channel-row__main,
+.jukebox-playlist-row > header,
+.external-input-row__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  gap: 0.5rem;
+}
+
+.jukebox-compact__header small,
+.jukebox-section-heading span,
+.jukebox-channel-row__identity small,
+.jukebox-track-row small,
+.jukebox-playlist-row small,
+.jukebox-device-option small {
+  color: var(--ui-color-text-muted, #b8a68f);
+  font-size: 0.6875rem;
+}
+
+.jukebox-compact__header h2,
+.jukebox-section-heading h3 {
+  margin: 0;
+}
+
+.jukebox-tabs,
+.jukebox-source-switch {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.125rem;
+  margin: 0.45rem 0;
+  padding: 0.125rem;
+  background: rgba(0, 0, 0, 0.28);
+  border-radius: var(--ui-radius-sm, 0.25rem);
+}
+
+.jukebox-source-switch {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.jukebox-tabs button,
+.jukebox-source-switch button,
+.jukebox-filter-row button {
+  min-height: 2rem;
+  padding: 0.3rem 0.4rem;
+  color: var(--ui-color-text-muted, #b8a68f);
+  background: transparent;
+  border: 0;
+  border-radius: var(--ui-radius-sm, 0.25rem);
+  font-size: 0.75rem;
+}
+
+.jukebox-tabs button.active,
+.jukebox-tabs button[aria-selected="true"],
+.jukebox-source-switch button[aria-pressed="true"],
+.jukebox-filter-row button[aria-pressed="true"] {
+  color: var(--ui-color-text, #fff6e9);
+  background: rgba(127, 91, 42, 0.35);
+}
+
+.jukebox-tab-view,
+.jukebox-channel-list,
+.jukebox-playlist-list {
+  display: grid;
+  min-width: 0;
+  gap: 0.3rem;
+}
+
+.jukebox-section-heading {
+  min-height: 1.8rem;
+  align-items: baseline;
+}
+
+.jukebox-channel-row,
+.jukebox-playlist-row {
+  min-width: 0;
+  background: transparent;
+  border: 1px solid var(--jukebox-border);
+  border-radius: var(--ui-radius-sm, 0.25rem);
+}
+
+.jukebox-playlist-row {
+  overflow: hidden;
+}
+
+.jukebox-channel-row[data-active="true"] {
+  border-left: 0.2rem solid var(--jukebox-accent);
+}
+
+.jukebox-channel-row:focus-within,
+.jukebox-master-volume:focus-within {
+  position: relative;
+  z-index: 50;
+}
+
+.jukebox-channel-row__main {
+  padding: 0.4rem 0.45rem 0.15rem;
+}
+
+.jukebox-channel-row__identity,
+.jukebox-track-row__info,
+.jukebox-device-option > span:first-child,
+.jukebox-playlist-row > header > span:first-child {
+  display: grid;
+  min-width: 0;
+  line-height: 1.15;
+}
+
+.jukebox-channel-row__identity {
+  width: 100%;
+}
+
+.jukebox-channel-row__identity strong,
+.jukebox-track-row__info strong,
+.jukebox-device-option small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jukebox-channel-row__name {
+  color: var(--ui-color-text-muted, #b8a68f);
+  font-size: 0.6875rem;
+}
+
+.jukebox-track-marquee {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.jukebox-track-marquee__track {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+}
+
+.jukebox-track-marquee__track > span {
+  display: block;
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.jukebox-track-marquee:not(.jukebox-track-marquee--overflowing)
+  .jukebox-track-marquee__track
+  > span {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.jukebox-track-marquee--overflowing .jukebox-track-marquee__track {
+  width: max-content;
+  min-width: 0;
+  gap: 1.5rem;
+  animation: jukebox-title-marquee var(--jukebox-marquee-duration, 8s) linear
+    infinite;
+}
+
+.jukebox-track-marquee--overflowing:hover .jukebox-track-marquee__track {
+  animation-play-state: paused;
+}
+
+@keyframes jukebox-title-marquee {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(calc(-50% - 0.75rem));
+  }
+}
+
+.jukebox-icon-actions,
+.jukebox-track-row__actions,
+.jukebox-playlist-actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 0.2rem;
+}
+
+.jukebox-icon-actions > button,
+.jukebox-icon-actions > .jukebox-volume-control > button,
+.jukebox-track-row__actions button {
+  display: inline-grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  place-items: center;
+  color: inherit;
+  background: var(--jukebox-surface);
+  border: 1px solid var(--jukebox-border);
+  border-radius: var(--ui-radius-sm, 0.25rem);
+}
+
+.jukebox-playback-control-icon {
+  display: block;
+  width: 1rem;
+  height: 1rem;
+}
+
+.jukebox-master-volume {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.45rem;
+  background: rgba(127, 91, 42, 0.16);
+  border: 1px solid var(--jukebox-border);
+  border-radius: var(--ui-radius-sm, 0.25rem);
+}
+
+.jukebox-master-volume > span {
+  display: grid;
+  min-width: 0;
+  line-height: 1.15;
+}
+
+.jukebox-master-volume small {
+  color: var(--ui-color-text-muted, #b8a68f);
+  font-size: 0.625rem;
+}
+
+.jukebox-master-volume > output {
+  min-width: 2.65rem;
+  color: var(--jukebox-accent);
+  font-size: 0.6875rem;
+  text-align: right;
+}
+
+.jukebox-master-volume .jukebox-volume-control__toggle {
+  display: inline-grid;
+  width: 1.75rem;
+  height: 1.75rem;
+  padding: 0;
+  place-items: center;
+  color: inherit;
+  background: var(--jukebox-surface);
+  border: 1px solid var(--jukebox-border);
+  border-radius: var(--ui-radius-sm, 0.25rem);
+}
+
+.jukebox-volume-control {
+  position: relative;
+  z-index: 4;
+}
+
+.jukebox-volume-control__toggle svg {
+  display: block;
+  width: 1.05rem;
+  height: 1.05rem;
+}
+
+.jukebox-volume-control__popover {
+  position: absolute;
+  z-index: 20;
+  top: auto;
+  right: 0;
+  bottom: calc(100% + 0.35rem);
+  display: grid;
+  width: 2.25rem;
+  min-height: 6.6rem;
+  justify-items: center;
+  gap: 0.2rem;
+  padding: 0.3rem 0.15rem;
+  color: var(--ui-color-text, #fff6e9);
+  background: #17110d;
+  border: 1px solid var(--jukebox-accent);
+  border-color: color-mix(in srgb, var(--jukebox-accent) 68%, #2e2117);
+  border-radius: var(--ui-radius-sm, 0.25rem);
+  box-shadow:
+    0 0 0 1px rgba(0, 0, 0, 0.72),
+    0 0.55rem 1.1rem rgba(0, 0, 0, 0.68);
+}
+
+.jukebox-volume-control__popover::after {
+  position: absolute;
+  top: 100%;
+  right: 0.55rem;
+  width: 0;
+  height: 0;
+  content: "";
+  border: 0.3rem solid transparent;
+  border-top-color: var(--jukebox-accent);
+}
+
+.jukebox-volume-control__popover--with-mute {
+  width: 3.1rem;
+}
+
+.jukebox-volume-control__popover output {
+  color: var(--jukebox-accent);
+  font-size: 0.625rem;
+}
+
+.jukebox-volume-control__popover input[type="range"] {
+  width: 1.15rem;
+  height: 4.75rem;
+  accent-color: var(--jukebox-accent);
+  cursor: ns-resize;
+  direction: rtl;
+  writing-mode: vertical-lr;
+}
+
+.jukebox-volume-control__popover .jukebox-volume-control__mute {
+  width: auto;
+  min-width: 2.35rem;
+  height: 1.25rem;
+  padding: 0 0.25rem;
+  color: var(--ui-color-text-muted, #b8a68f);
+  background: transparent;
+  border: 0;
+  font-size: 0.5625rem;
+}
+
+.jukebox-volume-control__popover .jukebox-volume-control__mute.active {
+  color: #ff8f83;
+}
+
+.jukebox-channel-progress {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-width: 0;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--ui-color-text-muted, #b8a68f);
+  font-size: 0.6875rem;
+}
+
+.jukebox-channel-transport {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  min-width: 0;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0 0.45rem 0.15rem;
+}
+
+.jukebox-channel-progress input,
+.jukebox-channel-row .audio-level-meter__track {
+  width: 100%;
+}
+
+.jukebox-channel-progress input[type="range"] {
+  height: 0.35rem;
+  margin: 0.35rem 0;
+  appearance: none;
+  background: linear-gradient(
+    to right,
+    var(--jukebox-accent) 0 var(--jukebox-progress),
+    rgba(184, 166, 143, 0.3) var(--jukebox-progress) 100%
+  );
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.jukebox-channel-progress input[type="range"]::-webkit-slider-thumb {
+  width: 0.75rem;
+  height: 0.75rem;
+  appearance: none;
+  background: var(--jukebox-accent);
+  border: 0;
+  border-radius: 50%;
+}
+
+.jukebox-channel-progress input[type="range"]::-moz-range-thumb {
+  width: 0.75rem;
+  height: 0.75rem;
+  background: var(--jukebox-accent);
+  border: 0;
+  border-radius: 50%;
+}
+
+.jukebox-channel-progress input[type="range"]:disabled {
+  cursor: default;
+  opacity: 0.45;
+}
+
+.jukebox-channel-progress output {
+  min-width: 5.5rem;
+  text-align: right;
+}
+
+.jukebox-channel-row > .audio-level-meter {
+  grid-template-columns: auto minmax(3.5rem, 1fr) 2.25rem;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0.12rem 0.45rem 0.3rem;
+}
+
+.jukebox-channel-row > .audio-level-meter .audio-level-meter__track {
+  height: 0.4rem;
+}
+
+.jukebox-queue-toggle {
+  display: flex;
+  width: 100%;
+  min-height: 1.65rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.2rem 0.45rem;
+  color: var(--ui-color-text-muted, #b8a68f);
+  background: rgba(0, 0, 0, 0.16);
+  border: 0;
+  border-top: 1px solid var(--jukebox-border);
+  font-size: 0.6875rem;
+  text-align: left;
+}
+
+.jukebox-queue-toggle span:last-child,
+.jukebox-in-use {
+  color: var(--jukebox-accent) !important;
+}
+
+.jukebox-queue,
+.jukebox-playlist-editor {
+  padding: 0.15rem 0.45rem 0.35rem;
+  background: rgba(0, 0, 0, 0.13);
+}
+
+.jukebox-queue ol,
+.jukebox-playlist-editor ol {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.jukebox-queue li,
+.jukebox-playlist-editor li {
+  display: grid;
+  grid-template-columns: 1rem minmax(0, 1fr) auto;
+  min-height: 2rem;
+  align-items: center;
+  gap: 0.3rem;
+  border-top: 1px solid rgba(88, 65, 39, 0.55);
+  font-size: 0.6875rem;
+}
+
+.jukebox-queue li > span:nth-child(2) {
+  display: grid;
+  min-width: 0;
+}
+
+.jukebox-queue li strong,
+.jukebox-playlist-editor li strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.jukebox-queue__order {
+  color: var(--ui-color-text-muted, #b8a68f);
+}
+
+.jukebox-queue__empty,
+.jukebox-inline-form,
+.jukebox-device-option,
+.jukebox-playlist-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.jukebox-text-action {
+  min-height: 1.75rem;
+  padding: 0.2rem 0.45rem;
+  color: var(--jukebox-accent);
+  background: transparent;
+  border: 1px solid var(--jukebox-border);
+  border-radius: var(--ui-radius-sm, 0.25rem);
+  font-size: 0.6875rem;
+}
+
+.jukebox-field {
+  display: grid;
+  min-width: 0;
+  gap: 0.2rem;
+  color: var(--ui-color-text-muted, #b8a68f);
+  font-size: 0.6875rem;
+}
+
+.jukebox-field select,
+.jukebox-search input,
+.jukebox-inline-form input,
+.jukebox-inline-form select,
+.jukebox-track-edit input,
+.jukebox-library-manager input,
+.jukebox-library-manager select,
+.jukebox-playlist-row input {
+  width: 100%;
+  min-width: 0;
+  min-height: 2.15rem;
+}
+
+.jukebox-search {
+  display: block;
+}
+
+.jukebox-filter-row {
+  display: flex;
+  min-width: 0;
+  gap: 0.2rem;
+  overflow-x: auto;
+}
+
+.jukebox-filter-row button {
+  min-height: 1.65rem;
+  white-space: nowrap;
+  border: 1px solid var(--jukebox-border);
+}
+
+.jukebox-filter-row--library {
+  padding-bottom: 0.15rem;
+  border-bottom: 1px solid var(--jukebox-border);
+}
+
+.jukebox-track-list {
+  display: grid;
+}
+
+.jukebox-track-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  min-height: 3.15rem;
+  align-items: center;
+  gap: 0.4rem;
+  border-bottom: 1px solid rgba(88, 65, 39, 0.65);
+}
+
+.jukebox-track-edit {
+  display: grid;
+  grid-column: 1 / -1;
+  gap: 0.35rem;
+  padding: 0.4rem;
+  background: rgba(127, 91, 42, 0.12);
+  border: 1px solid rgba(88, 65, 39, 0.65);
+  border-radius: var(--ui-radius-sm, 0.25rem);
+}
+
+.jukebox-track-edit__fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+
+.jukebox-track-edit__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.35rem;
+}
+
+.jukebox-track-edit__actions button {
+  min-height: 1.9rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.6875rem;
+}
+
+.jukebox-device-picker,
+.jukebox-library-manager,
+.jukebox-library-manager form {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.jukebox-device-picker > p,
+.jukebox-empty {
+  margin: 0;
+  color: var(--ui-color-text-muted, #b8a68f);
+  font-size: 0.75rem;
+}
+
+.jukebox-device-option {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  padding: 0.35rem 0;
+  border-bottom: 1px solid rgba(88, 65, 39, 0.65);
+}
+
+.jukebox-device-option__status {
+  color: var(--ui-color-text-muted, #b8a68f);
+  font-size: 0.6875rem;
+}
+
+.jukebox-library-manager {
+  padding-top: 0.4rem;
+  border-top: 1px solid var(--jukebox-border);
+}
+
+.jukebox-library-manager form {
+  grid-template-columns: minmax(0, 1fr) 6rem auto;
+}
+
+.jukebox-playlist-row {
+  padding-top: 0.4rem;
+}
+
+.jukebox-playlist-row > header,
+.jukebox-playlist-row > .jukebox-field,
+.jukebox-playlist-actions {
+  margin: 0 0.45rem 0.35rem;
+}
+
+.jukebox-field--inline {
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+}
+
+.jukebox-playlist-actions {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.jukebox-playlist-actions button {
+  min-height: 1.9rem;
+  padding: 0.2rem 0.35rem;
+  font-size: 0.6875rem;
+}
+
+.jukebox-inline-form {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  padding: 0.35rem 0;
+}
+
+.jukebox-notice,
+.jukebox-unlock {
+  width: 100%;
+  margin: 0.35rem 0;
+}
+
+.jukebox-notice {
+  padding: 0.35rem 0.45rem;
+  color: var(--ui-color-text, #fff6e9);
+  background: rgba(29, 111, 74, 0.3);
+  border-left: 0.2rem solid #60c98f;
+  font-size: 0.75rem;
+}
+
+.jukebox-notice[data-kind="error"] {
+  background: rgba(139, 45, 45, 0.3);
+  border-left-color: #df6d6d;
+}
+
+.external-input-row {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.3rem;
+}
+
+.external-input-row__head span {
+  color: var(--ui-color-text-muted, #b8a68f);
+  font-size: 0.6875rem;
+}
+
+.external-input-row__head span[data-available="true"] {
+  color: #60c98f;
+}
+
+.external-input-row__controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.35rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 360px) {
+  .jukebox-compact {
+    padding: 0.35rem;
+  }
+
+  .jukebox-tabs button {
+    padding-inline: 0.15rem;
+    font-size: 0.6875rem;
+  }
+
+  .jukebox-library-manager form,
+  .jukebox-playlist-actions,
+  .jukebox-device-option {
+    grid-template-columns: 1fr;
+  }
+
+  .jukebox-track-edit__fields {
+    grid-template-columns: 1fr;
+  }
+
+  .jukebox-device-option > button {
+    width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .jukebox-track-marquee--overflowing {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .jukebox-track-marquee--overflowing::-webkit-scrollbar {
+    display: none;
+  }
+
+  .jukebox-track-marquee--overflowing .jukebox-track-marquee__track {
+    animation: none;
+  }
+}

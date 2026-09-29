@@ -9,6 +9,7 @@ use App\Services\Auth\AuthContextService;
 use App\Services\Auth\AuthException;
 use App\Services\Auth\AuthPayloadValidator;
 use App\Services\Auth\AuthSessionService;
+use App\Services\Audio\UserAudioDeviceSettingsService;
 use CodeIgniter\API\ResponseTrait;
 
 class AuthSessionController extends BaseController
@@ -19,6 +20,7 @@ class AuthSessionController extends BaseController
     private $sessions;
     private $accounts;
     private $payloadValidator;
+    private $audioDeviceSettings;
 
     public function __construct()
     {
@@ -27,6 +29,7 @@ class AuthSessionController extends BaseController
         $this->authContext = new AuthContextService($this->sessions);
         $this->accounts = new AuthAccountService($db, new UserModel($db), $this->sessions);
         $this->payloadValidator = new AuthPayloadValidator();
+        $this->audioDeviceSettings = new UserAudioDeviceSettingsService($db);
     }
 
     public function me()
@@ -55,6 +58,25 @@ class AuthSessionController extends BaseController
             $this->assertValid($validated, 'profile_invalid');
             $user = $this->accounts->updateProfile((int) $auth['user_id'], $validated['data']);
             return ['user' => $this->accounts->present($user)];
+        });
+    }
+
+    public function audioDeviceSettings()
+    {
+        return $this->execute(function (): array {
+            $auth = $this->auth();
+            return ['settings' => $this->audioDeviceSettings->show((int) $auth['user_id'])];
+        });
+    }
+
+    public function updateAudioDeviceSettings()
+    {
+        return $this->execute(function (): array {
+            $auth = $this->auth();
+            return ['settings' => $this->audioDeviceSettings->update(
+                (int) $auth['user_id'],
+                $this->payload()
+            )];
         });
     }
 
